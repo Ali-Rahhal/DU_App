@@ -1,0 +1,61 @@
+/* to fix the tag boxes height */
+.sv-tagbox__item {
+  height: fit-content !important;
+}
+.complaint-con .main-con {
+  background-color: transparent;
+}
+.complaint-con .formCon {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+  max-width: 500px;
+  width: 100%;
+  margin: 0 auto;
+  height: 100%;
+}
+
+.formHeader {
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+.form {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 2rem;
+}
+.radioInputs {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 1rem;
+}
+
+.radioCon {
+  display: flex;
+  gap: 1rem;
+  flex-direction: row-reverse;
+  justify-content: left;
+  text-align: left;
+  align-items: center;
+}
+.radioCon input {
+  margin: 0;
+  padding: 0;
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 50%;
+  border: 1px solid #4e97fd;
+  background-color: #ffffff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.radioCon label {
+  font-size: 1rem;
+  color: gray;
+  font-weight: 500;
+  cursor: pointer;
+}

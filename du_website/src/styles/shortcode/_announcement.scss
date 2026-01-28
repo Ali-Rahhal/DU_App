@@ -1,0 +1,38 @@
+.announcement-header {
+  background-color: $primary;
+  min-height: unset;
+  padding: 6px 35px;
+  color: #ffffff;
+  position: relative;
+  z-index: 8;
+  margin: 0px;
+  .pro-description {
+    position: relative;
+    text-align: center;
+    width: 100%;
+    .pro-info {
+      white-space: normal;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      padding: 0 30px;
+      font-family: var(--heading-font);
+      font-size: 12px;
+      color: #ffffff;
+      line-height: normal;
+      font-weight: normal;
+    }
+  }
+  .close {
+    font-size: 20px;
+    font-weight: normal;
+    line-height: 20px;
+    padding: 0;
+    right: -5px;
+    text-shadow: none;
+    color: #ffffff;
+    margin-top: -2px;
+  }
+}

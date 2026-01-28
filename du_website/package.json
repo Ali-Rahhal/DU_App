@@ -1,0 +1,41 @@
+{
+  "name": "hospitania",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 4501",
+    "build": "next build",
+    "start": "next start -p 4501",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "^1.9.3",
+    "apexcharts": "^3.49.1",
+    "axios": "^1.6.8",
+    "bootstrap": "^4.6.0",
+    "browser-image-compression": "^2.0.2",
+    "eslint": "8.35.0",
+    "eslint-config-next": "13.2.3",
+    "html2pdf.js": "^0.10.1",
+    "js-cookie": "^3.0.1",
+    "jsbarcode": "^3.11.6",
+    "lottie-react": "^2.4.0",
+    "next": "13.2.3",
+    "next-nprogress-bar": "^2.3.12",
+    "next-redux-wrapper": "^8.1.0",
+    "react": "18.2.0",
+    "react-apexcharts": "^1.4.1",
+    "react-barcode-scanner": "^2.1.0",
+    "react-bootstrap": "^2.5.0",
+    "react-dom": "18.2.0",
+    "react-redux": "^8.0.5",
+    "react-slick": "^0.29.0",
+    "react-toastify": "^9.1.1",
+    "sass": "^1.55.0",
+    "survey-react-ui": "^1.10.5",
+    "zustand": "^4.5.2"
+  },
+  "devDependencies": {
+    "@types/node": "20.12.3"
+  }
+}

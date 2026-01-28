@@ -1,0 +1,100 @@
+/* ==============================
+   Buttons
+   ============================== */
+
+.btn {
+  box-sizing: border-box;
+  border: 2px solid transparent;
+  text-decoration: none;
+  box-shadow: none;
+  transition: all 0.2s cubic-bezier(0, 0, 0.58, 1);
+  height: auto;
+  padding: 9px 20px;
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: capitalize;
+  letter-spacing: 0px;
+  border-radius: 5px;
+
+  &:hover,
+  &:focus {
+    font-weight: bold;
+    text-decoration: none;
+    outline: none;
+    border-color: transparent;
+    box-shadow: none;
+  }
+
+  &:active {
+    cursor: pointer !important;
+    outline: none !important;
+  }
+
+  &.btn-full {
+    display: block;
+    width: 100%;
+  }
+
+  i {
+    padding-right: 5px;
+    font-size: 12px;
+  }
+
+  svg {
+    height: 18px;
+    width: auto;
+  }
+  &.btn-sm {
+    padding: 4px 12px;
+  }
+  &.btn-gray-border {
+    padding: 12px 45px;
+    color: #5c727d;
+    border: 2px solid #eaedf2;
+    background: transparent;
+  }
+}
+
+@each $color, $value in $theme-colors {
+  .btn-outline-#{$color} {
+    border-color: rgba($value, 0.25);
+    color: $value;
+    &:hover {
+      background-color: rgba($value, 0.2);
+      border-color: rgba(0, 0, 0, 0);
+      color: $value;
+    }
+  }
+}
+
+@each $color, $value in $theme-colors {
+  .btn-soft-#{$color} {
+    color: $value;
+    background-color: rgba($value, 0.1);
+    border-color: transparent;
+
+    &:hover {
+      background-color: $value;
+      border-color: rgba(0, 0, 0, 0);
+      color: #ffffff;
+    }
+  }
+}
+.product-heading {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  color: #333;
+}
+.product-heading-btn {
+  font-size: 10px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+@media (max-width: 730px) {
+  .btn {
+    padding: 8px 15px;
+    font-size: 12px;
+  }
+}

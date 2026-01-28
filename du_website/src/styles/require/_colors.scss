@@ -1,0 +1,56 @@
+.overlay {
+	z-index: 0;
+	position: relative;
+	-moz-background-size: cover;
+	background-size: cover;
+	background-repeat: no-repeat;
+
+	&:after {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		content: '';
+		z-index: -1;
+		overflow: hidden;
+	}
+}
+.background-center{
+    background-position: center;
+}
+@each $color, $value in $theme-colors {
+	.overlay[data-overlay-color='#{$color}']:after {
+		background-color: $value;
+	}
+}
+
+@for $i from 1 through 10 {
+	.overlay[data-overlay='#{$i}']:after {
+		opacity: #{$i * 0.1};
+	}
+}
+
+@each $color, $value in $theme-colors {
+	.bg-soft-#{$color} {
+		color: $value;
+		background-color: rgba($value, 0.1);
+	}
+}
+
+
+.bg-body-color {
+	background: $body-color;
+}
+
+.bg-facebook {
+	background: #4267b2;
+}
+
+.bg-twitter {
+	background: #00aced;
+}
+
+.bg-pinterest {
+	background: #c8232c;
+}

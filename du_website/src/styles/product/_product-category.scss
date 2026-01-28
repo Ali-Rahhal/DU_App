@@ -1,0 +1,87 @@
+
+.shop-header {
+	display: flex;
+	padding: 0px 0px;
+	border-top: 1px solid $gray-300;
+	border-bottom: 1px solid $gray-300;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 50px;
+
+	.single-select-block {
+		margin-right: 30px;
+		font-size: 14px;
+
+		&:last-child {
+			margin-right: 0;
+		}
+
+		.select-title {
+			line-height: 30px;
+			margin-right: 10px;
+			color: $gray-700;
+		}
+
+		select {
+			line-height: 30px;
+			padding-left: 10px;
+			color: $gray-600;
+			border: none;
+		}
+	}
+
+	.grid-icons button {
+		float: left;
+		height: 46px;
+		padding: 0;
+		border: none;
+		background: none;
+		background-repeat: no-repeat;
+		background-position: center;
+		transition: all 0.1s ease 0s;
+
+		&.three-column {
+			width: 20px;
+			margin-right: 4px;
+			background-image: url('/assets/img/product/icons/grid-3-column.png');
+
+			&:hover,
+			&.active {
+				background-image: url('/assets/img/product/icons/grid-3-column-hover.png');
+			}
+		}
+
+		&.four-column {
+			width: 35px;
+			margin-right: 4px;
+			background-image: url('/assets/img/product/icons/grid-4-column.png');
+
+			&:hover,
+			&.active {
+				background-image: url('/assets/img/product/icons/grid-4-column-hover.png');
+			}
+		}
+
+		&.five-column {
+			width: 35px;
+			margin-right: 4px;
+			background-image: url('/assets/img/product/icons/grid-5-column.png');
+
+			&:hover,
+			&.active {
+				background-image: url('/assets/img/product/icons/grid-5-column-hover.png');
+			}
+		}
+
+		&.list-view {
+			width: 20px;
+			margin-left: 6px;
+			background-image: url('/assets/img/product/icons/list.png');
+
+			&:hover,
+			&.active {
+				background-image: url('/assets/img/product/icons/list-hover.png');
+			}
+		}
+	}
+}

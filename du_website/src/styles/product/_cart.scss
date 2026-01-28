@@ -1,0 +1,333 @@
+.header {
+  .shopping-cart {
+    min-width: 300px;
+
+    .shopping-cart-items {
+      padding-left: 25px;
+      padding-right: 25px;
+      padding-top: 15px;
+      padding-bottom: 15px;
+      max-height: 350px;
+      overflow-y: auto;
+      float: left;
+      position: relative;
+      width: 100%;
+
+      li:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding: 0;
+      }
+    }
+  }
+}
+
+.cart_product,
+.search-product {
+  border-radius: 2px;
+  border: 1px solid $border-color;
+
+  .cart_product_heading {
+    padding: 10px 20px;
+    width: 100%;
+    display: block;
+    border-bottom: 1px solid $border-color;
+
+    h4 {
+      color: $dark;
+      font-weight: bold;
+      text-transform: capitalize;
+      font-size: 1rem;
+      margin: 0;
+
+      span {
+        color: rgba($dark, 0.5);
+        font-weight: 400;
+        font-size: 15px;
+        margin-left: 5px;
+        text-transform: none;
+      }
+    }
+  }
+
+  .cart_item {
+    padding: 20px;
+    border-bottom: 1px solid $border-color;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    position: relative;
+
+    &.small {
+      padding: 10px;
+
+      .cart_item_image {
+        width: 50px;
+        height: 50px;
+        margin-right: 10px;
+
+        img {
+          width: 40px;
+          height: auto;
+        }
+      }
+    }
+
+    .cart_item_image {
+      width: 75px;
+      height: 75px;
+      margin-right: 20px;
+      overflow: hidden;
+      border-radius: 0.2rem;
+      background-color: $light;
+      text-align: center;
+
+      img {
+        width: 75px;
+        height: auto;
+      }
+    }
+
+    .c-item-body {
+      width: 90%;
+    }
+
+    .cart_item_title {
+      position: relative;
+
+      h4 {
+        color: $dark;
+        font-weight: 500;
+        text-transform: capitalize;
+        font-size: 0.95rem;
+        margin-bottom: 0;
+      }
+
+      .cart_item_size {
+        position: absolute;
+        right: 0;
+        top: 0;
+
+        span {
+          display: inline-block;
+          color: $dark;
+          font-size: 12px;
+        }
+
+        .cart_item_color {
+          margin-right: 50px;
+
+          .cart_item_color_circle {
+            display: inline-block;
+            height: 10px;
+            width: 10px;
+            border-radius: 50%;
+            background-color: #282828;
+            margin-left: 5px;
+          }
+        }
+      }
+    }
+
+    .cart_item_price {
+      .cart_product_remove {
+        margin-top: 10px;
+
+        a,
+        button {
+          color: inherit;
+          background-color: transparent;
+          border: unset;
+          outline: none;
+
+          i {
+            color: $danger;
+            font-size: 80%;
+            margin-right: 5px;
+          }
+        }
+      }
+
+      .product-price {
+        span {
+          letter-spacing: 0;
+          color: $dark;
+
+          del {
+            margin-left: 6px;
+            opacity: 0.5;
+            font-size: 70%;
+          }
+
+          .product-discountPercentage {
+            color: $success;
+            font-weight: bold;
+            font-size: 70%;
+            margin-left: 5px;
+          }
+        }
+      }
+    }
+  }
+
+  .cart_buy_opction {
+    .button + .button {
+      margin-top: 0px;
+      margin-left: 18px;
+    }
+  }
+}
+
+.cart_buy_opction {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30px 20px;
+}
+
+.cart-summary {
+  .cart-summary-wrap {
+    margin-bottom: 20px;
+    padding: 35px 20px;
+    background-color: $light;
+    color: $dark;
+
+    h4 {
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 23px;
+      margin-bottom: 30px;
+      text-decoration: underline;
+      text-transform: capitalize;
+    }
+
+    p {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 23px;
+      color: inherit;
+
+      span {
+        float: right;
+      }
+    }
+
+    h2 {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 23px;
+      margin: 0;
+      padding-top: 9px;
+      border-top: 1px solid $dark;
+
+      span {
+        float: right;
+        font-size: 1rem;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 512px) {
+  .cart_product .cart_item {
+    display: block;
+  }
+
+  .cart_product .cart_item .cart_item_title h4 {
+    margin-bottom: 0;
+  }
+
+  .cart_product .cart_item .cart_item_size {
+    position: relative;
+    margin-bottom: 1.1rem;
+  }
+
+  .cart_product .cart_item .cart_item_price .product-price span {
+    letter-spacing: 0;
+  }
+
+  .cart_product .cart_buy_opction .button + .button {
+    margin-top: 18px;
+  }
+
+  .cart_product .cart_item .cart_item_title .cart_item_size {
+    position: relative;
+    right: 0;
+    top: 5px;
+  }
+
+  .cart_product .cart_item .cart_item_price .cart_product_remove {
+    top: 8px;
+    position: relative;
+    left: 0;
+    button,
+    a {
+      font-size: 14px;
+    }
+  }
+
+  .cart_buy_opction {
+    display: block;
+  }
+}
+
+.mini_cart_item {
+  margin-bottom: 15px;
+  width: 100%;
+  display: flex !important;
+  padding-bottom: 8px;
+  border-bottom: 1px solid $border-color;
+
+  .left-section {
+    max-width: 30%;
+    margin-right: 20px;
+    height: 48px;
+    width: 48px;
+
+    a {
+      height: 48px;
+      width: 48px;
+      position: relative;
+      overflow: hidden;
+      background-color: $light;
+      border-radius: 5px;
+      display: block;
+
+      > img {
+        max-height: 80%;
+        max-width: 80%;
+        width: auto;
+        height: auto;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+        transition: all 0.85s cubic-bezier(0.23, 1, 0.32, 1);
+      }
+    }
+  }
+
+  .right-section {
+    font-size: 13px;
+    text-align: left;
+    font-weight: 500;
+    line-height: 20px;
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .item-desc {
+      text-align: left;
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 20px;
+      strong {
+        color: $danger;
+      }
+    }
+  }
+}

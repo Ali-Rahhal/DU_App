@@ -1,0 +1,252 @@
+/* product details slider */
+
+.product-details-slider-area {
+  position: relative;
+
+  .product-details-big-image-slider-wrapper {
+    cursor: crosshair;
+    margin-bottom: 15px;
+
+    .single-image {
+      text-align: center;
+      //   background: $light;
+      border: 2px solid $light;
+      padding: 20px;
+      border-radius: 6px;
+      img {
+        width: auto;
+        border-radius: 6px;
+        max-height: 400px;
+        margin: auto;
+      }
+    }
+  }
+
+  .product-details-small-image-slider-wrapper {
+    .single-image {
+      margin: 0 5px;
+      padding: 8px;
+      text-align: center;
+      border-radius: 6px;
+      //   background: $light;
+      //   box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
+      border: 2px solid $light;
+      cursor: pointer;
+      img {
+        width: auto;
+        border-radius: 4px;
+        max-height: 100px;
+        cursor: pointer;
+        margin: auto;
+      }
+    }
+  }
+}
+
+/*----------  product description  ----------*/
+
+.single-product-content-description {
+  .single-info {
+    font-size: 14px;
+    font-weight: 400;
+    font-style: normal;
+    line-height: 17px;
+    margin-bottom: 10px;
+  }
+
+  .product-title {
+    margin-bottom: 10px;
+  }
+
+  .rating {
+    margin-bottom: 20px;
+    i {
+      font-size: 14px;
+    }
+  }
+
+  .review-count {
+    padding-left: 10px;
+
+    a {
+      color: $body-color;
+      font-weight: normal;
+
+      &:hover {
+        color: $danger;
+      }
+    }
+  }
+
+  .product-description {
+    line-height: 24px;
+    margin-bottom: 0;
+    padding-bottom: 35px;
+    font-size: 14px;
+  }
+
+  .single-grid-product__price {
+    .main-price {
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 22px;
+      color: $secondary;
+
+      &.discounted {
+        text-decoration: line-through;
+      }
+    }
+
+    .discounted-price {
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 22px;
+      margin-right: 10px;
+      color: $danger;
+    }
+  }
+}
+@media (min-width: 730px) {
+  .product-actions {
+    display: flex;
+    align-items: center;
+  }
+}
+.qty-input {
+  border: 1px solid $secondary;
+  display: flex;
+  align-content: space-between;
+  padding-left: 0;
+  padding-right: 0;
+  border-radius: 5px;
+
+  &:hover {
+    border: 1px solid $secondary;
+  }
+
+  button {
+    background-color: transparent;
+    border: unset;
+    outline: none;
+    cursor: pointer;
+    transition: all 150ms ease-out;
+    width: 25px;
+
+    &:active {
+      background-color: $secondary;
+      transition: none;
+    }
+  }
+
+  span {
+    display: inline-block;
+    border: 0px solid;
+    outline: none;
+    min-width: 54px;
+    text-align: center;
+    margin: 0 auto;
+  }
+}
+
+.product-full-description {
+  padding-top: 40px;
+  padding-bottom: 0px;
+
+  .entry-product-section-heading {
+    font-size: 28px;
+    font-weight: 500;
+    line-height: 1.6;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+    margin: 43px 0 18px;
+  }
+}
+
+.rating {
+  color: $gray-500;
+  font-size: 12px;
+  font-size: 0.75rem;
+  margin-bottom: 10px;
+  display: inline-block;
+
+  .fa-star {
+    color: $warning;
+  }
+  svg {
+    height: 16px;
+
+    &.active {
+      color: $warning;
+      fill: $warning;
+    }
+  }
+}
+
+.review_content {
+  margin-bottom: 30px;
+
+  em {
+    font-weight: 500;
+    color: $gray-500;
+    line-height: 22px;
+    margin-left: 5px;
+    float: right;
+    font-size: 13px;
+  }
+
+  h4 {
+    font-size: 18px;
+    font-size: 1.125rem;
+  }
+}
+
+.box-checkbox {
+  margin: 0px -10px;
+  label {
+    position: relative;
+    padding-right: 10px;
+    padding-left: 10px;
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    width: auto;
+    max-width: 100%;
+    cursor: pointer;
+
+    input[type="radio"],
+    input[type="checkbox"] {
+      position: absolute;
+      clip: rect(1px, 1px, 1px, 1px);
+      clip-path: inset(50%);
+    }
+
+    .icon-box {
+      border-radius: 4px !important;
+      padding: 10px 18px;
+      margin: 0;
+      text-align: center;
+      font-size: 12px;
+      display: inline-block;
+      letter-spacing: 2px;
+      background-color: white;
+      color: $dark;
+      border: 1px solid $dark;
+    }
+
+    input[type="radio"]:checked ~ .icon-box,
+    input[type="checkbox"]:checked ~ .icon-box {
+      background-color: rgba($primary, 0.04);
+      color: $primary;
+      border: 1px solid $primary;
+    }
+
+    .icon-box .label {
+      margin: 5px;
+      font-size: 14px;
+    }
+    .icon-box .value {
+      margin: 5px;
+      font-size: 10px;
+    }
+  }
+}

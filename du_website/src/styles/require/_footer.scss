@@ -1,0 +1,201 @@
+.site-footer {
+    position: relative;
+
+    .widget {
+        .widget-title {
+            h3 {
+                margin-bottom: 10px;
+                line-height: 18px;
+                font-size: 14px;
+            }
+        }
+
+        p {
+            margin-bottom: 0.9rem;
+        }
+
+        ul {
+            padding: 0;
+            margin: 0;
+
+            li {
+                list-style: none;
+                margin-bottom: 6px;
+
+                &:last-child {
+                    margin-bottom: 0;
+                }
+
+                a {
+                    display: block;
+                    color: inherit;
+                    font-size: 12px;
+                }
+            }
+        }
+
+        .footer-logo svg {
+            height: 40px;
+            width: auto;
+            margin-top: 0.045rem;
+            margin-bottom: 1.25rem;
+            object-fit: contain;
+        }
+
+        &.contact-widget {
+            li {
+                margin-bottom: 0.95rem;
+
+                svg {
+                    padding-right: 10px;
+                    float: left;
+                    display: table-cell;
+                    margin-top: 9px;
+                    height: 15px;
+                }
+
+                p {
+                    display: table;
+                    margin: 0;
+                }
+            }
+        }
+
+        &.gallery-widget ul li {
+            float: left;
+            width: -webkit-calc(25% - 4px);
+            width: -moz-calc(25% - 4px);
+            width: calc(25% - 4px);
+            margin: 2px;
+            list-style: none;
+
+            a img {
+                width: 100%;
+            }
+        }
+    }
+    .footer-brand img {
+        height: 38px;
+        width: auto;
+        margin-top: 0.045rem;
+        margin-bottom: 1.25rem;
+        object-fit: contain;
+    }
+    .footer-card img {
+        height: 18px;
+        object-fit: contain;
+    }
+    .lower-footer {
+        text-align: center;
+        position: relative;
+        border-top: 1px solid rgba(0, 0, 0, 0.08);
+
+        .copyright {
+            text-align: left;
+            font-size: 0.875rem;
+            margin: 0;
+            font-weight: bold;
+            a {
+                text-decoration: underline;
+            }
+        }
+
+        .extra-link {
+            text-align: right;
+            overflow: hidden;
+
+            ul {
+                display: inline-block;
+                overflow: hidden;
+                list-style: none;
+                padding: 0;
+                margin: 0;
+
+                li {
+                    float: left;
+                }
+
+                > li + li {
+                    margin-left: 35px;
+                    position: relative;
+
+                    &:before {
+                        content: "";
+                        width: 15px;
+                        height: 1px;
+                        position: absolute;
+                        left: -25px;
+                        top: 15px;
+                    }
+                }
+
+                a {
+                    font-size: 0.875rem;
+
+                    &:hover {
+                        text-decoration: underline;
+                    }
+                }
+            }
+        }
+    }
+
+    &.footer-padding {
+        .upper-footer {
+            padding: 3.2rem 0;
+        }
+
+        .lower-footer {
+            padding: 1.2rem 0;
+        }
+    }
+
+    &.footer-padding-sm {
+        .upper-footer {
+            padding: 1.8rem 0;
+        }
+
+        .lower-footer {
+            padding: 1.1rem 0;
+        }
+    }
+
+    &.footer-padding-lg {
+        .upper-footer {
+            padding-top: 5.5rem;
+            padding-bottom: 4rem;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .lower-footer {
+            padding: 30px 0;
+        }
+    }
+
+    .widget-title h3 {
+        color: $dark;
+        font-weight: 600;
+    }
+
+    label,
+    a,
+    li,
+    small,
+    p {
+        color: inherit;
+        font-weight: 500;
+    }
+
+    .lower-footer .extra-link ul > li + li:before {
+        background: inherit;
+    }
+}
+@media (max-width: 992px) {
+    .widget {
+        margin-bottom: 30px;
+    }
+    .site-footer.footer-padding-lg .upper-footer {
+        padding-bottom: 30px;
+    }
+}

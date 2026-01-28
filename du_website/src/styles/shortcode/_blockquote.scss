@@ -1,0 +1,28 @@
+@each $color, $value in $theme-colors {
+	.blockquote-#{$color} {
+		background-color: rgba($value, 0.1);
+		color: $value;
+		font-family: Georgia, serif;
+		font-size: 1.2rem;
+		font-style: italic;
+		margin: 1rem 0rem;
+		padding: 40px;
+		line-height: 1.45;
+		position: relative;
+		border: unset;
+		border-radius: 5px;
+		&:before {
+			display: block;
+			content: '\201C';
+			font-size: 5rem;
+			position: absolute;
+			left: -10px;
+			top: -10px;
+			color: $value;
+		}
+
+		footer {
+			color: $value;
+		}
+	}
+}

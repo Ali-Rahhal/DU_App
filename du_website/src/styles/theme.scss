@@ -1,0 +1,65 @@
+/*-------------------------------------------------------
+    0. Plugins
+-------------------------------------------------------*/
+@import "plugins/bootstrap/functions";
+@import "plugins/bootstrap/mixins";
+@import "require/variables";
+@import "plugins/bootstrap/bootstrap.scss";
+@import "plugins/font-awesome.min";
+@import "plugins/themify-icons";
+// @import "plugins/daterangepicker";
+// @import "plugins/select2";
+@import "plugins/slick";
+// @import "plugins/sweetalert2.min";
+// @import "plugins/toastr.min";
+// @import "plugins/simplebar";
+// @import "plugins/nouislider.min";
+
+/*-------------------------------------------------------
+    1. Require
+-------------------------------------------------------*/
+@import "require/global";
+@import "require/utilities";
+@import "require/colors";
+@import "require/form";
+@import "require/buttons";
+@import "require/navbar";
+@import "require/footer";
+
+@import "require/survey.css";
+@import "require/complaint.css";
+
+@import "survey-core/defaultV2.min.css";
+/*-------------------------------------------------------
+    3. Shortcode
+-------------------------------------------------------*/
+@import "shortcode/slider";
+@import "shortcode/brand";
+@import "shortcode/category";
+@import "shortcode/offer";
+@import "shortcode/announcement";
+@import "shortcode/breadcrumb";
+@import "shortcode/table";
+@import "shortcode/modal";
+@import "shortcode/timeline";
+@import "shortcode/social";
+@import "shortcode/accordion";
+@import "shortcode/list";
+@import "shortcode/blog";
+@import "shortcode/pagination";
+@import "shortcode/sidebar";
+@import "shortcode/blockquote";
+@import "shortcode/avaters";
+@import "shortcode/services";
+@import "shortcode/preview";
+
+/*-------------------------------------------------------
+    3. Product
+-------------------------------------------------------*/
+@import "product/product";
+@import "product/product-single";
+@import "product/product-category";
+@import "product/cart";
+@import "product/account";
+@import "product/address";
+@import "product/thank";

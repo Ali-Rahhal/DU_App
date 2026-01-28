@@ -1,0 +1,73 @@
+
+.table {
+    --bs-table-bg: #fff;
+    --bs-table-accent-bg: #fff;
+    --bs-table-striped-color: #6c757d;
+    --bs-table-striped-bg: #f1f3fa;
+    --bs-table-active-color: #6c757d;
+    --bs-table-active-bg: rgba(222, 226, 230, 0.4);
+    --bs-table-hover-color: #6c757d;
+    --bs-table-hover-bg: #f1f3fa;
+    width: 100%;
+    margin-bottom: 1.5rem;
+    color: #6c757d;
+    vertical-align: top;
+    border-color: #eef2f7;
+}
+
+th {
+    text-align: inherit;
+    text-align: -webkit-match-parent;
+}
+
+tbody, td, tfoot, th, thead, tr {
+    border-color: inherit;
+    border-width: 0;
+}
+
+.table>:not(caption)>*>* {
+    padding: .5rem .95rem;
+    background-color: var(--bs-table-bg);
+    border-bottom-width: 1px;
+}
+
+.table-centered td, .table-centered th {
+    vertical-align: middle!important;
+}
+
+.table>:not(:last-child)>:last-child>* {
+    border-bottom-color: #edeff1;
+}
+
+.table>tbody {
+    vertical-align: inherit;
+}
+
+.table thead th {
+    background-color: #f9fbfd;
+    color: #95aac9;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.table tbody td {
+    font-size: 12px;
+    a{
+        font-size: inherit;
+    }
+}
+.table .badge {
+    padding: 5px 10px;
+    border-radius: 50px;
+}
+
+.table-hover tbody tr:hover {
+    color: #212529;
+    background-color: rgba(0,0,0,.075);
+}
+.table-hover tbody tr td{
+    color: inherit;
+    background-color: transparent;
+}

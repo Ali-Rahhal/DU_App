@@ -1,0 +1,60 @@
+.clean_modal a.btn {
+  letter-spacing: 0px !important;
+  font-weight: bold;
+  font-size: 14px;
+  text-transform: capitalize;
+}
+
+.clean_modal a.btn img {
+  margin-right: 6px;
+}
+
+.clean_modal .close {
+  position: absolute;
+  right: 0;
+  top: -34px;
+  font-size: 30px;
+  color: #ffffff;
+  opacity: 1;
+}
+
+.clean_modal .modal-content {
+  border-radius: 0;
+  border: unset;
+}
+
+.clean_modal .modal-content .modal-body {
+  padding: 50px 40px;
+}
+
+@media (min-width: 576px) {
+  .clean_modal .modal-dialog {
+    max-width: 400px;
+    margin: 1.75rem auto;
+  }
+  .clean_modal .modal-dialog.modal-md {
+    max-width: 500px;
+    margin: 1.75rem auto;
+  }
+}
+@media only screen and (max-width: 991px) {
+  .clean_modal .modal-body {
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+  }
+  .clean_modal .modal-content .modal-body {
+    padding: 20px 26px;
+  }
+  .clean_modal .modal-content .modal-body .form-group {
+    margin-bottom: 15px;
+  }
+}
+@media (min-width: 576px) {
+  .clean_modal.clean_modal-lg .modal-dialog {
+    max-width: 500px;
+    margin: 1.75rem auto;
+  }
+  .clean_modal.clean_modal-lg .modal-content .modal-body {
+    padding-bottom: 25px;
+  }
+}

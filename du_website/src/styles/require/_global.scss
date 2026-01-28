@@ -1,0 +1,252 @@
+//
+//
+// typography.scss
+//
+//
+@import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: var(--body-font);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: var(--body-font);
+  color: $dark;
+  font-size: 15px;
+  font-weight: 400;
+}
+
+::-moz-selection {
+  background-color: $dark;
+  color: $white;
+}
+
+::selection {
+  background-color: $dark;
+  color: $white;
+}
+
+a {
+  color: $primary;
+
+  &:hover {
+    color: darken($primary, 10%);
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.text-small {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.display-1,
+.display-2,
+.display-3,
+.display-4,
+h1,
+h2,
+h3,
+h4,
+h5,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5 {
+  font-family: var(--heading-font);
+  letter-spacing: -0.2px;
+}
+
+@include media-breakpoint-up(md) {
+  .display-1,
+  .display-2,
+  .display-3,
+  .display-4,
+  h1,
+  .h1 {
+    margin-bottom: 1.5rem;
+  }
+
+  h1,
+  .h1 {
+    line-height: 1.125;
+  }
+
+  p.lead {
+    margin-bottom: 1.5rem;
+  }
+}
+
+a {
+  font-weight: $font-weight-bold;
+
+  &.lead {
+    font-weight: $font-weight-bold;
+  }
+}
+
+@include media-breakpoint-down(md) {
+  .lead {
+    font-size: $font-size-base;
+    line-height: $line-height-base;
+    font-weight: $font-weight-normal;
+  }
+}
+
+.blockquote {
+  color: $primary;
+  border-left: 2px solid $gray-300;
+  padding-left: $spacer;
+}
+
+.blockquote-footer {
+  margin-top: $spacer/2;
+  color: $body-color;
+  @extend .text-small;
+}
+
+@include media-breakpoint-down(lg) {
+  .blockquote {
+    font-size: $font-size-lg !important;
+  }
+}
+
+address {
+  p {
+    margin-bottom: 0;
+  }
+}
+
+@include media-breakpoint-up(md) {
+  .blockquote {
+    font-size: $h4-font-size;
+    padding-left: $spacer * 3;
+  }
+}
+
+.text-white {
+  .display-1,
+  .display-2,
+  .display-3,
+  .display-4,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .h1,
+  .h2,
+  .h3,
+  .h4,
+  .h5,
+  .h6,
+  .blockquote {
+    color: $white;
+  }
+
+  a {
+    transition: $transition-base;
+  }
+
+  .text-muted {
+    color: rgba($white, 0.5) !important;
+  }
+
+  hr {
+    border-color: rgba($white, 0.1);
+  }
+}
+
+.text-dark {
+  .display-1,
+  .display-2,
+  .display-3,
+  .display-4,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .h1,
+  .h2,
+  .h3,
+  .h4,
+  .h5,
+  .h6,
+  .blockquote {
+    color: $dark;
+  }
+
+  a {
+    transition: $transition-base;
+  }
+
+  .text-muted {
+    color: rgba($dark, 0.5) !important;
+  }
+
+  hr {
+    border-color: rgba($dark, 0.1);
+  }
+}
+
+figcaption {
+  margin-top: $spacer/2;
+  font-size: $font-size-sm;
+}
+
+figure {
+  text-align: center;
+}
+
+.links-white {
+  a {
+    &:not(:hover) {
+      color: rgba($white, 0.7);
+    }
+
+    &:hover {
+      color: $white;
+    }
+  }
+}
+
+.error {
+  margin-bottom: 0px;
+}
+input.error {
+  border-color: red;
+}
+span.ajax-file-upload-error,
+label.error {
+  position: relative;
+  font-size: 11px;
+  vertical-align: middle;
+  font-weight: normal;
+  text-transform: capitalize;
+  letter-spacing: 0px;
+  color: red;
+  margin-top: 9px;
+}
+.no-shadow {
+  -webkit-box-shadow: unset !important;
+  box-shadow: unset !important;
+}
+.f-size-25 {
+  font-size: 25px;
+}

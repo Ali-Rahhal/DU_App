@@ -1,0 +1,1142 @@
+[
+    {
+        "_id": "1",
+        "title": "Hemono tablets - Support the treatment of hemorrhoids",
+        "slug": "hemono-tablets-support-the-treatment-of-hemorrhoids",
+
+        "category": "tablets",
+        "featured": false,
+        "trending": true,
+
+        "stock": 10,
+
+        "image": "/assets/img/product/product-1.png",
+
+        "gallery": [
+            "/assets/img/product/product-1.png",
+            "/assets/img/product/product-2.png",
+            "/assets/img/product/product-3.png",
+            "/assets/img/product/product-4.png"
+        ],
+        "varient": [
+            {
+                "oldPrice": 120,
+                "price": 60,
+                "weight": "250g"
+            },
+            {
+                "oldPrice": 400,
+                "price": 200,
+                "weight": "1kg"
+            },
+            {
+                "oldPrice": 800,
+                "price": 200,
+                "weight": "2kg"
+            }
+        ],
+
+        "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. A tenetur culpa quis aut, ex totam fugit nam consequuntur corporis deserunt quos molestias temporibus sit aliquam, provident molestiae modi, rem pariatur. Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum voluptates sunt tempore exer cum labore, delectus asperiores molestias saepe consequatur totam sed. Pellentesque aliquet, sem eget laoreet ultrices, ipsum metus feugiat sem, quis fermentum turpis eros eget velit. Donec ac tempus ante. Fusce ultricies massa massa. Fusce aliquam, purus eget sagittis vulputate, sapien libero hendrerit est, sed commodo augue nisi non neque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tempor, lorem et placerat vestibulum, metus nisi posuere nisl, in accumsan elit odio quis mi. Cras neque metus, consequat et blandit et, luctus a nunc. Etiam gravida vehicula tellus, in imperdiet ligula euismod eget.",
+
+        "highlights": [
+            "Comprise of WPC",
+            "Helps in Muscle Building",
+            "Generally Consumed With Water",
+            "Helps to strengthen the immune system",
+            "Supports healthy functioning of the cardiovascular system"
+        ],
+        "additional_information": [
+            { "name": "Number of Servings", "value": "33" },
+            { "name": "Serving Size", "value": "30 g" },
+            { "name": "Protein per Serving", "value": "12 g" },
+            { "name": "Vegetarian/Non-Vegetarian", "value": "Vegetarian" }
+        ],
+        "reviews": [
+            {
+                "date": "20-04-2022",
+                "rating": "4", 
+                "title": "Commpletely satisfied",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "5", 
+                "title": "Always the best",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "1", 
+                "title": "Commpletely satisfied",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "5", 
+                "title": "Always the best",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "3", 
+                "title": "Commpletely satisfied",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "2", 
+                "title": "Always the best",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            }
+        ],
+        "rating": {
+            "average_rating": 4.5,
+            "total_rating": 2000
+        }
+    },
+    {
+        "_id": "2",
+        "title": "Elixinol, Immune Gut Health CBD Capsules, Full Spectrum, Ginger",
+        "slug": "elixinol-immune-gut-health-cbd-capsules-full-spectrum-ginger",
+
+        "category": "Whey Protein",
+        "featured": false,
+        "trending": true,
+
+        "stock": 10,
+
+        "image": "/assets/img/product/product-2.png",
+        
+        "gallery": [
+            "/assets/img/product/product-2.png",
+            "/assets/img/product/product-2.png",
+            "/assets/img/product/product-2.png",
+            "/assets/img/product/product-2.png"
+        ],
+        "varient": [
+            {
+                "oldPrice": 80,
+                "price": 45,
+                "weight": "250g"
+            },
+            {
+                "oldPrice": 400,
+                "price": 200,
+                "weight": "1kg"
+            },
+            {
+                "oldPrice": 800,
+                "price": 200,
+                "weight": "2kg"
+            }
+        ],
+
+        "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. A tenetur culpa quis aut, ex totam fugit nam consequuntur corporis deserunt quos molestias temporibus sit aliquam, provident molestiae modi, rem pariatur. Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum voluptates sunt tempore exer cum labore, delectus asperiores molestias saepe consequatur totam sed. Pellentesque aliquet, sem eget laoreet ultrices, ipsum metus feugiat sem, quis fermentum turpis eros eget velit. Donec ac tempus ante. Fusce ultricies massa massa. Fusce aliquam, purus eget sagittis vulputate, sapien libero hendrerit est, sed commodo augue nisi non neque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tempor, lorem et placerat vestibulum, metus nisi posuere nisl, in accumsan elit odio quis mi. Cras neque metus, consequat et blandit et, luctus a nunc. Etiam gravida vehicula tellus, in imperdiet ligula euismod eget.",
+
+        "highlights": [
+            "Comprise of WPC",
+            "Helps in Muscle Building",
+            "Generally Consumed With Water",
+            "Helps to strengthen the immune system",
+            "Supports healthy functioning of the cardiovascular system"
+        ],
+        "additional_information": [
+            { "name": "Number of Servings", "value": "33" },
+            { "name": "Serving Size", "value": "30 g" },
+            { "name": "Protein per Serving", "value": "12 g" },
+            { "name": "Vegetarian/Non-Vegetarian", "value": "Vegetarian" }
+        ],
+        "reviews": [
+            {
+                "date": "20-04-2022",
+                "rating": "4", 
+                "title": "Commpletely satisfied",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "5", 
+                "title": "Always the best",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "1", 
+                "title": "Commpletely satisfied",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "5", 
+                "title": "Always the best",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "3", 
+                "title": "Commpletely satisfied",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "2", 
+                "title": "Always the best",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            }
+        ],
+        "rating": {
+            "average_rating": 4.5,
+            "total_rating": 2000
+        }
+    },
+    {
+        "_id": "3",
+        "title": "Prozis Caffeine - Caffeine, 200 mg, 90 Capsules",
+        "slug": "Prozis-Caffeine-Caffeine-200-mg-90-Capsules",
+
+        "category": "Whey Protein",
+        "featured": false,
+        "trending": true,
+
+        "stock": 10,
+
+        "image": "/assets/img/product/product-3.png",
+        
+        "gallery": [
+            "/assets/img/product/product-3.png",
+            "/assets/img/product/product-3.png",
+            "/assets/img/product/product-3.png",
+            "/assets/img/product/product-3.png"
+        ],
+        "varient": [
+            {
+                "oldPrice": 100,
+                "price": 50,
+                "weight": "250g"
+            },
+            {
+                "oldPrice": 400,
+                "price": 200,
+                "weight": "1kg"
+            },
+            {
+                "oldPrice": 800,
+                "price": 200,
+                "weight": "2kg"
+            }
+        ],
+
+        "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. A tenetur culpa quis aut, ex totam fugit nam consequuntur corporis deserunt quos molestias temporibus sit aliquam, provident molestiae modi, rem pariatur. Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum voluptates sunt tempore exer cum labore, delectus asperiores molestias saepe consequatur totam sed. Pellentesque aliquet, sem eget laoreet ultrices, ipsum metus feugiat sem, quis fermentum turpis eros eget velit. Donec ac tempus ante. Fusce ultricies massa massa. Fusce aliquam, purus eget sagittis vulputate, sapien libero hendrerit est, sed commodo augue nisi non neque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tempor, lorem et placerat vestibulum, metus nisi posuere nisl, in accumsan elit odio quis mi. Cras neque metus, consequat et blandit et, luctus a nunc. Etiam gravida vehicula tellus, in imperdiet ligula euismod eget.",
+
+        "highlights": [
+            "Comprise of WPC",
+            "Helps in Muscle Building",
+            "Generally Consumed With Water",
+            "Helps to strengthen the immune system",
+            "Supports healthy functioning of the cardiovascular system"
+        ],
+        "additional_information": [
+            { "name": "Number of Servings", "value": "33" },
+            { "name": "Serving Size", "value": "30 g" },
+            { "name": "Protein per Serving", "value": "12 g" },
+            { "name": "Vegetarian/Non-Vegetarian", "value": "Vegetarian" }
+        ],
+        "reviews": [
+            {
+                "date": "20-04-2022",
+                "rating": "4", 
+                "title": "Commpletely satisfied",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "5", 
+                "title": "Always the best",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "1", 
+                "title": "Commpletely satisfied",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "5", 
+                "title": "Always the best",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "3", 
+                "title": "Commpletely satisfied",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "2", 
+                "title": "Always the best",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            }
+        ],
+        "rating": {
+            "average_rating": 4.5,
+            "total_rating": 2000
+        }
+    },
+    {
+        "_id": "4",
+        "title": "Elixinol stress less capsules",
+        "slug": "elixinol-stress-less-capsules ",
+
+        "category": "Whey Protein",
+        "featured": false,
+        "trending": true,
+
+        "stock": 10,
+
+        "image": "/assets/img/product/product-4.png",
+
+        "gallery": [
+            "/assets/img/product/product-4.png",
+            "/assets/img/product/product-4.png",
+            "/assets/img/product/product-4.png",
+            "/assets/img/product/product-4.png"
+        ],
+        "varient": [
+            {
+                "oldPrice": 163,
+                "price": 43,
+                "weight": "250g"
+            },
+            {
+                "oldPrice": 400,
+                "price": 200,
+                "weight": "1kg"
+            },
+            {
+                "oldPrice": 800,
+                "price": 200,
+                "weight": "2kg"
+            }
+        ],
+
+        "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. A tenetur culpa quis aut, ex totam fugit nam consequuntur corporis deserunt quos molestias temporibus sit aliquam, provident molestiae modi, rem pariatur. Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum voluptates sunt tempore exer cum labore, delectus asperiores molestias saepe consequatur totam sed. Pellentesque aliquet, sem eget laoreet ultrices, ipsum metus feugiat sem, quis fermentum turpis eros eget velit. Donec ac tempus ante. Fusce ultricies massa massa. Fusce aliquam, purus eget sagittis vulputate, sapien libero hendrerit est, sed commodo augue nisi non neque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tempor, lorem et placerat vestibulum, metus nisi posuere nisl, in accumsan elit odio quis mi. Cras neque metus, consequat et blandit et, luctus a nunc. Etiam gravida vehicula tellus, in imperdiet ligula euismod eget.",
+
+        "highlights": [
+            "Comprise of WPC",
+            "Helps in Muscle Building",
+            "Generally Consumed With Water",
+            "Helps to strengthen the immune system",
+            "Supports healthy functioning of the cardiovascular system"
+        ],
+        "additional_information": [
+            { "name": "Number of Servings", "value": "33" },
+            { "name": "Serving Size", "value": "30 g" },
+            { "name": "Protein per Serving", "value": "12 g" },
+            { "name": "Vegetarian/Non-Vegetarian", "value": "Vegetarian" }
+        ],
+        "reviews": [
+            {
+                "date": "20-04-2022",
+                "rating": "4", 
+                "title": "Commpletely satisfied",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "5", 
+                "title": "Always the best",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "1", 
+                "title": "Commpletely satisfied",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "5", 
+                "title": "Always the best",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "3", 
+                "title": "Commpletely satisfied",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "2", 
+                "title": "Always the best",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            }
+        ],
+        "rating": {
+            "average_rating": 4.5,
+            "total_rating": 2000
+        }
+    },
+    {
+        "_id": "5",
+        "title": "Nora pain relief",
+        "slug": "nora-pain-relief",
+
+        "category": "Whey Protein",
+        "featured": false,
+        "trending": true,
+
+        "stock": 10,
+
+        "image": "/assets/img/product/product-5.png",
+        
+        "gallery": [
+            "/assets/img/product/product-5.png",
+            "/assets/img/product/product-5.png",
+            "/assets/img/product/product-5.png",
+            "/assets/img/product/product-5.png"
+        ],
+        "varient": [
+            {
+                "oldPrice": 300,
+                "price": 50,
+                "weight": "250g"
+            },
+            {
+                "oldPrice": 400,
+                "price": 200,
+                "weight": "1kg"
+            },
+            {
+                "oldPrice": 800,
+                "price": 200,
+                "weight": "2kg"
+            }
+        ],
+
+        "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. A tenetur culpa quis aut, ex totam fugit nam consequuntur corporis deserunt quos molestias temporibus sit aliquam, provident molestiae modi, rem pariatur. Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum voluptates sunt tempore exer cum labore, delectus asperiores molestias saepe consequatur totam sed. Pellentesque aliquet, sem eget laoreet ultrices, ipsum metus feugiat sem, quis fermentum turpis eros eget velit. Donec ac tempus ante. Fusce ultricies massa massa. Fusce aliquam, purus eget sagittis vulputate, sapien libero hendrerit est, sed commodo augue nisi non neque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tempor, lorem et placerat vestibulum, metus nisi posuere nisl, in accumsan elit odio quis mi. Cras neque metus, consequat et blandit et, luctus a nunc. Etiam gravida vehicula tellus, in imperdiet ligula euismod eget.",
+
+        "highlights": [
+            "Comprise of WPC",
+            "Helps in Muscle Building",
+            "Generally Consumed With Water",
+            "Helps to strengthen the immune system",
+            "Supports healthy functioning of the cardiovascular system"
+        ],
+        "additional_information": [
+            { "name": "Number of Servings", "value": "33" },
+            { "name": "Serving Size", "value": "30 g" },
+            { "name": "Protein per Serving", "value": "12 g" },
+            { "name": "Vegetarian/Non-Vegetarian", "value": "Vegetarian" }
+        ],
+        "reviews": [
+            {
+                "date": "20-04-2022",
+                "rating": "4", 
+                "title": "Commpletely satisfied",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "5", 
+                "title": "Always the best",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "1", 
+                "title": "Commpletely satisfied",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "5", 
+                "title": "Always the best",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "3", 
+                "title": "Commpletely satisfied",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "2", 
+                "title": "Always the best",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            }
+        ],
+        "rating": {
+            "average_rating": 4.5,
+            "total_rating": 2000
+        }
+    },
+    {
+        "_id": "6",
+        "title": "Elixinol good night cbd capsules",
+        "slug": "elixinol-good-night-cbd-capsules",
+
+        "category": "Whey Protein",
+        "featured": false,
+        "trending": true,
+
+        "stock": 10,
+
+        "image": "/assets/img/product/product-6.png",
+        
+        "gallery": [
+            "/assets/img/product/product-6.png",
+            "/assets/img/product/product-6.png",
+            "/assets/img/product/product-6.png",
+            "/assets/img/product/product-6.png"
+        ],
+        "varient": [
+            {
+                "oldPrice": 200,
+                "price": 120,
+                "weight": "250g"
+            },
+            {
+                "oldPrice": 400,
+                "price": 200,
+                "weight": "1kg"
+            },
+            {
+                "oldPrice": 800,
+                "price": 200,
+                "weight": "2kg"
+            }
+        ],
+
+        "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. A tenetur culpa quis aut, ex totam fugit nam consequuntur corporis deserunt quos molestias temporibus sit aliquam, provident molestiae modi, rem pariatur. Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum voluptates sunt tempore exer cum labore, delectus asperiores molestias saepe consequatur totam sed. Pellentesque aliquet, sem eget laoreet ultrices, ipsum metus feugiat sem, quis fermentum turpis eros eget velit. Donec ac tempus ante. Fusce ultricies massa massa. Fusce aliquam, purus eget sagittis vulputate, sapien libero hendrerit est, sed commodo augue nisi non neque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tempor, lorem et placerat vestibulum, metus nisi posuere nisl, in accumsan elit odio quis mi. Cras neque metus, consequat et blandit et, luctus a nunc. Etiam gravida vehicula tellus, in imperdiet ligula euismod eget.",
+
+        "highlights": [
+            "Comprise of WPC",
+            "Helps in Muscle Building",
+            "Generally Consumed With Water",
+            "Helps to strengthen the immune system",
+            "Supports healthy functioning of the cardiovascular system"
+        ],
+        "additional_information": [
+            { "name": "Number of Servings", "value": "33" },
+            { "name": "Serving Size", "value": "30 g" },
+            { "name": "Protein per Serving", "value": "12 g" },
+            { "name": "Vegetarian/Non-Vegetarian", "value": "Vegetarian" }
+        ],
+        "reviews": [
+            {
+                "date": "20-04-2022",
+                "rating": "4", 
+                "title": "Commpletely satisfied",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "5", 
+                "title": "Always the best",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "1", 
+                "title": "Commpletely satisfied",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "5", 
+                "title": "Always the best",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "3", 
+                "title": "Commpletely satisfied",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "2", 
+                "title": "Always the best",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            }
+        ],
+        "rating": {
+            "average_rating": 4.5,
+            "total_rating": 2000
+        }
+    },
+    {
+        "_id": "7",
+        "title": "Batch CBD softgels - An Authentic Brand",
+        "slug": "batch-CBD-softgels",
+
+        "category": "Whey Protein",
+        "featured": false,
+        "trending": true,
+
+        "stock": 10,
+
+        "image": "/assets/img/product/product-7.png",
+
+        "gallery": [
+            "/assets/img/product/product-7.png",
+            "/assets/img/product/product-7.png",
+            "/assets/img/product/product-7.png",
+            "/assets/img/product/product-7.png"
+        ],
+        "varient": [
+            {
+                "oldPrice": 350,
+                "price": 339,
+                "weight": "250g"
+            },
+            {
+                "oldPrice": 400,
+                "price": 200,
+                "weight": "1kg"
+            },
+            {
+                "oldPrice": 800,
+                "price": 200,
+                "weight": "2kg"
+            }
+        ],
+
+        "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. A tenetur culpa quis aut, ex totam fugit nam consequuntur corporis deserunt quos molestias temporibus sit aliquam, provident molestiae modi, rem pariatur. Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum voluptates sunt tempore exer cum labore, delectus asperiores molestias saepe consequatur totam sed. Pellentesque aliquet, sem eget laoreet ultrices, ipsum metus feugiat sem, quis fermentum turpis eros eget velit. Donec ac tempus ante. Fusce ultricies massa massa. Fusce aliquam, purus eget sagittis vulputate, sapien libero hendrerit est, sed commodo augue nisi non neque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tempor, lorem et placerat vestibulum, metus nisi posuere nisl, in accumsan elit odio quis mi. Cras neque metus, consequat et blandit et, luctus a nunc. Etiam gravida vehicula tellus, in imperdiet ligula euismod eget.",
+
+        "highlights": [
+            "Comprise of WPC",
+            "Helps in Muscle Building",
+            "Generally Consumed With Water",
+            "Helps to strengthen the immune system",
+            "Supports healthy functioning of the cardiovascular system"
+        ],
+        "additional_information": [
+            { "name": "Number of Servings", "value": "33" },
+            { "name": "Serving Size", "value": "30 g" },
+            { "name": "Protein per Serving", "value": "12 g" },
+            { "name": "Vegetarian/Non-Vegetarian", "value": "Vegetarian" }
+        ],
+        "reviews": [
+            {
+                "date": "20-04-2022",
+                "rating": "4", 
+                "title": "Commpletely satisfied",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "5", 
+                "title": "Always the best",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "1", 
+                "title": "Commpletely satisfied",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "5", 
+                "title": "Always the best",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "3", 
+                "title": "Commpletely satisfied",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "2", 
+                "title": "Always the best",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            }
+        ],
+        "rating": {
+            "average_rating": 4.5,
+            "total_rating": 2000
+        }
+    },
+    {
+        "_id": "8",
+        "title": "Elixinol daily balance cbd capsules",
+        "slug": "elixinol-daily-balance-cbd-capsules",
+
+        "category": "Whey Protein",
+        "featured": false,
+        "trending": true,
+
+        "stock": 10,
+
+        "image": "/assets/img/product/product-8.png",
+        
+        "gallery": [
+            "/assets/img/product/product-8.png",
+            "/assets/img/product/product-8.png",
+            "/assets/img/product/product-8.png",
+            "/assets/img/product/product-8.png"
+        ],
+        "varient": [
+            {
+                "oldPrice": 220,
+                "price": 159,
+                "weight": "250g"
+            },
+            {
+                "oldPrice": 400,
+                "price": 200,
+                "weight": "1kg"
+            },
+            {
+                "oldPrice": 800,
+                "price": 200,
+                "weight": "2kg"
+            }
+        ],
+
+        "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. A tenetur culpa quis aut, ex totam fugit nam consequuntur corporis deserunt quos molestias temporibus sit aliquam, provident molestiae modi, rem pariatur. Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum voluptates sunt tempore exer cum labore, delectus asperiores molestias saepe consequatur totam sed. Pellentesque aliquet, sem eget laoreet ultrices, ipsum metus feugiat sem, quis fermentum turpis eros eget velit. Donec ac tempus ante. Fusce ultricies massa massa. Fusce aliquam, purus eget sagittis vulputate, sapien libero hendrerit est, sed commodo augue nisi non neque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tempor, lorem et placerat vestibulum, metus nisi posuere nisl, in accumsan elit odio quis mi. Cras neque metus, consequat et blandit et, luctus a nunc. Etiam gravida vehicula tellus, in imperdiet ligula euismod eget.",
+
+        "highlights": [
+            "Comprise of WPC",
+            "Helps in Muscle Building",
+            "Generally Consumed With Water",
+            "Helps to strengthen the immune system",
+            "Supports healthy functioning of the cardiovascular system"
+        ],
+        "additional_information": [
+            { "name": "Number of Servings", "value": "33" },
+            { "name": "Serving Size", "value": "30 g" },
+            { "name": "Protein per Serving", "value": "12 g" },
+            { "name": "Vegetarian/Non-Vegetarian", "value": "Vegetarian" }
+        ],
+        "reviews": [
+            {
+                "date": "20-04-2022",
+                "rating": "4", 
+                "title": "Commpletely satisfied",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "5", 
+                "title": "Always the best",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "1", 
+                "title": "Commpletely satisfied",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "5", 
+                "title": "Always the best",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "3", 
+                "title": "Commpletely satisfied",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "2", 
+                "title": "Always the best",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            }
+        ],
+        "rating": {
+            "average_rating": 4.5,
+            "total_rating": 2000
+        }
+    },
+    {
+        "_id": "9",
+        "title": "Ibuprofen 200mg Tablets",
+        "slug": "ibuprofen-200mg-tablets",
+
+        "category": "Whey Protein",
+        "featured": false,
+        "trending": true,
+
+        "stock": 10,
+
+        "image": "/assets/img/product/product-9.png",
+        
+        "gallery": [
+            "/assets/img/product/product-9.png",
+            "/assets/img/product/product-9.png",
+            "/assets/img/product/product-9.png",
+            "/assets/img/product/product-9.png"
+        ],
+        "varient": [
+            {
+                "oldPrice": 159,
+                "price": 50,
+                "weight": "250g"
+            },
+            {
+                "oldPrice": 400,
+                "price": 200,
+                "weight": "1kg"
+            },
+            {
+                "oldPrice": 800,
+                "price": 200,
+                "weight": "2kg"
+            }
+        ],
+
+        "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. A tenetur culpa quis aut, ex totam fugit nam consequuntur corporis deserunt quos molestias temporibus sit aliquam, provident molestiae modi, rem pariatur. Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum voluptates sunt tempore exer cum labore, delectus asperiores molestias saepe consequatur totam sed. Pellentesque aliquet, sem eget laoreet ultrices, ipsum metus feugiat sem, quis fermentum turpis eros eget velit. Donec ac tempus ante. Fusce ultricies massa massa. Fusce aliquam, purus eget sagittis vulputate, sapien libero hendrerit est, sed commodo augue nisi non neque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tempor, lorem et placerat vestibulum, metus nisi posuere nisl, in accumsan elit odio quis mi. Cras neque metus, consequat et blandit et, luctus a nunc. Etiam gravida vehicula tellus, in imperdiet ligula euismod eget.",
+
+        "highlights": [
+            "Comprise of WPC",
+            "Helps in Muscle Building",
+            "Generally Consumed With Water",
+            "Helps to strengthen the immune system",
+            "Supports healthy functioning of the cardiovascular system"
+        ],
+        "additional_information": [
+            { "name": "Number of Servings", "value": "33" },
+            { "name": "Serving Size", "value": "30 g" },
+            { "name": "Protein per Serving", "value": "12 g" },
+            { "name": "Vegetarian/Non-Vegetarian", "value": "Vegetarian" }
+        ],
+        "reviews": [
+            {
+                "date": "20-04-2022",
+                "rating": "4", 
+                "title": "Commpletely satisfied",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "5", 
+                "title": "Always the best",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "1", 
+                "title": "Commpletely satisfied",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "5", 
+                "title": "Always the best",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "3", 
+                "title": "Commpletely satisfied",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "2", 
+                "title": "Always the best",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            }
+        ],
+        "rating": {
+            "average_rating": 4.5,
+            "total_rating": 2000
+        }
+    },
+    {
+        "_id": "10",
+        "title": "Areplivir - Favipiravir tablets",
+        "slug": "areplivir-favipiravir-tablets",
+
+        "category": "Whey Protein",
+        "featured": false,
+        "trending": true,
+
+        "stock": 10,
+
+        "image": "/assets/img/product/product-10.png",
+
+        "gallery": [
+            "/assets/img/product/product-10.png",
+            "/assets/img/product/product-10.png",
+            "/assets/img/product/product-10.png",
+            "/assets/img/product/product-10.png"
+        ],
+        "varient": [
+            {
+                "oldPrice": 289,
+                "price": 189,
+                "weight": "250g"
+            },
+            {
+                "oldPrice": 400,
+                "price": 200,
+                "weight": "1kg"
+            },
+            {
+                "oldPrice": 800,
+                "price": 200,
+                "weight": "2kg"
+            }
+        ],
+
+        "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. A tenetur culpa quis aut, ex totam fugit nam consequuntur corporis deserunt quos molestias temporibus sit aliquam, provident molestiae modi, rem pariatur. Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum voluptates sunt tempore exer cum labore, delectus asperiores molestias saepe consequatur totam sed. Pellentesque aliquet, sem eget laoreet ultrices, ipsum metus feugiat sem, quis fermentum turpis eros eget velit. Donec ac tempus ante. Fusce ultricies massa massa. Fusce aliquam, purus eget sagittis vulputate, sapien libero hendrerit est, sed commodo augue nisi non neque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tempor, lorem et placerat vestibulum, metus nisi posuere nisl, in accumsan elit odio quis mi. Cras neque metus, consequat et blandit et, luctus a nunc. Etiam gravida vehicula tellus, in imperdiet ligula euismod eget.",
+
+        "highlights": [
+            "Comprise of WPC",
+            "Helps in Muscle Building",
+            "Generally Consumed With Water",
+            "Helps to strengthen the immune system",
+            "Supports healthy functioning of the cardiovascular system"
+        ],
+        "additional_information": [
+            { "name": "Number of Servings", "value": "33" },
+            { "name": "Serving Size", "value": "30 g" },
+            { "name": "Protein per Serving", "value": "12 g" },
+            { "name": "Vegetarian/Non-Vegetarian", "value": "Vegetarian" }
+        ],
+        "reviews": [
+            {
+                "date": "20-04-2022",
+                "rating": "4", 
+                "title": "Commpletely satisfied",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "5", 
+                "title": "Always the best",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "1", 
+                "title": "Commpletely satisfied",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "5", 
+                "title": "Always the best",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "3", 
+                "title": "Commpletely satisfied",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "2", 
+                "title": "Always the best",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            }
+        ],
+        "rating": {
+            "average_rating": 4.5,
+            "total_rating": 2000
+        }
+    },
+    {
+        "_id": "11",
+        "title": "Natracare organic cotton tampons",
+        "slug": "natracare-organic-cotton-tampons",
+
+        "category": "Whey Protein",
+        "featured": false,
+        "trending": true,
+
+        "stock": 10,
+
+        "image": "/assets/img/product/product-11.png",
+        
+        "gallery": [
+            "/assets/img/product/product-11.png",
+            "/assets/img/product/product-11.png",
+            "/assets/img/product/product-11.png",
+            "/assets/img/product/product-11.png"
+        ],
+        "varient": [
+            {
+                "oldPrice": 165,
+                "price": 56,
+                "weight": "250g"
+            },
+            {
+                "oldPrice": 400,
+                "price": 200,
+                "weight": "1kg"
+            },
+            {
+                "oldPrice": 800,
+                "price": 200,
+                "weight": "2kg"
+            }
+        ],
+
+        "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. A tenetur culpa quis aut, ex totam fugit nam consequuntur corporis deserunt quos molestias temporibus sit aliquam, provident molestiae modi, rem pariatur. Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum voluptates sunt tempore exer cum labore, delectus asperiores molestias saepe consequatur totam sed. Pellentesque aliquet, sem eget laoreet ultrices, ipsum metus feugiat sem, quis fermentum turpis eros eget velit. Donec ac tempus ante. Fusce ultricies massa massa. Fusce aliquam, purus eget sagittis vulputate, sapien libero hendrerit est, sed commodo augue nisi non neque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tempor, lorem et placerat vestibulum, metus nisi posuere nisl, in accumsan elit odio quis mi. Cras neque metus, consequat et blandit et, luctus a nunc. Etiam gravida vehicula tellus, in imperdiet ligula euismod eget.",
+
+        "highlights": [
+            "Comprise of WPC",
+            "Helps in Muscle Building",
+            "Generally Consumed With Water",
+            "Helps to strengthen the immune system",
+            "Supports healthy functioning of the cardiovascular system"
+        ],
+        "additional_information": [
+            { "name": "Number of Servings", "value": "33" },
+            { "name": "Serving Size", "value": "30 g" },
+            { "name": "Protein per Serving", "value": "12 g" },
+            { "name": "Vegetarian/Non-Vegetarian", "value": "Vegetarian" }
+        ],
+        "reviews": [
+            {
+                "date": "20-04-2022",
+                "rating": "4", 
+                "title": "Commpletely satisfied",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "5", 
+                "title": "Always the best",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "1", 
+                "title": "Commpletely satisfied",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "5", 
+                "title": "Always the best",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "3", 
+                "title": "Commpletely satisfied",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "2", 
+                "title": "Always the best",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            }
+        ],
+        "rating": {
+            "average_rating": 4.5,
+            "total_rating": 2000
+        }
+    },
+    {
+        "_id": "12",
+        "title": "Hemono tablets for hemorrhoids",
+        "slug": "hemono-tablets-for-hemorrhoids-2",
+
+        "category": "Whey Protein",
+        "featured": false,
+        "trending": true,
+
+        "stock": 10,
+
+        "image": "/assets/img/product/product-12.png",
+        
+        "gallery": [
+            "/assets/img/product/product-12.png",
+            "/assets/img/product/product-12.png",
+            "/assets/img/product/product-12.png",
+            "/assets/img/product/product-12.png"
+        ],
+        "varient": [
+            {
+                "oldPrice": 310,
+                "price": 300,
+                "weight": "250g"
+            },
+            {
+                "oldPrice": 400,
+                "price": 200,
+                "weight": "1kg"
+            },
+            {
+                "oldPrice": 800,
+                "price": 200,
+                "weight": "2kg"
+            }
+        ],
+
+        "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. A tenetur culpa quis aut, ex totam fugit nam consequuntur corporis deserunt quos molestias temporibus sit aliquam, provident molestiae modi, rem pariatur. Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum voluptates sunt tempore exer cum labore, delectus asperiores molestias saepe consequatur totam sed. Pellentesque aliquet, sem eget laoreet ultrices, ipsum metus feugiat sem, quis fermentum turpis eros eget velit. Donec ac tempus ante. Fusce ultricies massa massa. Fusce aliquam, purus eget sagittis vulputate, sapien libero hendrerit est, sed commodo augue nisi non neque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tempor, lorem et placerat vestibulum, metus nisi posuere nisl, in accumsan elit odio quis mi. Cras neque metus, consequat et blandit et, luctus a nunc. Etiam gravida vehicula tellus, in imperdiet ligula euismod eget.",
+
+        "highlights": [
+            "Comprise of WPC",
+            "Helps in Muscle Building",
+            "Generally Consumed With Water",
+            "Helps to strengthen the immune system",
+            "Supports healthy functioning of the cardiovascular system"
+        ],
+        "additional_information": [
+            { "name": "Number of Servings", "value": "33" },
+            { "name": "Serving Size", "value": "30 g" },
+            { "name": "Protein per Serving", "value": "12 g" },
+            { "name": "Vegetarian/Non-Vegetarian", "value": "Vegetarian" }
+        ],
+        "reviews": [
+            {
+                "date": "20-04-2022",
+                "rating": "4", 
+                "title": "Commpletely satisfied",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "5", 
+                "title": "Always the best",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "1", 
+                "title": "Commpletely satisfied",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "5", 
+                "title": "Always the best",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "3", 
+                "title": "Commpletely satisfied",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            },
+            {
+                "date": "20-04-2022",
+                "rating": "2", 
+                "title": "Always the best",
+                "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium"
+            }
+        ],
+        "rating": {
+            "average_rating": 4.5,
+            "total_rating": 2000
+        }
+    }
+]

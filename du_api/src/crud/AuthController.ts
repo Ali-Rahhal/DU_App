@@ -133,13 +133,31 @@ const login = async (
     //  throw new Error("Password is incorrect");
     return c.json({ message: "Password is incorrect", result: null }, 401);
   }
-  if (user.is_blocked) throw new Error("Account is blocked");
+  if (user.is_blocked) throw new Error("Account is Disabled");
+  let permissions = [];
+  if (user.type === 2) {
+    permissions = await prisma.user_permission_assignment.findMany({
+      where: {
+        web_account_id: user.id,
+      },
+      select: {
+        user_permission: {
+          select: {
+            description: true,
+            code: true,
+          },
+        },
+      },
+    });
+  }
   const userInfo = {
     first_name: user.first_name,
     last_name: user.last_name,
     email: user.code,
     phone: user.phone,
     is_verified: user.is_verified,
+    type: user.type,
+    permissions: permissions.map((p) => p.user_permission.code),
   };
   if (!user.is_verified) {
     // throw new Error("User is not verified");
@@ -571,8 +589,10 @@ const getUserDetails = async (id: number) => {
       is_active: true,
       is_blocked: true,
       date_added: true,
+      type: true,
     },
   });
+  if (userInfo?.is_blocked) throw new Error("Account is Disabled");
   const cartCount = await prisma.shopping_cart.count({
     where: {
       account_id: id,
@@ -588,11 +608,28 @@ const getUserDetails = async (id: number) => {
       account_id: id,
     },
   });
+  let permissions = [];
+  if (userInfo.type === 2) {
+    permissions = await prisma.user_permission_assignment.findMany({
+      where: {
+        web_account_id: id,
+      },
+      select: {
+        user_permission: {
+          select: {
+            description: true,
+            code: true,
+          },
+        },
+      },
+    });
+  }
   return {
     ...userInfo,
     cart: cartCount,
     wishlist: wishlistCount,
     address: address ? address.address : "",
+    permissions: permissions.map((p) => p.user_permission.code),
   };
 };
 const updateUserDetails = async ({

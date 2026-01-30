@@ -1,6 +1,7 @@
 import nodemailer from "nodemailer";
 import * as fs from "fs";
 import path = require("path");
+import prisma from "./prisma";
 export const transporter = nodemailer.createTransport({
   host: "smtp.ethereal.email",
   port: 587,
@@ -221,4 +222,41 @@ export const saveImageReturnUrl = async (base64Image: string) => {
     fileName,
     url: fileUrl,
   };
+};
+
+export const ensureParentAccount = async (parent_id: number) => {
+  const parent = await prisma.web_accounts.findFirst({
+    where: {
+      id: parent_id,
+    },
+  });
+
+  if (!parent) {
+    throw new Error("Parent account not found");
+  }
+  if (parent.type === 2) {
+    console.log("parent", parent);
+    throw new Error("Account is not a parent account");
+  }
+};
+export const ensureChildAccountPermission = async (
+  child_id: number,
+  permission_code: string
+) => {
+  const found = await prisma.user_permission_assignment.findMany({
+    where: {
+      web_account_id: child_id,
+      user_permission: {
+        code: permission_code,
+      },
+    },
+    select: {
+      id: true,
+      user_code: true,
+      user_permission_id: true,
+    },
+  });
+  if (!found) {
+    throw new Error("Child account does not have permission");
+  }
 };

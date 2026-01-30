@@ -1,5 +1,6 @@
 import { Prisma } from "@prisma/client";
 import prisma from "../lib/prisma";
+import { ensureChildAccountPermission } from "../lib/utils";
 
 // import { createSession } from "./BOBPaymentIntegration";
 
@@ -121,7 +122,6 @@ const getProducts = async ({
   take?: number;
   skip?: number;
   category_code?: string[];
-
   sort_by?: string;
   sort_direction?: string;
   show_only_best_deals?: boolean;
@@ -153,6 +153,14 @@ const getProducts = async ({
     min_price && max_price
       ? Prisma.sql`AND ipl.price BETWEEN ${min_price} AND ${max_price}`
       : Prisma.empty;
+  // const hasPromotion = Prisma.sql`
+  // (select top 1 convert(bit, 1) as hasPromotion, pc.description as condition_description, pr.description as result_description
+  //      from promotion_condition pc
+  //     join promotion p  on p.promotion_id = pc.promotion_id
+  //     left join promotion_result pr on pr.promotion_id = p.promotion_id
+  //     where pc.condition_type = 1 and pc.condition_type_code = i.item_code
+  //     and p.start_date  <= getdate()
+  //     AND p.end_date >= getdate())`;
 
   const countQuery = Prisma.sql`SELECT DISTINCT count(*) as count
   FROM item as it
@@ -167,7 +175,29 @@ const getProducts = async ({
   ${priceFilter}`;
   const count = await prisma.$queryRaw(countQuery);
   // console.log(count);
+  //   WITH [active_promotions]  AS
+  // (
+  //     SELECT DISTINCT pc.condition_type_code,  condition_description=(pc.description),result_description=(pr.description)
+  //   FROM promotion_condition pc
+  //   LEFT JOIN promotion p  ON p.promotion_id = pc.promotion_id
+  //   LEFT join promotion_result pr on pr.promotion_id = p.promotion_id
+  //   WHERE pc.condition_type = 1
+  //   AND p.start_date  <= getdate()
+  //   AND p.end_date >= getdate()
+  //   group by pc.condition_type_code, pc.description, pr.description
+  // )
   const res: Product[] = await prisma.$queryRaw<Product[]>`
+WITH [active_promotions]  AS
+( 
+    SELECT DISTINCT pc.condition_type_code
+  FROM promotion_condition pc
+  LEFT JOIN promotion p  ON p.promotion_id = pc.promotion_id
+  WHERE pc.condition_type = 1
+  AND p.start_date  <= getdate()
+  AND p.end_date >= getdate()
+  group by pc.condition_type_code
+)
+
     SELECT DISTINCT
       i.item_code,
       i.description as name,
@@ -180,9 +210,10 @@ const getProducts = async ({
         ELSE CONVERT(DECIMAL(18, 2), i.price - (0.01 * i.default_discount * i.price))
       END,
       isFavorite = ${favoriteFilter},
+    hasPromotion = CASE WHEN ap.condition_type_code IS NOT NULL THEN 1 ELSE 0 END,
       ISNULL(
         (
-          SELECT STRING_AGG(ISNULL('http://'+img.base_path + '/' + img.folder_path + '/' + img.physical_file_name, N''), ',')
+          SELECT STRING_AGG(ISNULL(img.base_path + '/' + img.folder_path + '/' + img.physical_file_name, N''), ',')
           FROM dbo.image AS img
           WHERE img.owner_code = iu.item_code AND img.owner_type = 1 AND img.is_active = 1 AND img.is_uploaded = 1
         ), N''
@@ -196,9 +227,10 @@ const getProducts = async ({
         currency_code= ipl.currency_code 
        FROM item as it
        LEFT JOIN v_items as vi ON vi.Code = it.item_code
-       LEFT JOIN item_price_list as ipl ON ipl.item_code = it.item_code and ipl.uom_code = 'FA'
+       LEFT JOIN item_price_list as ipl ON ipl.item_code = it.item_code 
        LEFT JOIN dbo.warehouse_current_stock AS wcs ON wcs.item_code = it.item_code
-       WHERE ipl.is_active=1 AND it.is_active = 1 AND  it.status = 1 AND  ipl.is_active = 1 
+       WHERE ipl.is_active=1 AND it.is_active = 1 
+       AND  it.status = 1 AND  ipl.is_active = 1 
        --AND wcs.is_active = 1
        --AND wcs.quantity > 0
        ${categoryFilter}
@@ -209,9 +241,10 @@ const getProducts = async ({
        OFFSET ${skip} ROWS FETCH NEXT ${take} ROWS ONLY
       ) as i
     JOIN dbo.item_uom AS iu ON iu.item_code = i.item_code
+    left join active_promotions as ap on ap.condition_type_code = i.item_code
     WHERE
       iu.is_active = 1
-      and  uom_code = 'FA'
+
     ORDER BY
       i.item_code;
   `;
@@ -225,16 +258,73 @@ const getProducts = async ({
       tags: [item.category, item.subCategory],
     };
   });
+
   // console.log(finalResult);
   return { items_count: count[0].count, products: finalResult };
 };
 
+const getItemsDetail = async (item_codes: string[]) => {
+  const res: any = await prisma.$queryRaw`
+  SELECT  iu.item_code,
+  name = i.description,
+  barcode = iu.barcode,
+  description = i.alt_description,
+  currency_code = ipl.currency_code,
+  ISNULL(
+    (
+      SELECT STRING_AGG(ISNULL(img.base_path + '/' + img.folder_path + '/' + img.physical_file_name, N''), ',')
+      FROM dbo.image AS img
+      WHERE img.owner_code = iu.item_code AND img.owner_type = 1 AND img.is_active = 1 AND img.is_uploaded = 1
+    ), N''
+  ) as images,
+  price = CONVERT(DECIMAL(18, 2), ipl.price),
+  discountedPrice = CASE
+  WHEN ipl.default_discount = 0 THEN NULL
+  ELSE CONVERT(DECIMAL(18, 2), ipl.price - (0.01 * ipl.default_discount * ipl.price))
+END
+FROM dbo.item_uom AS iu
+JOIN dbo.item AS i
+   ON i.item_code = iu.item_code
+JOIN dbo.item_price_list AS ipl
+   ON ipl.item_code = iu.item_code 
+WHERE i.item_code IN (${Prisma.join(item_codes)})
+ AND iu.is_active = 1
+ AND ipl.is_active = 1
+
+GROUP BY iu.item_code,
+    i.description,
+    iu.barcode,
+    i.alt_description,
+    ipl.price,
+    ipl.default_discount,
+    ipl.currency_code
+    `;
+
+  const finalResult = res.map((item) => {
+    const images = item.images.split(",");
+    return {
+      ...item,
+      images: images,
+      image: images[0],
+      tags: [item.category, item.subCategory],
+    };
+  });
+
+  return { items_count: finalResult.length, products: finalResult };
+};
 const getProductInfo = async (item_code: string, user_id: number | null) => {
   const favoriteFilter = user_id
     ? Prisma.sql`
 (select convert(bit, 1) from favorite_items where account_id = ${user_id} and item_code = i.item_code)
 `
     : Prisma.sql`convert(bit, 0)`;
+
+  const hasPromotion = Prisma.sql`(select top 1 convert(bit, 1) from promotion_condition pc
+    join promotion p  on p.promotion_id = pc.promotion_id
+    where pc.condition_type = 1 and pc.condition_type_code = i.item_code 
+    and p.start_date  <= getdate()
+          AND p.end_date >= getdate())`;
+
   const res: Product[] = await prisma.$queryRaw<Product[]>`
   SELECT
   TOP 1
@@ -249,9 +339,10 @@ const getProductInfo = async (item_code: string, user_id: number | null) => {
     ELSE CONVERT(DECIMAL(18, 2), i.price - (0.01 * i.default_discount * i.price))
   END,
   isFavorite = ${favoriteFilter},
+  hasPromotion = ${hasPromotion},
   ISNULL(
     (
-      SELECT STRING_AGG(ISNULL('http://'+img.base_path + '/' + img.folder_path + '/' + img.physical_file_name, N''), ',')
+      SELECT STRING_AGG(ISNULL(img.base_path + '/' + img.folder_path + '/' + img.physical_file_name, N''), ',')
       FROM dbo.image AS img
       WHERE img.owner_code = iu.item_code AND img.owner_type = 1 AND img.is_active = 1 AND img.is_uploaded = 1
     ), N''
@@ -266,7 +357,7 @@ FROM
   currency_code= ipl.currency_code ,wcs.quantity
  FROM item as it
        LEFT JOIN v_items as vi ON vi.Code = it.item_code
-       LEFT JOIN item_price_list as ipl ON ipl.item_code = it.item_code and ipl.uom_code = 'FA'
+       LEFT JOIN item_price_list as ipl ON ipl.item_code = it.item_code 
        LEFT JOIN dbo.warehouse_current_stock AS wcs ON wcs.item_code = it.item_code
 WHERE ipl.is_active=1 AND it.is_active = 1 AND  it.status = 1 AND  ipl.is_active = 1 
 -- AND wcs.is_active = 1 
@@ -277,7 +368,7 @@ WHERE ipl.is_active=1 AND it.is_active = 1 AND  it.status = 1 AND  ipl.is_active
     JOIN dbo.item_uom AS iu ON iu.item_code = i.item_code
     WHERE
       iu.is_active = 1
-      and iu.uom_code = 'FA'
+   
     ORDER BY
       i.item_code;
   `;
@@ -363,7 +454,7 @@ const getFavoriteItems = async (
      isFavorite = ${favoriteFilter},
      ISNULL(
        (
-         SELECT STRING_AGG(ISNULL('http://'+img.base_path + '/' + img.folder_path + '/' + img.physical_file_name, N''), ',')
+         SELECT STRING_AGG(ISNULL(img.base_path + '/' + img.folder_path + '/' + img.physical_file_name, N''), ',')
          FROM dbo.image AS img
          WHERE img.owner_code = iu.item_code AND img.owner_type = 1 AND img.is_active = 1 AND img.is_uploaded = 1
        ), N''
@@ -382,11 +473,11 @@ const getFavoriteItems = async (
       ORDER BY date_added DESC
       OFFSET ${skip} ROWS FETCH NEXT ${take} ROWS ONLY
      ) as i
-   JOIN dbo.item_uom AS iu ON iu.item_code = i.item_code
+   JOIN dbo.item_uom AS iu ON iu.item_code = i.item_code and iu.uom_code = 'FA'
    LEFT JOIN dbo.warehouse_current_stock AS wcs ON wcs.item_code = iu.item_code
    WHERE
      iu.is_active = 1
-     and iu.uom_code = 'FA'
+
     -- AND wcs.is_active = 1
     -- AND wcs.quantity > 0
    ORDER BY
@@ -576,7 +667,7 @@ const getCartItems = async (
   currency_code = ipl.currency_code,
   ISNULL(
     (
-      SELECT STRING_AGG(ISNULL('http://'+img.base_path + '/' + img.folder_path + '/' + img.physical_file_name, N''), ',')
+      SELECT STRING_AGG(ISNULL(img.base_path + '/' + img.folder_path + '/' + img.physical_file_name, N''), ',')
       FROM dbo.image AS img
       WHERE img.owner_code = iu.item_code AND img.owner_type = 1 AND img.is_active = 1 AND img.is_uploaded = 1
     ), N''
@@ -589,17 +680,17 @@ END,
   quantity = SUM(sc.quantity)
 FROM dbo.shopping_cart AS sc
 JOIN dbo.item_uom AS iu
-   ON iu.barcode = sc.barcode
+   ON iu.barcode = sc.barcode and iu.uom_code = 'FA'
 JOIN dbo.item AS i
    ON i.item_code = iu.item_code
 JOIN dbo.item_price_list AS ipl
-   ON ipl.item_code = iu.item_code AND ipl.uom_code = 'FA'
+   ON ipl.item_code = iu.item_code and ipl.uom_code = 'FA'
 WHERE sc.account_id = ${userId}
  AND sc.is_active = 1
  AND iu.is_active = 1
  AND ipl.is_active = 1
  AND sc.status = 5
- and iu.uom_code = 'FA'
+
 GROUP BY iu.item_code,
     i.description,
     sc.barcode,
@@ -627,21 +718,30 @@ const placeOrder = async (userID: number) => {
   const userDetail = await prisma.web_accounts.findFirst({
     where: {
       id: userID,
+      is_active: true,
     },
   });
+  if (!userDetail) throw new Error("User not found");
+  if (userDetail.is_blocked) throw new Error("User is blocked");
+  if (!userDetail.is_verified) throw new Error("User is not verified");
+  if (userDetail.type === 2) {
+    await ensureChildAccountPermission(userID, "ORDER");
+  }
+
   //payment.type === 1 Credit 2 cash
   const result = await prisma.$queryRaw`
   DECLARE @output_err_code INT,
         @output_err_msg NVARCHAR(4000),
         @output_transaction_header_id BIGINT;
-        EXEC dbo.GENERATE_WEB_SALES_INVOICE @account_id = ${userID},                                                     -- int
-                                    @payment_type = ${1},                                     -- int
+        EXEC dbo.GENERATE_WEB_SALES_INVOICE @account_id = ${userID},                                     -- int
+                                    @payment_type = ${1},                                                -- int
                                     @notes = N'',                                                        -- nvarchar(250)
                                     @output_err_code = @output_err_code OUTPUT,                          -- int
                                     @output_err_msg = @output_err_msg OUTPUT,                            -- nvarchar(4000)
                                     @output_transaction_header_id = @output_transaction_header_id OUTPUT -- bigint
         SELECT @output_err_code as code, @output_err_msg as message, @output_transaction_header_id as transaction_header_id
   `;
+  console.log(result);
 
   if (result[0].code !== 0) throw new Error(result[0].message);
   const transaction_header_id = result[0].transaction_header_id;
@@ -772,7 +872,7 @@ const getOrderDetails = async (orderId: number, userId: number) => {
   discountedPrice = tb.total_final_price,
   ISNULL(
       (
-          SELECT STRING_AGG(ISNULL('http://'+img.base_path + '/' + img.folder_path + '/' + img.physical_file_name, N''), ',')
+          SELECT STRING_AGG(ISNULL(img.base_path + '/' + img.folder_path + '/' + img.physical_file_name, N''), ',')
           FROM dbo.image AS img
           WHERE img.owner_code = tb.item_code AND img.owner_type = 1 AND img.is_active = 1 AND img.is_uploaded = 1
       ), N''
@@ -824,7 +924,7 @@ const getDashboardData = async (user_id: number) => {
   // SELECT @past_due = SUM(oi.remaining_amount),
   // @currency=   CASE
   //                  WHEN oi.currency_code = '1' THEN
-  //                      'TND'
+  //                      'L.L.'
   //                  WHEN oi.currency_code = '2' THEN
   //                      'USD'
   //                  ELSE
@@ -848,16 +948,16 @@ const getDashboardData = async (user_id: number) => {
   //         (
   //             SELECT c.ratio FROM dbo.currency AS c WHERE c.currency_code = 'EUR'
   //         );
-  // DECLARE @TND_rate FLOAT =
+  // DECLARE @L.L._rate FLOAT =
   //         (
-  //             SELECT c.ratio FROM dbo.currency AS c WHERE c.currency_code = 'TND'
+  //             SELECT c.ratio FROM dbo.currency AS c WHERE c.currency_code = 'L.L.'
   //         );
 
   // SELECT @ytd_sales= SUM(   CASE
   //                   WHEN th.currency_code = 'USD' THEN
   //                       th.total_amount
-  //                   WHEN th.currency_code = 'TND' THEN
-  //                       CONVERT(DECIMAL(18, 2), (th.total_amount / @TND_rate) * @usd_rate)
+  //                   WHEN th.currency_code = 'L.L.' THEN
+  //                       CONVERT(DECIMAL(18, 2), (th.total_amount / @L.L._rate) * @usd_rate)
   //                   WHEN th.currency_code = 'EUR' THEN
   //                       CONVERT(DECIMAL(18, 2), th.total_amount * @usd_rate)
   //               END
@@ -873,8 +973,8 @@ const getDashboardData = async (user_id: number) => {
   // SELECT @last_ytd_sales = SUM(   CASE
   //                   WHEN th.currency_code = 'USD' THEN
   //                       th.total_amount
-  //                   WHEN th.currency_code = 'TND' THEN
-  //                       CONVERT(DECIMAL(18, 2), (th.total_amount / @TND_rate) * @usd_rate)
+  //                   WHEN th.currency_code = 'L.L.' THEN
+  //                       CONVERT(DECIMAL(18, 2), (th.total_amount / @L.L._rate) * @usd_rate)
   //                   WHEN th.currency_code = 'EUR' THEN
   //                       CONVERT(DECIMAL(18, 2), th.total_amount * @usd_rate)
   //               END
@@ -923,10 +1023,10 @@ CREATE TABLE #temptable1 (
   );
    INSERT INTO #temptable1
    VALUES (
-   ISNULL('TND' + ' ' + FORMAT(12525, 'N2'), 'N/A'),
-    ISNULL('TND' + ' ' + FORMAT(16548, 'N2'), 'N/A'),
-    ISNULL('TND' + ' ' + FORMAT(1654852, 'N2'), 'N/A'),
-    ISNULL('TND' + ' ' + FORMAT(1354852, 'N2'), 'N/A')
+   ISNULL('L.L.' + ' ' + FORMAT(12525, 'N2'), 'N/A'),
+    ISNULL('L.L.' + ' ' + FORMAT(16548, 'N2'), 'N/A'),
+    ISNULL('L.L.' + ' ' + FORMAT(1654852, 'N2'), 'N/A'),
+    ISNULL('L.L.' + ' ' + FORMAT(1354852, 'N2'), 'N/A')
 
    )
 
@@ -980,7 +1080,7 @@ invoice_number = choi.transaction_header_code,
 due_date = FORMAT(ch.date_added, 'dd/MM/yy'),
 amount = CASE
              WHEN ch.currency_code = '1' THEN
-                 'TND '
+                 'L.L. '
              WHEN ch.currency_code = '2' THEN
                  '$ '
              ELSE
@@ -996,7 +1096,7 @@ ORDER BY ch.date_added DESC;
 SELECT TOP 1
 payment_amount = CASE
                      WHEN ch.currency_code = '1' THEN
-                         'TND '
+                         'L.L. '
                      WHEN ch.currency_code = '2' THEN
                          '$ '
                      ELSE
@@ -1024,7 +1124,7 @@ ORDER BY ch.date_added DESC;
 SELECT TOP 1
 order_amount = ISNULL(   CASE
                              WHEN th.currency_code = '1' THEN
-                                 'TND '
+                                 'L.L. '
                              WHEN th.currency_code = '2' THEN
                                  '$ '
                              ELSE
@@ -1137,7 +1237,7 @@ SELECT item = tp.item,
                                 / ISNULL(ptp.old_quantity, 0)
                             )
              END,
- image_url = 'http://'+i.base_path + '/' + i.folder_path + '/' + i.physical_file_name
+ image_url = i.base_path + '/' + i.folder_path + '/' + i.physical_file_name
 FROM #top5Products AS tp
 LEFT JOIN #previousTop5Products AS ptp
   ON ptp.item = tp.item
@@ -1274,7 +1374,7 @@ const getOpenInvoices = async (userId: number) => {
   due_date = CONVERT(DATE, oi.due_date),
   currency = CASE
                  WHEN oi.currency_code = '1' THEN
-                     'TND'
+                     'L.L.'
                  WHEN oi.currency_code = '2' THEN
                      'USD'
                  ELSE
@@ -1300,7 +1400,7 @@ const getInvoices = async (userId: number) => {
        total_amount = th.total_amount,
         currency = CASE
                        WHEN th.currency_code = '1' THEN
-                           'TND'
+                           'L.L.'
                        WHEN th.currency_code = '2' THEN
                            'USD'
                        ELSE
@@ -1342,7 +1442,7 @@ const getInvoiceDetails = async (invoice_no: string, userId: number) => {
 	   [address] =  vc.Address,
         currency = CASE
                        WHEN th.currency_code = '1' THEN
-                           'TND'
+                           'L.L.'
                        WHEN th.currency_code = '2' THEN
                            'USD'
                        ELSE
@@ -1400,4 +1500,5 @@ export {
   getOpenInvoices,
   getInvoices,
   getInvoiceDetails,
+  getItemsDetail,
 };

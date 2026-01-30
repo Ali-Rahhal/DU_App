@@ -39,9 +39,13 @@ import {
   saveComplaintAnswer,
 } from "./crud/complaintController";
 import path = require("path");
-import { serveStatic } from "@hono/node-server/serve-static";
-import { saveAudioReturnUrl } from "./lib/utils";
-import { getAllAvailablePromotions } from "./crud/PromotionController";
+
+import {
+  getAllAvailablePromotions,
+  getProductPromotions,
+  getShoppingCartPromotions,
+} from "./crud/PromotionController";
+import CARouter from "./routes/childAccountRoutes";
 //@ts-ignore
 BigInt.prototype.toJSON = function () {
   return this.toString();
@@ -64,8 +68,7 @@ app.use(
 async function authMiddleware(c, next) {
   const token = getCookie(c, "auth");
 
-  if (!token)
-    return c.json({ message: "No token provided", result: null }, 401);
+  if (!token) return c.json({ message: "Not Authorized", result: null }, 401);
   const userId = await tokenAuth(token);
   if (!userId) return c.json({ message: "Invalid token", result: null }, 401);
   c.req.user_id = userId;
@@ -75,7 +78,6 @@ async function authMiddleware(c, next) {
 app.use("*", compress());
 app.use(`${PRIVATE_API}/*`, authMiddleware);
 //request too large fix
-app.use;
 async function getUserId(c) {
   const userId = c.req.user_id;
   return userId;
@@ -88,27 +90,7 @@ async function getUserIdFromToken(c: Context) {
   return userId;
 }
 
-app.get("/test", async (c) => {
-  try {
-    // const t = await createSession({
-    //   orderId: "1236",
-    //   amount: 100,
-    // });
-    const test = await getAllAvailablePromotions();
-
-    return c.json({ message: "Test success", result: test }, 200);
-
-    // await authorize({
-    //   amount: 100,
-    //   orderId: "123",
-    //   description: "test",
-    //   transactionId: "123",
-    //   userId: "123",
-    // });
-  } catch (e) {
-    return c.json({ message: e.message, result: null }, 400);
-  }
-});
+app.route("/", CARouter);
 
 // app.post(`${PUBLIC_API}/register`, async (c) => {
 //   try {
@@ -422,6 +404,7 @@ app.get(`${PUBLIC_API}/get_product/:item_code`, async (c) => {
     // const result = await getProductInfo(item_code);
     return c.json({ message: "Fetched Products", result: result }, 200);
   } catch (e) {
+    console.log(e.message);
     return c.json({ message: e.message, result: null }, 400);
   }
 });
@@ -446,7 +429,7 @@ app.post(`${PRIVATE_API}/remove_from_favorite`, async (c) => {
     const itemCode = body["item_code"];
     const result = await removeItemFromFavorite(userId, itemCode);
     return c.json({
-      message: "Added item to favorite",
+      message: "Removed item to favorite",
       result: result,
     });
   } catch (e) {
@@ -824,7 +807,51 @@ app.get(`${PRIVATE_API}/get_invoice_details`, async (c) => {
     return c.json({ message: e.message, result: null }, 400);
   }
 });
+app.get(`${PUBLIC_API}/get_product_promotions`, async (c) => {
+  try {
+    const item_code = c.req.query("item_code");
+    const userId = await getUserIdFromToken(c)
+      .then((res) => {
+        return res;
+      })
+      .catch((e) => {
+        return null;
+      });
+    const result = await getProductPromotions(
+      item_code as string,
+      userId as number
+    );
+    return c.json({
+      message: "Fetched Promotions ",
+      result: result,
+    });
+  } catch (e) {
+    console.log(e.message);
+    return c.json({ message: e.message, result: null }, 400);
+  }
+});
+app.get(`${PRIVATE_API}/get_shopping_cart_promotions`, async (c) => {
+  try {
+    const userId = await getUserId(c);
+    const result = await getShoppingCartPromotions(userId);
+    return c.json({
+      message: "Fetched Promotions ",
+      result: result,
+    });
+  } catch (e) {
+    console.log(e.message);
+    return c.json({ message: e.message, result: null }, 400);
+  }
+});
+app.get(`${PUBLIC_API}/promotions`, async (c) => {
+  try {
+    const result = await getAllAvailablePromotions();
 
+    return c.json({ message: "Promotions fetched", result: result });
+  } catch (e) {
+    return c.json({ message: e.message, result: null }, 400);
+  }
+});
 // app.post(`${PRIVATE_API}/check_last_order`, async (c) => {
 //   try {
 //     const userId = await getUserId(c);
@@ -861,7 +888,7 @@ app.get(`${PRIVATE_API}/get_invoice_details`, async (c) => {
 //     root: "../images",
 //   })
 // );
-const port = 4503;
+const port = 4500;
 console.log(`Server is running on port ${port}`);
 
 serve({

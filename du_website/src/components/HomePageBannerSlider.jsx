@@ -20,6 +20,7 @@ const HomePageBannerSlider = ({ banners }) => {
           <Link href={item.url} key={index + item.image}>
             <Image
               className="object-fit"
+              style={{ cursor: "pointer", objectFit: "cover" }}
               src={item.image}
               alt="slider"
               height={365}

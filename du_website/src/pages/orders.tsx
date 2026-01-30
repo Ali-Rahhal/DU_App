@@ -7,15 +7,16 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import dynamic from "next/dynamic";
 import { Modal } from "react-bootstrap";
+import { useTranslations } from "next-intl";
 
-const BarcodeScanner = dynamic(
-  () => {
-    //@ts-ignore
-    import("react-barcode-scanner/polyfill");
-    return import("react-barcode-scanner").then((mod) => mod.BarcodeScanner);
-  },
-  { ssr: false }
-);
+// const BarcodeScanner = dynamic(
+//   () => {
+//     //@ts-ignore
+//     import("react-barcode-scanner/polyfill");
+//     return import("react-barcode-scanner").then((mod) => mod.BarcodeScanner);
+//   },
+//   { ssr: false }
+// );
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [barcode, setBarcode] = useState("");
@@ -40,12 +41,13 @@ const Orders = () => {
       t && clearTimeout(t);
     };
   }, [barcode]);
-
+  const t = useTranslations();
   return (
     <Layout>
       <AccountLayout
-        title="Orders"
-        subTitle="You have full control to manage your own Account."
+        title={t("orders")}
+        // subTitle="You have full control to manage your own Account."
+        subTitle={t("you_have_full_control_to_manage_your_own_account")}
       >
         <div
           style={{
@@ -77,7 +79,7 @@ const Orders = () => {
               onChange={(e) => setBarcode(e.target.value)}
             />
           </div>
-          <button
+          {/* <button
             className="btn btn-primary btn-full btn-medium rounded"
             style={{
               paddingTop: "10px",
@@ -91,9 +93,9 @@ const Orders = () => {
             onClick={() => setOpenBarcodeScanner(true)}
           >
             <i className="fa fa-barcode" aria-hidden="true"></i>
-          </button>
+          </button> */}
         </div>
-        <Modal
+        {/* <Modal
           show={openBarcodeScanner}
           onHide={() => setOpenBarcodeScanner(false)}
         >
@@ -115,7 +117,7 @@ const Orders = () => {
               setBarcode(res.rawValue);
             }}
           />
-        </Modal>
+        </Modal> */}
         <div className="card">
           <div
             className="table-responsive"

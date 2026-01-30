@@ -27,12 +27,11 @@ export async function getServerSideProps(context: any) {
   const product = await getProduct(context.query.slug, cookie).then((res) => {
     return res.data.result;
   });
-
   const products = await getProducts({
     skip: 0,
     take: 20,
     cookie: cookie,
-    category_code: [product.cat_code],
+    category_code: [product?.cat_code],
   })
     .then((res) => {
       return res.data.result.products;

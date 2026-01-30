@@ -18,74 +18,6 @@ function SurveyPage() {
   const [surveyJson, setSurveyJson] = useState(null);
   const [surveyData, setSurveyData] = useState(null);
   const [completed, setCompleted] = useState(false);
-
-  useEffect(() => {
-    // document.title = "Quayo | Survey";
-    const getAllSurveys = async () => {
-      await getSurveys().then((res) => {
-        setSurveys(res.data.result);
-      });
-    };
-    getAllSurveys();
-  }, []);
-
-  useEffect(() => {
-    const getSurvey = async () => {
-      // await userRequest
-      //   .get("/survey/get-survey?id=" + selectedQuestion)
-      //   .then((res) => {
-      //     const updatedPages = res.data.pages.map((page) => ({
-      //       name: page?.name,
-      //       elements: page.elements.map((question) => {
-      //         if (question.type === "file") {
-      //           return {
-      //             ...question,
-      //             // imageWidth: 150,
-      //             showPreview: true,
-      //             storeDataAsText: false,
-      //           };
-      //         } else {
-      //           return question;
-      //         }
-      //       }),
-      //     }));
-      //     setSurveyJson({
-      //       showProgressBar: "top",
-      //       title: res.data.name,
-      //       pages: updatedPages,
-      //     });
-      //   });
-      getSurveyElements(selectedQuestion).then((res) => {
-        const data = res.data.result;
-
-        const updatedPages = data.pages.map((page) => ({
-          name: page?.name,
-          elements: page.elements.map((question) => {
-            if (question.type === "file") {
-              return {
-                ...question,
-                // imageWidth: 150,
-                showPreview: true,
-                storeDataAsText: false,
-              };
-            } else {
-              return question;
-            }
-          }),
-        }));
-
-        setSurveyJson({
-          showProgressBar: "top",
-          title: data.title,
-          pages: updatedPages,
-        });
-      });
-    };
-
-    if (selectedQuestion !== null) {
-      getSurvey();
-    }
-  }, [selectedQuestion]);
   // const exampleSurvey = {
   //   showProgressBar: "top",
   //   pages: [
@@ -162,6 +94,51 @@ function SurveyPage() {
   //     },
   //   ],
   // };
+  useEffect(() => {
+    // document.title = "Quayo | Survey";
+
+    const getAllSurveys = async () => {
+      await getSurveys().then((res) => {
+        setSurveys(res.data.result);
+      });
+    };
+    getAllSurveys();
+  }, []);
+
+  useEffect(() => {
+    const getSurvey = async () => {
+      getSurveyElements(selectedQuestion).then((res) => {
+        const data = res.data.result;
+
+        const updatedPages = data.pages.map((page) => ({
+          name: page?.name,
+          elements: page.elements.map((question) => {
+            if (question.type === "file") {
+              return {
+                ...question,
+                // imageWidth: 150,
+                showPreview: true,
+                storeDataAsText: false,
+              };
+            } else {
+              return question;
+            }
+          }),
+        }));
+
+        setSurveyJson({
+          showProgressBar: "top",
+          title: data.title,
+          pages: updatedPages,
+        });
+      });
+    };
+
+    if (selectedQuestion !== null) {
+      getSurvey();
+    }
+  }, [selectedQuestion]);
+
   var storageName = `quayo_survey_${selectedQuestion}}`;
   let survey = new Model(surveyJson);
   configureQuayoSurvey(survey);
@@ -225,7 +202,7 @@ function SurveyPage() {
         resultData.push(item);
       }
     }
-    console.log(resultData);
+
     // const surveyId = body["survey_id"];
     // const answers = body["answers"];
     // const result: any = await saveSurveyAnswer(surveyId, answers, userId);

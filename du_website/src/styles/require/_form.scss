@@ -272,3 +272,14 @@ select:not(.ignore) {
   background: unset !important;
   background-image: unset !important;
 }
+.child_form {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 0;
+}
+.child_table {
+  td {
+    vertical-align: middle;
+  }
+}

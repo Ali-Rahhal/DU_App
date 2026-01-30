@@ -3,7 +3,7 @@ import Layout from "@/components/Layout/Layout";
 import AccountLayout from "@/components/dashboard/AccountLayout";
 import { currenncyCodeToSymbol } from "@/utils";
 import { getSalesOrder } from "@/utils/apiCalls";
-import dynamic from "next/dynamic";
+
 import { exportInvoice } from "@/utils/pdfUtils";
 
 import React, { useEffect, useMemo } from "react";
@@ -25,7 +25,6 @@ const SalesInvoice = () => {
   const [filters, setFilters] = React.useState<number[]>([0, 1, 2]);
   useEffect(() => {
     getSalesOrder().then((res) => {
-      console.log(res.data);
       setSalesOrders(res.data.result);
     });
   }, []);
@@ -66,7 +65,7 @@ const SalesInvoice = () => {
           }}
         >
           <Spinner
-            color="#4e97fd"
+            color="#2b2a88"
             variant="primary"
             style={{
               width: "150px",

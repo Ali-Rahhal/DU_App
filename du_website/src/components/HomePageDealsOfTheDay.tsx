@@ -1,22 +1,24 @@
 import Link from "next/link";
 import ProductItem from "./common/ProductItem";
 import Item from "@/Models/item";
+import { useTranslations } from "next-intl";
 
 const HomePageDealsOfTheDay = ({ deals }: { deals: Item[] }) => {
+  const t = useTranslations("");
   return (
     <>
       <div className="pt-4 pt-md-5">
         <div className="container-fluid theme-container">
           <div className="row mb-4">
             <div className="col">
-              <h5 className="product-heading">Deals of the day</h5>
+              <h5 className="product-heading">{t("deals_of_the_day")}</h5>
             </div>
             <div className="col-auto text-md-right">
               <Link
                 href="/category"
                 className="btn btn-primary btn-sm product-heading-btn"
               >
-                See All
+                {t("see_all")}
               </Link>
             </div>
           </div>

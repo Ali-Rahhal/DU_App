@@ -1,6 +1,7 @@
 import React from "react";
 import Slider from "react-slick";
 import BrandItem from "./common/BrandItem";
+import { useTranslations } from "use-intl";
 
 const HomePageBrandSlider = ({ brands }) => {
   let setting = {
@@ -39,7 +40,7 @@ const HomePageBrandSlider = ({ brands }) => {
       },
     ],
   };
-
+  const t = useTranslations();
   return (
     <>
       <div className="pt-4 pt-md-5">
@@ -54,7 +55,7 @@ const HomePageBrandSlider = ({ brands }) => {
                   href="category"
                   className="btn btn-primary btn-sm product-heading-btn"
                 >
-                  See All
+                  {t("see_all")}
                 </a>
               </div>
             </div>

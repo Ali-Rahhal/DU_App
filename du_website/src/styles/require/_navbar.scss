@@ -1,6 +1,22 @@
+.locale-select {
+  width: 100px;
+  background-color: transparent;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: $dark;
+  padding: 0;
+  cursor: pointer;
+  option {
+    font-size: 14px;
+    font-weight: 600;
+    color: $dark;
+  }
+}
 .header {
   position: relative;
   background-color: #ffffff;
+
   ul {
     list-style: none;
     padding: 0;

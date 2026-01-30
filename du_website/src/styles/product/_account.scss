@@ -81,23 +81,22 @@
       }
     }
   }
-  .avater {
-    height: 55px;
-    width: 55px;
-    line-height: 55px;
-    font-weight: bold;
-    font-size: 20px;
-    border-radius: 10px;
-    text-align: center;
-    margin-right: 20px;
-    overflow: hidden;
-    img {
-      width: 100%;
-      height: auto;
-    }
+}
+.avater {
+  height: 55px;
+  width: 55px;
+  line-height: 55px;
+  font-weight: bold;
+  font-size: 20px;
+  border-radius: 10px;
+  text-align: center;
+  margin-right: 20px;
+  overflow: hidden;
+  img {
+    width: 100%;
+    height: auto;
   }
 }
-
 @media (max-width: 992px) {
   .accounnt_header {
     .breadcrumb {

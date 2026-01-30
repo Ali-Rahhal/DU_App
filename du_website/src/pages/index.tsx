@@ -11,11 +11,12 @@ import {
   categorySlider,
   homeOffer,
   homeSlider,
+  homeSlider2,
 } from "@/utils/data";
 import React from "react";
 import Layout from "@/components/Layout/Layout";
-import { server } from "@/utils";
 import { getProducts } from "@/utils/apiCalls";
+import HomePageSlider from "@/components/HomePageSlider";
 const getAllProducts = async (onSale, cookie) => {
   return await getProducts({
     skip: 0,
@@ -47,7 +48,7 @@ const HomePage = ({ products }) => {
       <HomePageDealsSlider deals={products} />
       <HomePageOffers offers={homeOffer} />
       <HomePageDealsOfTheDay deals={products} />
-      <HomePageBrandSlider brands={brandSlider} />
+      <HomePageSlider banners={homeSlider2} />
       <HomePageDealsSlider deals={products} />
       <HomePagePopularCategorySlider categorys={popularCategorySlider} />
       <HomePageDealsSlider deals={products} />

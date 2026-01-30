@@ -1,26 +1,24 @@
 import "../styles/theme.scss";
 import "react-toastify/dist/ReactToastify.css";
-// import { wrapper } from "@/store";
+import fr from "../../locales/fr.json";
+import en from "../../locales/en.json";
 import Head from "next/head";
-import { SSRProvider } from "react-bootstrap";
+
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useAccountStore, useAuthStore } from "@/store/zustand";
 import { Poppins, Nunito } from "next/font/google";
 import dynamic from "next/dynamic";
-// import { AppProgressBar as ProgressBar } from "next-nprogress-bar";
+import { NextIntlClientProvider } from "next-intl";
 const ProgressBar = dynamic(
   () => import("next-nprogress-bar").then((mod) => mod.PagesProgressBar),
-  {
-    ssr: false,
-  }
+  { ssr: false }
 );
 const ToastContainer = dynamic(
   () => import("react-toastify").then((mod) => mod.ToastContainer),
-  {
-    ssr: false,
-  }
+  { ssr: false }
 );
+
 const headingFont = Poppins({
   weight: ["200", "300", "400", "500", "600", "700", "800", "900"],
   display: "swap",
@@ -33,28 +31,28 @@ const bodyFont = Nunito({
   subsets: ["latin"],
   variable: "--body-font",
 });
+
 function App({ Component, pageProps }) {
-  //   const { store, props } = wrapper.useWrappedStore(rest);
-  const { pathname } = useRouter();
+  const router = useRouter();
   const { refreshUserInfo, refreshCart } = useAccountStore();
   const { isAuth } = useAuthStore();
+  const { locale } = router;
+
   useEffect(() => {
     if (!isAuth) return;
     refreshUserInfo();
     refreshCart();
-  }, [pathname, isAuth]);
+  }, [router.pathname, isAuth]);
 
-  //   --heading-font: "Poppins", serif;
-  // var(--body-font): "Nunito", serif;
+  const messages = locale === "fr" ? fr : en;
 
   return (
     <>
-      <SSRProvider>
-        <Head>
-          <title>Droguerie de L&apos;Union</title>
-          <meta
-            name="description"
-            content="
+      <Head>
+        <title>Droguerie de L'Union</title>
+        <meta
+          name="description"
+          content="
              Droguerie de L'Union Pharmaceutical Company is a leading pharmaceutical company in Lebanon. 
              We are committed to providing high-quality, affordable, and innovative solutions to our customers.
              Our products are manufactured in state-of-the-art facilities and are subject to rigorous quality control standards. 
@@ -62,11 +60,18 @@ function App({ Component, pageProps }) {
              Our team of experts is dedicated to providing exceptional customer service and support. 
              We are proud to be a trusted partner in the health and well-being of our customers.
           "
-          />
-          <link rel="icon" href="/assets/img/favicon.png" />
-        </Head>
+        />
+        <link rel="icon" href="/assets/img/favicon.png" />
 
-        <div className={headingFont.variable + " " + bodyFont.variable}>
+        <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      </Head>
+      <div className={headingFont.variable + " " + bodyFont.variable}>
+        <NextIntlClientProvider
+          locale={locale}
+          messages={messages}
+          timeZone="UTC"
+        >
           <Component {...pageProps} />
           <ToastContainer />
           <ProgressBar
@@ -75,8 +80,8 @@ function App({ Component, pageProps }) {
             options={{ showSpinner: false }}
             shallowRouting
           />
-        </div>
-      </SSRProvider>
+        </NextIntlClientProvider>
+      </div>
     </>
   );
 }

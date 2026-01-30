@@ -3,12 +3,16 @@ import Modal from "react-bootstrap/Modal";
 import { useAccountStore, useAuthStore } from "@/store/zustand";
 import { toast } from "react-toastify";
 import { Spinner } from "react-bootstrap";
+import { useTranslations } from "next-intl";
+import { useRouter } from "next/router";
 function LoginModal({ show, handleClose, handleModalShow }) {
   const [code, setCode] = useState("");
   const [password, setPassword] = useState("");
   const { login } = useAuthStore();
   const [loading, setLoading] = useState(false);
   const { refreshCart } = useAccountStore();
+  const rt = useRouter();
+  const t = useTranslations();
   return (
     <>
       <Modal
@@ -16,6 +20,9 @@ function LoginModal({ show, handleClose, handleModalShow }) {
         onHide={handleClose}
         centered
         className="clean_modal clean_modal-lg"
+        style={{
+          borderRadius: "8px",
+        }}
       >
         <div className="modal-content">
           <button type="button" className="close" onClick={handleClose}>
@@ -37,7 +44,7 @@ function LoginModal({ show, handleClose, handleModalShow }) {
                                 <p className="text-muted my-4">Or Login With</p>
                             </div> */}
               <div className="col-12 text-center">
-                <h4 className="mb-4">Login</h4>
+                <h4 className="mb-4">{t("login")}</h4>
               </div>
             </div>
             <div className="login_error d-none">
@@ -46,14 +53,14 @@ function LoginModal({ show, handleClose, handleModalShow }) {
             <form
               action=""
               id="login_modal_form"
-              onSubmit={(e) => {
+              onSubmit={async (e) => {
                 e.preventDefault();
                 setLoading(true);
                 //login
-                login({ code, password })
+                await login({ code, password })
                   .then(() => {
                     toast.success("Logged in Successfully", {
-                      position: "top-right",
+                      position: "bottom-center",
                     });
                     setLoading(false);
                     setCode("");
@@ -71,10 +78,10 @@ function LoginModal({ show, handleClose, handleModalShow }) {
             >
               <div className="form-group">
                 <input
-                  name="User Code"
+                  name={t("user_code")}
                   required
                   type="text"
-                  placeholder="User Code"
+                  placeholder={t("user_code")}
                   className="form-control input-lg rounded"
                   value={code}
                   onChange={(e) => setCode(e.target.value)}
@@ -82,10 +89,10 @@ function LoginModal({ show, handleClose, handleModalShow }) {
               </div>
               <div className="form-group">
                 <input
-                  name="password"
+                  name={t("password")}
                   required
                   type="password"
-                  placeholder="Password"
+                  placeholder={t("password")}
                   className="form-control input-lg rounded"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -97,12 +104,16 @@ function LoginModal({ show, handleClose, handleModalShow }) {
                 name="submit"
                 className="btn btn-primary btn-full btn-medium rounded"
               >
-                {!loading ? "Login" : <Spinner animation="border" size="sm" />}
+                {!loading ? (
+                  t("login")
+                ) : (
+                  <Spinner animation="border" size="sm" />
+                )}
               </button>
               <div className="form-group text-center small font-weight-bold mt-3">
                 <a href="#" onClick={() => handleModalShow("forgot")}>
                   {" "}
-                  Forgot Password?
+                  {t("forgot_password?")}
                 </a>
               </div>
               {/* <hr className="my-4" />

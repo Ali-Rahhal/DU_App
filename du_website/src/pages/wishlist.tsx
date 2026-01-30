@@ -4,9 +4,10 @@ import Layout from "@/components/Layout/Layout";
 import Item from "@/Models/item";
 import { useAuthStore } from "@/store/zustand";
 // import { deleteFormWishlist } from "@/store/state/wishlistSlice";
-import { currenncyCodeToSymbol, discount } from "@/utils";
+
 import { getFavoriteItems, removeFromFavorite } from "@/utils/apiCalls";
-import Image from "next/image";
+import { useTranslations } from "next-intl";
+
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap";
@@ -16,19 +17,7 @@ const Wishlist = () => {
   const { isAuth } = useAuthStore();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
-  const removeItemHandler = (item) => {
-    removeFromFavorite(item)
-      .then((res) => {
-        toast.success(res.data.message);
-        // setItems((prev) => prev.filter((i) => i.item_code !== item));
-      })
-      .catch((err) => {
-        toast.error(err.response.data.message);
-      });
-    // dispatch(deleteFormWishlist(item));
-  };
-  useEffect(() => {
-    if (!isAuth) return;
+  const fetchFavoriteItems = () => {
     setLoading(true);
     getFavoriteItems({
       skip: 0,
@@ -40,15 +29,32 @@ const Wishlist = () => {
       })
       .catch((err) => {
         setLoading(false);
-        console.log(err.response.data.message);
       });
+  };
+  const removeItemHandler = (item) => {
+    removeFromFavorite(item)
+      .then((res) => {
+        toast.success(res.data.message);
+        fetchFavoriteItems();
+        // setItems((prev) => prev.filter((i) => i.item_code !== item));
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message);
+      });
+    // dispatch(deleteFormWishlist(item));
+  };
+  useEffect(() => {
+    if (!isAuth) return;
+    fetchFavoriteItems();
   }, [isAuth]);
-
+  const t = useTranslations();
   return (
     <Layout>
       <AccountLayout
-        title="Wishlist"
-        subTitle="You have full control to manage your own account setting."
+        // title="Wishlist"
+        title={t("wishlist")}
+        // subTitle="You have full control to manage your own account setting."
+        subTitle={t("you_have_full_control_to_manage_your_own_account")}
       >
         {items && items.length > 0 ? (
           <div className="card">
@@ -68,7 +74,7 @@ const Wishlist = () => {
           </div>
         ) : !loading ? (
           <div className="cart_item py-5 border text-center rounded bg-white">
-            <h4 className="text-muted mb-4">No Items in Whishlist</h4>
+            <h4 className="text-muted mb-4">No Items in Wishlist</h4>
             <Link href="/" className="btn btn-primary btn-rounded">
               Continue shopping &nbsp; <i className="ti-arrow-right"></i>
             </Link>
@@ -82,7 +88,7 @@ const Wishlist = () => {
               height: "40vh",
             }}
           >
-            <Spinner color="#4e97fd" animation="grow" variant="primary" />
+            <Spinner color="#2b2a88" animation="grow" variant="primary" />
           </div>
         )}
       </AccountLayout>

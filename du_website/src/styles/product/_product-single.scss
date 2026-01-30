@@ -146,6 +146,15 @@
     text-align: center;
     margin: 0 auto;
   }
+  .quantity-input {
+    width: 50px;
+    border: none;
+    text-align: center;
+    font-weight: 600;
+    -webkit-appearance: none;
+    margin: 0;
+    -moz-appearance: textfield;
+  }
 }
 
 .product-full-description {

@@ -8,10 +8,11 @@ const publicApi = process.env.NEXT_PUBLIC_API_URL;
 const privateApi = process.env.NEXT_PUBLIC_API_URL + "/auth";
 
 const getCookieArray = (cookie: string) => {
+  if (!cookie) return [];
   const cookieArray: {
     name: string;
     value: string;
-  }[] = cookie.split(";").map((cookie) => {
+  }[] = cookie?.split(";").map((cookie) => {
     const [name, value] = cookie.trim().split("=");
     return {
       name: name,
@@ -70,6 +71,11 @@ const saveComplaint = async (complaint: any) => {
       withCredentials: true,
     }
   );
+};
+const getUserComplaints = async () => {
+  return await axios.get(privateApi + "/complaint/get-user-complaints", {
+    withCredentials: true,
+  });
 };
 // const register = async ({
 //   email,
@@ -380,12 +386,151 @@ const getInvoiceDetails = async (
     withCredentials: true,
   });
 };
+const getProductPromotion = async (
+  item_code: string
+): Promise<AxiosResponse> => {
+  return await axios.get(
+    publicApi + `/get_product_promotions?item_code=${item_code}`,
+    {
+      withCredentials: true,
+    }
+  );
+};
+// const { password, first_name, last_name, phone_number } = body;
+const createChild = async ({
+  password,
+  first_name,
+  last_name,
+  phone_number,
+}: {
+  password: string;
+  first_name: string;
+  last_name: string;
+  phone_number: string;
+}): Promise<AxiosResponse> => {
+  return await axios.post(
+    privateApi + `/child/create`,
+    {
+      password,
+      first_name,
+      last_name,
+      phone_number,
+    },
+    { withCredentials: true }
+  );
+};
+// child_id,
+// password,
+// first_name,
+// last_name,
+// phone_number,
+
+const editChild = async ({
+  child_id,
+  password,
+  first_name,
+  last_name,
+  phone_number,
+}: {
+  child_id: number;
+  password: string;
+  first_name: string;
+  last_name: string;
+  phone_number: string;
+}): Promise<AxiosResponse> => {
+  return await axios.post(
+    privateApi + `/child/edit`,
+    {
+      child_id,
+      password,
+      first_name,
+      last_name,
+      phone_number,
+    },
+    { withCredentials: true }
+  );
+};
+
+const getChildren = async (search?: string): Promise<AxiosResponse> => {
+  return await axios.get(privateApi + `/child`, {
+    withCredentials: true,
+    params: {
+      search,
+    },
+  });
+};
+
+const getShoppingCartPromotions = async (): Promise<AxiosResponse> => {
+  return await axios.get(privateApi + `/get_shopping_cart_promotions`, {
+    withCredentials: true,
+  });
+};
+
+const getPromotions = async (): Promise<AxiosResponse> => {
+  return await axios.get(publicApi + `/promotions`, {
+    withCredentials: true,
+  });
+};
+const disableChild = async (child_id: number): Promise<AxiosResponse> => {
+  return await axios.post(
+    privateApi + `/child/disable`,
+    {
+      child_id,
+    },
+    { withCredentials: true }
+  );
+};
+const enableChild = async (child_id: number): Promise<AxiosResponse> => {
+  return await axios.post(
+    privateApi + `/child/enable`,
+    {
+      child_id,
+    },
+    { withCredentials: true }
+  );
+};
+const deleteChild = async (child_id: number): Promise<AxiosResponse> => {
+  return await axios.post(
+    privateApi + `/child/delete`,
+    {
+      child_id,
+    },
+    { withCredentials: true }
+  );
+};
+const getAllPermissions = async (): Promise<AxiosResponse> => {
+  return await axios.get(privateApi + `/child/all_permissions`, {
+    withCredentials: true,
+  });
+};
+const updateChildPermissions = async ({
+  child_id,
+  permissionsIds,
+}: {
+  child_id: number;
+  permissionsIds: number[];
+}): Promise<AxiosResponse> => {
+  return await axios.post(
+    privateApi + `/child/update_permissions`,
+    {
+      child_id,
+      permissionsIds,
+    },
+    { withCredentials: true }
+  );
+};
 export {
   login,
   // register,
   // verifyEmail,
   // sendVerify,
+  getPromotions,
+  getAllPermissions,
+  getProductPromotion,
   logout,
+  disableChild,
+  enableChild,
+  deleteChild,
   forgotPassword,
   validateResetCode,
   getUserDetails,
@@ -415,6 +560,12 @@ export {
   getSalesOrder,
   getInvoiceDetails,
   saveComplaint,
+  getUserComplaints,
+  createChild,
+  getChildren,
+  getShoppingCartPromotions,
+  editChild,
+  updateChildPermissions,
   publicApi,
   privateApi,
 };

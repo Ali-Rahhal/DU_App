@@ -8,31 +8,7 @@ import { getInvoiceDetails } from "./apiCalls";
 
 const exportInvoice = async (sales_invoice: SalesInvoiceModel) => {
   const html2pdf = (await import("html2pdf.js")).default;
-  //   address: "SED EL BOUCHRIEH"
-  // ​​
-  // cat: "P"
-  // ​​
-  // currency: "LBP"
-  // ​​
-  // customer_name: "PH. CHALHOUB"
-  // ​​
-  // date_added: "2023-12-08T00:00:00.000Z"
-  // ​​
-  // delivery_date: "2023-12-09T06:16:55.632Z"
-  // ​​
-  // invoice_no: "4528134"
-  // ​​
-  // oracle_number: "4317231"
-  // ​​
-  // region: "MMT"
-  // ​​
-  // remaining_amount: "0"
-  // ​​
-  // sales_person: "Sarkis Bechara"
-  // ​​
-  // tel: "01680943"
-  // ​​
-  // total_amount: "8219007"
+
   const invoiceDetails: {
     address: string;
     cat: string;

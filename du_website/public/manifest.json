@@ -1,0 +1,25 @@
+{
+  "name": "Droguerie de L'Union",
+  "short_name": "DU",
+  "lang": "en-US",
+  "dir": "auto",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#8936FF",
+  "background_color": "#2EC6FE",
+  "start_url": "/",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "icon/icon512_maskable.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon/icon512_rounded.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}

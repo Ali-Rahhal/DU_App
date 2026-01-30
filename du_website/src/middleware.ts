@@ -11,6 +11,9 @@ const authRoutes = [
   "/dashboard",
   "/survey",
   "/complaint",
+  "/fidelity",
+  "/my-complaints",
+  "/child-accounts",
 ];
 export async function middleware(request: NextRequest) {
   // your middleware stuff here
@@ -21,6 +24,9 @@ export async function middleware(request: NextRequest) {
     headers: {
       Cookie: cookie,
     },
+  }).catch((err) => {
+    console.log(err.message);
+    return { status: 401 };
   });
   const isAuth = result.status === 200;
   if (isAuth) {

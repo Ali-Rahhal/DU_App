@@ -2,6 +2,7 @@ import AccountLayout from "@/components/dashboard/AccountLayout";
 import Layout from "@/components/Layout/Layout";
 import { currenncyCodeToSymbol } from "@/utils";
 import { getOrder, getOrderDetails } from "@/utils/apiCalls";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -51,24 +52,9 @@ const OrderDetails = () => {
 
     fetchOrder(id as string);
   }, [rt.query]);
+  const t = useTranslations();
 
-  //     {
-  //       id: "19940239053306",
-  //       orderNb: "050001038240001",
-  //       creationDate: "2024-05-14T10:46:46.340Z",
-  //       account: "WH0001",
-  //       status: 3,
-  //       status_text: "Awaiting Approval",
-  //       phone: null,
-  //       brand: "P",
-  //       brand_description: "Pepsi",
-  //       items: 1,
-  //       currency_code: "LBP",
-  //       total_amount: "70954884",
-  //       lastEdited: "2024-05-14T10:46:46.340Z",
-  //       paymentType: 1,
-  //       totalAmount: 70954884,
-  //     },
+  console.log(orderItems);
   return (
     <Layout>
       <AccountLayout
@@ -84,48 +70,74 @@ const OrderDetails = () => {
                 overflowY: "auto",
               }}
             >
-              {orderItems.map((order) => (
-                <div className="cart_item px-0" key={order.id}>
-                  <div className="cart_item_image">
-                    <Image
-                      width={200}
-                      height={200}
-                      src={
-                        order.image ||
-                        process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE
-                      }
-                      alt="shop"
-                    />
-                  </div>
-                  <div className="c-item-body">
-                    <div className="cart_item_title mb-2">
-                      <h4>{`${order.name} x ${order.quantity}`}</h4>
-                      <p className="small mb-0 text-muted">
-                        {order.description}
-                      </p>
+              {orderItems.map((order) => {
+                const isFree = parseFloat(order.discountedPrice) === 0;
+                return (
+                  <div className="cart_item px-0" key={order.id}>
+                    <div className="cart_item_image">
+                      <Image
+                        width={200}
+                        height={200}
+                        style={{
+                          objectFit: "contain",
+                          width: "100%",
+                          height: "100%",
+                        }}
+                        src={
+                          order.image ||
+                          process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE
+                        }
+                        alt="shop"
+                      />
                     </div>
-                    <div className="cart_item_price">
-                      <div className="product-price">
-                        <span>
-                          <strong>
-                            {currenncyCodeToSymbol(order.currency_code)}{" "}
-                            {parseFloat(order.discountedPrice).toLocaleString()}{" "}
-                          </strong>
-                          {/* <del>{order.discount}</del>
+                    <div className="c-item-body">
+                      <div className="cart_item_title mb-2">
+                        <h4>{`${order.name} x ${order.quantity}`}</h4>
+                        <p className="small mb-0 text-muted">
+                          {order.description}
+                        </p>
+                      </div>
+                      <div className="cart_item_price">
+                        <div className="product-price">
+                          <span>
+                            {isFree ? (
+                              <span
+                                style={{
+                                  color: "green",
+                                  fontWeight: "bold",
+                                  textTransform: "uppercase",
+                                }}
+                              >
+                                <strong>{t("free")}</strong>
+                              </span>
+                            ) : (
+                              <strong>
+                                {currenncyCodeToSymbol(order.currency_code)}{" "}
+                                {parseFloat(
+                                  order.discountedPrice
+                                ).toLocaleString()}{" "}
+                              </strong>
+                            )}
+                            {/* <del>{order.discount}</del>
                           <small className="product-discountPercentage">
                             (50% OFF)
                           </small> */}
-                        </span>
-                      </div>
-                      <div className="cart_product_remove">
-                        <a href="#">
-                          <i className="ti-truck"></i> Return Item
-                        </a>
+                          </span>
+                        </div>
+                        {isFree ? (
+                          ""
+                        ) : (
+                          <div className="cart_product_remove">
+                            <a href="#">
+                              <i className="ti-truck"></i> Return Item
+                            </a>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
             <div className="row mt-4">
               <div className="col-lg-12">

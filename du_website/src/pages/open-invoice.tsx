@@ -3,9 +3,9 @@ import Layout from "@/components/Layout/Layout";
 import AccountLayout from "@/components/dashboard/AccountLayout";
 import { currenncyCodeToSymbol } from "@/utils";
 import { getOpenInvoices } from "@/utils/apiCalls";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+
 import React, { useEffect } from "react";
-import { Table } from "react-bootstrap";
 
 // order_no: string;
 //   invoice_date: string;
@@ -15,6 +15,7 @@ import { Table } from "react-bootstrap";
 //   remaining_amount: string;
 
 const OpenInvoices = () => {
+  const t = useTranslations();
   const [openInvoices, setOpenInvoices] = React.useState<OpenInvoice[]>([]);
   const [filteredInvoices, setFilteredInvoices] = React.useState<OpenInvoice[]>(
     []
@@ -22,7 +23,6 @@ const OpenInvoices = () => {
   const [filters, setFilters] = React.useState<number[]>([0, 1, 2, 3]);
   useEffect(() => {
     getOpenInvoices().then((res) => {
-      console.log(res.data);
       setOpenInvoices(res.data.result);
     });
   }, []);
@@ -56,12 +56,13 @@ const OpenInvoices = () => {
       })
     );
   }, [filters, openInvoices]);
-  console.log(filters);
+
   return (
     <Layout>
       <AccountLayout
-        title="Open Invoices"
-        subTitle="You have full control to manage your own Account."
+        title={t("open_invoices")}
+        // subTitle="You have full control to manage your own Account."
+        subTitle={t("you_have_full_control_to_manage_your_own_account")}
       >
         <div
           style={{ height: "500px", overflowY: "scroll", overflowX: "auto" }}

@@ -4,15 +4,15 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 4501",
-    "build": "next build",
+    "build": "next build ",
     "start": "next start -p 4501",
     "lint": "next lint"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.3",
-    "apexcharts": "^3.49.1",
+    "apexcharts": "^4.1.0",
     "axios": "^1.6.8",
-    "bootstrap": "^4.6.0",
+    "bootstrap": "^5.3.3",
     "browser-image-compression": "^2.0.2",
     "eslint": "8.35.0",
     "eslint-config-next": "13.2.3",
@@ -20,22 +20,28 @@
     "js-cookie": "^3.0.1",
     "jsbarcode": "^3.11.6",
     "lottie-react": "^2.4.0",
-    "next": "13.2.3",
+    "next": "^15.0.2",
+    "next-intl": "^3.24.0",
     "next-nprogress-bar": "^2.3.12",
+    "next-pwa": "^5.6.0",
     "next-redux-wrapper": "^8.1.0",
     "react": "18.2.0",
-    "react-apexcharts": "^1.4.1",
+    "react-apexcharts": "^1.6.0",
     "react-barcode-scanner": "^2.1.0",
     "react-bootstrap": "^2.5.0",
     "react-dom": "18.2.0",
     "react-redux": "^8.0.5",
+    "react-select": "^5.9.0",
     "react-slick": "^0.29.0",
     "react-toastify": "^9.1.1",
     "sass": "^1.55.0",
-    "survey-react-ui": "^1.10.5",
+    "survey-react-ui": "^1.12.8",
+    "surveyjs-widgets": "^1.12.8",
     "zustand": "^4.5.2"
   },
   "devDependencies": {
-    "@types/node": "^20.12.3"
-  }
+    "@types/node": "20.12.3",
+    "typescript": "5.7.2"
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

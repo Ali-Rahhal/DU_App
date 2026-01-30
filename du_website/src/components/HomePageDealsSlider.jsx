@@ -1,6 +1,7 @@
 import React from "react";
 import Slider from "react-slick";
 import ProductItem from "./common/ProductItem";
+import { useTranslations } from "next-intl";
 
 const HomePageDealsSlider = ({ deals }) => {
   let setting = {
@@ -39,21 +40,21 @@ const HomePageDealsSlider = ({ deals }) => {
       },
     ],
   };
-
+  const t = useTranslations();
   return (
     <>
       <div className="pt-4 pt-md-5">
         <div className="container-fluid theme-container">
           <div className="row mb-4">
             <div className="col">
-              <h5 className="product-heading">Flash deals</h5>
+              <h5 className="product-heading">{t("flash_deals")}</h5>
             </div>
             <div className="col-auto text-md-right">
               <a
                 href="category"
                 className="btn btn-primary btn-sm product-heading-btn"
               >
-                See All
+                {t("see_all")}
               </a>
             </div>
           </div>

@@ -1,6 +1,7 @@
 import { getCartItems, getUserDetails, login, logout } from "@/utils/apiCalls";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+
 type AccountSore = {
   cart: number;
   cartItems: any[];
@@ -10,6 +11,8 @@ type AccountSore = {
   lastName: string;
   phone: string;
   address: string;
+  permissions: string[];
+  type: number | null;
   setAccount: ({
     name,
     code,
@@ -26,10 +29,12 @@ type AccountSore = {
   }) => void;
   refreshUserInfo: () => void;
   refreshCart: () => void;
+  checkPermission: (permission: string) => boolean;
 };
 type AuthStore = {
   token: string | null;
   isAuth: boolean;
+
   login: ({
     code,
     password,
@@ -49,6 +54,13 @@ export const useAccountStore = create<AccountSore>((set) => ({
   code: "",
   phone: "",
   address: "",
+  type: null,
+  permissions: [],
+  checkPermission: (permission) => {
+    if (useAccountStore.getState().type !== 2) return true;
+    else return useAccountStore.getState().permissions.includes(permission);
+  },
+
   refreshUserInfo: async () => {
     if (!useAuthStore.getState().isAuth) return;
     getUserDetails()
@@ -63,6 +75,8 @@ export const useAccountStore = create<AccountSore>((set) => ({
           code: res.data.result.code,
           phone: res.data.result.phone,
           address: res.data.result.address,
+          type: res.data.result.type,
+          permissions: res.data.result.permissions,
         });
       })
       .catch(() => {
@@ -107,9 +121,16 @@ export const useAuthStore = create<AuthStore>()(
       isAuth: false,
       login: async ({ code, password }) => {
         const result = await login({ code: code, password }).then((res) => {
-          set({ isAuth: true, token: res.data.result.token });
+          set({
+            isAuth: true,
+            token: res.data.result.token,
+          });
           //refresh cart
           useAccountStore.getState().refreshCart();
+          useAccountStore.setState({
+            type: res.data.result.type,
+            permissions: res.data.result.permissions,
+          });
           return res;
         });
 

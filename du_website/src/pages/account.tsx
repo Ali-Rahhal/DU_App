@@ -1,6 +1,7 @@
 import AccountLayout from "@/components/dashboard/AccountLayout";
 import Layout from "@/components/Layout/Layout";
 import { useAccountStore } from "@/store/zustand";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 const MyAccount = () => {
@@ -8,12 +9,14 @@ const MyAccount = () => {
   const [phoneInput, setPhoneInput] = useState(phone);
   const [fname, setFname] = useState(firstName);
   const [lname, setLname] = useState(lastName);
-
+  const t = useTranslations();
   return (
     <Layout>
       <AccountLayout
-        title="Account Details"
-        subTitle="You have full control to manage your own Account."
+        // title="Account Details"
+        title={t("account_details")}
+        // subTitle="You have full control to manage your own Account."
+        subTitle={t("you_have_full_control_to_manage_your_own_account")}
       >
         <div className="card">
           <div className="card-body">
@@ -65,7 +68,7 @@ const MyAccount = () => {
                   />
                 </div> */}
                 <div className="col-12 mb-3 text-lg-right">
-                  <button className="btn btn-primary" type="submit">
+                  <button className="btn btn-primary" type="submit" disabled>
                     edit details
                   </button>
                 </div>

@@ -1,10 +1,11 @@
 import { useRouter } from "next/router";
 import React, { useState } from "react";
+import { useTranslations } from "use-intl";
 
 function AccountHeader() {
   const rt = useRouter();
   const [active, setActive] = useState(rt.pathname.split("/")[1]);
-
+  const t = useTranslations();
   return (
     <>
       <div className="accounnt_header">
@@ -14,7 +15,7 @@ function AccountHeader() {
               <nav aria-label="breadcrumb">
                 <ol className="breadcrumb mb-0">
                   <li className="breadcrumb-item">
-                    <a className="text-nowrap" href="index">
+                    <a className="text-nowrap" href="/">
                       <i className="fa fa-home mr-2"></i>Home
                     </a>
                   </li>
@@ -30,7 +31,7 @@ function AccountHeader() {
                       textTransform: "capitalize",
                     }}
                   >
-                    {active.replace(/-/g, " ")}
+                    {t(active.replace(/-/g, "_"))}
                   </li>
                 </ol>
               </nav>
@@ -42,7 +43,7 @@ function AccountHeader() {
                   textTransform: "capitalize",
                 }}
               >
-                {active.replace(/-/g, " ")}
+                {t(active.replace(/-/g, "_"))}
               </h1>
             </div>
           </div>

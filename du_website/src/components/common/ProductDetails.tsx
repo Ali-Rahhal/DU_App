@@ -10,6 +10,9 @@ import Item from "@/Models/item";
 import { currenncyCodeToSymbol } from "@/utils";
 import { addToCart, addToFavorite, removeFromFavorite } from "@/utils/apiCalls";
 import { useAccountStore, useAuthStore } from "@/store/zustand";
+import { useTranslations } from "use-intl";
+import ProductPromotionList from "./ProductPromotionList";
+import { Tooltip } from "react-bootstrap";
 
 const ProductDetails = ({ product }: { product: Item }) => {
   // const dispatch = useDispatch(1);
@@ -20,6 +23,9 @@ const ProductDetails = ({ product }: { product: Item }) => {
   const [price, setprice] = useState(0);
   const [discountedPrice, setDiscountedPrice] = useState(0);
   const [isFavorite, setIsFavorite] = useState(product.isFavorite);
+
+  const t = useTranslations();
+
   useEffect(() => {
     let price = parseFloat(product?.price);
     let discountedPrice = parseFloat(product?.discountedPrice);
@@ -29,16 +35,18 @@ const ProductDetails = ({ product }: { product: Item }) => {
 
   const handleCart = async (product: Item, quantity: number) => {
     if (!isAuth) {
-      toast.info("Please login to continue !");
+      toast.info(t("toast.please_login"));
       return;
     }
     addToCart(product.item_code, product.barcode, quantity)
       .then((res) => {
         refreshCart();
-        toast.success("Product added to Cart !");
+        toast.success(t("toast.added_to_cart"), {
+          position: "bottom-right",
+        });
       })
       .catch((err) => {
-        toast.error(err.response.data.message || "Something went wrong !");
+        toast.error(err.response.data.message || t("toast.error"));
       });
   };
 
@@ -50,17 +58,17 @@ const ProductDetails = ({ product }: { product: Item }) => {
   const handleWishlist = () => {
     // dispatch(addToWishlist(product));
     if (!isAuth) {
-      toast.info("Please login to continue !");
+      toast.info(t("toast.please_login"));
       return;
     }
     if (!isFavorite) {
       addToFavorite(product.item_code).then((res) => {
-        toast.success("Added to Wishlist !");
+        toast.success(t("toast.added_to_wishlist"));
         setIsFavorite(true);
       });
     } else {
       removeFromFavorite(product.item_code).then((res) => {
-        toast.info("Removed from Wishlist !");
+        toast.info(t("toast.removed_from_wishlist"));
         setIsFavorite(false);
       });
     }
@@ -78,12 +86,13 @@ const ProductDetails = ({ product }: { product: Item }) => {
     } else {
       setQuantity((prev) => {
         let stk = product?.stock ? Number(product?.stock) : 0;
-        if (stk > prev) {
-          return prev + 1;
-        } else {
-          toast.info("this Product only has" + product.stock + " stock");
-          return prev;
-        }
+        // if (stk > prev) {
+        //   return prev + 1;
+        // } else {
+        //   toast.info("this Product only has" + product.stock + " stock");
+        //   return prev;
+        // }
+        return prev + 1;
       });
     }
   };
@@ -95,7 +104,12 @@ const ProductDetails = ({ product }: { product: Item }) => {
           <div className="row justify-content-between">
             <div className="col-lg-4">
               {/* <!--=======  product details slider area  =======--> */}
-              <div className="product-details-slider-area">
+              <div
+                className="product-details-slider-area"
+                style={{
+                  position: "relative",
+                }}
+              >
                 <ThumbSlider
                   images={
                     product.image
@@ -103,8 +117,27 @@ const ProductDetails = ({ product }: { product: Item }) => {
                       : [process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE]
                   }
                 />
+                <div className="product-labels">
+                  {product.hasPromotion ? (
+                    <span
+                      className="badge badge-primary promotion-badge"
+                      style={{
+                        backgroundColor: "transparent",
+                        border: "1px solid transparent",
+                        borderColor:
+                          product.cat_code === "P" ? "transparent" : "#f59f00",
+
+                        color: "#f59f00",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      {product.cat_code === "P" ? "*" : t("on_promotion")}
+                    </span>
+                  ) : null}
+                </div>
               </div>
             </div>
+
             <div className="col-lg-8 mt-4">
               <div className="row pl-lg-3">
                 <div className="col-lg-7">
@@ -146,11 +179,11 @@ const ProductDetails = ({ product }: { product: Item }) => {
                         <strong>SKU :</strong> {product?.item_code}
                       </span>
                       <span className="d-block text-muted mb-2">
-                        <strong>Category :</strong> {product?.category}
+                        <strong>{t("category")} :</strong> {product?.category}
                       </span>
 
                       <span className="d-block text-muted mb-2">
-                        <strong>Availability :</strong> In Stock
+                        <strong>{t("availability")} :</strong> In Stock
                       </span>
                     </div>
 
@@ -208,7 +241,8 @@ const ProductDetails = ({ product }: { product: Item }) => {
                             type="button"
                             className="btn btn-rounded btn-soft-primary mr-2"
                           >
-                            <i className="fa fa-heart"></i> Add To Wishlist
+                            <i className="fa fa-heart"></i>{" "}
+                            {t("add_to_wishlist")}
                           </button>
                         ) : (
                           <button
@@ -216,7 +250,8 @@ const ProductDetails = ({ product }: { product: Item }) => {
                             type="button"
                             className="btn btn-rounded btn-soft-primary mr-2"
                           >
-                            <i className="fa fa-heart"></i> Remove From Wishlist
+                            <i className="fa fa-heart"></i>
+                            {t("remove_from_wishlist")}
                           </button>
                         )}
 
@@ -227,7 +262,8 @@ const ProductDetails = ({ product }: { product: Item }) => {
                           className="btn btn-rounded btn-primary"
                           type="button"
                         >
-                          <i className="fa fa-shopping-cart"></i> Add To Cart
+                          <i className="fa fa-shopping-cart"></i>
+                          {t("add_to_cart")}
                         </button>
                       </div>
                     </div>
@@ -246,6 +282,11 @@ const ProductDetails = ({ product }: { product: Item }) => {
                   </div>
                 </div>
                 <div className="col-lg-5 mt-4 mt-lg-0">
+                  <div className="mb-4">
+                    {product.hasPromotion ? (
+                      <ProductPromotionList item_code={product.item_code} />
+                    ) : null}
+                  </div>
                   <div className="bg-light p-3">
                     <h6>Delivery Options</h6>
                     <div className="media align-items-center">
@@ -281,6 +322,7 @@ const ProductDetails = ({ product }: { product: Item }) => {
                       </div>
                     </div>
                   </div>
+
                   {/* <div className="mt-4">
                     <h6 className="font-weight-bold text-dark">
                       products highlights

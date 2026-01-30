@@ -1,9 +1,14 @@
+import Item from "@/Models/item";
 import { useAuthStore } from "@/store/zustand";
 import { currenncyCodeToSymbol, discount } from "@/utils";
 import { addToFavorite } from "@/utils/apiCalls";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
+import { Modal, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { toast } from "react-toastify";
+import ProductPromotionList from "./ProductPromotionList";
 
 // export interface Product {
 //   id: number;
@@ -27,7 +32,8 @@ import { toast } from "react-toastify";
 //   web_discount?: number;
 //   creation_date?: string;
 // }
-const ProductItem = ({ item }) => {
+const ProductItem = ({ item }: { item: Item }) => {
+  const t = useTranslations();
   if (!item) return;
   let url = "/products/" + item?.item_code;
   // let oldPrice = varient && varient.length > 0 ? varient[0].oldPrice : 0;
@@ -36,11 +42,80 @@ const ProductItem = ({ item }) => {
   let discountedPrice = parseFloat(item?.discountedPrice);
   let title = item?.name;
   let image = item?.image;
-  let type = item?.status;
+  // let type = item?.status;
+  let type = "";
   const { isAuth } = useAuthStore();
+  const [openPopup, setOpenPopup] = useState(false);
   return (
     <>
+      <Modal
+        show={openPopup}
+        onHide={() => setOpenPopup(false)}
+        style={{
+          // font-family: "Poppins", serif !important;
+          fontFamily: "Poppins, sans-serif",
+        }}
+      >
+        <div
+          onClick={() => setOpenPopup(false)}
+          style={{
+            cursor: "pointer",
+            textAlign: "right",
+            fontSize: "32px",
+            color: "#f59f00",
+            zIndex: 1000,
+            position: "absolute",
+            top: "20px",
+            right: "30px",
+          }}
+        >
+          <i className="fa fa-times"></i>
+        </div>
+        <Modal.Body>
+          <ProductPromotionList item_code={item.item_code} />
+        </Modal.Body>
+      </Modal>
+      {/* <OverlayTrigger placement="left" overlay={tooltip}>
+      <Button bsStyle="default">Holy guacamole!</Button>
+    </OverlayTrigger> */}
+
       <div className={`product ${type}`}>
+        <div className="product-labels">
+          {item.hasPromotion ? (
+            <OverlayTrigger
+              placement="right"
+              overlay={
+                <div className="promotion-tooltip">
+                  <ProductPromotionList item_code={item.item_code} />
+                </div>
+              }
+            >
+              <span
+                onClick={() => {
+                  setOpenPopup(true);
+                }}
+                className="badge badge-primary promotion-badge"
+                style={{
+                  cursor: "pointer",
+                  backgroundColor:
+                    item.cat_code === "P" ? "transparent" : "#f59f00",
+                  border: "1px solid transparent",
+                  borderColor:
+                    item.cat_code === "P" ? "transparent" : "#f59f00",
+                  minWidth: "24px",
+                  color: item.cat_code === "P" ? "#f59f00" : "#fff",
+                  textTransform: "uppercase",
+                }}
+              >
+                {item.cat_code === "P" ? (
+                  <i className="fa fa-star"></i>
+                ) : (
+                  t("on_promotion")
+                )}
+              </span>
+            </OverlayTrigger>
+          ) : null}
+        </div>
         <Link href={url} className="product-img">
           <Image
             src={
@@ -88,12 +163,15 @@ const ProductItem = ({ item }) => {
               </>
             ) : (
               <>
-                <div className="current-price">${price}</div>
+                <div className="current-price">
+                  {" "}
+                  {currenncyCodeToSymbol(item.currency_code)} {price}
+                </div>
               </>
             )}
           </div>
         </div>
-        <div className="product-actions">
+        {/* <div className="product-actions">
           <button
             className="btn btn-soft-primary"
             onClick={() => {
@@ -115,7 +193,7 @@ const ProductItem = ({ item }) => {
             <i className="ti-shopping-cart"></i>
             Add to cart
           </button>
-        </div>
+        </div> */}
       </div>
     </>
   );

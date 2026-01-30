@@ -1,8 +1,10 @@
 import { toast } from "react-toastify";
-//import Compressor from "compressorjs";
 import imageCompression from "browser-image-compression";
 import { publicApi } from "./apiCalls";
+import { Model } from "survey-core";
+
 export const removeBase64Prefix = (base64) => {
+  return base64;
   return base64.replace(/^data:image\/(png|jpg|jpeg|svg);base64,/, "");
 };
 function sendRequest(url, onloadSuccessCallback) {
@@ -47,10 +49,60 @@ function blobToBase64(blob) {
   });
 }
 
-export const configureQuayoSurvey = (survey) => {
-  survey.showPreviewBeforeComplete = "showAnsweredQuestions";
+export const configureQuayoSurvey = (survey: Model) => {
+  const hasMicrophone = survey
+    .getAllQuestions()
+    .some((q) => q.getType() === "microphone");
+  survey.showPreviewBeforeComplete = hasMicrophone
+    ? "noPreview"
+    : "showAnsweredQuestions";
   survey.sendResultOnPageNext = true;
+  //add css classname of microphone items
+  survey.onAfterRenderQuestion.add((_, options) => {
+    if (options.question.getType() === "microphone") {
+      const buttons = options.htmlElement.querySelectorAll("button");
+      const audio = options.htmlElement.querySelector("audio");
 
+      const recordButton = buttons[0];
+      const stopButton = buttons[1];
+      if (!recordButton || !stopButton) return;
+      const stopIcon = stopButton?.querySelector("i");
+
+      buttons.forEach((button) => {
+        button.classList.add("btn-primary");
+        button.classList.add("btn-sm");
+        button.classList.add("microphone_button");
+      });
+
+      audio.style.display = "none";
+      audio.classList.add("microphone_audio");
+      stopButton.classList.add("recording");
+
+      stopIcon.classList.remove("fa-cloud");
+      stopIcon.classList.add("fa-floppy-o");
+      recordButton.addEventListener("click", () => {
+        audio.style.display = "none";
+        recordButton.classList.add("recording");
+        stopButton.classList.remove("recording");
+        toast.loading("Recording", {
+          toastId: "recording",
+          icon: "🎤",
+        });
+      });
+      stopButton.addEventListener("click", () => {
+        audio.style.display = "";
+        recordButton.classList.remove("recording");
+        stopButton.classList.add("recording");
+        toast.dismiss("recording");
+      });
+    }
+  });
+  survey.onUpdateQuestionCssClasses.add((_, options) => {
+    const classes = options.cssClasses;
+    if (options.question.getType() === "microphone") {
+      classes.root = "microphone_question";
+    }
+  });
   survey.onUploadFiles.add(async (survey, options) => {
     const id = toast.loading("Uploading...");
 

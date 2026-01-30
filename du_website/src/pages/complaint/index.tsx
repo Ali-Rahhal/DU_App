@@ -36,6 +36,8 @@ import { publicApi } from "@/utils/apiCalls";
 import Layout from "@/components/Layout/Layout";
 import { Spinner } from "react-bootstrap";
 function App() {
+  //add css classname to class microphone
+
   if (!Serializer.findClass("itemselector")) {
     ComponentCollection.Instance.add({
       // A unique name; must use lowercase

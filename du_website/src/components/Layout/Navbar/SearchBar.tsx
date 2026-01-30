@@ -2,13 +2,14 @@ import Item from "@/Models/item";
 import ProductItem from "@/components/common/ProductItem";
 import ProductItemList from "@/components/common/ProductItemList";
 import { getProducts } from "@/utils/apiCalls";
+import { useTranslations } from "next-intl";
 // import { searchProduct } from "@/utils/data";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 const SearchBar = ({
   showSearch = true,
-  text = "Search for Medicines and Health Products",
+  text = "search",
 }: {
   showSearch: boolean;
   text?: string;
@@ -17,7 +18,7 @@ const SearchBar = ({
   const [search, setSearch] = useState("");
   const [searchProduct, setSearchProduct] = useState<Item[]>([]);
   const rt = useRouter();
-
+  const t = useTranslations();
   useEffect(() => {
     setSearch((rt.query.s as string) || "");
   }, [rt.query]);
@@ -47,13 +48,12 @@ const SearchBar = ({
         className="header-search"
         onSubmit={(e) => {
           e.preventDefault();
-
           rt.push(`/category?s=${search}`);
         }}
       >
         <input
           className="form-control custom-search"
-          placeholder={text}
+          placeholder={t(text)}
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}

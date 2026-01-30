@@ -1,7 +1,11 @@
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import ChangeLangDropdown from "../common/ChangeLangDropdown";
+
 function Footer() {
+  const t = useTranslations();
   return (
     <>
       <footer className="site-footer footer-padding-lg bg-light">
@@ -18,27 +22,22 @@ function Footer() {
                       width={250}
                     />
                   </div>
-                  <p>
-                    Droguerie de L'Union Pharmaceutical Company is a leading
-                    pharmaceutical company in Lebanon. We are committed to
-                    providing high-quality, affordable, and innovative solutions
-                    to our customers.
-                  </p>
+                  <p>{t("company.description")}</p>
                 </div>
               </div>
               <div className="col-lg-2 col-md-2 col-6">
                 <div className="widget">
                   <div className="widget-title">
-                    <h3>Usefull Links</h3>
+                    <h3>{t("useful links")}</h3>
                   </div>
                   <ul>
                     <li>
-                      <Link href="/">Home</Link>
+                      <Link href="/">{t("home")}</Link>
                     </li>
                     <li>
-                      <Link href="/category">All Products</Link>
+                      <Link href="/category">{t("all products")}</Link>
                     </li>
-                    <li>
+                    {/* <li>
                       <Link href="/category?cat=P">Pharma</Link>
                     </li>
                     <li>
@@ -46,31 +45,31 @@ function Footer() {
                     </li>
                     <li>
                       <Link href="/category?cat=NP">Non Pharma</Link>
-                    </li>
+                    </li> */}
                   </ul>
                 </div>
               </div>
               <div className="col-lg-2 col-md-2 col-6">
                 <div className="widget">
                   <div className="widget-title">
-                    <h3>Account</h3>
+                    <h3>{t("account")}</h3>
                   </div>
                   <ul>
                     <li>
-                      <Link href="/account">Account Info</Link>
+                      <Link href="/account">{t("account info")}</Link>
                     </li>
                     <li>
-                      <Link href="/cart">Cart</Link>
+                      <Link href="/cart">{t("cart")}</Link>
                     </li>
                     <li>
-                      <Link href="/orders">My Orders</Link>
+                      <Link href="/orders">{t("my_orders")}</Link>
                     </li>
                     <li>
-                      <Link href="/open-invoice">Open Invoices</Link>
+                      <Link href="/open-invoice">{t("open_invoices")}</Link>
                     </li>
 
                     <li>
-                      <Link href="contact">Contact Us</Link>
+                      <Link href="contact">{t("contact_us")}</Link>
                     </li>
                   </ul>
                 </div>
@@ -78,23 +77,23 @@ function Footer() {
               <div className="col-lg-2 col-md-2 col-6">
                 <div className="widget">
                   <div className="widget-title">
-                    <h3>Policy</h3>
+                    <h3>{t("policy")}</h3>
                   </div>
                   <ul>
                     <li>
-                      <Link href="policy">Privacy policy</Link>
+                      <Link href="policy">{t("privacy_policy")}</Link>
                     </li>
                     <li>
-                      <Link href="policy">Terms and Conditions</Link>
+                      <Link href="policy">{t("terms_and_conditions")}</Link>
                     </li>
                     <li>
-                      <Link href="policy">Return Policy</Link>
+                      <Link href="policy">{t("refund_policy")}</Link>
                     </li>
                     <li>
                       <Link href="policy">Refund Policy</Link>
                     </li>
                     <li>
-                      <Link href="policy">Ip Policy</Link>
+                      <Link href="policy">{t("ip_policy")}</Link>
                     </li>
                   </ul>
                 </div>
@@ -102,30 +101,30 @@ function Footer() {
               <div className="col-lg-2 col-md-2 col-6">
                 <div className="widget">
                   <div className="widget-title">
-                    <h3>Social</h3>
+                    <h3>{t("social")}</h3>
                   </div>
                   <ul>
                     <li>
                       <Link
                         target="_blank"
-                        href="https://www.facebook.com/Unionhealthcarelb/"
+                        href="https://www.facebook.com/delicetunisie/"
                       >
                         Facebook
                       </Link>
                     </li>
-                    <li>
+                    {/* <li>
                       <Link
                         target="_blank"
                         href="https://www.instagram.com/unionhealthcare/"
                       >
                         Instagram
                       </Link>
-                    </li>
+                    </li> */}
 
                     <li>
                       <Link
                         target="_blank"
-                        href="https://www.linkedin.com/company/unionhealthcarelb/"
+                        href="https://tn.linkedin.com/company/delice-holding"
                       >
                         Linkedin
                       </Link>
@@ -138,10 +137,10 @@ function Footer() {
           <div className="lower-footer">
             <div className="row">
               <div className="col-md-6 text-md-left">
-                <p className="mb-4 mb-md-0 text-muted">
-                  Copyright © 2024 DU | All rights reserved.
-                </p>
+                <p className="mb-4 mb-md-0 text-muted">{t("copyright")}</p>
+                <ChangeLangDropdown />
               </div>
+
               {/* <div className="col-md-6">
                 <div className="footer-card text-md-right">
                   <Image

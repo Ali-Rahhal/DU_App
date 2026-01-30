@@ -1,8 +1,10 @@
 import AccountLayout from "@/components/dashboard/AccountLayout";
 import Layout from "@/components/Layout/Layout";
+import { useAccountStore } from "@/store/zustand";
 import { changePassword } from "@/utils/apiCalls";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 const ChangePassword = () => {
@@ -10,11 +12,25 @@ const ChangePassword = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const rt = useRouter();
+  const t = useTranslations();
+  const { type } = useAccountStore();
+  // if (type !== 2) {
+  //   rt.push("/account");
+  //   return null;
+  // }
+  useEffect(() => {
+    if (type === 2) {
+      rt.push("/account");
+    }
+  }, [type]);
+  if (type === 2) return null;
   return (
     <Layout>
       <AccountLayout
-        title="Change Password"
-        subTitle="You have full control to manage your own Account."
+        // title="Change Password"
+        title={t("change_password")}
+        // subTitle="You have full control to manage your own Account."
+        subTitle={t("you_have_full_control_to_manage_your_own_account")}
       >
         <div className="card">
           <div className="card-body">

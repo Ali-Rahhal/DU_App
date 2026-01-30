@@ -1,3 +1,24 @@
+.product-labels {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 10px;
+  position: absolute;
+  z-index: 100;
+  top: 10px;
+  left: 10px;
+}
+.promotion-badge {
+}
+.promotion-tooltip {
+  background-color: #fff !important;
+  font-family: "Poppins", serif;
+  padding-right: 10px;
+  max-width: 400px;
+}
+.promotion-badge:hover {
+  background-color: #fff !important;
+  color: #f59f00 !important;
+}
 .product {
   margin-bottom: 30px;
   position: relative;
@@ -10,7 +31,10 @@
     margin-bottom: 20px;
     overflow: hidden;
     // background-color: $light;
-    border: 2px solid $light;
+    // border: 2px solid $light;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 1px;
+
     padding: 20px;
     border-radius: 5px;
     display: block;

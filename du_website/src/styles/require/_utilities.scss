@@ -4,158 +4,158 @@
 //
 //
 .h-0 {
-    height: 0;
+  height: 0;
 }
 
 @for $i from 1 through 9 {
-    $height: ($i * 10);
+  $height: ($i * 10);
 
-    .min-vh-#{$height} {
-        min-height: #{$height}vh;
-    }
+  .min-vh-#{$height} {
+    min-height: #{$height}vh;
+  }
 }
 
 @include media-breakpoint-up(md) {
-    @for $i from 1 through 10 {
-        $height: ($i * 10);
+  @for $i from 1 through 10 {
+    $height: ($i * 10);
 
-        .min-vh-md-#{$height} {
-            min-height: #{$height}vh;
-        }
+    .min-vh-md-#{$height} {
+      min-height: #{$height}vh;
     }
+  }
 }
 
 @include media-breakpoint-up(lg) {
-    @for $i from 1 through 10 {
-        $height: ($i * 10);
+  @for $i from 1 through 10 {
+    $height: ($i * 10);
 
-        .min-vh-lg-#{$height} {
-            min-height: #{$height}vh;
-        }
+    .min-vh-lg-#{$height} {
+      min-height: #{$height}vh;
     }
+  }
 }
 
 img {
-    &.h-100 {
-        object-fit: cover;
-    }
+  &.h-100 {
+    object-fit: cover;
+  }
 
-    &.flex-fill {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
+  &.flex-fill {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 }
 
 @include media-breakpoint-up(lg) {
-    .w-lg-100 {
-        width: 100%;
-    }
+  .w-lg-100 {
+    width: 100%;
+  }
 }
 
 // Hover Effects
 
 [class*="hover-"] {
-    transition: $transition-base;
+  transition: $transition-base;
 }
 
 .soft-shadow {
-    border: 0px solid #edf2f9;
-    box-shadow: 0 0.75rem 1.5rem rgba(18, 38, 63, 0.03);
+  border: 0px solid #edf2f9;
+  box-shadow: 0 0.75rem 1.5rem rgba(18, 38, 63, 0.03);
 }
 
 .hover-fade-out {
-    &:hover {
-        opacity: 0.75;
-    }
+  &:hover {
+    opacity: 0.75;
+  }
 }
 
 .hover-box-shadow {
-    &:hover {
-        box-shadow: $box-shadow;
-        transform: translateY(-$spacer/2);
-    }
+  &:hover {
+    box-shadow: $box-shadow;
+    transform: translateY(-$spacer/2);
+  }
 }
 
 .o-hidden {
-    overflow: hidden;
+  overflow: hidden;
 }
 
 .container-fluid.theme-container {
-    width: 100%;
-    padding-right: 15px;
-    padding-left: 15px;
-    margin-right: auto;
-    margin-left: auto;
-    max-width: 1530px;
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+  max-width: 1800px;
 }
 .cursor-pointer {
-    cursor: pointer;
+  cursor: pointer;
 }
 .text-inherit {
-    color: inherit;
+  color: inherit;
 }
 
 .simplebar-track {
-    transition: opacity 0.25s ease-in-out;
-    background-color: #e9edf4;
-    opacity: 0;
+  transition: opacity 0.25s ease-in-out;
+  background-color: #e9edf4;
+  opacity: 0;
 }
 .simplebar-track .simplebar-scrollbar {
-    border-radius: 0.09375rem;
-    background-color: #aeb4be;
+  border-radius: 0.09375rem;
+  background-color: #aeb4be;
 }
 .simplebar-track .simplebar-scrollbar::before {
-    display: none;
+  display: none;
 }
 .simplebar-track.simplebar-vertical {
-    width: 0.1875rem !important;
+  width: 0.1875rem !important;
 }
 .simplebar-track.simplebar-vertical .simplebar-scrollbar {
-    right: 0;
-    width: 0.1875rem;
+  right: 0;
+  width: 0.1875rem;
 }
 .simplebar-track.simplebar-horizontal {
-    height: 0.1875rem !important;
+  height: 0.1875rem !important;
 }
 .simplebar-track.simplebar-horizontal .simplebar-scrollbar {
-    top: 0;
-    height: 0.1875rem !important;
+  top: 0;
+  height: 0.1875rem !important;
 }
 [data-simplebar] {
-    overflow-y: auto;
+  overflow-y: auto;
 }
 [data-simplebar]::-webkit-scrollbar {
-    width: 0.1875rem;
-    background-color: transparent;
-    opacity: 0;
+  width: 0.1875rem;
+  background-color: transparent;
+  opacity: 0;
 }
 [data-simplebar]::-webkit-scrollbar-thumb {
-    background-color: #aeb4be;
-    border-radius: 0.09375rem;
+  background-color: #aeb4be;
+  border-radius: 0.09375rem;
 }
 [data-simplebar]:hover .simplebar-track {
-    opacity: 1;
+  opacity: 1;
 }
 [data-simplebar]:not(.offcanvas-body) {
-    padding-right: 1rem !important;
+  padding-right: 1rem !important;
 }
 [data-simplebar-auto-hide="false"] .simplebar-track {
-    opacity: 1;
+  opacity: 1;
 }
 .bg-dark .simplebar-track,
 .bg-darker .simplebar-track,
 .dropdown-menu-dark .simplebar-track {
-    background-color: transparent;
+  background-color: transparent;
 }
 .bg-dark .simplebar-track .simplebar-scrollbar,
 .bg-darker .simplebar-track .simplebar-scrollbar,
 .dropdown-menu-dark .simplebar-track .simplebar-scrollbar {
-    background-color: #58647d;
+  background-color: #58647d;
 }
-.object-fit{
-    // object-fit: cover;
-    width: 100%;
-    height: auto !important;
-    object-fit: contain;
+.object-fit {
+  // object-fit: cover;
+  width: 100%;
+  height: auto !important;
+  object-fit: contain;
 }

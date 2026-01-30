@@ -1,6 +1,7 @@
 import React from "react";
 import AccountHeader from "./AccountHeader";
 import AccountNav from "./AccountNav";
+import { useTranslations } from "next-intl";
 
 function AccountLayout({ children, title, subTitle }) {
   return (

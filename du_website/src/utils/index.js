@@ -51,7 +51,7 @@ export const statusIdToText = (status_id) => {
     },
     {
       id: 4,
-      text: "AWAITING DELIVERY ",
+      text: "AWAITING DELIVERY",
       //icon: "check_circle_outline",
       icon: "ti-check",
       color: "#2f9e44",

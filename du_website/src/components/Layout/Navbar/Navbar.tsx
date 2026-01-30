@@ -1,4 +1,4 @@
-import { Button, Dropdown } from "react-bootstrap";
+import { Button, Dropdown, FormSelect } from "react-bootstrap";
 import Navlinks from "./Navlinks";
 import SearchBar from "./SearchBar";
 import MiniCart from "./MiniCart";
@@ -10,6 +10,10 @@ import LoginModal from "./modals/Login";
 // import RegisterModal from "./modals/Register";
 import ForgotModal from "./modals/Forgot";
 import { useAccountStore, useAuthStore } from "@/store/zustand";
+import { useTranslations } from "next-intl";
+
+import ChangeLangDropdown from "@/components/common/ChangeLangDropdown";
+import FloatingMenu from "../FloatingMenu";
 function Navbar() {
   //   const { cart } = useSelector((state) => state.cart);
 
@@ -20,8 +24,13 @@ function Navbar() {
   const handleModalShow = (e) => setShowModal(e);
 
   // const [cartItemsCount, setCartItemsCount] = useState(0);
-  const [subtotal, setSubtotal] = useState(0);
-
+  const [subtotal, setSubtotal] = useState<
+    {
+      currency_code: string;
+      price: number;
+      discountedPrice: number;
+    }[]
+  >();
   //   useEffect(() => {
   //     setCartItemsCount(cart.length);
   //     let total = 0;
@@ -35,25 +44,56 @@ function Navbar() {
   const { cart, cartItems, refreshCart, name, firstName, lastName } =
     useAccountStore();
   useEffect(() => {
-    let total = 0;
-    for (const c of cartItems) {
-      total =
-        total +
-        Number(c.quantity) *
-          Number(c.discountedPrice ? c.discountedPrice : c.price);
+    if (!cart) return;
+    const currency_codes: string[] = [
+      ...new Set(cartItems.map((item) => item.currency_code)),
+    ] as string[];
+    const tempSubtotal: {
+      currency_code: string;
+      price: number;
+      discountedPrice: number;
+    }[] = [];
+    //get total for each currency
+    for (const currency_code of currency_codes) {
+      const total = cartItems
+        .filter((item) => item.currency_code === currency_code)
+        .reduce((acc, item) => {
+          return (
+            acc +
+            Number(item.quantity) *
+            Number(item.discountedPrice ? item.discountedPrice : item.price)
+          );
+        }, 0);
+      tempSubtotal.push({
+        currency_code: currency_code,
+        price: total,
+        discountedPrice: 0,
+      });
     }
-    setSubtotal(total);
-  }, [cart, cartItems]);
+    setSubtotal(tempSubtotal);
+  }, [cartItems]);
+
   useEffect(() => {
     refreshCart();
   }, []);
+
+  const t = useTranslations();
+
   return (
     <>
       <div className="header">
         <div className="container-fluid theme-container">
           <div className="top-header">
             <div className="row align-items-center">
-              <div className="col-auto">
+              <div
+                className="col-auto"
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  gap: "2rem",
+                }}
+              >
                 <Link href="/">
                   <Image
                     src={"/assets/img/logo_cropped.png"}
@@ -63,6 +103,7 @@ function Navbar() {
                     className="header-logo"
                   />
                 </Link>
+                <ChangeLangDropdown />
               </div>
               <div className="col">
                 <SearchBar showSearch={true} />
@@ -74,7 +115,7 @@ function Navbar() {
                       {" "}
                       <li className="link-item">
                         <Link href="#" onClick={() => handleModalShow("login")}>
-                          Login
+                          {t("login")}
                         </Link>
                       </li>
                       {/* <li className="link-item">
@@ -100,13 +141,54 @@ function Navbar() {
                             });
                           }}
                         >
-                          Logout
+                          {t("logout")}
                         </Link>
                       </li>
                     </>
                   )}
                   <li className="dropdown head-cart-content">
-                    <Dropdown>
+                    {isAuth ? (
+                      <Dropdown>
+                        <Dropdown.Toggle variant="link" id="cart-menu-dropdown">
+                          <div className="list-icon">
+                            <i className="ti-bag"></i>
+                          </div>
+                          <span className="badge badge-secondary">{cart}</span>
+                        </Dropdown.Toggle>
+
+                        <Dropdown.Menu className="shopping-cart shopping-cart-empty dropdown-menu dropdown-menu-right">
+                          {isAuth ? (
+                            <MiniCart
+                              subtotal={subtotal}
+                              cartItems={cartItems}
+                            />
+                          ) : (
+                            ""
+                          )}
+                        </Dropdown.Menu>
+                      </Dropdown>
+                    ) : (
+                      <div>
+                        <Link
+                          href="#"
+                          onClick={() => handleModalShow("login")}
+                          style={{
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "flex-end",
+                            justifyContent: "flex-end",
+                          }}
+                        >
+                          <i
+                            className="ti-bag"
+                            style={{
+                              fontSize: "20px",
+                            }}
+                          ></i>
+                        </Link>
+                      </div>
+                    )}
+                    {/* <Dropdown>
                       <Dropdown.Toggle
                         variant="link"
                         id="cart-menu-dropdown"
@@ -133,7 +215,7 @@ function Navbar() {
                           ""
                         )}
                       </Dropdown.Menu>
-                    </Dropdown>
+                    </Dropdown> */}
                   </li>
                   <li>
                     <Dropdown>
@@ -142,12 +224,12 @@ function Navbar() {
                         id="user-menu-dropdown"
                         {...(!isAuth
                           ? {
-                              onClick: () => {
-                                if (!isAuth) {
-                                  handleModalShow("login");
-                                }
-                              },
-                            }
+                            onClick: () => {
+                              if (!isAuth) {
+                                handleModalShow("login");
+                              }
+                            },
+                          }
                           : {})}
                       >
                         <div className="list-icon">
@@ -158,33 +240,46 @@ function Navbar() {
                       <Dropdown.Menu className="user-links">
                         <ul>
                           <li>
-                            <Link href="/dashboard">Dashboard</Link>
+                            <Link href="/dashboard">{t("dashboard")}</Link>
                           </li>
                           <li>
-                            <Link href="/account">Account</Link>
+                            <Link href="/account">{t("account")}</Link>
                           </li>
                           <li>
-                            <Link href="/cart">Cart</Link>
+                            <Link href="/cart">{t("cart")}</Link>
                           </li>
                           {/* <li>
                             <Link href="/change-password">Change Password</Link>
                           </li> */}
-
                           <li>
-                            <Link href="/orders">My Orders</Link>
-                          </li>
-
-                          <li>
-                            <Link href="/wishlist">Wish List</Link>
+                            <Link href="/promotions">{t("promotion")}</Link>
                           </li>
                           <li>
+                            <Link href="/orders">{t("my_orders")}</Link>
+                          </li>
+                          <li>
+                            <Link href="/wishlist">{t("wishlist")}</Link>
+                          </li>{" "}
+                          <li>
+                            <Link href="/survey">{t("survey")}</Link>
+                          </li>
+                          <li>
+                            <Link href="/complaint">{t("complaint")}</Link>
+                          </li>
+                          {/* <li>
                             <Link href="/survey">Survey</Link>
-                          </li>
+                          </li> */}
                           <li>
-                            <Link href="/complaint">Complaint</Link>
-                          </li>
-                          <li>
-                            <Link href="#">Logout</Link>
+                            <Link
+                              href="#"
+                              onClick={() => {
+                                logout().then(() => {
+                                  window.location.reload();
+                                });
+                              }}
+                            >
+                              {t("logout")}
+                            </Link>
                           </li>
                         </ul>
                       </Dropdown.Menu>
@@ -253,46 +348,50 @@ function Navbar() {
                   style={{
                     textTransform: "uppercase",
                   }}
-                >{`${
-                  (firstName ? firstName[0] : "") +
+                >{`${(firstName ? firstName[0] : "") +
                   (lastName ? lastName[0] : "")
-                }`}</div>
+                  }`}</div>
                 <span>Hi, {name}</span>
               </div>
             )}
 
             <div className="col mt-3">
-              <SearchBar showSearch={false} text="Search For Products" />
+              <SearchBar showSearch={false} text={"search_products"} />
             </div>
             {isAuth && (
-              <div className="mobileMenuLinks mb-4 mt-2">
-                <h6>Account Info</h6>
+              <div className="mobileMenuLinks mb-2 mt-2">
                 <ul>
                   <li>
-                    <Link href="/dashboard">Dashboard</Link>
+                    <Link href="/dashboard">{t("dashboard")}</Link>
                   </li>
                   <li>
-                    <Link href="/account">Account</Link>
+                    <Link href="/account">{t("account")}</Link>
                   </li>
                   <li>
-                    <Link href="/cart">Cart</Link>
+                    <Link href="/cart">{t("cart")}</Link>
                   </li>
                   <li>
-                    <Link href="/orders">My Orders</Link>
+                    <Link href="/promotions">{t("promotions")}</Link>
                   </li>
                   <li>
-                    <Link href="/wishlist">Wish List</Link>
+                    <Link href="/orders">{t("my_orders")}</Link>
                   </li>
                   <li>
+                    <Link href="/promotions">{t("promotion")}</Link>
+                  </li>
+                  <li>
+                    <Link href="/wishlist">{t("wishlist")}</Link>
+                  </li>
+                  {/* <li>
                     <Link href="/survey">Survey</Link>
-                  </li>
+                  </li> */}
                   <li>
-                    <Link href="/complaint">Complaint</Link>
+                    <Link href="/complaint">{t("complaint")}</Link>
                   </li>
                 </ul>
               </div>
             )}
-            <div className="mobileMenuLinks">
+            {/* <div className="mobileMenuLinks">
               <h6>Category</h6>
               <ul>
                 <li>
@@ -305,23 +404,35 @@ function Navbar() {
                   <Link href="/category?cat=NP">Non Pharma</Link>
                 </li>
               </ul>
+            </div> */}
+            <div
+              style={{
+                padding: "1rem 1rem 0rem 1rem",
+              }}
+            >
+              <ChangeLangDropdown />
             </div>
-            <div className="welcome d-flex align-items-center">
+            <div
+              className="d-flex align-items-center"
+              style={{
+                padding: "1rem 1rem 1rem 1rem",
+              }}
+            >
               {!isAuth ? (
                 <>
                   <Link
                     href="#"
                     onClick={() => handleModalShow("login")}
-                    className="btn btn-soft-primary btn-md"
+                    className="btn btn-soft-primary btn-md mr-2"
                   >
-                    Login
+                    {t("login")}
                   </Link>
                   <Link
                     href="#"
                     onClick={() => handleModalShow("register")}
                     className="btn btn-primary btn-md"
                   >
-                    Register
+                    {t("register")}
                   </Link>
                 </>
               ) : (
@@ -336,7 +447,7 @@ function Navbar() {
                     });
                   }}
                 >
-                  Logout
+                  {t("logout")}
                 </Button>
               )}
             </div>
@@ -362,6 +473,7 @@ function Navbar() {
         handleClose={handleModalClose}
         handleModalShow={handleModalShow}
       />
+      {isAuth && <FloatingMenu />}
     </>
   );
 }

@@ -2,18 +2,22 @@ import ProductItem from "@/components/common/ProductItem";
 import Layout from "@/components/Layout/Layout";
 import SearchBar from "@/components/Layout/Navbar/SearchBar";
 import Item from "@/Models/item";
-import { currenncyCodeToSymbol, server } from "@/utils";
+import { currenncyCodeToSymbol } from "@/utils";
 import { getProducts } from "@/utils/apiCalls";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Button, Spinner, Table } from "react-bootstrap";
 
 export async function getServerSideProps(context: any) {
   let { cat, s } = context.query;
-  if (!["P", "PP", "NP"].includes(cat)) {
+  if (cat === undefined) {
     cat = null;
   }
+  // if (!["P", "PP", "NP"].includes(cat)) {
+  //   cat = null;
+  // }
+
   const products = await getProducts({
     skip: 0,
     take: 20,
@@ -76,9 +80,9 @@ const CategoryPage = ({
       })
       .catch((err) => {
         setLoading(false);
-        console.log(err.response.data.message);
       });
   }, [rt.query]);
+  const t = useTranslations();
   return (
     <Layout>
       <section className="pt-5 pt-md-7">
@@ -178,11 +182,11 @@ const CategoryPage = ({
                 <Table bordered hover responsive>
                   <thead>
                     <tr>
-                      <th>Image</th>
-                      <th>Name</th>
-                      <th>Price</th>
-                      <th>Old Price</th>
-                      <th>Category</th>
+                      <th>{t("image")}</th>
+                      <th>{t("name")}</th>
+                      <th>{t("price")}</th>
+                      <th>{t("old_price")}</th>
+                      <th>{t("category")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -246,7 +250,7 @@ const CategoryPage = ({
                     height: "50vh",
                   }}
                 >
-                  <h5>No Products Found</h5>
+                  <h5>{t("no_products")}</h5>
                 </div>
               )}
               {!reachedEnd && (
@@ -290,12 +294,11 @@ const CategoryPage = ({
                         })
                         .catch((err) => {
                           setLoading(false);
-                          console.log(err.response.data.message);
                         });
                     }}
                   >
                     {!loading ? (
-                      "Load More"
+                      t("load_more")
                     ) : (
                       <Spinner animation="border" size="sm" />
                     )}
@@ -322,12 +325,12 @@ const CategoryPage = ({
               </div> */}
               <div className="sidebar-wrapper mt-5 mt-md-0">
                 <div className="sidebar-widget widget_categories">
-                  <h6 className="widget-title mb-2">Search</h6>
+                  <h6 className="widget-title mb-2">{t("search")}</h6>
                   <div className="px-0">
                     <SearchBar showSearch={false} />
                   </div>
                 </div>
-                <div className="sidebar-widget widget_categories">
+                {/* <div className="sidebar-widget widget_categories">
                   <h6 className="widget-title mb-2">Filters</h6>
                   <ul>
                     <li>
@@ -340,7 +343,7 @@ const CategoryPage = ({
                       <Link href="/category?cat=NP">Non Pharma</Link>
                     </li>
                   </ul>
-                </div>
+                </div> */}
               </div>
 
               {/* <div className="sidebar-wrapper mt-5 mt-md-0">

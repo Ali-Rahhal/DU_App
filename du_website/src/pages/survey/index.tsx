@@ -2,7 +2,6 @@ import dynamic from "next/dynamic";
 import { ComponentCollection, Serializer } from "survey-core";
 
 //Global Styles
-// import "../../styles/require/survey.css";
 // import "survey-core/defaultV2.min.css";
 //SurveyJS
 // import SurveyPage from "@/components/survey/SurveyPage";

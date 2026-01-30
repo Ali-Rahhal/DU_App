@@ -25,11 +25,13 @@
 @import "require/buttons";
 @import "require/navbar";
 @import "require/footer";
+@import "require/promotions";
 
-@import "require/survey.css";
+@import "require/survey";
 @import "require/complaint.css";
 
 @import "survey-core/defaultV2.min.css";
+// @import "survey-core/modern.min.css";
 /*-------------------------------------------------------
     3. Shortcode
 -------------------------------------------------------*/
@@ -63,3 +65,4 @@
 @import "product/account";
 @import "product/address";
 @import "product/thank";
+@import "product/fidelity";

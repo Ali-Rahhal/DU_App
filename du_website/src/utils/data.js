@@ -100,11 +100,11 @@ export const Product = {
 
 export const homeSlider = [
   {
-    image: "/assets/img/slider/slider-1.jpeg",
+    image: "/assets/img/slider/slider-1.jpg",
     url: "category",
   },
   {
-    image: "/assets/img/slider/slider-2.jpeg",
+    image: "/assets/img/slider/slider-2.jpg",
     url: "category",
   },
   {
@@ -112,35 +112,94 @@ export const homeSlider = [
     url: "category",
   },
 ];
-// [
+export const homeSlider2 = [
+  {
+    image: "/assets/img/slider/slider-9.jpg",
+    url: "category",
+  },
+  {
+    image: "/assets/img/slider/slider-5.jpg",
+    url: "category",
+  },
+  {
+    image: "/assets/img/slider/slider-6.jpg",
+    url: "category",
+  },
+  {
+    image: "/assets/img/slider/slider-7.jpg",
+    url: "category",
+  },
+  {
+    image: "/assets/img/slider/slider-8.jpg",
+    url: "category",
+  },
+
+  {
+    image: "/assets/img/slider/slider-10.jpg",
+    url: "category",
+  },
+];
+export const menu = [
+  {
+    title: "Jus Et Boissons",
+    url: "/collection",
+    cat: "Activité_1",
+    sub: [{ title: "PRODUITS FINIS SBC", sub_cat: "Catégorie_4" }],
+  },
+  {
+    title: "Produits Laitiers",
+    url: "/collection",
+    cat: "Activité_2",
+    sub: [
+      { title: "PRODUITS FINIS STIAL", sub_cat: "Catégorie_1" },
+      { title: "PRODUITS FINIS POLE LAITIER", sub_cat: "Catégorie_3" },
+    ],
+  },
+  {
+    title: "Fromage",
+    url: "/collection",
+    cat: "Activité_3",
+    sub: [{ title: "PRODUITS FINIS CF", sub_cat: "Catégorie_2" }],
+  },
+  {
+    title: "Eau Delice",
+    url: "/collection",
+    cat: "Activité_4",
+    sub: [{ title: "PRODUITS FINIS SDEM", sub_cat: "Catégorie_5" }],
+  },
+];
+// export const categorySlider = [
+//   // {
+//   //   image: "/assets/img/category/category-1.png",
+//   //   url: "category?cat=P",
+//   //   name: "Pharma",
+//   // },
+//   // {
+//   //   image: "/assets/img/category/category-2.png",
+//   //   url: "category?cat=PP",
+//   //   name: "ParaPharma",
+//   // },
+//   // {
+//   //   image: "/assets/img/category/category-3.png",
+//   //   url: "category?cat=NP",
+//   //   name: "Non Pharma",
+//   // },
 //   {
-//       "title": "NonPharma",
-//       "url": "/collection",
-//       "cat": "CAT_NonPharma",
-//       "sub": []
+//     image: "/assets/img/category/Activité_1.png",
+//     url: "category?cat=Activité_1",
+//     name: "Jus Et Boissons",
 //   },
 //   {
-//       "title": "ParaPharma",
-//       "url": "/collection",
-//       "cat": "CAT_ParaPharma",
-//       "sub": []
+//     image: "/assets/img/category/Activité_2.png",
+//     url: "category?cat=Activité_2",
+//     name: "Produits Laitiers",
 //   },
 //   {
-//       "title": "Pharma",
-//       "url": "/collection",
-//       "cat": "CAT_Pharma",
-//       "sub": [
-//           {
-//               "title": "Not Subsidized",
-//               "sub_cat": "NSB"
-//           },
-//           {
-//               "title": "Subsidized",
-//               "sub_cat": "SB"
-//           }
-//       ]
-//   }
-// ]
+//     image: "/assets/img/category/category-8.png",
+//     url: "category?cat=Activité_3",
+//     name: "Fromage",
+//   },
+// ];
 export const categorySlider = [
   {
     image: "/assets/img/category/category-1.png",
@@ -274,20 +333,22 @@ export const productSlider = [
     oldPrice: 200,
   },
 ];
+
 export const homeOffer = [
   {
-    image: "/assets/img/offer/offer-1.png",
+    image: "/assets/img/product/product-2.png",
     url: "category",
-    title: "True Basics Flat 10% off",
-    subTitle: "Clinically Researched Essentials",
+    title: "CENTRUN Multivitamin 30 Tablets",
+    subTitle: "Up to 50% off",
   },
   {
-    image: "/assets/img/offer/offer-2.png",
+    image: "/assets/img/product/product-1.png",
     url: "category",
-    title: "True Basics Flat 10% off",
-    subTitle: "Clinically Researched Essentials",
+    title: "Advil 200mg 20 Tablets",
+    subTitle: "Up to 50% off",
   },
 ];
+
 export const brandSlider = [
   {
     image: "/assets/img/brand/brand-1.png",
@@ -382,3 +443,10 @@ export const popularCategorySlider = [
     name: "BrandName",
   },
 ];
+export const ALL_PERMISSIONS = {
+  COMPLAINT: "COMPLAINT",
+  WISHLIST: "WISHLIST",
+  ORDER: "ORDER",
+  OPEN_INVOICE: "OPEN_INVOICE",
+  SALES_INVOICE: "SALES_INVOICE",
+};

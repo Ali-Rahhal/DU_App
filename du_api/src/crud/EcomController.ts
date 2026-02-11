@@ -164,8 +164,8 @@ const getProducts = async ({
 
   const countQuery = Prisma.sql`SELECT DISTINCT count(*) as count
   FROM item as it
-  LEFT JOIN v_items as vi ON vi.Code = it.item_code
-  LEFT JOIN item_price_list as ipl ON ipl.item_code = it.item_code
+  inner JOIN v_items as vi ON vi.Code = it.item_code
+  inner JOIN item_price_list as ipl ON ipl.item_code = it.item_code
 
   WHERE it.is_active = 1
   AND it.status = 1
@@ -406,6 +406,7 @@ const addItemToFavorite = async (userId: number, itemCode: string) => {
       item_code: true,
     },
   });
+  console.log(result);
   return result;
 };
 const removeItemFromFavorite = async (userId: number, itemCode: string) => {
@@ -425,7 +426,7 @@ const getFavoriteItems = async (
   }: {
     take?: number;
     skip?: number;
-  }
+  },
 ) => {
   const count = await prisma.favorite_items.count({
     where: {
@@ -466,14 +467,14 @@ const getFavoriteItems = async (
      (SELECT DISTINCT it.*, ipl.price, ipl.default_discount, cat = vi.[Category],  cat_code = vi.[CategoryCode]
       FROM item as it
       LEFT JOIN v_items as vi ON vi.Code = it.item_code
-      LEFT JOIN item_price_list as ipl ON ipl.item_code = it.item_code and ipl.uom_code = 'FA'
+      LEFT JOIN item_price_list as ipl ON ipl.item_code = it.item_code
       RIGHT JOIN favorite_items as fi ON fi.item_code = it.item_code
       WHERE ipl.is_active=1 AND it.is_active = 1 AND  it.status = 1 AND  ipl.is_active = 1
       AND fi.account_id = ${userId}
       ORDER BY date_added DESC
       OFFSET ${skip} ROWS FETCH NEXT ${take} ROWS ONLY
      ) as i
-   JOIN dbo.item_uom AS iu ON iu.item_code = i.item_code and iu.uom_code = 'FA'
+   JOIN dbo.item_uom AS iu ON iu.item_code = i.item_code
    LEFT JOIN dbo.warehouse_current_stock AS wcs ON wcs.item_code = iu.item_code
    WHERE
      iu.is_active = 1
@@ -511,7 +512,7 @@ const addItemToCart = async (
   userId: number,
   itemCode: string,
   barcode: string,
-  quantity: number
+  quantity: number,
 ) => {
   // const cart: any = await prisma.$queryRaw`
   // SELECT TOP 1 c.item_code,
@@ -551,7 +552,7 @@ const addItemToCart = async (
     });
     if (found) {
       newQuantity += found.quantity;
-      if (newQuantity > 99) throw new Error("Quantity limit exceeded");
+      // if (newQuantity > 99) throw new Error("Quantity limit exceeded");
 
       // const stock = await checkStock(itemCode);
       // if (stock < newQuantity) throw new Error("Insufficient stock");
@@ -596,10 +597,10 @@ const updateItemInCart = async (
   userId: number,
   itemCode: string,
 
-  quantity: number
+  quantity: number,
 ) => {
   const result = await prisma.$transaction(async (tx) => {
-    if (quantity > 99) throw new Error("Quantity limit exceeded");
+    // if (quantity > 99) throw new Error("Quantity limit exceeded");
     const found = await prisma.shopping_cart.findFirst({
       where: {
         account_id: userId,
@@ -611,7 +612,7 @@ const updateItemInCart = async (
       },
     });
     if (found) {
-      if (quantity > 99) throw new Error("Quantity limit exceeded");
+      // if (quantity > 99) throw new Error("Quantity limit exceeded");
       const stock = await checkStock(itemCode);
       // if (stock < quantity) throw new Error("Insufficient stock");
       const updated = await prisma.shopping_cart.update({
@@ -651,7 +652,7 @@ const getCartItems = async (
   }: {
     take?: number;
     skip?: number;
-  }
+  },
 ) => {
   const count = await prisma.shopping_cart.count({
     where: {
@@ -680,11 +681,11 @@ END,
   quantity = SUM(sc.quantity)
 FROM dbo.shopping_cart AS sc
 JOIN dbo.item_uom AS iu
-   ON iu.barcode = sc.barcode and iu.uom_code = 'FA'
+   ON iu.barcode = sc.barcode
 JOIN dbo.item AS i
    ON i.item_code = iu.item_code
 JOIN dbo.item_price_list AS ipl
-   ON ipl.item_code = iu.item_code and ipl.uom_code = 'FA'
+   ON ipl.item_code = iu.item_code
 WHERE sc.account_id = ${userId}
  AND sc.is_active = 1
  AND iu.is_active = 1

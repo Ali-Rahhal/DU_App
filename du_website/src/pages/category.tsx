@@ -11,9 +11,9 @@ import { Button, Spinner, Table } from "react-bootstrap";
 
 export async function getServerSideProps(context: any) {
   let { cat, s } = context.query;
-  if (cat === undefined) {
-    cat = null;
-  }
+  // if (cat === undefined) {
+  //   cat = null;
+  // }
   // if (!["P", "PP", "NP"].includes(cat)) {
   //   cat = null;
   // }
@@ -54,7 +54,7 @@ const CategoryPage = ({
       | "three-column"
       | "four-column"
       | "five-column"
-      | "list-view"
+      | "list-view",
   );
   const [productsPag, setProductsPag] = useState<Item[]>(products);
   const [reachedEnd, setReachedEnd] = useState(false);
@@ -395,8 +395,8 @@ const CategoryPage = ({
                       <span className="fs-xs text-muted">18</span>
                     </li>
                   </ul>
-                </div> */}
-              {/* </div> */}
+                </div>
+              </div> */}
             </div>
           </div>
         </div>

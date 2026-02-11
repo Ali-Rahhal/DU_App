@@ -289,7 +289,7 @@ model attribute_value {
   is_active                   Boolean  @default(true, map: "DF_attribute_value_is_active")
   date_added                  DateTime @default(now(), map: "DF_attribute_value_date_added")
   last_edited                 DateTime @default(now(), map: "DF_attribute_value_last_edited")
-  sort_order                  Int      @default(0, map: "DF__attribute__sort___32441702")
+  sort_order                  Int      @default(0, map: "DF__attribute__sort___2355FD1A")
 }
 
 model attribute_value_entity {
@@ -663,6 +663,7 @@ model client_item_consumption {
   is_active                  Boolean?  @default(true, map: "DF_client_item_consumption_is_active")
   date_added                 DateTime? @default(now(), map: "DF_client_item_consumption_date_added") @db.DateTime
   last_edited                DateTime? @default(now(), map: "DF_client_item_consumption_last_edited") @db.DateTime
+  transaction_type           Int?      @default(3, map: "DF__client_it__trans__729CF42D")
 }
 
 model client_location {
@@ -766,6 +767,7 @@ model client_route {
   planned_date         DateTime?
   original_week_number Int?
   original_day_number  Int?
+  section_index        Int?
 }
 
 model client_route_history {
@@ -1619,7 +1621,7 @@ model criteria {
   sort_order             Int?
   reporting_visibility   Boolean                 @default(true, map: "DF__criteria__report__23DE44F1")
   is_supervisor_required Boolean?
-  coefficient            Int                     @default(0, map: "DF__criteria__coeffi__314FF2C9")
+  coefficient            Int                     @default(0, map: "DF__criteria__coeffi__244A2153")
   client_criteria_value  client_criteria_value[]
   item_criteria_value    item_criteria_value[]
   user_criteria_value    user_criteria_value[]
@@ -2477,33 +2479,6 @@ model game_prize {
   last_edited    DateTime
 }
 
-model grid_report_condition {
-  grid_report_condition_id Int     @id(map: "PK__GRID_REP__4E6DF1C92DB0EB16")
-  grid_report_filter_id    Int?
-  description              String?
-  type                     Int?
-  is_where                 Int?
-  is_active                Int?
-}
-
-model grid_report_filter {
-  grid_report_filter_id Int     @id(map: "PK__grid_rep__4345CA1623269195")
-  grid_report_header_id Int?
-  description           String? @db.NVarChar(150)
-  type                  Int?
-  is_active             Int?
-}
-
-model grid_report_header {
-  grid_report_header_id Int     @id(map: "PK__GRID_REP__790E30D64DFD9C43")
-  parent_id             Int?
-  description           String? @db.NVarChar(4000)
-  is_active             Int?
-  grid_report_name      String? @db.NVarChar(100)
-  default_image         String? @db.NVarChar(100)
-  refresh_steps         String?
-}
-
 model grid_views {
   grid_view_id   BigInt    @id(map: "PK_grid_views")
   description    String?   @db.NVarChar(250)
@@ -2555,7 +2530,7 @@ model group_right {
 
 model image {
   image_id           BigInt   @id(map: "PK_item_image")
-  description        String?  @db.NVarChar(50)
+  description        String?  @db.NVarChar(250)
   alt_description    String?  @db.NVarChar(50)
   owner_code         String   @db.NVarChar(50)
   owner_type         Int      @db.TinyInt
@@ -2569,15 +2544,6 @@ model image {
   last_edited        DateTime @default(now(), map: "DF_item_image_last_edited")
   user_code          String?  @db.NVarChar(50)
   upload_status      Int?
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model import_delice_load_request_temp_table {
-  User_Code String? @map("User Code") @db.NVarChar(50)
-  Item_Code String? @map("Item Code") @db.NVarChar(50)
-  QTY       String? @db.NVarChar(50)
-
-  @@ignore
 }
 
 model import_processes {
@@ -3500,6 +3466,15 @@ model open_invoice_backup {
   payment_condition         String?  @db.NVarChar(50)
   business_unit_code        String?  @db.NVarChar(50)
   brand_code                String?  @db.NVarChar(50)
+  vat_currency_code         String?  @db.NVarChar(50)
+  vat_invoice_amount        Decimal? @db.Decimal(18, 4)
+  vat_remaining_amount      Decimal? @db.Decimal(18, 4)
+  vat_currency_rate         Decimal? @db.Decimal(18, 4)
+  moh_currency_code         String?  @db.NVarChar(50)
+  moh_currency_rate         Decimal? @db.Decimal(18, 4)
+  equivalent_amount_usd     Decimal? @db.Decimal(18, 4)
+  moh_ratio_usd             Decimal? @db.Decimal(18, 4)
+  moh_ratio_lbp             Decimal? @db.Decimal(18, 4)
 
   @@ignore
 }
@@ -3524,7 +3499,7 @@ model parameter {
   parameter_name String   @db.NVarChar(Max)
   description    String?  @db.NVarChar(500)
   type           Int
-  value_type     String?  @db.NVarChar(Max)
+  value_type     String?  @db.NVarChar(500)
   is_editable    Boolean? @default(true, map: "DF_parameter_is_editable")
   date_added     DateTime @default(now(), map: "DF_parameter_date_added")
   last_edited    DateTime @default(now(), map: "DF_parameter_last_edited")
@@ -3997,18 +3972,20 @@ model QUAYO_FAILED_JOBS_LOG {
 }
 
 model quota {
-  quota_id      BigInt    @id(map: "PK_quota") @default(autoincrement())
-  target_type   Int
-  target_code   String    @db.NVarChar(50)
-  item_code     String    @db.NVarChar(50)
-  uom_code      String    @db.NVarChar(50)
-  max_quantity  Float
-  used_quantity Float?
-  start_date    DateTime? @db.Date
-  end_date      DateTime? @db.Date
-  is_active     Boolean?  @default(true, map: "DF_quota_is_active")
-  date_added    DateTime? @default(now(), map: "DF_quota_date_added") @db.DateTime
-  last_edited   DateTime? @default(now(), map: "DF_quota_last_edited") @db.DateTime
+  quota_id         BigInt    @id(map: "PK_quota") @default(autoincrement())
+  target_type      Int
+  target_code      String    @db.NVarChar(50)
+  item_code        String    @db.NVarChar(50)
+  uom_code         String    @db.NVarChar(50)
+  max_quantity     Float
+  used_quantity    Float?
+  start_date       DateTime? @db.Date
+  end_date         DateTime? @db.Date
+  is_active        Boolean?  @default(true, map: "DF_quota_is_active")
+  date_added       DateTime? @default(now(), map: "DF_quota_date_added") @db.DateTime
+  last_edited      DateTime? @default(now(), map: "DF_quota_last_edited") @db.DateTime
+  transaction_type Int?
+  assigned_type    Int       @default(1, map: "DF__quota__assigned___691389F3")
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
@@ -4029,6 +4006,8 @@ model quota_history {
   is_updated       Boolean?  @default(true, map: "DF_quota_history_is_updated")
   is_deleted       Boolean?  @default(true, map: "DF_quota_history_is_deleted")
   user_code        String    @db.NVarChar(50)
+  transaction_type Int?
+  assigned_type    Int       @default(1, map: "DF__quota_his__assig__6A07AE2C")
 
   @@ignore
 }
@@ -4173,60 +4152,6 @@ model report {
   is_multi_select         Boolean   @default(true, map: "DF__report__is_multi__40DB6B15")
   include_chart           Boolean   @default(false, map: "DF_report_include_chart")
   freeze_actions          Boolean   @default(false, map: "DF__report__freeze_a__6E5BA9C3")
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model REPORT_133516152939234218 {
-  id            String?   @db.NVarChar(50)
-  Date          DateTime? @db.Date
-  OrderNb       String    @db.NVarChar(50)
-  Salesman      String?   @db.NVarChar(50)
-  Client        String?   @db.NVarChar(400)
-  OrderType     String?   @db.VarChar(11)
-  OrderStatus   String?   @db.VarChar(21)
-  Currency      String?   @db.NVarChar(50)
-  TotalAmount   Decimal?  @db.Decimal(18, 2)
-  TotalDiscount Decimal?  @db.Decimal(18, 2)
-  IsExpress     String    @db.VarChar(3)
-  OrderSource   String    @db.VarChar(9)
-
-  @@ignore
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model REPORT_133535163637125692 {
-  id            String?   @db.NVarChar(50)
-  Date          DateTime? @db.Date
-  OrderNb       String    @db.NVarChar(50)
-  Salesman      String?   @db.NVarChar(50)
-  Client        String?   @db.NVarChar(400)
-  OrderType     String?   @db.VarChar(11)
-  OrderStatus   String?   @db.VarChar(21)
-  Currency      String?   @db.NVarChar(50)
-  TotalAmount   Decimal?  @db.Decimal(18, 2)
-  TotalDiscount Decimal?  @db.Decimal(18, 2)
-  IsExpress     String    @db.VarChar(3)
-  OrderSource   String    @db.VarChar(9)
-
-  @@ignore
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model REPORT_133540357442324196 {
-  id            String?   @db.NVarChar(50)
-  Date          DateTime? @db.Date
-  OrderNb       String    @db.NVarChar(50)
-  Salesman      String?   @db.NVarChar(50)
-  Client        String?   @db.NVarChar(400)
-  OrderType     String?   @db.VarChar(11)
-  OrderStatus   String?   @db.VarChar(21)
-  Currency      String?   @db.NVarChar(50)
-  TotalAmount   Decimal?  @db.Decimal(18, 2)
-  TotalDiscount Decimal?  @db.Decimal(18, 2)
-  IsExpress     String    @db.VarChar(3)
-  OrderSource   String    @db.VarChar(9)
-
-  @@ignore
 }
 
 model report_action {
@@ -5470,24 +5395,6 @@ model task {
   last_edited      DateTime  @default(now(), map: "DF_task_last_edited")
 }
 
-model task_module_statistics_template_details {
-  task_module_statistics_template_detail_id BigInt   @id(map: "PK_task_module_statistics_template_details") @default(autoincrement())
-  task_module_template_id                   BigInt
-  chart_type                                Int
-  colors                                    String?  @db.NVarChar(500)
-  query                                     String?  @db.NVarChar(Max)
-  query_argument                            String?  @db.NVarChar(500)
-  procedure_name                            String?  @db.NVarChar(50)
-  entity_name                               String?  @db.NVarChar(50)
-  token_type                                String?  @db.NVarChar(50)
-  refresh_type                              Int      @default(0, map: "DF_task_module_statistics_template_details_refresh_type")
-  allow_refresh                             Boolean  @default(false, map: "DF_task_module_statistics_template_details_allow_refresh")
-  is_clickable                              Boolean  @default(false, map: "DF_task_module_statistics_template_details_is_clickable")
-  is_active                                 Boolean  @default(true, map: "DF_task_module_statistics_template_details_is_active")
-  date_added                                DateTime @default(now(), map: "DF_task_module_statistics_template_details_date_added")
-  last_edited                               DateTime @default(now(), map: "DF_task_module_statistics_template_details_last_edited")
-}
-
 model task_module_template {
   task_module_template_id          Int       @id(map: "PK_task_module_template")
   description                      String?   @db.NVarChar(400)
@@ -5547,544 +5454,6 @@ model TBL_YEARS_RANGES {
   Month      String?   @db.NVarChar(Max)
   Start_Date DateTime? @db.DateTime
   End_Date   DateTime? @db.DateTime
-
-  @@ignore
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model TEMP_CALL_STEPS__123 {
-  call_step_template_id BigInt?
-  description           String?  @db.NVarChar(100)
-  client_code           String?  @db.VarChar(50)
-  client_type           Int?
-  is_order_mandatory    Boolean?
-
-  @@ignore
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model TEMP_CLIENT__123 {
-  client_code          String    @db.NVarChar(50)
-  erp_client_code      String?   @db.NVarChar(50)
-  description          String?   @db.NVarChar(400)
-  alt_description      String?   @db.NVarChar(400)
-  currency_code        String?   @db.NVarChar(50)
-  longitude            String?   @db.VarChar(20)
-  latitude             String?   @db.VarChar(20)
-  type                 Int?
-  parent_client_code   String?   @db.NVarChar(50)
-  status_id            Int
-  generator_user_code  String?   @db.NVarChar(50)
-  generation_date      DateTime?
-  approver_user_code   String?   @db.NVarChar(50)
-  approval_date        DateTime?
-  creator_user_code    String?   @db.NVarChar(50)
-  is_processed         Int       @db.TinyInt
-  date_added           DateTime
-  last_edited          DateTime
-  client_type          Int       @db.TinyInt
-  barcode              String?   @db.NVarChar(50)
-  nfc_code             String?   @db.NVarChar(50)
-  default_user_code    String?   @db.NVarChar(50)
-  billing_address_type Int
-  unique_identifier    Int
-
-  @@ignore
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model TEMP_CLIENT_1 {
-  client_code          String    @db.NVarChar(50)
-  erp_client_code      String?   @db.NVarChar(50)
-  description          String?   @db.NVarChar(400)
-  alt_description      String?   @db.NVarChar(400)
-  currency_code        String?   @db.NVarChar(50)
-  longitude            String?   @db.VarChar(20)
-  latitude             String?   @db.VarChar(20)
-  type                 Int?
-  parent_client_code   String?   @db.NVarChar(50)
-  status_id            Int
-  generator_user_code  String?   @db.NVarChar(50)
-  generation_date      DateTime?
-  approver_user_code   String?   @db.NVarChar(50)
-  approval_date        DateTime?
-  creator_user_code    String?   @db.NVarChar(50)
-  is_processed         Int       @db.TinyInt
-  date_added           DateTime
-  last_edited          DateTime
-  client_type          Int       @db.TinyInt
-  barcode              String?   @db.NVarChar(50)
-  nfc_code             String?   @db.NVarChar(50)
-  default_user_code    String?   @db.NVarChar(50)
-  billing_address_type Int
-  unique_identifier    Int
-
-  @@ignore
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model TEMP_CLIENT_2 {
-  client_code          String    @db.NVarChar(50)
-  erp_client_code      String?   @db.NVarChar(50)
-  description          String?   @db.NVarChar(400)
-  alt_description      String?   @db.NVarChar(400)
-  currency_code        String?   @db.NVarChar(50)
-  longitude            String?   @db.VarChar(20)
-  latitude             String?   @db.VarChar(20)
-  type                 Int?
-  parent_client_code   String?   @db.NVarChar(50)
-  status_id            Int
-  generator_user_code  String?   @db.NVarChar(50)
-  generation_date      DateTime?
-  approver_user_code   String?   @db.NVarChar(50)
-  approval_date        DateTime?
-  creator_user_code    String?   @db.NVarChar(50)
-  is_processed         Int       @db.TinyInt
-  date_added           DateTime
-  last_edited          DateTime
-  client_type          Int       @db.TinyInt
-  barcode              String?   @db.NVarChar(50)
-  nfc_code             String?   @db.NVarChar(50)
-  default_user_code    String?   @db.NVarChar(50)
-  billing_address_type Int
-  unique_identifier    Int
-
-  @@ignore
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model TEMP_CLIENT_U0004 {
-  client_code          String    @db.NVarChar(50)
-  erp_client_code      String?   @db.NVarChar(50)
-  description          String?   @db.NVarChar(400)
-  alt_description      String?   @db.NVarChar(400)
-  currency_code        String?   @db.NVarChar(50)
-  longitude            String?   @db.VarChar(20)
-  latitude             String?   @db.VarChar(20)
-  type                 Int?
-  parent_client_code   String?   @db.NVarChar(50)
-  status_id            Int
-  generator_user_code  String?   @db.NVarChar(50)
-  generation_date      DateTime?
-  approver_user_code   String?   @db.NVarChar(50)
-  approval_date        DateTime?
-  creator_user_code    String?   @db.NVarChar(50)
-  is_processed         Int       @db.TinyInt
-  date_added           DateTime
-  last_edited          DateTime
-  client_type          Int       @db.TinyInt
-  barcode              String?   @db.NVarChar(50)
-  nfc_code             String?   @db.NVarChar(50)
-  default_user_code    String?   @db.NVarChar(50)
-  billing_address_type Int
-  unique_identifier    Int
-
-  @@ignore
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model TEMP_CLIENT_U00041 {
-  client_code          String    @db.NVarChar(50)
-  erp_client_code      String?   @db.NVarChar(50)
-  description          String?   @db.NVarChar(400)
-  alt_description      String?   @db.NVarChar(400)
-  currency_code        String?   @db.NVarChar(50)
-  longitude            String?   @db.VarChar(20)
-  latitude             String?   @db.VarChar(20)
-  type                 Int?
-  parent_client_code   String?   @db.NVarChar(50)
-  status_id            Int
-  generator_user_code  String?   @db.NVarChar(50)
-  generation_date      DateTime?
-  approver_user_code   String?   @db.NVarChar(50)
-  approval_date        DateTime?
-  creator_user_code    String?   @db.NVarChar(50)
-  is_processed         Int       @db.TinyInt
-  date_added           DateTime
-  last_edited          DateTime
-  client_type          Int       @db.TinyInt
-  barcode              String?   @db.NVarChar(50)
-  nfc_code             String?   @db.NVarChar(50)
-  default_user_code    String?   @db.NVarChar(50)
-  billing_address_type Int
-  unique_identifier    Int
-
-  @@ignore
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model TEMP_CLIENT_U00044 {
-  client_code          String    @db.NVarChar(50)
-  erp_client_code      String?   @db.NVarChar(50)
-  description          String?   @db.NVarChar(400)
-  alt_description      String?   @db.NVarChar(400)
-  currency_code        String?   @db.NVarChar(50)
-  longitude            String?   @db.VarChar(20)
-  latitude             String?   @db.VarChar(20)
-  type                 Int?
-  parent_client_code   String?   @db.NVarChar(50)
-  status_id            Int
-  generator_user_code  String?   @db.NVarChar(50)
-  generation_date      DateTime?
-  approver_user_code   String?   @db.NVarChar(50)
-  approval_date        DateTime?
-  creator_user_code    String?   @db.NVarChar(50)
-  is_processed         Int       @db.TinyInt
-  date_added           DateTime
-  last_edited          DateTime
-  client_type          Int       @db.TinyInt
-  barcode              String?   @db.NVarChar(50)
-  nfc_code             String?   @db.NVarChar(50)
-  default_user_code    String?   @db.NVarChar(50)
-  billing_address_type Int
-  unique_identifier    Int
-
-  @@ignore
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model TEMP_ITEM_1 {
-  Id                    Int?
-  Item_Code             String?  @db.VarChar(250)
-  description           String?  @db.VarChar(250)
-  Uom_Code              String?  @db.VarChar(250)
-  Client_Code           String?  @db.VarChar(250)
-  Price                 Float?
-  IS_TTC                Int?
-  Price_List_Code       String?  @db.VarChar(250)
-  PRICE_MARGIN          Float?
-  CURRENCY_CODE         String?  @db.VarChar(250)
-  CURRENCY_SYMBOL       String?  @db.VarChar(250)
-  Tax                   Float?
-  Tax_Code              String?  @db.VarChar(250)
-  Default_Discount      Float?
-  BARCODE               String?  @db.VarChar(2250)
-  RATIO_TO_BASE_UOM     Float?
-  CONSIGNMENT_ITEM_CODE String?  @db.VarChar(250)
-  PRICING_UOM_CODE      String?  @db.VarChar(250)
-  CONVERSION_MARGIN     Float?
-  SYMBOL                String?  @db.VarChar(250)
-  DECIMAL_DIGITS        Int?
-  is_dual               Boolean?
-  Stock_uom             String?  @db.VarChar(250)
-  stock_uom_ratio       Float?
-  item_order            Int?
-  brand_code            String?  @db.VarChar(250)
-  is_Consignment        Boolean?
-  distribution_type     Int?
-  item_type             Int?
-  return_type           Int?
-  is_main_uom           Boolean
-  must_stock_list       Int
-  return_price          Decimal? @db.Decimal(18, 4)
-  added_price           Decimal? @db.Decimal(18, 4)
-  is_new_item           Boolean
-
-  @@ignore
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model TEMP_ITEM_2 {
-  Id                    Int?
-  Item_Code             String?  @db.VarChar(250)
-  description           String?  @db.VarChar(250)
-  Uom_Code              String?  @db.VarChar(250)
-  Client_Code           String?  @db.VarChar(250)
-  Price                 Float?
-  IS_TTC                Int?
-  Price_List_Code       String?  @db.VarChar(250)
-  PRICE_MARGIN          Float?
-  CURRENCY_CODE         String?  @db.VarChar(250)
-  CURRENCY_SYMBOL       String?  @db.VarChar(250)
-  Tax                   Float?
-  Tax_Code              String?  @db.VarChar(250)
-  Default_Discount      Float?
-  BARCODE               String?  @db.VarChar(2250)
-  RATIO_TO_BASE_UOM     Float?
-  CONSIGNMENT_ITEM_CODE String?  @db.VarChar(250)
-  PRICING_UOM_CODE      String?  @db.VarChar(250)
-  CONVERSION_MARGIN     Float?
-  SYMBOL                String?  @db.VarChar(250)
-  DECIMAL_DIGITS        Int?
-  is_dual               Boolean?
-  Stock_uom             String?  @db.VarChar(250)
-  stock_uom_ratio       Float?
-  item_order            Int?
-  brand_code            String?  @db.VarChar(250)
-  is_Consignment        Boolean?
-  distribution_type     Int?
-  item_type             Int?
-  return_type           Int?
-  is_main_uom           Boolean
-  must_stock_list       Int
-  return_price          Decimal? @db.Decimal(18, 4)
-  added_price           Decimal? @db.Decimal(18, 4)
-  is_new_item           Boolean
-
-  @@ignore
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model TEMP_ITEM_U0004 {
-  Id                    Int?
-  Item_Code             String?  @db.VarChar(250)
-  description           String?  @db.VarChar(250)
-  Uom_Code              String?  @db.VarChar(250)
-  Client_Code           String?  @db.VarChar(250)
-  Price                 Float?
-  IS_TTC                Int?
-  Price_List_Code       String?  @db.VarChar(250)
-  PRICE_MARGIN          Float?
-  CURRENCY_CODE         String?  @db.VarChar(250)
-  CURRENCY_SYMBOL       String?  @db.VarChar(250)
-  Tax                   Float?
-  Tax_Code              String?  @db.VarChar(250)
-  Default_Discount      Float?
-  BARCODE               String?  @db.VarChar(2250)
-  RATIO_TO_BASE_UOM     Float?
-  CONSIGNMENT_ITEM_CODE String?  @db.VarChar(250)
-  PRICING_UOM_CODE      String?  @db.VarChar(250)
-  CONVERSION_MARGIN     Float?
-  SYMBOL                String?  @db.VarChar(250)
-  DECIMAL_DIGITS        Int?
-  is_dual               Boolean?
-  Stock_uom             String?  @db.VarChar(250)
-  stock_uom_ratio       Float?
-  item_order            Int?
-  brand_code            String?  @db.VarChar(250)
-  is_Consignment        Boolean?
-  distribution_type     Int?
-  item_type             Int?
-  return_type           Int?
-  is_main_uom           Boolean
-  must_stock_list       Int
-  return_price          Decimal? @db.Decimal(18, 4)
-  added_price           Decimal? @db.Decimal(18, 4)
-  is_new_item           Boolean
-
-  @@ignore
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model TEMP_ITEM_U00041 {
-  Id                    Int?
-  Item_Code             String?  @db.VarChar(250)
-  description           String?  @db.VarChar(250)
-  Uom_Code              String?  @db.VarChar(250)
-  Client_Code           String?  @db.VarChar(250)
-  Price                 Float?
-  IS_TTC                Int?
-  Price_List_Code       String?  @db.VarChar(250)
-  PRICE_MARGIN          Float?
-  CURRENCY_CODE         String?  @db.VarChar(250)
-  CURRENCY_SYMBOL       String?  @db.VarChar(250)
-  Tax                   Float?
-  Tax_Code              String?  @db.VarChar(250)
-  Default_Discount      Float?
-  BARCODE               String?  @db.VarChar(2250)
-  RATIO_TO_BASE_UOM     Float?
-  CONSIGNMENT_ITEM_CODE String?  @db.VarChar(250)
-  PRICING_UOM_CODE      String?  @db.VarChar(250)
-  CONVERSION_MARGIN     Float?
-  SYMBOL                String?  @db.VarChar(250)
-  DECIMAL_DIGITS        Int?
-  is_dual               Boolean?
-  Stock_uom             String?  @db.VarChar(250)
-  stock_uom_ratio       Float?
-  item_order            Int?
-  brand_code            String?  @db.VarChar(250)
-  is_Consignment        Boolean?
-  distribution_type     Int?
-  item_type             Int?
-  return_type           Int?
-  is_main_uom           Boolean
-  must_stock_list       Int
-  return_price          Decimal? @db.Decimal(18, 4)
-  added_price           Decimal? @db.Decimal(18, 4)
-  is_new_item           Boolean
-
-  @@ignore
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model TEMP_ITEM_U00044 {
-  Id                    Int?
-  Item_Code             String?  @db.VarChar(250)
-  description           String?  @db.VarChar(250)
-  Uom_Code              String?  @db.VarChar(250)
-  Client_Code           String?  @db.VarChar(250)
-  Price                 Float?
-  IS_TTC                Int?
-  Price_List_Code       String?  @db.VarChar(250)
-  PRICE_MARGIN          Float?
-  CURRENCY_CODE         String?  @db.VarChar(250)
-  CURRENCY_SYMBOL       String?  @db.VarChar(250)
-  Tax                   Float?
-  Tax_Code              String?  @db.VarChar(250)
-  Default_Discount      Float?
-  BARCODE               String?  @db.VarChar(2250)
-  RATIO_TO_BASE_UOM     Float?
-  CONSIGNMENT_ITEM_CODE String?  @db.VarChar(250)
-  PRICING_UOM_CODE      String?  @db.VarChar(250)
-  CONVERSION_MARGIN     Float?
-  SYMBOL                String?  @db.VarChar(250)
-  DECIMAL_DIGITS        Int?
-  is_dual               Boolean?
-  Stock_uom             String?  @db.VarChar(250)
-  stock_uom_ratio       Float?
-  item_order            Int?
-  brand_code            String?  @db.VarChar(250)
-  is_Consignment        Boolean?
-  distribution_type     Int?
-  item_type             Int?
-  return_type           Int?
-  is_main_uom           Boolean
-  must_stock_list       Int
-  return_price          Decimal? @db.Decimal(18, 4)
-  added_price           Decimal? @db.Decimal(18, 4)
-  is_new_item           Boolean
-
-  @@ignore
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model TEMP_PRICE_LIST_ASSIGNMENT_1 {
-  price_list_assignment_id BigInt
-  price_list_code          String @db.NVarChar(250)
-  assigned_type            Int    @db.TinyInt
-  assigned_code            String @db.NVarChar(50)
-
-  @@ignore
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model TEMP_PRICE_LIST_ASSIGNMENT_2 {
-  price_list_assignment_id BigInt
-  price_list_code          String @db.NVarChar(250)
-  assigned_type            Int    @db.TinyInt
-  assigned_code            String @db.NVarChar(50)
-
-  @@ignore
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model TEMP_PRICE_LIST_ASSIGNMENT_U0004 {
-  price_list_assignment_id BigInt
-  price_list_code          String @db.NVarChar(250)
-  assigned_type            Int    @db.TinyInt
-  assigned_code            String @db.NVarChar(50)
-
-  @@ignore
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model TEMP_PRICE_LIST_ASSIGNMENT_U00041 {
-  price_list_assignment_id BigInt
-  price_list_code          String @db.NVarChar(250)
-  assigned_type            Int    @db.TinyInt
-  assigned_code            String @db.NVarChar(50)
-
-  @@ignore
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model TEMP_PRICE_LIST_ASSIGNMENT_U00044 {
-  price_list_assignment_id BigInt
-  price_list_code          String @db.NVarChar(250)
-  assigned_type            Int    @db.TinyInt
-  assigned_code            String @db.NVarChar(50)
-
-  @@ignore
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model temp_survey_template_instance__123 {
-  survey_template_instance_id Int
-  survey_template_id          Int
-  description                 String?   @db.NVarChar(150)
-  alt_description             String    @db.NVarChar(150)
-  survey_instance_type_id     Int
-  start_date                  DateTime? @db.Date
-  end_date                    DateTime? @db.Date
-  is_backend_survey           Boolean?
-  is_mandatory                Boolean?
-  is_active                   Boolean
-  is_processed                Int       @db.TinyInt
-  date_added                  DateTime
-  last_edited                 DateTime
-  is_expanded                 Boolean
-  load_previous_data          Boolean?
-  is_web_survey               Boolean?
-  icona_name                  String?   @db.NVarChar(50)
-  table_name                  String?   @db.NVarChar(250)
-
-  @@ignore
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model temp_survey_template_instance_assignment__123 {
-  survey_template_instance_assignment_code String   @db.NVarChar(20)
-  survey_template_instance_id              BigInt
-  assignment_type                          Int
-  is_active                                Boolean
-  date_added                               DateTime
-  last_edited                              DateTime
-
-  @@ignore
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model TEMP_TRANSACTION_HEADER_1736793275982 {
-  TRANSACTION_HEADER_id BigInt?
-
-  @@ignore
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model TEMP_TRANSACTION_HEADER_1736793276165 {
-  TRANSACTION_HEADER_id BigInt?
-
-  @@ignore
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model TEMP_TRANSACTION_HEADER_1736793547210 {
-  TRANSACTION_HEADER_id BigInt?
-
-  @@ignore
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model TEMP_TRANSACTION_HEADER_1736793547575 {
-  TRANSACTION_HEADER_id BigInt?
-
-  @@ignore
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model TEMP_TRANSACTION_HEADER_1736793812312 {
-  TRANSACTION_HEADER_id BigInt?
-
-  @@ignore
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model TEMP_TRANSACTION_HEADER_1736793812567 {
-  TRANSACTION_HEADER_id BigInt?
-
-  @@ignore
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model TEMP_TRANSACTION_HEADER_1736845240945 {
-  TRANSACTION_HEADER_id BigInt?
-
-  @@ignore
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model TEMP_TRANSACTION_HEADER_1736845241181 {
-  TRANSACTION_HEADER_id BigInt?
 
   @@ignore
 }
@@ -6712,7 +6081,6 @@ model trip_item_summary {
   is_closed             Boolean?
   currency_code         String    @default("USD", map: "DF__trip_item__curre__5B196713") @db.NVarChar(50)
   uom_code              String?   @db.NVarChar(50)
-  distributor_code      String?   @db.NVarChar(50)
 
   @@index([item_code], map: "IX_TRIPITEMSUMMARY_RETURNS")
   @@ignore
@@ -6788,10 +6156,6 @@ model trip_summary {
   total_sales_amount           Float?
   total_invoice_tax            Float?
   total_invoice_discount       Float?
-  count_trx_without_scanning   Int?
-  count_invoiced_clients       Int?
-  total_tax                    Float?
-  distributor_code             String?   @db.NVarChar(50)
 }
 
 model UOM {
@@ -6978,7 +6342,7 @@ model user_parameter {
   parameter_id Int
   owner_type   Int      @db.TinyInt
   owner_code   String   @db.NVarChar(50)
-  value        String?  @db.NVarChar(Max)
+  value        String?  @db.NVarChar(500)
   is_active    Boolean  @default(true, map: "DF_user_parameter_is_active")
   date_added   DateTime @default(now(), map: "DF_user_parameter_date_added")
   last_edited  DateTime @default(now(), map: "DF_user_parameter_last_edited")
@@ -7362,6 +6726,8 @@ model warehouse_dispatching_list {
   is_processed                    Int
   expected_delivery_date          DateTime? @db.DateTime
   print_count                     Int?      @default(0, map: "DF__warehouse__print__4EAFC945")
+  confirmation_status             Int       @default(5, map: "DF__warehouse__confi__353C5092")
+  confirmation_date               DateTime? @db.DateTime
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
@@ -7398,14 +6764,14 @@ model warehouse_dispatching_list_pack {
   warehouse_dispatching_list_pack_id   BigInt    @id(map: "PK_warehouse_dispatching_list_pack") @default(autoincrement())
   warehouse_dispatching_list_pack_code String?   @db.NVarChar(50)
   warehouse_dispatching_list_id        BigInt
-  warehouse_preparation_trip_pack_id   Float?
+  warehouse_preparation_trip_pack_id   BigInt?
   status_id                            Int?
-  return_reason_id                     Int       @default(-1, map: "_DF_warehouse_dispatching_list_pack_return_reason_id")
   dispatch_date                        DateTime?
   is_active                            Boolean
   is_processed                         Int
   date_added                           DateTime?
   last_edited                          DateTime?
+  return_reason_id                     Int       @default(-1, map: "_DF_warehouse_dispatching_list_pack_return_reason_id")
   modified_date                        DateTime?
   comment                              String?   @db.NVarChar(250)
 
@@ -7423,6 +6789,7 @@ model warehouse_dispatching_list_transaction {
   is_active                                 Boolean?  @default(true, map: "DF_warehouse_dispatching_list_transaction_is_active")
   date_added                                DateTime? @default(now(), map: "DF_warehouse_dispatching_list_transaction_date_added") @db.DateTime
   last_edited                               DateTime? @default(now(), map: "DF_warehouse_dispatching_list_transaction_last_edited") @db.DateTime
+  sheet_number                              Int       @default(1, map: "DF__warehouse__sheet__5A78E347")
 }
 
 model warehouse_line {
@@ -7501,8 +6868,8 @@ model warehouse_preparation_trip {
 }
 
 model warehouse_preparation_trip_item {
-  warehouse_preparation_trip_item_id    BigInt    @id(map: "PK_warehouse_preparation_trip_item") @default(autoincrement())
-  warehouse_preparation_trip_id         BigInt?
+  warehouse_preparation_trip_item_id    Int       @id(map: "PK_warehouse_preparation_trip_item") @default(autoincrement())
+  warehouse_preparation_trip_id         Int?
   item_code                             String?   @db.NVarChar(50)
   uom_code                              String?   @db.NVarChar(50)
   requested_quantity                    Float?
@@ -7575,6 +6942,8 @@ model warehouse_preparation_trip_pack_item {
   warehouse_preparation_trip_transaction_items_id BigInt
   requested_quantity                              Float?
   approved_quantity                               Float
+  returned_quantity                               Float?
+  return_reason_id                                Int?
   uom_code                                        String?   @db.NVarChar(50)
   item_code                                       String    @db.NVarChar(50)
   lot_from                                        String?   @db.NVarChar(50)
@@ -7584,7 +6953,6 @@ model warehouse_preparation_trip_pack_item {
   is_processed                                    Int
   date_added                                      DateTime?
   last_edited                                     DateTime?
-  returned_quantity                               Float     @default(0, map: "DF_warehouse_preparation_trip_pack_item_returned_quantity")
 }
 
 model warehouse_preparation_trip_pack_put_away {
@@ -7622,10 +6990,15 @@ model warehouse_preparation_trip_transaction {
   transaction_type                            Int?
   date_added                                  DateTime?
   last_edited                                 DateTime?
-  is_proceseed                                Int?
+  is_proceseed                                Int
   last_edited_by                              String?   @db.NVarChar(50)
   is_active                                   Boolean   @default(true, map: "DF_warehouse_preparation_trip_transaction_is_active")
   is_processed                                Int       @default(2, map: "DF_warehouse_preparation_trip_transaction_is_proceseed")
+  is_audit                                    Int?
+  check_date                                  DateTime? @db.DateTime
+  cashier_checker                             String?   @db.NVarChar(50)
+  is_amount_collected                         Boolean?
+  is_returned                                 Boolean?
 
   @@index([transaction_status], map: "IX_TRIP_STATUS")
   @@index([is_active], map: "IX_TRIP_TRX_ACTIVE_STATUS")
@@ -7797,10 +7170,6 @@ model web_auto_login_session {
   is_active                 Boolean   @default(true, map: "DF_web_auto_login_session_is_active")
   date_added                DateTime  @default(now(), map: "DF_web_auto_login_session_date_added")
   last_edited               DateTime?
-
-  @@index([date_added], map: "INDX_date_added")
-  @@index([token], map: "INDX_hash_code")
-  @@index([user_code], map: "INDX_user_code")
 }
 
 model web_auto_login_session_log {
@@ -7817,10 +7186,6 @@ model web_auto_login_session_log {
   is_active                     Boolean   @default(true, map: "DF_web_auto_login_session_log_is_active")
   date_added                    DateTime  @default(now(), map: "DF_web_auto_login_session_log_date_added")
   last_edited                   DateTime?
-
-  @@index([date_added], map: "INDX_date_added1")
-  @@index([token], map: "INDX_hash_code1")
-  @@index([log_type], map: "INDX_log_type")
 }
 
 model web_complaint {
@@ -7872,7 +7237,7 @@ model web_complaint_history {
   action_id        Int      @default(0, map: "DF_web_complaint_history_action_id")
   comment          String?  @db.NVarChar(Max)
   is_active        Boolean  @default(true, map: "DF_web_complaint_history_is_active")
-  date_added       DateTime @default(now(), map: "DF__web_compl__date___405B9581") @db.DateTime
+  date_added       DateTime @default(now(), map: "DF__web_compl__date___4F2BBA3D") @db.DateTime
 }
 
 model web_complaint_type {
@@ -7988,6 +7353,7 @@ model wrong_transaction_body_20190118 {
 
   @@ignore
 }
+
 model user_permission {
   id                         Int                          @id(map: "PK__user_per__3213E83F430B829C") @default(autoincrement())
   code                       String?                      @db.NVarChar(50)
@@ -7995,6 +7361,7 @@ model user_permission {
   is_active                  Boolean?
   user_permission_assignment user_permission_assignment[]
 }
+
 model user_permission_assignment {
   id                 Int              @id(map: "PK_user_permission_assignment") @default(autoincrement())
   user_permission_id Int?
@@ -8004,4 +7371,56 @@ model user_permission_assignment {
   date_added         DateTime?        @default(now(), map: "DF_user_permission_assignment_date_added")
   user_permission    user_permission? @relation(fields: [user_permission_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK__user_perm__user___2C1E8537")
   web_accounts       web_accounts     @relation(fields: [web_account_id], references: [id], onUpdate: NoAction, map: "FK__user_perm__web_a__4D7FBB1E")
+}
+
+model item_return_quota {
+  id          BigInt    @id(map: "PK_item_return_quota") @default(autoincrement())
+  client_code String    @db.NVarChar(50)
+  item_code   String    @db.NVarChar(50)
+  lot_number  String    @db.NVarChar(50)
+  quantity    Int
+  is_active   Boolean   @default(true, map: "DF_item_return_quota_is_active")
+  date_added  DateTime  @default(now(), map: "DF_item_return_quota_date_added") @db.DateTime
+  last_edited DateTime? @db.DateTime
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model new_transaction_temp {
+  transaction_header_id   BigInt
+  transaction_header_code String    @db.NVarChar(50)
+  Source                  String?   @db.NVarChar(456)
+  Destination             String?   @db.NVarChar(456)
+  User                    String    @db.NVarChar(50)
+  Status                  String?   @db.NVarChar(110)
+  DocumentDate            DateTime
+  TotalAmount             Decimal   @db.Decimal(18, 4)
+  Comment                 String?
+  DeliveryDate            DateTime?
+
+  @@ignore
+}
+
+model qts_incoming_call_log {
+  qts_incoming_call_log_id BigInt   @id(map: "PK_qts_incoming_call_log") @default(autoincrement())
+  client_code              String?  @db.NVarChar(50)
+  phone_number             String   @db.NVarChar(50)
+  user_code                String   @db.NVarChar(50)
+  is_active                Boolean  @default(true, map: "DF_qts_incoming_call_log_is_active")
+  date_added               DateTime @default(now(), map: "DF_qts_incoming_call_log_date_added")
+  start_date               DateTime @default(now(), map: "DF_qts_incoming_call_log_start_date")
+  end_date                 DateTime @default(now(), map: "DF_qts_incoming_call_log_end_date")
+}
+
+model reshipped_sales_invoices {
+  id                                        BigInt   @id(map: "PK_reshipped_sales_invoices") @default(autoincrement())
+  transaction_header_id                     BigInt
+  warehouse_preparation_trip_transaction_id BigInt
+  date_added                                DateTime @default(now(), map: "DF_reshipped_sales_invoices_date_added") @db.DateTime
+}
+
+model user_daily_distances {
+  id                    BigInt   @id(map: "PK_user_daily_distances") @default(autoincrement())
+  log_date              DateTime @db.DateTime
+  user_code             String   @db.NVarChar(30)
+  total_distance_meters Decimal? @db.Decimal(18, 4)
 }

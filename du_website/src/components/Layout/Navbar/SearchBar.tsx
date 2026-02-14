@@ -1,5 +1,5 @@
 import Item from "@/Models/item";
-import ProductItem from "@/components/common/ProductItem";
+// import ProductItem from "@/components/common/ProductItem";
 import ProductItemList from "@/components/common/ProductItemList";
 import { getProducts } from "@/utils/apiCalls";
 import { useTranslations } from "next-intl";
@@ -75,9 +75,9 @@ const SearchBar = ({
                 overflowY: "auto",
               }}
             >
-              {searchProduct?.map((item, index) => (
-                <div style={{}}>
-                  <ProductItemList key={item.item_code} item={item} />
+              {searchProduct?.map((item) => (
+                <div key={item.item_code} style={{}}>
+                  <ProductItemList item={item} />
                 </div>
               ))}
             </div>

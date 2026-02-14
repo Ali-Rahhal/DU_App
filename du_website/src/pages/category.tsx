@@ -11,9 +11,9 @@ import { Button, Spinner, Table } from "react-bootstrap";
 
 export async function getServerSideProps(context: any) {
   let { cat, s } = context.query;
-  // if (cat === undefined) {
-  //   cat = null;
-  // }
+  if (cat === undefined) {
+    cat = null;
+  }
   // if (!["P", "PP", "NP"].includes(cat)) {
   //   cat = null;
   // }

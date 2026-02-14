@@ -20,7 +20,7 @@ const getAllAvailablePromotions = async () => {
   // Log active promotion IDs
 
   if (activePromotions.length === 0) {
-    return { promotionConds: [], promotionResults: [] }; // Return empty results if no active promotions
+    return []; // Return empty results if no active promotions
   }
 
   // Create values for the WITH clause
@@ -47,7 +47,7 @@ const getAllAvailablePromotions = async () => {
      JOIN promotion_condition pc ON p.promotion_id = pc.promotion_id
      where pc.is_active = 1
      and pc.condition_type = 1
-     `
+     `,
   );
 
   // Fetch promotion results
@@ -69,7 +69,7 @@ const getAllAvailablePromotions = async () => {
      JOIN promotion_result pr ON p.promotion_id = pr.promotion_id
      where pr.is_active = 1
      and pr.result_type = 1
-     `
+     `,
   );
 
   const conditions = promotionConds.map((pc) => {
@@ -87,10 +87,10 @@ const getAllAvailablePromotions = async () => {
 
   const groupedPromotions = activePromotions.map((p) => {
     const selectedCond = conditions.filter(
-      (pc) => pc.promotion_id === p.promotion_id
+      (pc) => pc.promotion_id === p.promotion_id,
     );
     const selectedRes = results.filter(
-      (pr) => pr.promotion_id === p.promotion_id
+      (pr) => pr.promotion_id === p.promotion_id,
     );
 
     return {
@@ -104,7 +104,7 @@ const getAllAvailablePromotions = async () => {
 
 const getProductPromotions = async (
   item_code: string,
-  user_id: number | null
+  user_id: number | null,
 ) => {
   const res: any = await prisma.$queryRaw`
 SELECT DISTINCT
@@ -145,7 +145,7 @@ GROUP BY p.description,
 
   res.forEach((item) => {
     const found = groupedResults.find(
-      (i) => i.promotion_id === item.promotion_id
+      (i) => i.promotion_id === item.promotion_id,
     );
     if (!found) {
       groupedResults.push({
@@ -283,7 +283,7 @@ const getPromotionDetails = async (promotion_ids: number[]) => {
   }[] = [];
   res.forEach((item) => {
     const found = groupedResults.find(
-      (i) => i.promotion_id === item.promotion_id
+      (i) => i.promotion_id === item.promotion_id,
     );
     if (!found) {
       groupedResults.push({

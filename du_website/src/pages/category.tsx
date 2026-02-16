@@ -5,6 +5,7 @@ import Item from "@/Models/item";
 import { currenncyCodeToSymbol } from "@/utils";
 import { getProducts } from "@/utils/apiCalls";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Button, Spinner, Table } from "react-bootstrap";
@@ -59,6 +60,7 @@ const CategoryPage = ({
   const [productsPag, setProductsPag] = useState<Item[]>(products);
   const [reachedEnd, setReachedEnd] = useState(false);
   const rt = useRouter();
+  const activeCat = rt.query.cat ?? null;
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     if (productsPag.length < 20) setReachedEnd(true);
@@ -330,20 +332,46 @@ const CategoryPage = ({
                     <SearchBar showSearch={false} />
                   </div>
                 </div>
-                {/* <div className="sidebar-widget widget_categories">
+                <div className="sidebar-widget widget_categories">
                   <h6 className="widget-title mb-2">Filters</h6>
                   <ul>
                     <li>
-                      <Link href="/category?cat=P">Pharma</Link>
+                      <Link
+                        href="/category"
+                        className={!activeCat ? "active-filter" : ""}
+                      >
+                        All
+                      </Link>
                     </li>
+
                     <li>
-                      <Link href="/category?cat=PP">ParaPharma</Link>
+                      <Link
+                        href="/category?cat=P"
+                        className={activeCat === "P" ? "active-filter" : ""}
+                      >
+                        Pharma
+                      </Link>
                     </li>
+
                     <li>
-                      <Link href="/category?cat=NP">Non Pharma</Link>
+                      <Link
+                        href="/category?cat=PP"
+                        className={activeCat === "PP" ? "active-filter" : ""}
+                      >
+                        ParaPharma
+                      </Link>
+                    </li>
+
+                    <li>
+                      <Link
+                        href="/category?cat=NP"
+                        className={activeCat === "NP" ? "active-filter" : ""}
+                      >
+                        Non Pharma
+                      </Link>
                     </li>
                   </ul>
-                </div> */}
+                </div>
               </div>
 
               {/* <div className="sidebar-wrapper mt-5 mt-md-0">

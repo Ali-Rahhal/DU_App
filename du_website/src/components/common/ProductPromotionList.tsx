@@ -109,6 +109,7 @@ const ProductPromotionList = ({
                   {promotion?.promotions?.map((item, index) => (
                     <div
                       className="media-body text-body small"
+                      key={index}
                       style={{
                         display: "flex",
                         justifyContent: "space-between",

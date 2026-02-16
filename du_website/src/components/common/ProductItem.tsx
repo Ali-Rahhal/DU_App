@@ -33,6 +33,7 @@ import ProductPromotionList from "./ProductPromotionList";
 //   creation_date?: string;
 // }
 const ProductItem = ({ item }: { item: Item }) => {
+  const [openPopup, setOpenPopup] = useState(false);
   const t = useTranslations();
   if (!item) return;
   let url = "/products/" + item?.item_code;
@@ -45,7 +46,6 @@ const ProductItem = ({ item }: { item: Item }) => {
   // let type = item?.status;
   let type = "";
   const { isAuth } = useAuthStore();
-  const [openPopup, setOpenPopup] = useState(false);
   return (
     <>
       <Modal

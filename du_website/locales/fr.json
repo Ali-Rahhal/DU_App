@@ -161,7 +161,10 @@
     "INVOICE": "Facture",
     "COMPLAINT": "Réclamation",
     "VISIT": "Visite",
-    "SCHEDULE_VISIT": "Planifier une visite"
+    "SCHEDULE_VISIT": "Planifier une visite",
+    "WISHLIST": "Liste de souhaits",
+    "OPEN_INVOICE": "Facture ouverte",
+    "SALES_INVOICE": "Facture de vente"
   },
   "complaint_page": {
     "header": "  Nous sommes là pour vous aider!",

@@ -164,7 +164,10 @@
     "INVOICE": "Invoice",
     "COMPLAINT": "Complaint",
     "VISIT": "Visit",
-    "SCHEDULE_VISIT": "Schedule Visit"
+    "SCHEDULE_VISIT": "Schedule Visit",
+    "WISHLIST": "Wishlist",
+    "OPEN_INVOICE": "Open Invoice",
+    "SALES_INVOICE": "Sales Invoice"
   },
   "complaint_page": {
     "header": "We Are Here to Help!",

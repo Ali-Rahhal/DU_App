@@ -40,7 +40,7 @@ const exportInvoice = async (sales_invoice: SalesInvoiceModel) => {
     React.createElement(CollectionTemplate, {
       creation_date: new Date(invoiceDetails.date_added).toLocaleDateString(),
       delivery_date: new Date(
-        invoiceDetails.delivery_date
+        invoiceDetails.delivery_date,
       ).toLocaleDateString(),
       customer_name: invoiceDetails.customer_name,
       sales_person: invoiceDetails.sales_person,
@@ -53,7 +53,7 @@ const exportInvoice = async (sales_invoice: SalesInvoiceModel) => {
       lines: invoiceDetails.lines,
       barcode: invoiceDetails.invoice_no,
       customer_no: invoiceDetails.customer_no,
-    })
+    }),
   );
   // Generate barcode using JsBarcode
   const svg = document.createElement("svg");
@@ -70,12 +70,12 @@ const exportInvoice = async (sales_invoice: SalesInvoiceModel) => {
   // Replace the placeholder with the barcode image
   const printElementWithBarcode = printElement.replace(
     /<div id="barcode"><\/div>/,
-    `${svg.outerHTML}`
+    `${svg.outerHTML}`,
   );
   var opt = {
     margin: 0.1,
     filename: `SALES_INVOICE_${sales_invoice.invoice_no}.pdf`,
-    jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+    jsPDF: { unit: "in", format: "letter", orientation: "portrait" as const },
     html2canvas: { scale: 4 },
   };
   await html2pdf().set(opt).from(printElementWithBarcode).save();

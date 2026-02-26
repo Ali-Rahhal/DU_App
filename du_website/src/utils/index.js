@@ -4,7 +4,7 @@ export const roundOff = (number, count = 2) => {
 export const discount = (price, oldPrice) =>
   oldPrice ? roundOff((100 * (oldPrice - price)) / oldPrice) : 0;
 const dev = process.env.NODE_ENV !== "production";
-export const server = "http://localhost:3000";
+export const server = "http://localhost:5005";
 
 // Delete Product from List By Id
 export const deleteProduct = (list, id) => {

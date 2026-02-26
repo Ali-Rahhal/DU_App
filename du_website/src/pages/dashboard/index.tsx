@@ -228,7 +228,7 @@ const index = () => {
             <div
               className="card"
               onClick={() => {
-                // http://localhost:4501/category
+                // http://localhost:5006/category
                 rt.push("/category");
               }}
             >
@@ -248,7 +248,7 @@ const index = () => {
             <div
               className="card"
               onClick={() => {
-                // http://localhost:4501/category
+                // http://localhost:5006/category
                 setOpenVisitModal(true);
               }}
             >
@@ -447,7 +447,7 @@ const index = () => {
                             {/* {status.text} */}
                             {t(
                               "statuses." +
-                                status.text?.toLowerCase().replace(" ", "_")
+                                status.text?.toLowerCase().replace(" ", "_"),
                             ) || status.text}
                           </span>
                         </div>
@@ -525,7 +525,7 @@ const index = () => {
                             {" "}
                             {t(
                               "statuses." +
-                                status.text?.toLowerCase().replace(" ", "_")
+                                status.text?.toLowerCase().replace(" ", "_"),
                             ) || status.text}
                           </span>
                         </div>
@@ -646,7 +646,8 @@ const index = () => {
             <div className="card card_2">
               <div>
                 <h5>
-                  {dashboardData?.transaction_header?.order_amount || "N/A"}{" "}
+                  {dashboardData?.transaction_header?.order_amount ||
+                    "N/A"}{" "}
                 </h5>
                 <p>
                   {/* Last Order */}
@@ -741,7 +742,7 @@ const index = () => {
                     id: "Products Sold By Category",
                   },
                   labels: dashboardData?.productsByCategory.map(
-                    (item) => item.category
+                    (item) => item.category,
                   ),
                   legend: {
                     show: true,
@@ -753,7 +754,7 @@ const index = () => {
                 //   data: item.val,
                 // }))}
                 series={dashboardData.productsByCategory.map((item) =>
-                  parseFloat(item.val)
+                  parseFloat(item.val),
                 )}
                 type="donut"
                 height={350}
@@ -903,7 +904,7 @@ const index = () => {
                 },
                 xaxis: {
                   categories: dashboardData.seasonalVariation.map(
-                    (item) => item.month
+                    (item) => item.month,
                   ),
                 },
               }}
@@ -912,14 +913,14 @@ const index = () => {
                   // name: "Total Sales",
                   name: t("total_sales"),
                   data: dashboardData.seasonalVariation.map(
-                    (item) => item.TotalSales
+                    (item) => item.TotalSales,
                   ),
                 },
                 {
                   // name: "Total Returns",
                   name: t("total_returns"),
                   data: dashboardData.seasonalVariation.map(
-                    (item) => item.TotalReturns
+                    (item) => item.TotalReturns,
                   ),
                 },
               ]}

@@ -54,15 +54,27 @@ const PUBLIC_API = "/api";
 const PRIVATE_API = "/api/auth";
 const app = new Hono();
 
+// app.use(
+//   "/api/*",
+//   cors({
+//     origin: (origin: string) => {
+//       return origin;
+//     },
+//     maxAge: 600,
+//     credentials: true,
+//   }),
+// );
+
 app.use(
   "/api/*",
   cors({
-    origin: (origin: string) => {
-      return origin;
-    },
-    maxAge: 600,
+    origin: [
+      "http://159.195.23.130:5007",
+      "http://localhost:5006", // optional for dev
+    ],
     credentials: true,
-  })
+    maxAge: 600,
+  }),
 );
 
 async function authMiddleware(c, next) {
@@ -468,7 +480,7 @@ app.post(`${PRIVATE_API}/add_to_cart`, async (c) => {
       userId,
       itemCode,
       barcode,
-      parseInt(quantity)
+      parseInt(quantity),
     );
     return c.json({
       message: "Added item to favorite",
@@ -819,7 +831,7 @@ app.get(`${PUBLIC_API}/get_product_promotions`, async (c) => {
       });
     const result = await getProductPromotions(
       item_code as string,
-      userId as number
+      userId as number,
     );
     return c.json({
       message: "Fetched Promotions ",
@@ -888,7 +900,7 @@ app.get(`${PUBLIC_API}/promotions`, async (c) => {
 //     root: "../images",
 //   })
 // );
-const port = 4500;
+const port = 5005;
 console.log(`Server is running on port ${port}`);
 
 serve({

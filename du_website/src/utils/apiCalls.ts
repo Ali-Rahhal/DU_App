@@ -1,11 +1,11 @@
 import axios, { AxiosResponse } from "axios";
-// export const publicApi = "http://localhost:4500/api";
-// export const privateApi = "http://localhost:4500/api/auth";
+// export const publicApi = "http://localhost:5005/api";
+// export const privateApi = "http://localhost:5005/api/auth";
 
-// export const publicApi = "http://localhost:4500/api";
-// export const privateApi = "http://localhost:4500/api/auth";
+// export const publicApi = "http://localhost:5005/api";
+// export const privateApi = "http://localhost:5005/api/auth";
 const publicApi = process.env.NEXT_PUBLIC_API_URL;
-const privateApi = process.env.NEXT_PUBLIC_API_URL + "/auth";
+const privateApi = process.env.NEXT_PRIVATE_API_URL;
 
 const getCookieArray = (cookie: string) => {
   if (!cookie) return [];
@@ -37,7 +37,7 @@ const login = async ({
     },
     {
       withCredentials: true,
-    }
+    },
   );
 };
 const logout = async () => {
@@ -69,7 +69,7 @@ const saveComplaint = async (complaint: any) => {
     complaint,
     {
       withCredentials: true,
-    }
+    },
   );
 };
 const getUserComplaints = async () => {
@@ -143,7 +143,7 @@ const getDashboardData = async (): Promise<AxiosResponse> => {
 const changePassword = async (
   old_password: string,
   new_password: string,
-  confirmed_password: string
+  confirmed_password: string,
 ): Promise<AxiosResponse> => {
   return await axios.post(
     privateApi + "/change_password",
@@ -152,7 +152,7 @@ const changePassword = async (
       new_password,
       confirmed_password,
     },
-    { withCredentials: true }
+    { withCredentials: true },
   );
 };
 const getProducts = async (filters: {
@@ -197,7 +197,7 @@ const getProducts = async (filters: {
           ? `${filters.cookie.name}=${filters.cookie.value}`
           : "",
       },
-    }
+    },
   );
 };
 
@@ -206,7 +206,7 @@ const getProduct = async (
   cookie?: {
     name: string;
     value: string;
-  }
+  },
 ): Promise<AxiosResponse> => {
   return await axios.get(publicApi + `/get_product/${item_code}`, {
     headers: {
@@ -221,24 +221,24 @@ const addToFavorite = async (item_code: string): Promise<AxiosResponse> => {
     {
       item_code: item_code,
     },
-    { withCredentials: true }
+    { withCredentials: true },
   );
 };
 const removeFromFavorite = async (
-  item_code: string
+  item_code: string,
 ): Promise<AxiosResponse> => {
   return await axios.post(
     privateApi + `/remove_from_favorite`,
     {
       item_code: item_code,
     },
-    { withCredentials: true }
+    { withCredentials: true },
   );
 };
 const addToCart = async (
   item_code: string,
   barcode: string,
-  quantity: number
+  quantity: number,
 ): Promise<AxiosResponse> => {
   return await axios.post(
     privateApi + `/add_to_cart`,
@@ -247,7 +247,7 @@ const addToCart = async (
       barcode: barcode,
       quantity: quantity,
     },
-    { withCredentials: true }
+    { withCredentials: true },
   );
 };
 const removeFromCart = async (item_code: string): Promise<AxiosResponse> => {
@@ -256,7 +256,7 @@ const removeFromCart = async (item_code: string): Promise<AxiosResponse> => {
     {
       item_code: item_code,
     },
-    { withCredentials: true }
+    { withCredentials: true },
   );
 };
 const getCartItems = async (): Promise<AxiosResponse> => {
@@ -266,7 +266,7 @@ const getCartItems = async (): Promise<AxiosResponse> => {
 };
 const updateCartItem = async (
   item_code: string,
-  quantity: number
+  quantity: number,
 ): Promise<AxiosResponse> => {
   return await axios.post(
     privateApi + `/update_cart_item`,
@@ -274,7 +274,7 @@ const updateCartItem = async (
       item_code: item_code,
       quantity: quantity,
     },
-    { withCredentials: true }
+    { withCredentials: true },
   );
 };
 const getFavoriteItems = async ({
@@ -296,7 +296,7 @@ const getFavoriteItems = async ({
     privateApi + `/get_favorite_items?${params.toString()}`,
     {
       withCredentials: true,
-    }
+    },
   );
 };
 
@@ -319,14 +319,14 @@ const updateUserDetails = async ({
       phone_number,
       address,
     },
-    { withCredentials: true }
+    { withCredentials: true },
   );
 };
 const placeOrder = async (): Promise<AxiosResponse> => {
   return await axios.post(
     privateApi + `/place_order`,
     {},
-    { withCredentials: true }
+    { withCredentials: true },
   );
 };
 const getOrders = async (search?: string): Promise<AxiosResponse> => {
@@ -377,7 +377,7 @@ const getSalesOrder = async (): Promise<AxiosResponse> => {
   });
 };
 const getInvoiceDetails = async (
-  invoice_no: string
+  invoice_no: string,
 ): Promise<AxiosResponse> => {
   return await axios.get(privateApi + `/get_invoice_details`, {
     params: {
@@ -387,13 +387,13 @@ const getInvoiceDetails = async (
   });
 };
 const getProductPromotion = async (
-  item_code: string
+  item_code: string,
 ): Promise<AxiosResponse> => {
   return await axios.get(
     publicApi + `/get_product_promotions?item_code=${item_code}`,
     {
       withCredentials: true,
-    }
+    },
   );
 };
 // const { password, first_name, last_name, phone_number } = body;
@@ -416,7 +416,7 @@ const createChild = async ({
       last_name,
       phone_number,
     },
-    { withCredentials: true }
+    { withCredentials: true },
   );
 };
 // child_id,
@@ -447,7 +447,7 @@ const editChild = async ({
       last_name,
       phone_number,
     },
-    { withCredentials: true }
+    { withCredentials: true },
   );
 };
 
@@ -477,7 +477,7 @@ const disableChild = async (child_id: number): Promise<AxiosResponse> => {
     {
       child_id,
     },
-    { withCredentials: true }
+    { withCredentials: true },
   );
 };
 const enableChild = async (child_id: number): Promise<AxiosResponse> => {
@@ -486,7 +486,7 @@ const enableChild = async (child_id: number): Promise<AxiosResponse> => {
     {
       child_id,
     },
-    { withCredentials: true }
+    { withCredentials: true },
   );
 };
 const deleteChild = async (child_id: number): Promise<AxiosResponse> => {
@@ -495,7 +495,7 @@ const deleteChild = async (child_id: number): Promise<AxiosResponse> => {
     {
       child_id,
     },
-    { withCredentials: true }
+    { withCredentials: true },
   );
 };
 const getAllPermissions = async (): Promise<AxiosResponse> => {
@@ -516,7 +516,7 @@ const updateChildPermissions = async ({
       child_id,
       permissionsIds,
     },
-    { withCredentials: true }
+    { withCredentials: true },
   );
 };
 export {

@@ -2,7 +2,7 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "cron": "tsx --watch src/cron.ts",
-    "build": "npx esbuild src/index.ts --platform=node --bundle --minify --outfile=index.js"
+    "build": "npx esbuild src/index.ts --platform=node --bundle --minify --outfile=dist/index.js"
   },
   "dependencies": {
     "@hono/node-server": "^1.3.5",

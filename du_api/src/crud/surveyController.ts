@@ -42,7 +42,7 @@ const getSurveyElements = async (surveyId: number) => {
                              END,
              [page_name] = sst.description,
              [question_type_id] = sq.question_type_id,
-             [question_type] = sqt.json_description,
+             [question_type] = sqt.description,
              [question_id] = sq.survey_question_id,
              [question_title] = sq.description,
              [input_type] = CASE
@@ -167,7 +167,7 @@ const getSurveyElements = async (surveyId: number) => {
               acceptedTypes: element.accepted_types,
               choices: choices
                 .filter(
-                  (choice: any) => choice.question_id === element.question_id
+                  (choice: any) => choice.question_id === element.question_id,
                 )
                 .map((choice: any) => choice.choice),
             },
@@ -236,7 +236,7 @@ const saveSurveyAnswer = async (
     question_type_id: number;
     type: string;
   }[],
-  userId: number
+  userId: number,
 ) => {
   const user = await prisma.web_accounts.findUnique({
     where: {
@@ -273,8 +273,8 @@ const saveSurveyAnswer = async (
               row.key,
               row.value,
               row.question_type_id,
-            ])})`
-        )
+            ])})`,
+        ),
       )};
 
       -- Fetch the table name

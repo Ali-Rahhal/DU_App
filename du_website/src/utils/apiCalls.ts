@@ -498,7 +498,7 @@ const deleteChild = async (child_id: number): Promise<AxiosResponse> => {
     { withCredentials: true },
   );
 };
-const getAllPermissions = async (): Promise<AxiosResponse> => {
+const getAllChildPermissions = async (): Promise<AxiosResponse> => {
   return await axios.get(privateApi + `/child/all_permissions`, {
     withCredentials: true,
   });
@@ -519,13 +519,113 @@ const updateChildPermissions = async ({
     { withCredentials: true },
   );
 };
+
+// User Management APIs
+const getUsers = async (
+  page: number = 1,
+  pageSize: number = 10,
+  search: string = "",
+): Promise<AxiosResponse> => {
+  const params = new URLSearchParams();
+  params.append("page", page.toString());
+  params.append("pageSize", pageSize.toString());
+  if (search) params.append("search", search);
+
+  return await axios.get(privateApi + `/users?${params.toString()}`, {
+    withCredentials: true,
+  });
+};
+
+const getUserById = async (id: number): Promise<AxiosResponse> => {
+  return await axios.get(privateApi + `/users/${id}`, {
+    withCredentials: true,
+  });
+};
+
+const createUser = async (userData: {
+  code?: string;
+  first_name: string;
+  last_name?: string;
+  description?: string;
+  password: string;
+  type?: number;
+  phone?: string;
+  balance?: number;
+  country?: string;
+  is_verified?: boolean;
+  is_blocked?: boolean;
+  is_active?: boolean;
+  parent_id?: number;
+  sequence?: number;
+}): Promise<AxiosResponse> => {
+  return await axios.post(privateApi + `/users`, userData, {
+    withCredentials: true,
+  });
+};
+
+const updateUser = async (
+  id: number,
+  userData: {
+    first_name?: string;
+    last_name?: string;
+    description?: string;
+    password?: string;
+    type?: number;
+    phone?: string;
+    balance?: number;
+    country?: string;
+    is_verified?: boolean;
+    is_blocked?: boolean;
+    is_active?: boolean;
+    parent_id?: number;
+    sequence?: number;
+  },
+): Promise<AxiosResponse> => {
+  return await axios.put(privateApi + `/users/${id}`, userData, {
+    withCredentials: true,
+  });
+};
+
+const toggleUserStatus = async (id: number): Promise<AxiosResponse> => {
+  return await axios.patch(
+    privateApi + `/users/${id}/toggle-status`,
+    {},
+    {
+      withCredentials: true,
+    },
+  );
+};
+
+const getUserPermissions = async (userId: number): Promise<AxiosResponse> => {
+  return await axios.get(privateApi + `/users/${userId}/permissions`, {
+    withCredentials: true,
+  });
+};
+
+const getAllPermissions = async (): Promise<AxiosResponse> => {
+  return await axios.get(privateApi + `/users/permissions/all`, {
+    withCredentials: true,
+  });
+};
+
+const updateUserPermissions = async (
+  userId: number,
+  permissionIds: number[],
+): Promise<AxiosResponse> => {
+  return await axios.put(
+    privateApi + `/users/${userId}/permissions`,
+    { permissionIds },
+    { withCredentials: true },
+  );
+};
+
 export {
   login,
   // register,
   // verifyEmail,
   // sendVerify,
   getPromotions,
-  getAllPermissions,
+  getAllChildPermissions,
   getProductPromotion,
   logout,
   disableChild,
@@ -568,4 +668,12 @@ export {
   updateChildPermissions,
   publicApi,
   privateApi,
+  getUsers,
+  getUserById,
+  createUser,
+  updateUser,
+  toggleUserStatus,
+  getUserPermissions,
+  updateUserPermissions,
+  getAllPermissions,
 };

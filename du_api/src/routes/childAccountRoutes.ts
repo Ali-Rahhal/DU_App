@@ -10,7 +10,7 @@ import {
   updatePermissions,
 } from "../crud/ChildAccountController";
 import { ensureParentAccount } from "../lib/utils";
-const CARouter = new Hono();
+const router = new Hono();
 const PUBLIC_API = "/api";
 const PRIVATE_API = "/api/auth";
 
@@ -42,8 +42,8 @@ async function parentMiddleware(c, next) {
   }
 }
 
-CARouter.use(`${PRIVATE_API}/child/*`, parentMiddleware);
-CARouter.post(`${PRIVATE_API}/child/create`, async (c) => {
+router.use(`${PRIVATE_API}/child/*`, parentMiddleware);
+router.post(`${PRIVATE_API}/child/create`, async (c) => {
   try {
     const parent_id = await getUserId(c);
     const body = await c.req.json();
@@ -68,7 +68,7 @@ CARouter.post(`${PRIVATE_API}/child/create`, async (c) => {
   }
 });
 
-CARouter.get(`${PRIVATE_API}/child`, async (c) => {
+router.get(`${PRIVATE_API}/child`, async (c) => {
   try {
     const parent_id = await getUserId(c);
     const result = await getChildAccounts({ parent_id });
@@ -78,7 +78,7 @@ CARouter.get(`${PRIVATE_API}/child`, async (c) => {
   }
 });
 
-CARouter.post(`${PRIVATE_API}/child/edit`, async (c) => {
+router.post(`${PRIVATE_API}/child/edit`, async (c) => {
   try {
     const parent_id = await getUserId(c);
     const body = await c.req.json();
@@ -104,7 +104,7 @@ CARouter.post(`${PRIVATE_API}/child/edit`, async (c) => {
 //   child_id,
 //   parent_id,
 // }: {
-CARouter.post(`${PRIVATE_API}/child/disable`, async (c) => {
+router.post(`${PRIVATE_API}/child/disable`, async (c) => {
   try {
     const parent_id = await getUserId(c);
     const body = await c.req.json();
@@ -115,7 +115,7 @@ CARouter.post(`${PRIVATE_API}/child/disable`, async (c) => {
     return c.json({ message: e.message, result: null }, 400);
   }
 });
-CARouter.post(`${PRIVATE_API}/child/enable`, async (c) => {
+router.post(`${PRIVATE_API}/child/enable`, async (c) => {
   try {
     const parent_id = await getUserId(c);
     const body = await c.req.json();
@@ -129,7 +129,7 @@ CARouter.post(`${PRIVATE_API}/child/enable`, async (c) => {
 // const deleteChild = async ({
 //   child_id,
 //   parent_id,
-CARouter.post(`${PRIVATE_API}/child/delete`, async (c) => {
+router.post(`${PRIVATE_API}/child/delete`, async (c) => {
   try {
     const parent_id = await getUserId(c);
     const body = await c.req.json();
@@ -141,7 +141,7 @@ CARouter.post(`${PRIVATE_API}/child/delete`, async (c) => {
   }
 });
 
-CARouter.get(`${PRIVATE_API}/child/all_permissions`, async (c) => {
+router.get(`${PRIVATE_API}/child/all_permissions`, async (c) => {
   try {
     const result = await getAllUserPermisions();
     return c.json({ message: "Permissions fetched", result });
@@ -149,7 +149,7 @@ CARouter.get(`${PRIVATE_API}/child/all_permissions`, async (c) => {
     return c.json({ message: e.message, result: null }, 400);
   }
 });
-CARouter.post(`${PRIVATE_API}/child/update_permissions`, async (c) => {
+router.post(`${PRIVATE_API}/child/update_permissions`, async (c) => {
   try {
     const parent_id = await getUserId(c);
     const body = await c.req.json();
@@ -165,4 +165,4 @@ CARouter.post(`${PRIVATE_API}/child/update_permissions`, async (c) => {
     return c.json({ message: e.message, result: null }, 400);
   }
 });
-export default CARouter;
+export default router;

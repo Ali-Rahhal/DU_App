@@ -7153,6 +7153,7 @@ model web_accounts {
   date_added                 DateTime                     @default(now(), map: "DF_web_accounts_date_added") @db.DateTime
   sequence                   Int                          @default(1, map: "DF__web_accou__seque__62E4EC58")
   parent_id                  Int?
+  role                       String?                      @default("USER", map: "DF_web_accounts_role") @db.NVarChar(50)
   favorite_items             favorite_items[]
   reset_codes                reset_codes?
   shopping_cart              shopping_cart[]

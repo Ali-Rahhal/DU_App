@@ -45,7 +45,8 @@ import {
   getProductPromotions,
   getShoppingCartPromotions,
 } from "./crud/PromotionController";
-import CARouter from "./routes/childAccountRoutes";
+import childAccountRoutes from "./routes/childAccountRoutes";
+import usersRoutes from "./routes/usersRoutes";
 //@ts-ignore
 BigInt.prototype.toJSON = function () {
   return this.toString();
@@ -102,7 +103,8 @@ async function getUserIdFromToken(c: Context) {
   return userId;
 }
 
-app.route("/", CARouter);
+app.route("/", childAccountRoutes);
+app.route(`${PRIVATE_API}/users`, usersRoutes);
 
 // app.post(`${PUBLIC_API}/register`, async (c) => {
 //   try {
@@ -900,6 +902,7 @@ app.get(`${PUBLIC_API}/promotions`, async (c) => {
 //     root: "../images",
 //   })
 // );
+
 const port = 5005;
 console.log(`Server is running on port ${port}`);
 

@@ -22,7 +22,7 @@
   "refund_policy": "Refund Policy",
   "ip_policy": "Intellectual Property Policy",
   "social": "Social",
-  "copyright": "Copyright © 2024 DU | All rights reserved.",
+  "copyright": "Copyright © 2026 DU | All rights reserved.",
   "shopping_cart": "Shopping Cart",
   "empty_cart": "Empty Cart",
   "remove": "Remove",
@@ -155,8 +155,10 @@
   "usercode": "User Code",
   "edit_permissions": "Edit Permissions",
   "promotions": "Promotions",
-
   "promotion_subtitle": "Check out the latest promotions from our partners",
+
+  "users": "Users",
+  "manage_your_users": "Manage Your Users",
 
   "permission": {
     "RETURN": "Return Order",

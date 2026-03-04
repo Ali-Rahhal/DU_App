@@ -14,6 +14,7 @@ const authRoutes = [
   "/fidelity",
   "/my-complaints",
   "/child-accounts",
+  "/users",
 ];
 export async function middleware(request: NextRequest) {
   // your middleware stuff here

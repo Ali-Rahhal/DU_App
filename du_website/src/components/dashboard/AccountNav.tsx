@@ -84,6 +84,19 @@ function AccountNav() {
                 </li>
               ) : null}
 
+              {type !== 2 ? (
+                <li
+                  className={
+                    "nav-item " + (active === "users" ? " active" : "")
+                  }
+                >
+                  <Link className="nav-link" href="users">
+                    <i className="fa fa-users"></i>
+                    {t("users")}
+                  </Link>
+                </li>
+              ) : null}
+
               <li
                 className={
                   "nav-item " + (active === "wishlist" ? " active" : "")

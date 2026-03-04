@@ -7,7 +7,7 @@ import {
   disableChild,
   editChild,
   enableChild,
-  getAllPermissions,
+  getAllChildPermissions,
   getChildren,
   updateChildPermissions,
 } from "@/utils/apiCalls";
@@ -99,7 +99,7 @@ const ChildAccountSettings = () => {
       permissionsIds: editPermissionsState?.user_permissions.map(
         (permission) => {
           return permission.id;
-        }
+        },
       ),
     })
       .then((result) => {
@@ -117,7 +117,7 @@ const ChildAccountSettings = () => {
   };
   useEffect(() => {
     fetchChildUsers();
-    getAllPermissions()
+    getAllChildPermissions()
       .then((res) => {
         setAllPermissions(res.data.result);
       })
@@ -206,7 +206,7 @@ const ChildAccountSettings = () => {
                         value: permission.id.toString(),
                         label: permission.code,
                       };
-                    }
+                    },
                   )}
                   onChange={(value) => {
                     setEditPermissionsState({
@@ -670,7 +670,7 @@ const ChildAccountSettings = () => {
                                   child?.user_permission_assignment?.map(
                                     (permission) => {
                                       return permission.user_permission;
-                                    }
+                                    },
                                   ),
                               });
                             }}
@@ -686,7 +686,7 @@ const ChildAccountSettings = () => {
                             onClick={() => {
                               prompt(
                                 "Are you sure you want to delete this user? Type 'yes' to confirm",
-                                "no"
+                                "no",
                               ) === "yes" &&
                                 deleteChild(child.id)
                                   .then((res) => {

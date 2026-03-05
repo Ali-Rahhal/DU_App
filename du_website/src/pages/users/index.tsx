@@ -503,16 +503,6 @@ const Users = () => {
                             >
                               {user.is_active ? "Active" : "Inactive"}
                             </Badge>
-                            {user.is_verified && (
-                              <Badge bg="info" text="white">
-                                Verified
-                              </Badge>
-                            )}
-                            {user.is_blocked && (
-                              <Badge bg="danger" text="white">
-                                Blocked
-                              </Badge>
-                            )}
                           </div>
                         </td>
                         <td>{formatDate(user.date_added)}</td>

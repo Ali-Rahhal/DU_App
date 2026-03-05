@@ -121,65 +121,71 @@ export const getUserById = async (id: number) => {
 
 // Create new user
 export const createUser = async (userData: Prisma.web_accountsCreateInput) => {
-  // Generate a unique code if not provided
-  if (!userData.code) {
-    const lastUser = await prisma.web_accounts.findFirst({
-      orderBy: {
-        id: "desc",
+  return await prisma.$transaction(async (tx) => {
+    // Get highest current ID safely inside transaction
+    const lastUser = await tx.web_accounts.findFirst({
+      orderBy: { id: "desc" },
+      select: { id: true },
+    });
+
+    const nextId = (lastUser?.id || 0) + 1;
+
+    // Generate code if not provided
+    const code = userData.code || `DU${nextId.toString().padStart(6, "0")}`;
+
+    // Check if code already exists
+    const existingUser = await tx.web_accounts.findFirst({
+      where: { code },
+      select: { id: true },
+    });
+
+    if (existingUser) {
+      throw new Error("User code already exists");
+    }
+
+    // Hash password if provided
+    let hashedPassword = userData.password;
+    if (hashedPassword) {
+      hashedPassword = hashPassword(hashedPassword);
+    }
+
+    // Create user with manually generated ID
+    const user = await tx.web_accounts.create({
+      data: {
+        id: nextId, // ✅ manually set ID
+        code,
+        first_name: userData.first_name,
+        last_name: userData.last_name,
+        description: userData.description,
+        password: hashedPassword,
+        type: userData.type || 0,
+        phone: userData.phone,
+        balance: userData.balance || 0,
+        country: userData.country,
+        ip: userData.ip,
+        is_verified: userData.is_verified || true,
+        is_blocked: userData.is_blocked || false,
+        is_active: userData.is_active !== undefined ? userData.is_active : true,
+        parent_id: userData.parent_id,
+        sequence: userData.sequence || 1,
+        role: userData.role || "USER",
+      },
+      select: {
+        id: true,
+        code: true,
+        first_name: true,
+        last_name: true,
+        description: true,
+        phone: true,
+        type: true,
+        role: true,
+        is_active: true,
+        date_added: true,
       },
     });
-    const nextId = (lastUser?.id || 0) + 1;
-    userData.code = `USR${nextId.toString().padStart(6, "0")}`;
-  }
 
-  // Check if code already exists
-  const existingUser = await prisma.web_accounts.findFirst({
-    where: { code: userData.code },
+    return user;
   });
-
-  if (existingUser) {
-    throw new Error("User code already exists");
-  }
-
-  // Hash password using SHA256 (matching login controller)
-  if (userData.password) {
-    userData.password = hashPassword(userData.password);
-  }
-
-  const user = await prisma.web_accounts.create({
-    data: {
-      code: userData.code,
-      first_name: userData.first_name,
-      last_name: userData.last_name,
-      description: userData.description,
-      password: userData.password,
-      type: userData.type || 0,
-      phone: userData.phone,
-      balance: userData.balance || 0,
-      country: userData.country,
-      ip: userData.ip,
-      is_verified: userData.is_verified || false,
-      is_blocked: userData.is_blocked || false,
-      is_active: userData.is_active !== undefined ? userData.is_active : true,
-      parent_id: userData.parent_id,
-      sequence: userData.sequence || 1,
-      role: userData.role || "User",
-    },
-    select: {
-      id: true,
-      code: true,
-      first_name: true,
-      last_name: true,
-      description: true,
-      phone: true,
-      type: true,
-      role: true,
-      is_active: true,
-      date_added: true,
-    },
-  });
-
-  return user;
 };
 
 // Update user

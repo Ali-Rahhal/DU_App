@@ -253,14 +253,14 @@ const Cart = () => {
               <div className="col-md-9">
                 <div className="cart_product">
                   <div className="cart_product_heading">
-                    <div className="row align-items-center">
-                      <div className="col-sm-6 text-lg-left">
+                    <div className="row align-items-center g-2">
+                      <div className="col-12 col-sm-4 text-center text-sm-left mb-2 mb-sm-0">
                         <h4>
                           {t("shopping_cart")}
                           <span>( {cart} Item )</span>
                         </h4>
                       </div>
-                      <div className="col-sm-6 text-lg-right">
+                      <div className="col-12 col-sm-4 text-center mb-2 mb-sm-0">
                         <button
                           onClick={() => {
                             removeFromCart(undefined).then((res) => {
@@ -268,11 +268,20 @@ const Cart = () => {
                               refreshCart();
                             });
                           }}
-                          className="btn btn-light btn-medium button-sm d-none d-md-inline-block"
+                          className="btn btn-light btn-medium button-sm w-100 w-sm-auto"
                         >
                           <i className="ti-trash"></i>
                           {t("empty_cart")}
                         </button>
+                      </div>
+                      <div className="col-12 col-sm-4 text-center">
+                        <Link
+                          href="/"
+                          className="btn btn-primary btn-rounded w-100 w-sm-auto"
+                        >
+                          {t("continue_shopping")} &nbsp;{" "}
+                          <i className="ti-arrow-right"></i>
+                        </Link>
                       </div>
                     </div>
                   </div>
@@ -368,7 +377,7 @@ const Cart = () => {
                         >
                           {cartItems.reduce(
                             (acc, item) => acc + item.quantity,
-                            0
+                            0,
                           )}{" "}
                           {t("items")}
                         </span>
@@ -391,8 +400,8 @@ const Cart = () => {
                             a.currency_code === "USD"
                               ? -1
                               : b.currency_code === "USD"
-                              ? 1
-                              : 0
+                                ? 1
+                                : 0,
                           )
                           .map((sub, index) => (
                             <>
@@ -430,7 +439,7 @@ const Cart = () => {
                         }
                         if (!checkPermission(ALL_PERMISSIONS.ORDER)) {
                           toast.error(
-                            "You don't have permission to place order"
+                            "You don't have permission to place order",
                           );
                           return;
                         }

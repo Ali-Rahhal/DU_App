@@ -155,22 +155,21 @@ const changePassword = async (
     { withCredentials: true },
   );
 };
-const getProducts = async (filters: {
-  skip?: number;
-  take?: number;
-  category_code?: string[];
-  sub_category_code?: string;
-  sort_by?: string;
-  sort_direction?: string;
-  min_price?: number;
-  max_price?: number;
-  onSale?: boolean;
-  cookie?: {
-    name: string;
-    value: string;
-  };
-  search?: string;
-}): Promise<AxiosResponse> => {
+const getProducts = async (
+  filters: {
+    skip?: number;
+    take?: number;
+    category_code?: string[];
+    sub_category_code?: string;
+    sort_by?: string;
+    sort_direction?: string;
+    min_price?: number;
+    max_price?: number;
+    onSale?: boolean;
+    search?: string;
+  },
+  cookie?: string,
+): Promise<AxiosResponse> => {
   const params = new URLSearchParams();
 
   params.append("skip", filters.skip.toString());
@@ -193,9 +192,7 @@ const getProducts = async (filters: {
     {
       withCredentials: true,
       headers: {
-        Cookie: filters.cookie
-          ? `${filters.cookie.name}=${filters.cookie.value}`
-          : "",
+        Cookie: cookie || "",
       },
     },
   );
@@ -203,14 +200,11 @@ const getProducts = async (filters: {
 
 const getProduct = async (
   item_code: string,
-  cookie?: {
-    name: string;
-    value: string;
-  },
+  cookie?: string,
 ): Promise<AxiosResponse> => {
   return await axios.get(publicApi + `/get_product/${item_code}`, {
     headers: {
-      Cookie: cookie ? `${cookie.name}=${cookie.value}` : "",
+      Cookie: cookie || "",
     },
     withCredentials: true,
   });

@@ -21,18 +21,18 @@ const ProductId = ({ product, products }) => {
 
 export default ProductId;
 export async function getServerSideProps(context: any) {
-  const cookie = getCookieArray(context.req.headers.cookie).find((cookie) =>
-    cookie.name.includes("auth")
-  );
+  const cookie = context.req.headers.cookie || "";
   const product = await getProduct(context.query.slug, cookie).then((res) => {
     return res.data.result;
   });
-  const products = await getProducts({
-    skip: 0,
-    take: 20,
-    cookie: cookie,
-    category_code: [product?.cat_code],
-  })
+  const products = await getProducts(
+    {
+      skip: 0,
+      take: 20,
+      category_code: [product?.cat_code],
+    },
+    cookie,
+  )
     .then((res) => {
       return res.data.result.products;
     })

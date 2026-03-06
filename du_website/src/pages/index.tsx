@@ -18,20 +18,22 @@ import Layout from "@/components/Layout/Layout";
 import { getProducts } from "@/utils/apiCalls";
 import HomePageSlider from "@/components/HomePageSlider";
 const getAllProducts = async (onSale, cookie) => {
-  return await getProducts({
-    skip: 0,
-    take: 20,
-    onSale: onSale,
-    cookie: cookie,
-  }).then((res) => {
+  return await getProducts(
+    {
+      skip: 0,
+      take: 20,
+      onSale: onSale,
+    },
+    cookie,
+  ).then((res) => {
     return res.data.result;
   });
 };
-export async function getServerSideProps() {
+export async function getServerSideProps(context: any) {
   // const request = await fetch(`${server}/static/products.json`);
   // const dataa = await request.json();
-
-  const data = await getAllProducts(false, null);
+  const cookie = context.req.headers.cookie || "";
+  const data = await getAllProducts(false, cookie);
   return {
     props: {
       items_count: data.items_count,

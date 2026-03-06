@@ -2,431 +2,218 @@ import ProductItem from "@/components/common/ProductItem";
 import Layout from "@/components/Layout/Layout";
 import SearchBar from "@/components/Layout/Navbar/SearchBar";
 import Item from "@/Models/item";
-import { currenncyCodeToSymbol } from "@/utils";
 import { getProducts } from "@/utils/apiCalls";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Button, Spinner, Table } from "react-bootstrap";
+import { Button, Spinner, Form, Row, Col, Collapse } from "react-bootstrap";
+
+/* ---------------- SERVER SIDE ---------------- */
 
 export async function getServerSideProps(context: any) {
   let { cat, s } = context.query;
-  if (cat === undefined) {
-    cat = null;
-  }
-  // if (!["P", "PP", "NP"].includes(cat)) {
-  //   cat = null;
-  // }
 
-  const products = await getProducts({
-    skip: 0,
-    take: 20,
-    category_code: cat ? [cat] : null,
-    search: s ? s : null,
-    cookie: context.req.headers.cookie,
-  })
-    .then((res) => {
-      return res.data.result.products;
-    })
-    .catch((err) => {
-      console.log(err.response.data.message);
-    });
+  const cookie = context.req.headers.cookie || "";
+
+  const products = await getProducts(
+    {
+      skip: 0,
+      take: 20,
+      category_code: cat ? [cat] : null,
+      search: s ? s : null,
+    },
+    cookie,
+  ).then((res) => res.data.result.products);
+
   return {
     props: {
-      products: products,
-      cat: cat,
-      s: s ? s : null,
-    }, // will be passed to the page component as props
+      products,
+      cat: cat ?? null,
+      s: s ?? null,
+    },
   };
 }
+
+/* ---------------- FILTER COMPONENT ---------------- */
+
+const Filters = ({ s, activeCat }: any) => {
+  const router = useRouter();
+  const t = useTranslations();
+
+  const clearSearch = () => {
+    router.push("/category");
+  };
+
+  return (
+    <div className="p-3 border rounded bg-light mb-3">
+      <div className="mb-3">
+        <h6>{t("search")}</h6>
+
+        <div className="d-flex gap-2">
+          <div style={{ flex: 1 }}>
+            <SearchBar showSearch={false} />
+          </div>
+
+          {s && (
+            <Button size="sm" variant="outline-secondary" onClick={clearSearch}>
+              Clear
+            </Button>
+          )}
+        </div>
+      </div>
+
+      <hr />
+
+      <h6>Category</h6>
+
+      <div className="d-grid gap-2 mb-3 d-md-flex flex-md-column">
+        <Link
+          href="/category"
+          className={`btn btn-sm ${!activeCat ? "btn-primary" : "btn-outline-primary"}`}
+        >
+          All
+        </Link>
+        <Link
+          href="/category?cat=P"
+          className={`btn btn-sm ${activeCat === "P" ? "btn-primary" : "btn-outline-primary"}`}
+        >
+          Pharma
+        </Link>
+        <Link
+          href="/category?cat=PP"
+          className={`btn btn-sm ${activeCat === "PP" ? "btn-primary" : "btn-outline-primary"}`}
+        >
+          ParaPharma
+        </Link>
+        <Link
+          href="/category?cat=NP"
+          className={`btn btn-sm ${activeCat === "NP" ? "btn-primary" : "btn-outline-primary"}`}
+        >
+          Non Pharma
+        </Link>
+      </div>
+    </div>
+  );
+};
+
+/* ---------------- PAGE ---------------- */
 
 const CategoryPage = ({
   products,
   cat,
   s,
+  min,
+  max,
 }: {
   products: Item[];
   cat: string;
   s: string;
+  min: string;
+  max: string;
 }) => {
-  const [layout, setLayout] = useState(
-    "three-column" as
-      | "three-column"
-      | "four-column"
-      | "five-column"
-      | "list-view",
-  );
+  const router = useRouter();
+
   const [productsPag, setProductsPag] = useState<Item[]>(products);
-  const [reachedEnd, setReachedEnd] = useState(false);
-  const rt = useRouter();
-  const activeCat = rt.query.cat ?? null;
   const [loading, setLoading] = useState(false);
+  const [reachedEnd, setReachedEnd] = useState(false);
+
+  const [minPrice, setMinPrice] = useState(min);
+  const [maxPrice, setMaxPrice] = useState(max);
+
+  const [showFilters, setShowFilters] = useState(false);
+
+  const activeCat = router.query.cat ?? null;
+
   useEffect(() => {
-    if (productsPag.length < 20) setReachedEnd(true);
-  }, [productsPag]);
-  useEffect(() => {
+    setProductsPag(products);
+    setReachedEnd(products.length < 20);
+  }, [products]);
+
+  const fetchMoreProducts = () => {
     setLoading(true);
+
     getProducts({
-      skip: 0,
+      skip: productsPag.length,
       take: 20,
       category_code: cat ? [cat] : null,
-      search: s ? s : null,
-      // cookie: context.req.headers.cookie,
+      search: s ?? null,
+      min_price: minPrice ? Number(minPrice) : undefined,
+      max_price: maxPrice ? Number(maxPrice) : undefined,
     })
       .then((res) => {
-        setLoading(false);
+        const newProducts = res.data.result.products;
 
-        if (res.data.result.products.length < 20) setReachedEnd(true);
-        setProductsPag((p) => [...res.data.result.products]);
+        setProductsPag((p) => [...p, ...newProducts]);
+
+        if (newProducts.length < 20) setReachedEnd(true);
       })
-      .catch((err) => {
-        setLoading(false);
-      });
-  }, [rt.query]);
-  const t = useTranslations();
+      .finally(() => setLoading(false));
+  };
+
   return (
     <Layout>
-      <section className="pt-5 pt-md-7">
+      <section className="pt-5 pb-5">
         <div className="container">
-          <div className="row justify-content-between">
-            <div className="col-md-8 order-md-2">
-              <div className="row shop-header align-items-center">
-                <div className="col-lg-6">
-                  <div className="grid-icons">
-                    <button
-                      className={
-                        "three-column " +
-                        (layout === "three-column" ? "active" : "")
-                      }
-                      onClick={() => {
-                        setLayout("three-column");
-                      }}
-                    ></button>
-                    {/* <button className="four-column d-none d-lg-block"></button>
-                    <button className="five-column d-none d-lg-block"></button> */}
-                    <button
-                      className={
-                        "list-view " + (layout === "list-view" ? "active" : "")
-                      }
-                      onClick={() => {
-                        setLayout("list-view");
-                      }}
-                    ></button>
-                  </div>
-                </div>
+          {/* MOBILE FILTER BUTTON */}
 
-                {/* <div className="col-lg-6 text-lg-right">
-                  <div className="single-select-block d-inline-block">
-                    <span className="select-title">Show:</span>
-                    <select className="wide border-0">
-                      <option value="1">10</option>
-                      <option value="2">20</option>
-                      <option value="3">30</option>
-                      <option value="4">40</option>
-                    </select>
-                  </div>
+          <div className="d-md-none mb-3">
+            <Button
+              className="w-100"
+              variant="outline-primary"
+              onClick={() => setShowFilters(!showFilters)}
+            >
+              Filters
+            </Button>
 
-                  <div className="single-select-block d-inline-block">
-                    <span className="select-title">Sort By:</span>
-                    <select className="wide border-0">
-                      <option value="1">Default</option>
-                      <option value="2">Name (A-Z)</option>
-                      <option value="3">Price (min - max)</option>
-                      <option value="4">Color</option>
-                    </select>
-                  </div>
-                </div> */}
+            <Collapse in={showFilters}>
+              <div>
+                <Filters
+                  s={s}
+                  activeCat={activeCat}
+                  minPrice={minPrice}
+                  maxPrice={maxPrice}
+                  setMinPrice={setMinPrice}
+                  setMaxPrice={setMaxPrice}
+                />
               </div>
-              {layout === "three-column" ? (
-                <div
-                  className="row"
-                  // style={{
-                  //   maxHeight: "100vh",
-                  //   overflowY: "auto",
-                  // }}
-                  // onScroll={(e) => {
-                  //   //reached end of page console.log("end of page");
-                  //   if (
-                  //     e.currentTarget.scrollHeight -
-                  //       e.currentTarget.scrollTop ===
-                  //     e.currentTarget.clientHeight
-                  //   ) {
-                  //     getProducts({
-                  //       skip: productsPag.length,
-                  //       take: 20,
-                  //       category_code: cat ? [cat] : null,
-                  //       search: s ? s : null,
-                  //       // cookie: context.req.headers.cookie,
-                  //     })
-                  //       .then((res) => {
-                  //         setProductsPag((p) => [
-                  //           ...p,
-                  //           ...res.data.result.products,
-                  //         ]);
-                  //       })
-                  //       .catch((err) => {
-                  //         console.log(err.response.data.message);
-                  //       });
-                  //   }
-                  // }}
-                >
-                  {productsPag?.map((item, index) => (
-                    <div
-                      key={item.item_code}
-                      className="col-md-4 col-sm-6 col-12"
-                    >
-                      <ProductItem item={item} />
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <Table bordered hover responsive>
-                  <thead>
-                    <tr>
-                      <th>{t("image")}</th>
-                      <th>{t("name")}</th>
-                      <th>{t("price")}</th>
-                      <th>{t("old_price")}</th>
-                      <th>{t("category")}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {productsPag?.map((item, index) => {
-                      let oldPrice = parseFloat(item?.price);
-                      let price = parseFloat(item?.discountedPrice);
-                      return (
-                        <tr
-                          key={item.item_code}
-                          onClick={() => {
-                            rt.push(`/products/${item.item_code}`);
-                          }}
-                        >
-                          <td>
-                            <img
-                              src={
-                                item.image
-                                  ? item.image
-                                  : process.env
-                                      .NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE
-                              }
-                              alt={item.name}
-                              style={{
-                                maxWidth: "100px",
-                              }}
-                              className="img-fluid"
-                            />
-                          </td>
-                          <td>{item.name}</td>
-                          <td
-                            style={{
-                              color: "#2b8a3e",
-                            }}
-                          >
-                            {" "}
-                            {price.toLocaleString()}{" "}
-                            {currenncyCodeToSymbol(item.currency_code)}
-                          </td>
-                          <td
-                            style={{
-                              textDecoration: "line-through",
-                            }}
-                          >
-                            {" "}
-                            {oldPrice.toLocaleString()}{" "}
-                            {currenncyCodeToSymbol(item.currency_code)}
-                          </td>
-                          <td>{item.category}</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </Table>
-              )}
-              {productsPag.length === 0 && (
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: "50vh",
-                  }}
-                >
-                  <h5>{t("no_products")}</h5>
-                </div>
-              )}
+            </Collapse>
+          </div>
+
+          <Row>
+            {/* DESKTOP FILTERS */}
+
+            <Col md={3} className="d-none d-md-block">
+              <Filters
+                s={s}
+                activeCat={activeCat}
+                minPrice={minPrice}
+                maxPrice={maxPrice}
+                setMinPrice={setMinPrice}
+                setMaxPrice={setMaxPrice}
+              />
+            </Col>
+
+            {/* PRODUCTS */}
+
+            <Col md={9}>
+              <Row>
+                {productsPag.map((item) => (
+                  <Col lg={4} md={6} xs={6} key={item.item_code}>
+                    <ProductItem item={item} />
+                  </Col>
+                ))}
+              </Row>
+
               {!reachedEnd && (
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    paddingBottom: 20,
-                  }}
-                >
-                  <Button
-                    style={{
-                      width: loading ? 50 : "100%",
-                      height: 50,
-                      borderRadius: loading ? "50%" : "6px",
-                      transition: "all 0.2s",
-                      textAlign: "center",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      padding: 0,
-                    }}
-                    onClick={() => {
-                      setLoading(true);
-                      getProducts({
-                        skip: productsPag.length,
-                        take: 20,
-                        category_code: cat ? [cat] : null,
-                        search: s ? s : null,
-                        // cookie: context.req.headers.cookie,
-                      })
-                        .then((res) => {
-                          setLoading(false);
-                          if (res.data.result.products.length < 20)
-                            setReachedEnd(true);
-                          setProductsPag((p) => [
-                            ...p,
-                            ...res.data.result.products,
-                          ]);
-                        })
-                        .catch((err) => {
-                          setLoading(false);
-                        });
-                    }}
-                  >
-                    {!loading ? (
-                      t("load_more")
-                    ) : (
-                      <Spinner animation="border" size="sm" />
-                    )}
+                <div className="text-center mt-4">
+                  <Button onClick={fetchMoreProducts}>
+                    {loading ? <Spinner size="sm" /> : "Load More"}
                   </Button>
                 </div>
               )}
-            </div>
-            <div className="col-md-3 order-md-1">
-              {/* <div className="sidebar-wrapper mt-5 mt-md-0">
-                <div className="sidebar-widget widget_categories">
-                  <h6 className="widget-title mb-2">Price</h6>
-                  <div className="px-3">
-                    <div
-                      className="range-slider range-slider-ui"
-                      id="nouislider"
-                      data-start-min="250"
-                      data-start-max="680"
-                      data-min="0"
-                      data-max="1000"
-                      data-step="1"
-                    ></div>
-                  </div>
-                </div>
-              </div> */}
-              <div className="sidebar-wrapper mt-5 mt-md-0">
-                <div className="sidebar-widget widget_categories">
-                  <h6 className="widget-title mb-2">{t("search")}</h6>
-                  <div className="px-0">
-                    <SearchBar showSearch={false} />
-                  </div>
-                </div>
-                <div className="sidebar-widget widget_categories">
-                  <h6 className="widget-title mb-2">Filters</h6>
-                  <ul>
-                    <li>
-                      <Link
-                        href="/category"
-                        className={!activeCat ? "active-filter" : ""}
-                      >
-                        All
-                      </Link>
-                    </li>
-
-                    <li>
-                      <Link
-                        href="/category?cat=P"
-                        className={activeCat === "P" ? "active-filter" : ""}
-                      >
-                        Pharma
-                      </Link>
-                    </li>
-
-                    <li>
-                      <Link
-                        href="/category?cat=PP"
-                        className={activeCat === "PP" ? "active-filter" : ""}
-                      >
-                        ParaPharma
-                      </Link>
-                    </li>
-
-                    <li>
-                      <Link
-                        href="/category?cat=NP"
-                        className={activeCat === "NP" ? "active-filter" : ""}
-                      >
-                        Non Pharma
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
-              {/* <div className="sidebar-wrapper mt-5 mt-md-0">
-                <div className="sidebar-widget widget_categories">
-                  <h6 className="widget-title">Category</h6>
-                  <ul
-                    className="widget-list widget-filter-list list-unstyled pt-1"
-                    style={{ maxHeight: "11rem" }}
-                    data-simplebar
-                    data-simplebar-auto-hide="false"
-                  >
-                    <li className="widget-filter-item d-flex justify-content-between align-items-center mb-1">
-                      <div className="form-check">
-                        <input
-                          className="form-check-input"
-                          type="checkbox"
-                          id="brand-13"
-                        />
-                        <label className="form-check-label widget-filter-item-text">
-                          Pharma
-                        </label>
-                      </div>
-                      <span className="fs-xs text-muted">425</span>
-                    </li>
-                    <li className="widget-filter-item d-flex justify-content-between align-items-center mb-1">
-                      <div className="form-check">
-                        <input
-                          className="form-check-input"
-                          type="checkbox"
-                          id="brand-23"
-                        />
-                        <label className="form-check-label widget-filter-item-text">
-                          ParaPharma
-                        </label>
-                      </div>
-                      <span className="fs-xs text-muted">15</span>
-                    </li>
-                    <li className="widget-filter-item d-flex justify-content-between align-items-center mb-1">
-                      <div className="form-check">
-                        <input
-                          className="form-check-input"
-                          type="checkbox"
-                          id="Brandina3"
-                        />
-                        <label className="form-check-label widget-filter-item-text">
-                          Non Pharma
-                        </label>
-                      </div>
-                      <span className="fs-xs text-muted">18</span>
-                    </li>
-                  </ul>
-                </div>
-              </div> */}
-            </div>
-          </div>
+            </Col>
+          </Row>
         </div>
       </section>
     </Layout>

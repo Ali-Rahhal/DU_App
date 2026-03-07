@@ -29,6 +29,8 @@ import {
   Modal,
   Spinner,
 } from "react-bootstrap";
+import TableActionsMenu from "@/components/common/TableActionsMenu";
+import TableActionsItem from "@/components/common/TableActionsItem";
 import Select from "react-select";
 
 interface User {
@@ -507,40 +509,28 @@ const Users = () => {
                         </td>
                         <td>{formatDate(user.date_added)}</td>
                         <td className="text-center">
-                          <Dropdown align="end">
-                            <Dropdown.Toggle
-                              variant="light"
-                              size="sm"
-                              className="border rounded-circle px-2"
-                              style={{ width: 36, height: 36 }}
-                            >
-                              <i className="fa fa-ellipsis-v"></i>
-                            </Dropdown.Toggle>
+                          <TableActionsMenu>
+                            <TableActionsItem
+                              icon="fa-edit"
+                              label="Edit"
+                              onClick={() => handleOpenEditModal(user.id)}
+                            />
 
-                            <Dropdown.Menu>
-                              <Dropdown.Item
-                                onClick={() => handleOpenEditModal(user.id)}
-                              >
-                                <i className="fa fa-edit me-2"></i> Edit
-                              </Dropdown.Item>
+                            <TableActionsItem
+                              icon="fa-key"
+                              label="Permissions"
+                              onClick={() => handleOpenPermissionsModal(user)}
+                            />
 
-                              {/* New Permissions Menu Item */}
-                              <Dropdown.Item
-                                onClick={() => handleOpenPermissionsModal(user)}
-                              >
-                                <i className="fa fa-key me-2"></i> Permissions
-                              </Dropdown.Item>
+                            <hr className="my-1" />
 
-                              <Dropdown.Divider />
-
-                              <Dropdown.Item
-                                onClick={() => handleToggleStatus(user.id)}
-                              >
-                                <i className="fa fa-ban me-2"></i>
-                                {user.is_active ? "Deactivate" : "Activate"}
-                              </Dropdown.Item>
-                            </Dropdown.Menu>
-                          </Dropdown>
+                            <TableActionsItem
+                              icon="fa-ban"
+                              label={user.is_active ? "Deactivate" : "Activate"}
+                              onClick={() => handleToggleStatus(user.id)}
+                              danger
+                            />
+                          </TableActionsMenu>
                         </td>
                       </tr>
                     );

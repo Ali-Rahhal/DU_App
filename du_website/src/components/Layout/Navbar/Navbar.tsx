@@ -61,7 +61,7 @@ function Navbar() {
           return (
             acc +
             Number(item.quantity) *
-            Number(item.discountedPrice ? item.discountedPrice : item.price)
+              Number(item.discountedPrice ? item.discountedPrice : item.price)
           );
         }, 0);
       tempSubtotal.push({
@@ -224,12 +224,12 @@ function Navbar() {
                         id="user-menu-dropdown"
                         {...(!isAuth
                           ? {
-                            onClick: () => {
-                              if (!isAuth) {
-                                handleModalShow("login");
-                              }
-                            },
-                          }
+                              onClick: () => {
+                                if (!isAuth) {
+                                  handleModalShow("login");
+                                }
+                              },
+                            }
                           : {})}
                       >
                         <div className="list-icon">
@@ -266,9 +266,6 @@ function Navbar() {
                           <li>
                             <Link href="/complaint">{t("complaint")}</Link>
                           </li>
-                          {/* <li>
-                            <Link href="/survey">Survey</Link>
-                          </li> */}
                           <li>
                             <Link
                               href="#"
@@ -348,9 +345,10 @@ function Navbar() {
                   style={{
                     textTransform: "uppercase",
                   }}
-                >{`${(firstName ? firstName[0] : "") +
+                >{`${
+                  (firstName ? firstName[0] : "") +
                   (lastName ? lastName[0] : "")
-                  }`}</div>
+                }`}</div>
                 <span>Hi, {name}</span>
               </div>
             )}
@@ -382,9 +380,9 @@ function Navbar() {
                   <li>
                     <Link href="/wishlist">{t("wishlist")}</Link>
                   </li>
-                  {/* <li>
-                    <Link href="/survey">Survey</Link>
-                  </li> */}
+                  <li>
+                    <Link href="/survey">{t("survey")}</Link>
+                  </li>
                   <li>
                     <Link href="/complaint">{t("complaint")}</Link>
                   </li>

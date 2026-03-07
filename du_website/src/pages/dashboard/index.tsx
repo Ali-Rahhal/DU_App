@@ -96,14 +96,13 @@ const index = () => {
                   <small className="text-muted">{code}</small>
                 </div>
               </div>
-              <div className="row no-gutters align-items-center">
+              {/* <div className="row no-gutters align-items-center">
                 <div className="col-auto">
                   <div
                     style={{
                       fontWeight: "bold",
                     }}
                   >
-                    {/* Fidelity Points */}
                     {t("fidelity_points")}
                   </div>
                   <div
@@ -135,12 +134,11 @@ const index = () => {
                         rt.push("/fidelity");
                       }}
                     >
-                      {/* Redeem */}
                       {t("redeem")}
                     </button>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

@@ -307,3 +307,16 @@ label.error {
   align-items: center;
   margin-top: 10px;
 }
+
+.table-action-item {
+  background: transparent;
+  transition: background-color 0.15s ease;
+}
+
+.table-action-item:hover {
+  background-color: #f1f3f5 !important;
+}
+
+.table-action-item:hover i {
+  opacity: 0.8;
+}

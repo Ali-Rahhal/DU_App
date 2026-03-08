@@ -158,6 +158,7 @@
 
   "users": "Utilisateurs",
   "manage_your_users": "Gérer vos utilisateurs",
+  "version": "Version",
 
   "permission": {
     "RETURN": "Retourner la commande",

@@ -1,6 +1,6 @@
 {
-  "name": "hospitania",
-  "version": "0.1.0",
+  "name": "du_website",
+  "version": "08.03.2026-1.0.1",
   "private": true,
   "scripts": {
     "dev": "next dev -p 5006",

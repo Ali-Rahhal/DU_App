@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import ChangeLangDropdown from "../common/ChangeLangDropdown";
+import pkg from "../../../package.json";
 
 function Footer() {
   const t = useTranslations();
@@ -138,6 +139,9 @@ function Footer() {
             <div className="row">
               <div className="col-md-6 text-md-left">
                 <p className="mb-4 mb-md-0 text-muted">{t("copyright")}</p>
+                <p className="mb-4 mb-md-0 text-muted">
+                  {t("version") + " " + pkg.version}
+                </p>
                 <ChangeLangDropdown />
               </div>
 

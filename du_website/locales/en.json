@@ -159,6 +159,7 @@
 
   "users": "Users",
   "manage_your_users": "Manage Your Users",
+  "version": "Version",
 
   "permission": {
     "RETURN": "Return Order",

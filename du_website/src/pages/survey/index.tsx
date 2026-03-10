@@ -33,7 +33,25 @@ import "react-toastify/dist/ReactToastify.css";
 import { publicApi } from "@/utils/apiCalls";
 import Layout from "@/components/Layout/Layout";
 import { Spinner } from "react-bootstrap";
+import { ALL_PERMISSIONS } from "@/utils/data";
+import { useEffect, useRef } from "react";
+import { useRouter } from "next/router";
+import { toast } from "react-toastify";
+import { useAccountStore } from "@/store/zustand";
 function App() {
+  // Authorization Check:
+  const rt = useRouter();
+  const { role, checkPermission } = useAccountStore();
+  const hasShownToast = useRef(false);
+  useEffect(() => {
+    if (!checkPermission(ALL_PERMISSIONS.Survey) && !hasShownToast.current) {
+      toast.error("You don't have permission to access the Survey page");
+      hasShownToast.current = true;
+      rt.push("/");
+    }
+  }, [role]);
+  if (!checkPermission(ALL_PERMISSIONS.Survey)) return null;
+
   if (!Serializer.findClass("itemselector")) {
     ComponentCollection.Instance.add({
       // A unique name; must use lowercase

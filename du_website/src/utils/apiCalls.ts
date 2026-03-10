@@ -551,6 +551,7 @@ const createUser = async (userData: {
   is_active?: boolean;
   parent_id?: number;
   sequence?: number;
+  role?: string;
 }): Promise<AxiosResponse> => {
   return await axios.post(privateApi + `/users`, userData, {
     withCredentials: true,
@@ -573,6 +574,7 @@ const updateUser = async (
     is_active?: boolean;
     parent_id?: number;
     sequence?: number;
+    role?: string;
   },
 ): Promise<AxiosResponse> => {
   return await axios.put(privateApi + `/users/${id}`, userData, {

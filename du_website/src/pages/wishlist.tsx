@@ -13,7 +13,24 @@ import { useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap";
 import { toast } from "react-toastify";
 
+import { ALL_PERMISSIONS } from "@/utils/data";
+import { useRef } from "react";
+import { useRouter } from "next/router";
+import { useAccountStore } from "@/store/zustand";
 const Wishlist = () => {
+  // Authorization Check:
+  const rt = useRouter();
+  const { role, checkPermission } = useAccountStore();
+  const hasShownToast = useRef(false);
+  useEffect(() => {
+    if (!checkPermission(ALL_PERMISSIONS.Wishlist) && !hasShownToast.current) {
+      toast.error("You don't have permission to access the wishlist page");
+      hasShownToast.current = true;
+      rt.push("/");
+    }
+  }, [role]);
+  if (!checkPermission(ALL_PERMISSIONS.Wishlist)) return null;
+
   const { isAuth } = useAuthStore();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);

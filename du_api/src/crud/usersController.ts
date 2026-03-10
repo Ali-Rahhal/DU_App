@@ -2,6 +2,7 @@
 import { Prisma } from "@prisma/client";
 import prisma from "../lib/prisma";
 import { createHash } from "crypto";
+import { ROLES } from "../lib/constants";
 
 // Helper function to hash password using SHA256 (matching login controller)
 const hashPassword = (password: string): string => {
@@ -199,21 +200,19 @@ export const updateUser = async (id: number, userData: any) => {
     throw new Error("User not found");
   }
 
-  // If code is being updated, check if it's unique
-  if (userData.code && userData.code !== existingUser.code) {
-    const codeExists = await prisma.web_accounts.findFirst({
-      where: { code: userData.code },
+  if (existingUser.role == ROLES.SysUser && userData.role == ROLES.User) {
+    // Delete existing permissions
+    await prisma.user_permission_assignment.deleteMany({
+      where: {
+        web_account_id: id,
+      },
     });
-    if (codeExists) {
-      throw new Error("User code already exists");
-    }
   }
 
   // Prepare update data (remove undefined fields)
   const updateData: any = {};
 
   const fields = [
-    "code",
     "first_name",
     "last_name",
     "description",
@@ -271,11 +270,15 @@ export const updateUser = async (id: number, userData: any) => {
 export const toggleUserStatus = async (id: number) => {
   const user = await prisma.web_accounts.findUnique({
     where: { id },
-    select: { is_active: true },
+    select: { is_active: true, role: true },
   });
 
   if (!user) {
     throw new Error("User not found");
+  }
+
+  if (user.role === ROLES.Admin) {
+    throw new Error("Admin cannot be disabled");
   }
 
   const updatedUser = await prisma.web_accounts.update({
@@ -354,11 +357,15 @@ export const updateUserPermissions = async (
   // Check if user exists
   const user = await prisma.web_accounts.findUnique({
     where: { id: userId },
-    select: { type: true, code: true },
+    select: { type: true, code: true, role: true },
   });
 
   if (!user) {
     throw new Error("User not found");
+  }
+
+  if (user.role !== ROLES.SysUser) {
+    throw new Error("Only SysUser can update permissions");
   }
 
   // Delete existing permissions

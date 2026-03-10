@@ -15,8 +15,27 @@ import { Spinner } from "react-bootstrap";
 //   currency: string;
 //   order_amount: string;
 //   remaining_amount: string;
-
+import { ALL_PERMISSIONS } from "@/utils/data";
+import { useRef } from "react";
+import { useRouter } from "next/router";
+import { useAccountStore } from "@/store/zustand";
 const SalesInvoice = () => {
+  // Authorization Check:
+  const rt = useRouter();
+  const { role, checkPermission } = useAccountStore();
+  const hasShownToast = useRef(false);
+  useEffect(() => {
+    if (
+      !checkPermission(ALL_PERMISSIONS.SalesInvoice) &&
+      !hasShownToast.current
+    ) {
+      toast.error("You don't have permission to access the sales invoice page");
+      hasShownToast.current = true;
+      rt.push("/");
+    }
+  }, [role]);
+  if (!checkPermission(ALL_PERMISSIONS.SalesInvoice)) return null;
+
   const [salesOrders, setSalesOrders] = React.useState<SalesInvoiceModel[]>([]);
   const [loading, setLoading] = React.useState<boolean>(false);
   //   const [filteredInvoices, setFilteredInvoices] = React.useState<
@@ -122,8 +141,8 @@ const SalesInvoice = () => {
                     invoice.is_paid === "yes"
                       ? "#7cd3be"
                       : invoice.is_paid === "partial"
-                      ? "#71c0ef"
-                      : "#ff8787";
+                        ? "#71c0ef"
+                        : "#ff8787";
                   return (
                     <tr key={invoice.oracle_number}>
                       <td
@@ -239,7 +258,7 @@ const SalesInvoice = () => {
                 setFilters(
                   filters.includes(0)
                     ? filters.filter((filter) => filter !== 0)
-                    : [...filters, 0]
+                    : [...filters, 0],
                 );
               }}
             >
@@ -273,7 +292,7 @@ const SalesInvoice = () => {
                 setFilters(
                   filters.includes(1)
                     ? filters.filter((filter) => filter !== 1)
-                    : [...filters, 1]
+                    : [...filters, 1],
                 );
               }}
             >
@@ -306,7 +325,7 @@ const SalesInvoice = () => {
                 setFilters(
                   filters.includes(2)
                     ? filters.filter((filter) => filter !== 2)
-                    : [...filters, 2]
+                    : [...filters, 2],
                 );
               }}
             >

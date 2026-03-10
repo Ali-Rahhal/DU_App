@@ -1,5 +1,5 @@
 import { useAccountStore, useAuthStore } from "@/store/zustand";
-import { ALL_PERMISSIONS } from "@/utils/data";
+import { ALL_PERMISSIONS, ROLES } from "@/utils/data";
 
 import { useTranslations } from "next-intl";
 import Link from "next/link";
@@ -8,14 +8,15 @@ import React, { useEffect, useState } from "react";
 
 function AccountNav() {
   const [showMenu, setShowMenu] = useState(false);
-  const { firstName, lastName, name, code, type, checkPermission } =
+  const { firstName, lastName, name, code, type, checkPermission, checkRole } =
     useAccountStore();
   const rt = useRouter();
-  const [active, setActive] = useState(rt.pathname.split("settings./")[1]);
-  // useEffect(() => {
-  //   console.log(rt.pathname.split("settings./"));
-  //   setActive(rt.pathname.split("settings./")[1]);
-  // }, [rt.pathname]);
+  const [active, setActive] = useState("");
+  useEffect(() => {
+    const urlSplit = rt.pathname.split("/");
+    const currentPage = urlSplit[urlSplit.length - 1] || "";
+    setActive(currentPage);
+  }, [rt.pathname]);
   const t = useTranslations();
   const { isAuth, logout } = useAuthStore();
   return (
@@ -70,7 +71,7 @@ function AccountNav() {
                   {t("my_account")}
                 </Link>
               </li>
-              {type !== 2 ? (
+              {checkPermission(ALL_PERMISSIONS.ChangePassword) ? (
                 <li
                   className={
                     "nav-item " +
@@ -84,7 +85,7 @@ function AccountNav() {
                 </li>
               ) : null}
 
-              {type !== 2 ? (
+              {checkRole(ROLES.Admin) ? (
                 <li
                   className={
                     "nav-item " + (active === "users" ? " active" : "")
@@ -152,7 +153,7 @@ function AccountNav() {
                   </Link>
                 </li>
               ) : null} */}
-              {type !== 2 ? (
+              {/* {type !== 2 ? (
                 <li
                   className={
                     "nav-item " + (active === "child-accounts" ? " active" : "")
@@ -161,11 +162,10 @@ function AccountNav() {
                   <Link className="nav-link" href="child-accounts">
                     <i className="fa fa-building" aria-hidden="true"></i>
 
-                    {/* Sales Invoices */}
                     {t("child_accounts")}
                   </Link>
                 </li>
-              ) : null}
+              ) : null} */}
               <li className={"nav-item " + (active === "ddf" ? " active" : "")}>
                 <Link
                   className="nav-link"

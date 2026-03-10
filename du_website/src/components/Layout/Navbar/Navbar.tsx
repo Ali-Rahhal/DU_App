@@ -267,6 +267,16 @@ function Navbar() {
                             <Link href="/complaint">{t("complaint")}</Link>
                           </li>
                           <li>
+                            <Link href="/open-invoice">
+                              {t("open_invoices")}
+                            </Link>
+                          </li>
+                          <li>
+                            <Link href="/sales-invoice">
+                              {t("sales_invoices")}
+                            </Link>
+                          </li>
+                          <li>
                             <Link
                               href="#"
                               onClick={() => {
@@ -385,6 +395,12 @@ function Navbar() {
                   </li>
                   <li>
                     <Link href="/complaint">{t("complaint")}</Link>
+                  </li>
+                  <li>
+                    <Link href="/open-invoice">{t("open_invoices")}</Link>
+                  </li>
+                  <li>
+                    <Link href="/sales-invoice">{t("sales_invoices")}</Link>
                   </li>
                 </ul>
               </div>

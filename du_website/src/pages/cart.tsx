@@ -443,11 +443,18 @@ const Cart = () => {
                           );
                           return;
                         }
-                        placeOrder().then((res) => {
-                          toast.success("Order Placed !");
-                          rt.push("/orders");
-                          refreshCart();
-                        });
+                        placeOrder()
+                          .then((res) => {
+                            toast.success("Order Placed !");
+                            rt.push("/orders");
+                            refreshCart();
+                          })
+                          .catch((error: any) => {
+                            toast.error(
+                              error.response?.data?.message ||
+                                `Failed to place order`,
+                            );
+                          });
                       }}
                     >
                       {t("checkout")} <i className="ti-arrow-right"></i>

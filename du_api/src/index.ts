@@ -47,6 +47,8 @@ import {
 } from "./crud/PromotionController";
 import childAccountRoutes from "./routes/childAccountRoutes";
 import usersRoutes from "./routes/usersRoutes";
+import { ensureAccountPermission } from "./lib/utils";
+import { ALL_PERMISSIONS } from "./lib/constants";
 //@ts-ignore
 BigInt.prototype.toJSON = function () {
   return this.toString();
@@ -314,6 +316,11 @@ app.get(`${PRIVATE_API}/user_details`, async (c) => {
 app.post(`${PRIVATE_API}/change_password`, async (c) => {
   try {
     const userId = await getUserId(c);
+    if (
+      !(await ensureAccountPermission(userId, ALL_PERMISSIONS.ChangePassword))
+    ) {
+      throw new Error("You don't have permission to change password");
+    }
     const { old_password, new_password, confirmed_password } =
       await c.req.json();
     const result = await changePassword({
@@ -425,6 +432,9 @@ app.get(`${PUBLIC_API}/get_product/:item_code`, async (c) => {
 app.post(`${PRIVATE_API}/add_to_favorite`, async (c) => {
   try {
     const userId = await getUserId(c);
+    if (!(await ensureAccountPermission(userId, ALL_PERMISSIONS.Wishlist))) {
+      throw new Error("You don't have permission to use wishlist");
+    }
     const body = await c.req.json();
     const itemCode = body["item_code"];
     const result = await addItemToFavorite(userId, itemCode);
@@ -439,6 +449,9 @@ app.post(`${PRIVATE_API}/add_to_favorite`, async (c) => {
 app.post(`${PRIVATE_API}/remove_from_favorite`, async (c) => {
   try {
     const userId = await getUserId(c);
+    if (!(await ensureAccountPermission(userId, ALL_PERMISSIONS.Wishlist))) {
+      throw new Error("You don't have permission to use wishlist");
+    }
     const body = await c.req.json();
     const itemCode = body["item_code"];
     const result = await removeItemFromFavorite(userId, itemCode);
@@ -541,6 +554,10 @@ app.get(`${PRIVATE_API}/get_cart_items`, async (c) => {
 app.post(`${PRIVATE_API}/place_order`, async (c) => {
   try {
     const userId = await getUserId(c);
+
+    if (!(await ensureAccountPermission(userId, ALL_PERMISSIONS.Order))) {
+      throw new Error("You don't have permission to place order");
+    }
     const body = await c.req.json();
 
     const result = await placeOrder(userId);

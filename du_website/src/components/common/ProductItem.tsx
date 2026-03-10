@@ -15,11 +15,12 @@ import { Button, Modal, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { useState } from "react";
 import ProductPromotionList from "./ProductPromotionList";
+import { ALL_PERMISSIONS } from "@/utils/data";
 
 const ProductItem = ({ item }: { item: Item }) => {
   const t = useTranslations();
   const { isAuth } = useAuthStore();
-  const { cartItems, refreshCart } = useAccountStore();
+  const { cartItems, refreshCart, checkPermission } = useAccountStore();
 
   const [fav, setFav] = useState(item.isFavorite ?? false);
   const [openPromotionPopup, setOpenPromotionPopup] = useState(false);
@@ -39,6 +40,10 @@ const ProductItem = ({ item }: { item: Item }) => {
     }
 
     try {
+      if (!checkPermission(ALL_PERMISSIONS.Wishlist)) {
+        toast.error("You don't have permission to use wishlist");
+        return;
+      }
       if (fav) {
         await removeFromFavorite(item.item_code);
         setFav(false);
@@ -46,8 +51,10 @@ const ProductItem = ({ item }: { item: Item }) => {
         await addToFavorite(item.item_code);
         setFav(true);
       }
-    } catch {
-      toast.error("Failed to update favorite");
+    } catch (error: any) {
+      toast.error(
+        error.response?.data?.message || `Failed to update favorites`,
+      );
     }
   };
 

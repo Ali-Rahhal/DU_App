@@ -13,11 +13,12 @@ import { useAccountStore, useAuthStore } from "@/store/zustand";
 import { useTranslations } from "use-intl";
 import ProductPromotionList from "./ProductPromotionList";
 import { Tooltip } from "react-bootstrap";
+import { ALL_PERMISSIONS } from "@/utils/data";
 
 const ProductDetails = ({ product }: { product: Item }) => {
   // const dispatch = useDispatch(1);
   const router = useRouter();
-  const { refreshCart } = useAccountStore();
+  const { refreshCart, checkPermission } = useAccountStore();
   const { isAuth } = useAuthStore();
   const [quantity, setQuantity] = useState(1);
   const [price, setprice] = useState(0);
@@ -61,16 +62,32 @@ const ProductDetails = ({ product }: { product: Item }) => {
       toast.info(t("toast.please_login"));
       return;
     }
+    if (!checkPermission(ALL_PERMISSIONS.Wishlist)) {
+      toast.error("You don't have permission to use wishlist");
+      return;
+    }
     if (!isFavorite) {
-      addToFavorite(product.item_code).then((res) => {
-        toast.success(t("toast.added_to_wishlist"));
-        setIsFavorite(true);
-      });
+      addToFavorite(product.item_code)
+        .then((res) => {
+          toast.success(t("toast.added_to_wishlist"));
+          setIsFavorite(true);
+        })
+        .catch((error: any) => {
+          toast.error(
+            error.response?.data?.message || `Failed to add to wishlist`,
+          );
+        });
     } else {
-      removeFromFavorite(product.item_code).then((res) => {
-        toast.info(t("toast.removed_from_wishlist"));
-        setIsFavorite(false);
-      });
+      removeFromFavorite(product.item_code)
+        .then((res) => {
+          toast.info(t("toast.removed_from_wishlist"));
+          setIsFavorite(false);
+        })
+        .catch((error: any) => {
+          toast.error(
+            error.response?.data?.message || `Failed to remove from wishlist`,
+          );
+        });
     }
   };
 

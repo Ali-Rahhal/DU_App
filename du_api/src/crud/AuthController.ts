@@ -5,6 +5,7 @@ import * as jwt from "jsonwebtoken";
 import { transporter } from "../lib/utils";
 import * as crypto from "crypto";
 import { serialize } from "hono/utils/cookie";
+import { ROLES } from "../lib/constants";
 // import { serialize } from "cookie";
 // const register = async ({
 //   email,
@@ -115,7 +116,7 @@ const login = async (
     code: string;
     password: string;
   },
-  c: Context
+  c: Context,
 ) => {
   const user = await prisma.web_accounts.findFirst({
     where: {
@@ -135,7 +136,7 @@ const login = async (
   }
   if (user.is_blocked) throw new Error("Account is Disabled");
   let permissions = [];
-  if (user.type === 2) {
+  if (user.role === ROLES.SysUser) {
     permissions = await prisma.user_permission_assignment.findMany({
       where: {
         web_account_id: user.id,
@@ -157,6 +158,7 @@ const login = async (
     phone: user.phone,
     is_verified: user.is_verified,
     type: user.type,
+    role: user.role,
     permissions: permissions.map((p) => p.user_permission.code),
   };
   if (!user.is_verified) {
@@ -168,7 +170,7 @@ const login = async (
           ...userInfo,
         },
       },
-      401
+      401,
     );
   }
   const token = jwt.sign(
@@ -177,11 +179,12 @@ const login = async (
       userId: user.id,
       description: user.description,
       type: user.type,
+      role: user.role,
     },
     process.env.JWT_SECRET as string,
     {
       expiresIn: "1d",
-    }
+    },
   );
 
   const serialized = serialize("auth", token, {
@@ -200,7 +203,7 @@ const login = async (
     200,
     {
       "Set-Cookie": serialized,
-    }
+    },
   );
 };
 // const sendVerify = async (email: string, c: Context) => {
@@ -405,7 +408,7 @@ const forgotPassword = async (email: string, c: Context) => {
   });
   if (reset?.created_at) {
     const secDiff = Math.floor(
-      (new Date().getTime() - reset?.created_at.getTime()) / 1000
+      (new Date().getTime() - reset?.created_at.getTime()) / 1000,
     );
 
     if (secDiff < 60) {
@@ -478,7 +481,7 @@ const forgotPassword = async (email: string, c: Context) => {
       message: "Reset Code Sent",
       result: [],
     },
-    200
+    200,
   );
 };
 const validateResetCode = async (key: string, c: Context) => {
@@ -500,7 +503,7 @@ const validateResetCode = async (key: string, c: Context) => {
   }
   if (reset?.created_at) {
     const secDiff = Math.floor(
-      (new Date().getTime() - reset?.created_at.getTime()) / 1000
+      (new Date().getTime() - reset?.created_at.getTime()) / 1000,
     );
 
     if (secDiff > 60 * 60 * 24) {
@@ -513,7 +516,7 @@ const changePasswordReset = async (
   newPassword: string,
   confitrmedPassword: string,
   key: string,
-  c: Context
+  c: Context,
 ) => {
   if (newPassword !== confitrmedPassword) {
     throw new Error("Password Not Matched");
@@ -536,7 +539,7 @@ const changePasswordReset = async (
   }
   if (reset?.created_at) {
     const secDiff = Math.floor(
-      (new Date().getTime() - reset?.created_at.getTime()) / 1000
+      (new Date().getTime() - reset?.created_at.getTime()) / 1000,
     );
 
     if (secDiff > 60 * 60 * 24) {
@@ -590,6 +593,7 @@ const getUserDetails = async (id: number) => {
       is_blocked: true,
       date_added: true,
       type: true,
+      role: true,
     },
   });
   if (userInfo?.is_blocked) throw new Error("Account is Disabled");
@@ -609,7 +613,7 @@ const getUserDetails = async (id: number) => {
     },
   });
   let permissions = [];
-  if (userInfo.type === 2) {
+  if (userInfo.role === ROLES.SysUser) {
     permissions = await prisma.user_permission_assignment.findMany({
       where: {
         web_account_id: id,

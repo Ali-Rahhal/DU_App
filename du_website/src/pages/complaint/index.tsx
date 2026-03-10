@@ -35,7 +35,25 @@ import "react-toastify/dist/ReactToastify.css";
 import { publicApi } from "@/utils/apiCalls";
 import Layout from "@/components/Layout/Layout";
 import { Spinner } from "react-bootstrap";
+import { ALL_PERMISSIONS } from "@/utils/data";
+import { useEffect, useRef } from "react";
+import { useRouter } from "next/router";
+import { toast } from "react-toastify";
+import { useAccountStore } from "@/store/zustand";
 function App() {
+  // Authorization Check:
+  const rt = useRouter();
+  const { role, checkPermission } = useAccountStore();
+  const hasShownToast = useRef(false);
+  useEffect(() => {
+    if (!checkPermission(ALL_PERMISSIONS.Complaint) && !hasShownToast.current) {
+      toast.error("You don't have permission to access the Complaint page");
+      hasShownToast.current = true;
+      rt.push("/");
+    }
+  }, [role]);
+  if (!checkPermission(ALL_PERMISSIONS.Complaint)) return null;
+
   //add css classname to class microphone
 
   if (!Serializer.findClass("itemselector")) {

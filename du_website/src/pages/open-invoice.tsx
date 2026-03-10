@@ -13,12 +13,32 @@ import React, { useEffect } from "react";
 //   currency: string;
 //   order_amount: string;
 //   remaining_amount: string;
-
+import { ALL_PERMISSIONS } from "@/utils/data";
+import { useRef } from "react";
+import { useRouter } from "next/router";
+import { toast } from "react-toastify";
+import { useAccountStore } from "@/store/zustand";
 const OpenInvoices = () => {
+  // Authorization Check:
+  const rt = useRouter();
+  const { role, checkPermission } = useAccountStore();
+  const hasShownToast = useRef(false);
+  useEffect(() => {
+    if (
+      !checkPermission(ALL_PERMISSIONS.OpenInvoice) &&
+      !hasShownToast.current
+    ) {
+      toast.error("You don't have permission to access the open invoice page");
+      hasShownToast.current = true;
+      rt.push("/");
+    }
+  }, [role]);
+  if (!checkPermission(ALL_PERMISSIONS.OpenInvoice)) return null;
+
   const t = useTranslations();
   const [openInvoices, setOpenInvoices] = React.useState<OpenInvoice[]>([]);
   const [filteredInvoices, setFilteredInvoices] = React.useState<OpenInvoice[]>(
-    []
+    [],
   );
   const [filters, setFilters] = React.useState<number[]>([0, 1, 2, 3]);
   useEffect(() => {
@@ -53,7 +73,7 @@ const OpenInvoices = () => {
           return true;
         }
         return false;
-      })
+      }),
     );
   }, [filters, openInvoices]);
 
@@ -97,10 +117,10 @@ const OpenInvoices = () => {
                   type === "CN"
                     ? "#4dabf7"
                     : remainingDays < 0
-                    ? "#ff8787"
-                    : remainingDays < 7
-                    ? "#ffd43b"
-                    : "#69db7c";
+                      ? "#ff8787"
+                      : remainingDays < 7
+                        ? "#ffd43b"
+                        : "#69db7c";
                 return (
                   <tr key={invoice.order_no}>
                     <td
@@ -205,7 +225,7 @@ const OpenInvoices = () => {
               setFilters(
                 filters.includes(0)
                   ? filters.filter((filter) => filter !== 0)
-                  : [...filters, 0]
+                  : [...filters, 0],
               );
             }}
           >
@@ -237,7 +257,7 @@ const OpenInvoices = () => {
               setFilters(
                 filters.includes(1)
                   ? filters.filter((filter) => filter !== 1)
-                  : [...filters, 1]
+                  : [...filters, 1],
               );
             }}
           >
@@ -270,7 +290,7 @@ const OpenInvoices = () => {
               setFilters(
                 filters.includes(2)
                   ? filters.filter((filter) => filter !== 2)
-                  : [...filters, 2]
+                  : [...filters, 2],
               );
             }}
           >
@@ -303,7 +323,7 @@ const OpenInvoices = () => {
               setFilters(
                 filters.includes(3)
                   ? filters.filter((filter) => filter !== 3)
-                  : [...filters, 3]
+                  : [...filters, 3],
               );
             }}
           >

@@ -1,6 +1,5 @@
 import { Prisma } from "@prisma/client";
 import prisma from "../lib/prisma";
-import { ensureChildAccountPermission } from "../lib/utils";
 
 // import { createSession } from "./BOBPaymentIntegration";
 
@@ -725,9 +724,6 @@ const placeOrder = async (userID: number) => {
   if (!userDetail) throw new Error("User not found");
   if (userDetail.is_blocked) throw new Error("User is blocked");
   if (!userDetail.is_verified) throw new Error("User is not verified");
-  if (userDetail.type === 2) {
-    await ensureChildAccountPermission(userID, "ORDER");
-  }
 
   //payment.type === 1 Credit 2 cash
   const result = await prisma.$queryRaw`

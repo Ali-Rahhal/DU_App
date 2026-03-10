@@ -2,6 +2,7 @@ import nodemailer from "nodemailer";
 import * as fs from "fs";
 import path = require("path");
 import prisma from "./prisma";
+import { ROLES } from "./constants";
 export const transporter = nodemailer.createTransport({
   host: "smtp.ethereal.email",
   port: 587,
@@ -39,7 +40,7 @@ export const groupProducts = (
     size: string;
     barcode: string;
     discounted_price: number | null;
-  }[]
+  }[],
 ) => {
   const groupedResults = {};
 
@@ -94,7 +95,7 @@ export const groupProducts = (
 
     // Check if the color is already in the item_code's colors
     const existingColor = groupedResults[item_code].colors.find(
-      (c) => c.color === color
+      (c) => c.color === color,
     );
 
     if (!existingColor) {
@@ -162,7 +163,7 @@ export const saveAudioReturnUrl = async (base64Audio: string) => {
     "inetpub",
     "wwwroot",
     "delice_uploads",
-    "audio"
+    "audio",
   );
 
   // Ensure the directory exists
@@ -202,7 +203,7 @@ export const saveImageReturnUrl = async (base64Image: string) => {
     "inetpub",
     "wwwroot",
     "delice_uploads",
-    "images"
+    "images",
   );
 
   // Ensure the directory exists
@@ -241,7 +242,7 @@ export const ensureParentAccount = async (parent_id: number) => {
 };
 export const ensureChildAccountPermission = async (
   child_id: number,
-  permission_code: string
+  permission_code: string,
 ) => {
   const found = await prisma.user_permission_assignment.findMany({
     where: {
@@ -258,5 +259,40 @@ export const ensureChildAccountPermission = async (
   });
   if (!found) {
     throw new Error("Child account does not have permission");
+  }
+};
+
+export const ensureAccountPermission = async (
+  user_id: number,
+  permission_code: string,
+): Promise<boolean> => {
+  const user = await prisma.web_accounts.findUnique({
+    where: {
+      id: user_id,
+    },
+    select: {
+      role: true,
+    },
+  });
+
+  if (user.role !== ROLES.SysUser) {
+    return true;
+  }
+
+  const found = await prisma.user_permission_assignment.findMany({
+    where: {
+      web_account_id: user_id,
+      user_permission: {
+        code: permission_code,
+      },
+    },
+    select: {
+      id: true,
+      user_code: true,
+      user_permission_id: true,
+    },
+  });
+  if (!found || found.length === 0) {
+    return false;
   }
 };

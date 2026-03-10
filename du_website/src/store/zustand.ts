@@ -1,8 +1,9 @@
 import { getCartItems, getUserDetails, login, logout } from "@/utils/apiCalls";
+import { ROLES } from "@/utils/data";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-type AccountSore = {
+type AccountStore = {
   cart: number;
   cartItems: any[];
   name: string;
@@ -13,6 +14,7 @@ type AccountSore = {
   address: string;
   permissions: string[];
   type: number | null;
+  role: string | null;
   setAccount: ({
     name,
     code,
@@ -30,6 +32,7 @@ type AccountSore = {
   refreshUserInfo: () => void;
   refreshCart: () => void;
   checkPermission: (permission: string) => boolean;
+  checkRole: (role: string) => boolean;
 };
 type AuthStore = {
   token: string | null;
@@ -45,7 +48,7 @@ type AuthStore = {
   logout: () => Promise<void>;
 };
 
-export const useAccountStore = create<AccountSore>((set) => ({
+export const useAccountStore = create<AccountStore>((set) => ({
   cart: 0,
   cartItems: [],
   name: "",
@@ -55,12 +58,16 @@ export const useAccountStore = create<AccountSore>((set) => ({
   phone: "",
   address: "",
   type: null,
+  role: null,
   permissions: [],
   checkPermission: (permission) => {
-    if (useAccountStore.getState().type !== 2) return true;
+    if (useAccountStore.getState().role !== ROLES.SysUser) return true;
     else return useAccountStore.getState().permissions.includes(permission);
   },
-
+  checkRole: (role) => {
+    if (useAccountStore.getState().role !== role) return false;
+    else return true;
+  },
   refreshUserInfo: async () => {
     if (!useAuthStore.getState().isAuth) return;
     getUserDetails()
@@ -76,6 +83,7 @@ export const useAccountStore = create<AccountSore>((set) => ({
           phone: res.data.result.phone,
           address: res.data.result.address,
           type: res.data.result.type,
+          role: res.data.result.role,
           permissions: res.data.result.permissions,
         });
       })
@@ -129,6 +137,7 @@ export const useAuthStore = create<AuthStore>()(
           useAccountStore.getState().refreshCart();
           useAccountStore.setState({
             type: res.data.result.type,
+            role: res.data.result.role,
             permissions: res.data.result.permissions,
           });
           return res;
@@ -148,6 +157,6 @@ export const useAuthStore = create<AuthStore>()(
     }),
     {
       name: "auth",
-    }
-  )
+    },
+  ),
 );

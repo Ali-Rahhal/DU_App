@@ -2,6 +2,7 @@ import AccountLayout from "@/components/dashboard/AccountLayout";
 import Layout from "@/components/Layout/Layout";
 import { useAccountStore } from "@/store/zustand";
 import { changePassword } from "@/utils/apiCalls";
+import { ALL_PERMISSIONS } from "@/utils/data";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -13,17 +14,14 @@ const ChangePassword = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const rt = useRouter();
   const t = useTranslations();
-  const { type } = useAccountStore();
-  // if (type !== 2) {
-  //   rt.push("/account");
-  //   return null;
-  // }
+  const { role, checkPermission } = useAccountStore();
   useEffect(() => {
-    if (type === 2) {
+    if (!checkPermission(ALL_PERMISSIONS.ChangePassword)) {
+      toast.error("You don't have permission to change password");
       rt.push("/account");
     }
-  }, [type]);
-  if (type === 2) return null;
+  }, [role]);
+  if (!checkPermission(ALL_PERMISSIONS.ChangePassword)) return null;
   return (
     <Layout>
       <AccountLayout

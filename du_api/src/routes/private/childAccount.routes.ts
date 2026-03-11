@@ -8,8 +8,8 @@ import {
   getAllUserPermisions,
   getChildAccounts,
   updatePermissions,
-} from "../crud/ChildAccountController";
-import { ensureParentAccount } from "../lib/utils";
+} from "../../crud/ChildAccountController";
+import { ensureParentAccount } from "../../lib/utils";
 const router = new Hono();
 const PUBLIC_API = "/api";
 const PRIVATE_API = "/api/auth";

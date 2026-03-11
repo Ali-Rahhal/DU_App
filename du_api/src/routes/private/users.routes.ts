@@ -8,13 +8,9 @@ import {
   getUserPermissions,
   getAllPermissions,
   updateUserPermissions,
-} from "../crud/usersController";
+} from "../../crud/usersController";
+import { getUserId } from "../../lib/utils";
 const router = new Hono();
-
-async function getUserId(c) {
-  const userId = c.req.user_id;
-  return userId;
-}
 
 // ==================== USER MANAGEMENT ROUTES ====================
 

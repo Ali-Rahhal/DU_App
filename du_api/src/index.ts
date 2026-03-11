@@ -1,10 +1,8 @@
 import { serve } from "@hono/node-server";
-import { Context, Hono } from "hono";
+import { Hono } from "hono";
 import tokenAuth from "./lib/tokenAuth";
 import { cors } from "hono/cors";
-import { login, getUserDetails, changePassword } from "./crud/AuthController";
 import { getCookie } from "hono/cookie";
-import { serialize } from "hono/utils/cookie";
 import {
   addItemToCart,
   addItemToFavorite,
@@ -26,28 +24,23 @@ import {
   updateItemInCart,
 } from "./crud/EcomController";
 import { compress } from "hono/compress";
-import {
-  getProductsSurvey,
-  getSurveyElements,
-  getSurveys,
-  saveSurveyAnswer,
-} from "./crud/surveyController";
-import {
-  getComplaints,
-  getComplaintsElements,
-  getUserComplaints,
-  saveComplaintAnswer,
-} from "./crud/complaintController";
+
 import path = require("path");
 
+import authPrivateRoutes from "./routes/private/auth.routes";
+import authPublicRoutes from "./routes/public/auth.routes";
+import childAccountRoutes from "./routes/private/childAccount.routes";
+import usersRoutes from "./routes/private/users.routes";
+import surveyPrivateRoutes from "./routes/private/survey.routes";
+import surveyPublicRoutes from "./routes/public/survey.routes";
+import complaintRoutes from "./routes/private/complaint.routes";
+import promotionPrivateRoutes from "./routes/private/promotion.routes";
+import promotionPublicRoutes from "./routes/public/promotion.routes";
 import {
-  getAllAvailablePromotions,
-  getProductPromotions,
-  getShoppingCartPromotions,
-} from "./crud/PromotionController";
-import childAccountRoutes from "./routes/childAccountRoutes";
-import usersRoutes from "./routes/usersRoutes";
-import { ensureAccountPermission } from "./lib/utils";
+  ensureAccountPermission,
+  getUserId,
+  getUserIdFromToken,
+} from "./lib/utils";
 import { ALL_PERMISSIONS } from "./lib/constants";
 //@ts-ignore
 BigInt.prototype.toJSON = function () {
@@ -92,248 +85,16 @@ async function authMiddleware(c, next) {
 
 app.use("*", compress());
 app.use(`${PRIVATE_API}/*`, authMiddleware);
-//request too large fix
-async function getUserId(c) {
-  const userId = c.req.user_id;
-  return userId;
-}
-async function getUserIdFromToken(c: Context) {
-  // const token = c.req.header("Authorization");
-  const token = getCookie(c, "auth");
-  if (!token) throw new Error("No token provided");
-  const userId = await tokenAuth(token);
-  return userId;
-}
 
-app.route("/", childAccountRoutes);
+app.route(`${PUBLIC_API}`, authPublicRoutes);
+app.route(`${PRIVATE_API}`, authPrivateRoutes);
+//app.route("/", childAccountRoutes);
 app.route(`${PRIVATE_API}/users`, usersRoutes);
-
-// app.post(`${PUBLIC_API}/register`, async (c) => {
-//   try {
-//     const body = await c.req.json();
-
-//     const email = body["email"];
-//     const password = body["password"];
-//     const first_name = body["first_name"];
-//     const last_name = body["last_name"];
-//     const phone_number = body["phone_number"];
-
-//     if (!email) {
-//       throw new Error("Email not provided");
-//     }
-//     if (!password) {
-//       throw new Error("Password not provided");
-//     }
-//     if (!first_name) {
-//       throw new Error("First name not provided");
-//     }
-//     if (!last_name) {
-//       throw new Error("Last name not provided");
-//     }
-//     // if (!phone_number) {
-//     //   throw new Error("Phone number not provided");
-//     // }
-//     const result = await register({
-//       email,
-//       password,
-//       first_name,
-//       last_name,
-//       phone_number,
-//     });
-//     return c.json({ message: "Creation success", result: result });
-//   } catch (e) {
-//     return c.json({ message: e.message, result: null }, 400);
-//   }
-// });
-app.get(`${PRIVATE_API}/user`, async (c) => {
-  try {
-    const userId = await getUserId(c);
-    // console.log(userId);
-    const result = "";
-    return c.json({ message: "Get user success", result: result }, 200);
-  } catch (e) {
-    return c.json({ message: e.message, result: null }, 401);
-  }
-});
-app.post(`${PUBLIC_API}/login`, async (c) => {
-  try {
-    const body = await c.req.json();
-
-    const code = body["code"];
-    const password = body["password"];
-
-    if (!code || !password) throw new Error("email or password not provided");
-    const result = await login({ code, password }, c);
-    return result;
-    // return c.json({ message: "Login success", result: result });
-  } catch (e) {
-    const serialized = serialize("auth", "", {
-      httpOnly: true,
-      sameSite: process.env.NODE_ENV === "production" ? "Strict" : "Lax",
-      secure: process.env.NODE_ENV === "production" ? true : false,
-      maxAge: 60 * 60 * 24,
-      path: "/",
-    });
-    return c.json({ message: e.message, result: null }, 401, {
-      "Set-Cookie": serialized,
-    });
-  }
-});
-app.post(`${PUBLIC_API}/logout`, async (c) => {
-  try {
-    const userId = await getUserId(c);
-    const serialized = serialize("auth", "", {
-      httpOnly: true,
-      sameSite: process.env.NODE_ENV === "production" ? "Strict" : "Lax",
-      secure: process.env.NODE_ENV === "production" ? true : false,
-      maxAge: 60 * 60 * 24,
-      path: "/",
-    });
-    return c.json({ message: "Logout success", result: [] }, 200, {
-      "Set-Cookie": serialized,
-    });
-  } catch (e) {
-    return c.json({ message: e.message, result: null }, 401);
-  }
-});
-// app.post(`${PUBLIC_API}/send_verify_email`, async (c) => {
-//   try {
-//     const body = await c.req.json();
-
-//     const email = body["email"];
-
-//     if (!email) throw new Error("email or code not provided");
-//     const result = await sendVerify(email, c);
-//     return result;
-//   } catch (e) {
-//     return c.json({ message: e.message, result: null }, 402);
-//   }
-// });
-// app.post(`${PUBLIC_API}/send_reset_email`, async (c) => {
-//   try {
-//     const body = await c.req.json();
-
-//     const email = body["email"];
-
-//     if (!email) throw new Error("email or code not provided");
-//     const result = await forgotPassword(email, c);
-//     return result;
-//   } catch (e) {
-//     return c.json({ message: e.message, result: null }, 400);
-//   }
-// });
-
-// app.post(`${PUBLIC_API}/validate_reset_code`, async (c) => {
-//   try {
-//     const body = await c.req.json();
-
-//     const key = body["key"];
-
-//     if (!key) throw new Error("code not provided");
-//     const result = await validateResetCode(key, c);
-//     return result;
-//   } catch (e) {
-//     return c.json({ message: e.message, result: null }, 400);
-//   }
-// });
-// app.post(`${PUBLIC_API}/change_password_forgot`, async (c) => {
-//   try {
-//     const body = await c.req.json();
-
-//     const newPassword = body["new_password"];
-//     const confirmedPassword = body["confirmed_password"];
-//     const key = body["key"];
-
-//     if (!newPassword || !confirmedPassword || !key)
-//       throw new Error("email or code not provided");
-//     const result = await changePasswordReset(
-//       newPassword,
-//       confirmedPassword,
-//       key,
-//       c
-//     );
-//     return result;
-//   } catch (e) {
-//     return c.json({ message: e.message, result: null }, 401);
-//   }
-// });
-// app.post(`${PUBLIC_API}/verify_email`, async (c) => {
-//   try {
-//     const body = await c.req.json();
-
-//     const email = body["email"];
-//     const key = body["key"];
-
-//     if (!email || !key) throw new Error("email or code not provided");
-//     const result = await verifyEmail(email, key, c);
-//     return result;
-//   } catch (e) {
-//     return c.json({ message: e.message, result: null }, 401);
-//   }
-// });
-// app.get(`${PRIVATE_API}/user`, async (c) => {
-//   try {
-//     const userId = await getUserId(c);
-//     // console.log(userId);
-//     const result = "";
-//     return c.json({ message: "Get user success", result: result }, 200);
-//   } catch (e) {
-//     return c.json({ message: e.message, result: null }, 401);
-//   }
-// });
-app.get(`${PRIVATE_API}/user_details`, async (c) => {
-  try {
-    const userId = await getUserId(c);
-    const result = await getUserDetails(userId);
-    return c.json({ message: "Get user success", result: result }, 200);
-  } catch (e) {
-    return c.json({ message: e.message, result: null }, 400);
-  }
-});
-
-// app.post(`${PRIVATE_API}/update_user_detail`, async (c) => {
-//   try {
-//     const userId = await getUserId(c);
-//     const { first_name, last_name, phone_number, address } = await c.req.json();
-//     const result = await updateUserDetails({
-//       userId: userId,
-//       first_name: first_name,
-//       last_name: last_name,
-//       phone: phone_number,
-//       address: address,
-//     });
-//     return c.json({ message: "Get user success", result: result }, 200);
-//   } catch (e) {
-//     return c.json({ message: e.message, result: null }, 401);
-//   }
-// });
-// // const changePassword = async ({
-// //   userId,
-// //   oldPassword,
-// //   newPassword,
-// //   confirmedPassword,
-// // }: {
-app.post(`${PRIVATE_API}/change_password`, async (c) => {
-  try {
-    const userId = await getUserId(c);
-    if (
-      !(await ensureAccountPermission(userId, ALL_PERMISSIONS.ChangePassword))
-    ) {
-      throw new Error("You don't have permission to change password");
-    }
-    const { old_password, new_password, confirmed_password } =
-      await c.req.json();
-    const result = await changePassword({
-      userId: userId,
-      oldPassword: old_password,
-      newPassword: new_password,
-      confirmedPassword: confirmed_password,
-    });
-    return c.json({ message: "Password changed", result: result }, 200);
-  } catch (e) {
-    return c.json({ message: e.message, result: null }, 401);
-  }
-});
+app.route(`${PUBLIC_API}/survey`, surveyPublicRoutes);
+app.route(`${PRIVATE_API}/survey`, surveyPrivateRoutes);
+app.route(`${PRIVATE_API}/complaint`, complaintRoutes);
+app.route(`${PUBLIC_API}`, promotionPublicRoutes);
+app.route(`${PRIVATE_API}`, promotionPrivateRoutes);
 
 app.get(`${PUBLIC_API}/get_side_bar`, async (c) => {
   try {
@@ -585,140 +346,6 @@ app.get(`${PRIVATE_API}/dashboard_data`, async (c) => {
   }
 });
 
-app.get(`${PRIVATE_API}/survey/get_surveys`, async (c) => {
-  try {
-    const userId = await getUserId(c);
-    const result = await getSurveys();
-    return c.json({
-      message: "Fetched surveys",
-      result: result,
-    });
-  } catch (e) {
-    return c.json({ message: e.message, result: null }, 400);
-  }
-});
-
-app.get(`${PRIVATE_API}/survey/get_survey_elements`, async (c) => {
-  try {
-    const userId = await getUserId(c);
-    const surveyId = c.req.query("survey_id");
-    const result = await getSurveyElements(parseInt(surveyId));
-    return c.json({
-      message: "Fetched surveys",
-      result: result,
-    });
-  } catch (e) {
-    return c.json({ message: e.message, result: null }, 400);
-  }
-});
-
-app.get(`${PUBLIC_API}/survey/get-products`, async (c) => {
-  try {
-    const userId = await getUserId(c);
-    const { skip, take, search } = c.req.query();
-    const result = await getProductsSurvey({
-      skip: parseInt(skip as string) || 0,
-      take: parseInt(take as string) || 25,
-      search: search,
-    });
-    return c.json({
-      message: "Fetched Products",
-      result: result,
-    });
-  } catch (e) {
-    return c.json({ message: e.message, result: null }, 400);
-  }
-});
-
-// const saveSurveyAnswer = async (
-//   surveyId: number,
-//   answers: {
-//     key: string;
-//     value: string;
-//     question_type_id: number;
-//     type: string;
-//   }[],
-//   userId: number
-// ) => {
-
-app.post(`${PRIVATE_API}/survey/save_survey_answer`, async (c) => {
-  try {
-    const userId = await getUserId(c);
-    const body = await c.req.json();
-    const surveyId = body["survey_id"];
-    const answers = body["answers"];
-    if (!surveyId) throw new Error("Survey id not provided");
-    if (!answers) throw new Error("Answers not provided");
-    const result: any = await saveSurveyAnswer(surveyId, answers, userId);
-
-    return c.json({
-      message: "Survey Answer saved",
-      result: result,
-    });
-  } catch (e) {
-    return c.json({ message: e.message, result: null }, 400);
-  }
-});
-
-app.get(`${PRIVATE_API}/complaint/get-complaint-types`, async (c) => {
-  try {
-    const userId = await getUserId(c);
-    const result = await getComplaints();
-    return c.json({
-      message: "Fetched Complaint Types",
-      result: result,
-    });
-  } catch (e) {
-    return c.json({ message: e.message, result: null }, 400);
-  }
-});
-//const getComplaintsElements = async (complaintId: number) => {
-
-app.get(`${PRIVATE_API}/complaint/get-complaint-elements`, async (c) => {
-  try {
-    const userId = await getUserId(c);
-    const complaintId = c.req.query("complaint_id");
-    const result = await getComplaintsElements(parseInt(complaintId));
-    return c.json({
-      message: "Fetched Complaint Elements",
-      result: result,
-    });
-  } catch (e) {
-    return c.json({ message: e.message, result: null }, 400);
-  }
-});
-app.post(`${PRIVATE_API}/complaint/save_complaint_answer`, async (c) => {
-  try {
-    const userId = await getUserId(c);
-    const body = await c.req.json();
-    const compId = body["complaint_id"];
-    const answers = body["answers"];
-    if (!compId) throw new Error("Complaint id not provided");
-    if (!answers) throw new Error("Answers not provided");
-    const result: any = await saveComplaintAnswer(compId, answers, userId);
-
-    return c.json({
-      message: "Complaint Answer saved",
-      result: result,
-    });
-  } catch (e) {
-    return c.json({ message: e.message, result: null }, 400);
-  }
-});
-
-// getUserComplaints
-app.get(`${PRIVATE_API}/complaint/get-user-complaints`, async (c) => {
-  try {
-    const userId = await getUserId(c);
-    const result = await getUserComplaints(userId);
-    return c.json({
-      message: "Fetched Complaints",
-      result: result,
-    });
-  } catch (e) {
-    return c.json({ message: e.message, result: null }, 400);
-  }
-});
 // app.post(`${PRIVATE_API}/place_order`, async (c) => {
 //   try {
 //     const userId = await getUserId(c);
@@ -838,51 +465,7 @@ app.get(`${PRIVATE_API}/get_invoice_details`, async (c) => {
     return c.json({ message: e.message, result: null }, 400);
   }
 });
-app.get(`${PUBLIC_API}/get_product_promotions`, async (c) => {
-  try {
-    const item_code = c.req.query("item_code");
-    const userId = await getUserIdFromToken(c)
-      .then((res) => {
-        return res;
-      })
-      .catch((e) => {
-        return null;
-      });
-    const result = await getProductPromotions(
-      item_code as string,
-      userId as number,
-    );
-    return c.json({
-      message: "Fetched Promotions ",
-      result: result,
-    });
-  } catch (e) {
-    console.log(e.message);
-    return c.json({ message: e.message, result: null }, 400);
-  }
-});
-app.get(`${PRIVATE_API}/get_shopping_cart_promotions`, async (c) => {
-  try {
-    const userId = await getUserId(c);
-    const result = await getShoppingCartPromotions(userId);
-    return c.json({
-      message: "Fetched Promotions ",
-      result: result,
-    });
-  } catch (e) {
-    console.log(e.message);
-    return c.json({ message: e.message, result: null }, 400);
-  }
-});
-app.get(`${PUBLIC_API}/promotions`, async (c) => {
-  try {
-    const result = await getAllAvailablePromotions();
 
-    return c.json({ message: "Promotions fetched", result: result });
-  } catch (e) {
-    return c.json({ message: e.message, result: null }, 400);
-  }
-});
 // app.post(`${PRIVATE_API}/check_last_order`, async (c) => {
 //   try {
 //     const userId = await getUserId(c);

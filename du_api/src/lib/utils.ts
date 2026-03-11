@@ -3,6 +3,9 @@ import * as fs from "fs";
 import path = require("path");
 import prisma from "./prisma";
 import { ROLES } from "./constants";
+import { Context } from "hono";
+import tokenAuth from "./tokenAuth";
+import { getCookie } from "hono/cookie";
 export const transporter = nodemailer.createTransport({
   host: "smtp.ethereal.email",
   port: 587,
@@ -296,3 +299,15 @@ export const ensureAccountPermission = async (
     return false;
   }
 };
+
+export async function getUserId(c) {
+  const userId = c.req.user_id;
+  return userId;
+}
+export async function getUserIdFromToken(c: Context) {
+  // const token = c.req.header("Authorization");
+  const token = getCookie(c, "auth");
+  if (!token) throw new Error("No token provided");
+  const userId = await tokenAuth(token);
+  return userId;
+}

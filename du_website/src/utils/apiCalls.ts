@@ -390,6 +390,13 @@ const getProductPromotion = async (
     },
   );
 };
+
+const getShoppingCartPromotions = async (): Promise<AxiosResponse> => {
+  return await axios.get(privateApi + `/get_shopping_cart_promotions`, {
+    withCredentials: true,
+  });
+};
+
 // const { password, first_name, last_name, phone_number } = body;
 const createChild = async ({
   password,
@@ -451,12 +458,6 @@ const getChildren = async (search?: string): Promise<AxiosResponse> => {
     params: {
       search,
     },
-  });
-};
-
-const getShoppingCartPromotions = async (): Promise<AxiosResponse> => {
-  return await axios.get(privateApi + `/get_shopping_cart_promotions`, {
-    withCredentials: true,
   });
 };
 
@@ -620,16 +621,12 @@ export {
   // register,
   // verifyEmail,
   // sendVerify,
-  getPromotions,
-  getAllChildPermissions,
-  getProductPromotion,
   logout,
-  disableChild,
-  enableChild,
-  deleteChild,
   forgotPassword,
   validateResetCode,
   getUserDetails,
+  updateUserDetails,
+  changePassword,
   getProducts,
   getProduct,
   addToFavorite,
@@ -639,29 +636,33 @@ export {
   getCartItems,
   updateCartItem,
   getFavoriteItems,
-  updateUserDetails,
-  changePassword,
   placeOrder,
   getCookieArray,
   getOrders,
   getOrderDetails,
   getOrder,
   getDashboardData,
+  getOpenInvoices,
+  getSalesOrder,
+  getInvoiceDetails,
+  getPromotions,
+  getProductPromotion,
+  getShoppingCartPromotions,
   getSurveys,
   getSurveyElements,
   saveSurvey,
   getComplaints,
   getComplaintElements,
-  getOpenInvoices,
-  getSalesOrder,
-  getInvoiceDetails,
   saveComplaint,
   getUserComplaints,
-  createChild,
-  getChildren,
-  getShoppingCartPromotions,
-  editChild,
-  updateChildPermissions,
+  // createChild,
+  // getChildren,
+  // editChild,
+  // updateChildPermissions,
+  // getAllChildPermissions,
+  // disableChild,
+  // enableChild,
+  // deleteChild,
   publicApi,
   privateApi,
   getUsers,

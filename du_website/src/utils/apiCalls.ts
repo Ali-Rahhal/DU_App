@@ -167,6 +167,7 @@ const getProducts = async (
     max_price?: number;
     onSale?: boolean;
     search?: string;
+    onPromotionOnly?: boolean;
   },
   cookie?: string,
 ): Promise<AxiosResponse> => {
@@ -188,6 +189,7 @@ const getProducts = async (
       max_price: filters.max_price,
       show_only_best_deals: filters.onSale,
       search: filters.search,
+      onPromotionOnly: filters.onPromotionOnly,
     },
     {
       withCredentials: true,

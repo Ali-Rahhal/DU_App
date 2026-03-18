@@ -60,7 +60,9 @@ const HomePageDealsSlider = ({ deals }) => {
           </div>
           <Slider {...setting}>
             {deals?.map((item, index) => (
-              <ProductItem key={index + item.image} item={item} />
+              <div key={index + item.image}>
+                <ProductItem item={item} />
+              </div>
             ))}
           </Slider>
         </div>

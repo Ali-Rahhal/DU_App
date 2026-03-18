@@ -11,17 +11,21 @@ import {
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
-import { Button, Modal, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 import { toast } from "react-toastify";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ProductPromotionList from "./ProductPromotionList";
 import { ALL_PERMISSIONS } from "@/utils/data";
 
-const ProductItem = ({ item }: { item: Item }) => {
+interface Props {
+  item: Item;
+  layout?: "grid" | "list";
+}
+
+const ProductItem = ({ item, layout = "grid" }: Props) => {
   const t = useTranslations();
   const { isAuth } = useAuthStore();
   const { cartItems, refreshCart, checkPermission } = useAccountStore();
-
   const [fav, setFav] = useState(item.isFavorite ?? false);
   const [openPromotionPopup, setOpenPromotionPopup] = useState(false);
 
@@ -29,47 +33,36 @@ const ProductItem = ({ item }: { item: Item }) => {
   const discountedPrice = item.discountedPrice
     ? parseFloat(item.discountedPrice)
     : null;
-
   const cartItem = cartItems?.find((c) => c.item_code === item.item_code);
   const qty = cartItem?.quantity || 0;
+  const [localQty, setLocalQty] = useState(qty);
+
+  useEffect(() => {
+    setLocalQty(qty);
+  }, [qty]);
 
   const toggleFavorite = async () => {
-    if (!isAuth) {
-      toast.info("Please login first");
-      return;
-    }
-
+    if (!isAuth) return toast.info("Please login first");
+    if (!checkPermission(ALL_PERMISSIONS.Wishlist))
+      return toast.error("You don't have permission to use wishlist");
     try {
-      if (!checkPermission(ALL_PERMISSIONS.Wishlist)) {
-        toast.error("You don't have permission to use wishlist");
-        return;
-      }
-      if (fav) {
-        await removeFromFavorite(item.item_code);
-        setFav(false);
-      } else {
-        await addToFavorite(item.item_code);
-        setFav(true);
-      }
+      fav
+        ? await removeFromFavorite(item.item_code)
+        : await addToFavorite(item.item_code);
+      setFav(!fav);
     } catch (error: any) {
       toast.error(
-        error.response?.data?.message || `Failed to update favorites`,
+        error.response?.data?.message || "Failed to update favorites",
       );
     }
   };
 
   const addOneToCart = async () => {
-    if (!isAuth) {
-      toast.info("Please login first");
-      return;
-    }
-
+    if (!isAuth) return toast.info("Please login first");
     try {
-      if (qty === 0) {
-        await addToCart(item.item_code, item.barcode ?? item.item_code, 1);
-      } else {
-        await updateCartItem(item.item_code, qty + 1);
-      }
+      qty === 0
+        ? await addToCart(item.item_code, item.barcode ?? item.item_code, 1)
+        : await updateCartItem(item.item_code, qty + 1);
       await refreshCart();
     } catch {
       toast.error("Failed to add to cart");
@@ -77,27 +70,94 @@ const ProductItem = ({ item }: { item: Item }) => {
   };
 
   const removeOneFromCart = async () => {
-    if (!isAuth) {
-      toast.info("Please login first");
-      return;
-    }
-
+    if (!isAuth) return toast.info("Please login first");
     try {
       const newQty = qty - 1;
-      if (newQty <= 0) {
-        await removeFromCart(item.item_code);
-      } else {
-        await updateCartItem(item.item_code, newQty);
-      }
+      newQty <= 0
+        ? await removeFromCart(item.item_code)
+        : await updateCartItem(item.item_code, newQty);
       await refreshCart();
     } catch {
       toast.error("Failed to update cart");
     }
   };
 
+  const handleQtyChange = async (value: number) => {
+    if (!isAuth) return toast.info("Please login first");
+    if (isNaN(value) || value < 0) return;
+    try {
+      value === 0
+        ? await removeFromCart(item.item_code)
+        : await updateCartItem(item.item_code, value);
+      await refreshCart();
+    } catch {
+      toast.error("Failed to update cart");
+    }
+  };
+
+  const isGrid = layout === "grid";
+
+  const qtyInput = (size = "default") => (
+    <input
+      type="number"
+      className="qty-cart-input mx-1"
+      disabled={!isAuth}
+      min={0}
+      value={localQty}
+      onChange={(e) => {
+        const val = parseInt(e.target.value);
+        !isNaN(val)
+          ? setLocalQty(val)
+          : e.target.value === "" && setLocalQty(0);
+      }}
+      onBlur={() => handleQtyChange(localQty)}
+      onKeyDown={(e) => e.key === "Enter" && handleQtyChange(localQty)}
+      onWheel={(e) => (e.target as HTMLInputElement).blur()}
+      style={
+        size === "mobile"
+          ? { width: 60, height: 36, fontSize: 16, textAlign: "center" }
+          : {
+              width: 50,
+              textAlign: "center",
+              border: "1px solid #ccc",
+              borderRadius: 6,
+              padding: "2px 4px",
+            }
+      }
+    />
+  );
+
+  const priceDisplay = () =>
+    discountedPrice ? (
+      <>
+        <small className="text-muted d-block">
+          <del>
+            {currenncyCodeToSymbol(item.currency_code)} {price.toLocaleString()}
+          </del>
+        </small>
+        <div className="fw-bold">
+          {currenncyCodeToSymbol(item.currency_code)}{" "}
+          {discountedPrice.toLocaleString()}
+        </div>
+      </>
+    ) : (
+      <div className="fw-bold">
+        {currenncyCodeToSymbol(item.currency_code)} {price.toLocaleString()}
+      </div>
+    );
+
+  const image = (w = 400, h = 400) => (
+    <Image
+      src={item.image || process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE}
+      alt={item.name}
+      width={w}
+      height={h}
+      style={{ objectFit: "cover", width: "100%", height: "100%" }}
+    />
+  );
+
   return (
     <>
-      {/* Promotion Modal */}
       <Modal
         show={openPromotionPopup}
         onHide={() => setOpenPromotionPopup(false)}
@@ -124,12 +184,17 @@ const ProductItem = ({ item }: { item: Item }) => {
         </Modal.Body>
       </Modal>
 
-      <div className="product-card d-flex flex-column">
-        {/* Promotion Badge */}
+      <div
+        className={
+          isGrid
+            ? "product-card d-flex flex-column position-relative"
+            : "product-list-item p-3 border rounded mb-3 position-relative"
+        }
+      >
         {item.hasPromotion == true && (
           <span
             onClick={() => setOpenPromotionPopup(true)}
-            className="badge promotion-badge"
+            className={`badge promotion-badge ${!isGrid ? "d-none d-md-inline" : ""}`}
             style={{
               cursor: "pointer",
               position: "absolute",
@@ -145,79 +210,178 @@ const ProductItem = ({ item }: { item: Item }) => {
             }}
             title={t("on_promotion")}
           >
-            {t("on_promotion")}
+            <i className="fa fa-star"></i>
           </span>
         )}
 
-        {/* Product Image */}
-        <Link href={`/products/${item.item_code}`}>
-          <div className="product-img-wrapper">
-            <Image
-              src={
-                item.image
-                  ? item.image
-                  : process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE
-              }
-              alt={item.name}
-              width={400}
-              height={400}
-              style={{ objectFit: "cover" }}
-              quality={80}
-              sizes="(max-width: 768px) 100vw, 400px"
-            />
-          </div>
-        </Link>
-
-        <div className="product-info flex-grow-1">
-          <Link href={`/products/${item.item_code}`}>
-            <h6 className="product-title mb-1">{item.name}</h6>
-          </Link>
-
-          {discountedPrice ? (
-            <>
-              <small className="text-muted d-block mb-1">
-                <del>
-                  {currenncyCodeToSymbol(item.currency_code)}{" "}
-                  {price.toLocaleString()}
-                </del>
-              </small>
-              <div className="price fw-bold mb-1">
-                {currenncyCodeToSymbol(item.currency_code)}{" "}
-                {discountedPrice.toLocaleString()}
-              </div>
-            </>
-          ) : (
-            <div className="price fw-bold mb-1">
-              {currenncyCodeToSymbol(item.currency_code)}{" "}
-              {price.toLocaleString()}
+        {isGrid ? (
+          <>
+            {/* Grid view */}
+            <Link href={`/products/${item.item_code}`}>
+              <div className="product-img-wrapper">{image()}</div>
+            </Link>
+            <div className="product-info flex-grow-1">
+              <Link href={`/products/${item.item_code}`}>
+                <h6 className="product-title mb-1">{item.name}</h6>
+              </Link>
+              {priceDisplay()}
             </div>
-          )}
-        </div>
+            <div className="product-actions d-flex align-items-center gap-2 mt-2">
+              <Button
+                variant={fav ? "danger" : "outline-danger"}
+                size="sm"
+                onClick={toggleFavorite}
+              >
+                ♥
+              </Button>
+              <div className="d-flex align-items-center gap-2">
+                <Button
+                  size="sm"
+                  variant="outline-secondary"
+                  disabled={qty === 0}
+                  onClick={removeOneFromCart}
+                >
+                  -
+                </Button>
+                {qtyInput()}
+                <Button size="sm" variant="primary" onClick={addOneToCart}>
+                  +
+                </Button>
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            {/* List desktop view */}
+            <div className="d-none d-md-flex gap-3 align-items-center">
+              <Link href={`/products/${item.item_code}`}>
+                <div style={{ width: 120, height: 120 }}>{image(120, 120)}</div>
+              </Link>
+              <div className="flex-grow-1 ml-2">
+                <Link href={`/products/${item.item_code}`}>
+                  <h6 className="mb-1">{item.name}</h6>
+                </Link>
+                {priceDisplay()}
+              </div>
+              <div className="d-flex flex-column align-items-end gap-2">
+                <Button
+                  className="mb-1"
+                  variant={fav ? "danger" : "outline-danger"}
+                  size="sm"
+                  onClick={toggleFavorite}
+                >
+                  ♥
+                </Button>
+                <div className="d-flex align-items-center gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline-secondary"
+                    disabled={qty === 0}
+                    onClick={removeOneFromCart}
+                  >
+                    -
+                  </Button>
+                  {qtyInput()}
+                  <Button size="sm" variant="primary" onClick={addOneToCart}>
+                    +
+                  </Button>
+                </div>
+              </div>
+            </div>
 
-        <div className="product-actions">
-          <Button
-            variant={fav ? "danger" : "outline-danger"}
-            size="sm"
-            onClick={toggleFavorite}
-          >
-            ♥
-          </Button>
-
-          <div className="d-flex align-items-center gap-2">
-            <Button
-              size="sm"
-              variant="outline-secondary"
-              disabled={qty === 0}
-              onClick={removeOneFromCart}
-            >
-              -
-            </Button>
-            <span style={{ minWidth: 20, textAlign: "center" }}>{qty}</span>
-            <Button size="sm" variant="primary" onClick={addOneToCart}>
-              +
-            </Button>
-          </div>
-        </div>
+            {/* List mobile view */}
+            <div className="d-flex d-md-none flex-column">
+              <Link href={`/products/${item.item_code}`}>
+                <h6 className="mb-2">{item.name}</h6>
+              </Link>
+              <div className="d-flex gap-3 mb-3 align-items-center">
+                <div
+                  style={{
+                    width: 120,
+                    height: 120,
+                    borderRadius: 10,
+                    overflow: "hidden",
+                    flexShrink: 0,
+                    position: "relative",
+                  }}
+                >
+                  <Link href={`/products/${item.item_code}`}>
+                    {image(120, 120)}
+                  </Link>
+                  {item.hasPromotion == true && (
+                    <span
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setOpenPromotionPopup(true);
+                      }}
+                      className="badge promotion-badge"
+                      style={{
+                        position: "absolute",
+                        top: 6,
+                        left: 6,
+                        backgroundColor: "#f59f00",
+                        color: "#fff",
+                        fontWeight: 600,
+                        padding: "2px 6px",
+                        fontSize: "0.65rem",
+                        borderRadius: "4px",
+                        zIndex: 10,
+                        cursor: "pointer",
+                      }}
+                    >
+                      <i className="fa fa-star"></i>
+                    </span>
+                  )}
+                </div>
+                <div
+                  className="ml-2 d-flex flex-column justify-content-center"
+                  style={{ fontSize: 16 }}
+                >
+                  {discountedPrice ? (
+                    <>
+                      <small className="text-muted" style={{ fontSize: 13 }}>
+                        <del>
+                          {currenncyCodeToSymbol(item.currency_code)}{" "}
+                          {price.toLocaleString()}
+                        </del>
+                      </small>
+                      <div className="fw-bold" style={{ fontSize: 18 }}>
+                        {currenncyCodeToSymbol(item.currency_code)}{" "}
+                        {discountedPrice.toLocaleString()}
+                      </div>
+                    </>
+                  ) : (
+                    <div className="fw-bold" style={{ fontSize: 18 }}>
+                      {currenncyCodeToSymbol(item.currency_code)}{" "}
+                      {price.toLocaleString()}
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="d-flex justify-content-between align-items-center">
+                <Button
+                  variant={fav ? "danger" : "outline-danger"}
+                  onClick={toggleFavorite}
+                >
+                  ♥
+                </Button>
+                <div className="d-flex align-items-center gap-2">
+                  <Button
+                    variant="outline-secondary"
+                    disabled={qty === 0}
+                    onClick={removeOneFromCart}
+                  >
+                    -
+                  </Button>
+                  {qtyInput("mobile")}
+                  <Button variant="primary" onClick={addOneToCart}>
+                    +
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </>
   );

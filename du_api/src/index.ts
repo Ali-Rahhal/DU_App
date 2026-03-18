@@ -104,7 +104,6 @@ app.get(`${PUBLIC_API}/get_side_bar`, async (c) => {
       result: result,
     });
   } catch (e) {
-    console.log(e.message);
     return c.json({ message: e.message, result: null }, 400);
   }
 });
@@ -121,6 +120,7 @@ app.post(`${PUBLIC_API}/get_products`, async (c) => {
       min_price,
       max_price,
       search,
+      onPromotionOnly,
     } = await c.req.json();
     const result = await getUserIdFromToken(c)
       .then(async (res) => {
@@ -139,6 +139,7 @@ app.post(`${PUBLIC_API}/get_products`, async (c) => {
           max_price: max_price || null,
           user_id: res,
           search: search,
+          onPromotionOnly: onPromotionOnly || false,
         });
 
         return result;
@@ -158,6 +159,7 @@ app.post(`${PUBLIC_API}/get_products`, async (c) => {
           min_price: min_price || null,
           max_price: max_price || null,
           search: search,
+          onPromotionOnly: onPromotionOnly || false,
         });
 
         return result;
@@ -165,7 +167,6 @@ app.post(`${PUBLIC_API}/get_products`, async (c) => {
 
     return c.json({ message: "Fetched Products", result: result }, 200);
   } catch (e) {
-    console.log(e.message);
     return c.json({ message: e.message, result: null }, 400);
   }
 });
@@ -186,6 +187,7 @@ app.get(`${PUBLIC_API}/get_product/:item_code`, async (c) => {
     // const result = await getProductInfo(item_code);
     return c.json({ message: "Fetched Products", result: result }, 200);
   } catch (e) {
+    console.error(e);
     console.log(e.message);
     return c.json({ message: e.message, result: null }, 400);
   }

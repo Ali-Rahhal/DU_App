@@ -260,6 +260,7 @@ label.error {
   display: flex;
   flex-direction: column;
   transition: 0.2s;
+  position: relative;
 }
 
 .product-card:hover {
@@ -319,4 +320,13 @@ label.error {
 
 .table-action-item:hover i {
   opacity: 0.8;
+}
+
+.qty-cart-input::-webkit-inner-spin-button,
+.qty-cart-input::-webkit-outer-spin-button {
+  display: none;
+}
+.qty-cart-input {
+  appearance: textfield;
+  -moz-appearance: textfield; /* Firefox */
 }

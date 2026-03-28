@@ -4,22 +4,6 @@ import Layout from "@/components/Layout/Layout";
 // import { findProductIndex, server } from "@/utils";
 import { getCookieArray, getProduct, getProducts } from "@/utils/apiCalls";
 
-const ProductId = ({ product, products }) => {
-  if (!product) {
-    return <Layout>Produt Not Found</Layout>;
-  }
-
-  return (
-    <>
-      <Layout>
-        <ProductDetails product={product} />
-        <RelatedProducts products={products} />
-      </Layout>
-    </>
-  );
-};
-
-export default ProductId;
 export async function getServerSideProps(context: any) {
   const cookie = context.req.headers.cookie || "";
   const product = await getProduct(context.query.slug, cookie).then((res) => {
@@ -47,3 +31,20 @@ export async function getServerSideProps(context: any) {
     },
   };
 }
+
+const ProductId = ({ product, products }) => {
+  if (!product) {
+    return <Layout>Produt Not Found</Layout>;
+  }
+
+  return (
+    <>
+      <Layout>
+        <ProductDetails product={product} />
+        <RelatedProducts products={products} />
+      </Layout>
+    </>
+  );
+};
+
+export default ProductId;

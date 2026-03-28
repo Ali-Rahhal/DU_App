@@ -37,7 +37,9 @@ import complaintRoutes from "./routes/private/complaint.routes";
 import promotionPrivateRoutes from "./routes/private/promotion.routes";
 import promotionPublicRoutes from "./routes/public/promotion.routes";
 import {
+  checkStock,
   ensureAccountPermission,
+  getItemStock,
   getUserId,
   getUserIdFromToken,
 } from "./lib/utils";
@@ -294,6 +296,10 @@ app.post(`${PRIVATE_API}/update_cart_item`, async (c) => {
     const quantity = body["quantity"];
     if (!quantity) throw new Error("Quantity not provided");
     if (!itemCode) throw new Error("Item code not provided");
+    const stock = await getItemStock(itemCode);
+    if (stock < parseInt(quantity)) {
+      throw new Error(`Only ${stock} items available`);
+    }
     const result = await updateItemInCart(userId, itemCode, parseInt(quantity));
     return c.json({
       message: "Cart Updated",
@@ -323,6 +329,8 @@ app.post(`${PRIVATE_API}/place_order`, async (c) => {
       throw new Error("You don't have permission to place order");
     }
     const body = await c.req.json();
+
+    await checkStock(userId);
 
     const result = await placeOrder(userId);
     return c.json({

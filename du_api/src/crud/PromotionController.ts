@@ -5,7 +5,6 @@ import {
   promotion_result,
 } from "@prisma/client";
 import prisma from "../lib/prisma";
-import { getItemsDetail } from "./EcomController";
 
 const getAllAvailablePromotions = async () => {
   // Fetch active promotions
@@ -305,6 +304,56 @@ const getPromotionDetails = async (promotion_ids: number[]) => {
   });
 
   return groupedResults;
+};
+
+const getItemsDetail = async (item_codes: string[]) => {
+  const res: any = await prisma.$queryRaw`
+  SELECT  iu.item_code,
+  name = i.description,
+  barcode = iu.barcode,
+  description = i.alt_description,
+  currency_code = ipl.currency_code,
+  ISNULL(
+    (
+      SELECT STRING_AGG(ISNULL(img.base_path + '/' + img.folder_path + '/' + img.physical_file_name, N''), ',')
+      FROM dbo.image AS img
+      WHERE img.owner_code = iu.item_code AND img.owner_type = 1 AND img.is_active = 1 AND img.is_uploaded = 1
+    ), N''
+  ) as images,
+  price = CONVERT(DECIMAL(18, 2), ipl.price),
+  discountedPrice = CASE
+  WHEN ipl.default_discount = 0 THEN NULL
+  ELSE CONVERT(DECIMAL(18, 2), ipl.price - (0.01 * ipl.default_discount * ipl.price))
+END
+FROM dbo.item_uom AS iu
+JOIN dbo.item AS i
+   ON i.item_code = iu.item_code
+JOIN dbo.item_price_list AS ipl
+   ON ipl.item_code = iu.item_code 
+WHERE i.item_code IN (${Prisma.join(item_codes)})
+ AND iu.is_active = 1
+ AND ipl.is_active = 1
+
+GROUP BY iu.item_code,
+    i.description,
+    iu.barcode,
+    i.alt_description,
+    ipl.price,
+    ipl.default_discount,
+    ipl.currency_code
+    `;
+
+  const finalResult = res.map((item) => {
+    const images = item.images.split(",");
+    return {
+      ...item,
+      images: images,
+      image: images[0],
+      tags: [item.category, item.subCategory],
+    };
+  });
+
+  return { items_count: finalResult.length, products: finalResult };
 };
 
 export {

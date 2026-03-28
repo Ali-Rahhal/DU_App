@@ -160,6 +160,9 @@
   "users": "Users",
   "manage_your_users": "Manage Your Users",
   "version": "Version",
+  "in_stock": "In Stock",
+  "remaining_stock": "Remaining Stock: ",
+  "item_unavailable": "Currently unavailable",
 
   "permission": {
     "RETURN": "Return Order",

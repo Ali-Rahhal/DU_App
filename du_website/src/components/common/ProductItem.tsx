@@ -37,6 +37,9 @@ const ProductItem = ({ item, layout = "grid" }: Props) => {
   const qty = cartItem?.quantity || 0;
   const [localQty, setLocalQty] = useState(qty);
 
+  const stock = item.stock ?? Infinity; // null = unlimited(remove later when all items have stock)
+  const isOutOfStock = stock === 0;
+
   useEffect(() => {
     setLocalQty(qty);
   }, [qty]);
@@ -59,6 +62,12 @@ const ProductItem = ({ item, layout = "grid" }: Props) => {
 
   const addOneToCart = async () => {
     if (!isAuth) return toast.info("Please login first");
+
+    if (qty >= stock) {
+      toast.warning("No more stock available");
+      return;
+    }
+
     try {
       qty === 0
         ? await addToCart(item.item_code, item.barcode ?? item.item_code, 1)
@@ -85,6 +94,12 @@ const ProductItem = ({ item, layout = "grid" }: Props) => {
   const handleQtyChange = async (value: number) => {
     if (!isAuth) return toast.info("Please login first");
     if (isNaN(value) || value < 0) return;
+
+    if (value > stock) {
+      toast.warning(`Only ${stock} items available`);
+      value = stock;
+    }
+
     try {
       value === 0
         ? await removeFromCart(item.item_code)
@@ -101,8 +116,9 @@ const ProductItem = ({ item, layout = "grid" }: Props) => {
     <input
       type="number"
       className="qty-cart-input mx-1"
-      disabled={!isAuth}
+      disabled={!isAuth || isOutOfStock}
       min={0}
+      max={stock}
       value={localQty}
       onChange={(e) => {
         const val = parseInt(e.target.value);
@@ -127,24 +143,38 @@ const ProductItem = ({ item, layout = "grid" }: Props) => {
     />
   );
 
-  const priceDisplay = () =>
-    discountedPrice ? (
-      <>
-        <small className="text-muted d-block">
-          <del>
+  const priceDisplay = () => {
+    return stock > 0 ? (
+      discountedPrice ? (
+        <>
+          <small className="text-muted d-block">
+            <del>
+              {currenncyCodeToSymbol(item.currency_code)}{" "}
+              {price.toLocaleString()}
+            </del>
+          </small>
+          <div className="fw-bold">
+            {currenncyCodeToSymbol(item.currency_code)}{" "}
+            {discountedPrice.toLocaleString()}
+          </div>
+          {!isOutOfStock && stock <= 10 && (
+            <small className="text-danger">{stock - qty} left</small>
+          )}
+        </>
+      ) : (
+        <>
+          <div className="fw-bold">
             {currenncyCodeToSymbol(item.currency_code)} {price.toLocaleString()}
-          </del>
-        </small>
-        <div className="fw-bold">
-          {currenncyCodeToSymbol(item.currency_code)}{" "}
-          {discountedPrice.toLocaleString()}
-        </div>
-      </>
+          </div>
+          {!isOutOfStock && stock <= 10 && (
+            <small className="text-danger">{stock - qty} left</small>
+          )}
+        </>
+      )
     ) : (
-      <div className="fw-bold">
-        {currenncyCodeToSymbol(item.currency_code)} {price.toLocaleString()}
-      </div>
+      <span className="text-danger">{t("item_unavailable")}</span>
     );
+  };
 
   const image = (w = 400, h = 400) => (
     <Image
@@ -238,13 +268,18 @@ const ProductItem = ({ item, layout = "grid" }: Props) => {
                 <Button
                   size="sm"
                   variant="outline-secondary"
-                  disabled={qty === 0}
+                  disabled={qty === 0 || isOutOfStock}
                   onClick={removeOneFromCart}
                 >
                   -
                 </Button>
                 {qtyInput()}
-                <Button size="sm" variant="primary" onClick={addOneToCart}>
+                <Button
+                  size="sm"
+                  variant="primary"
+                  onClick={addOneToCart}
+                  disabled={isOutOfStock || qty >= stock}
+                >
                   +
                 </Button>
               </div>
@@ -276,13 +311,18 @@ const ProductItem = ({ item, layout = "grid" }: Props) => {
                   <Button
                     size="sm"
                     variant="outline-secondary"
-                    disabled={qty === 0}
+                    disabled={qty === 0 || isOutOfStock}
                     onClick={removeOneFromCart}
                   >
                     -
                   </Button>
                   {qtyInput()}
-                  <Button size="sm" variant="primary" onClick={addOneToCart}>
+                  <Button
+                    size="sm"
+                    variant="primary"
+                    onClick={addOneToCart}
+                    disabled={isOutOfStock || qty >= stock}
+                  >
                     +
                   </Button>
                 </div>
@@ -337,24 +377,40 @@ const ProductItem = ({ item, layout = "grid" }: Props) => {
                   className="ml-2 d-flex flex-column justify-content-center"
                   style={{ fontSize: 16 }}
                 >
-                  {discountedPrice ? (
-                    <>
-                      <small className="text-muted" style={{ fontSize: 13 }}>
-                        <del>
+                  {stock > 0 ? (
+                    discountedPrice ? (
+                      <>
+                        <small className="text-muted" style={{ fontSize: 13 }}>
+                          <del>
+                            {currenncyCodeToSymbol(item.currency_code)}{" "}
+                            {price.toLocaleString()}
+                          </del>
+                        </small>
+                        <div className="fw-bold" style={{ fontSize: 18 }}>
+                          {currenncyCodeToSymbol(item.currency_code)}{" "}
+                          {discountedPrice.toLocaleString()}
+                        </div>
+                        {!isOutOfStock && stock <= 10 && (
+                          <small className="text-danger">
+                            {stock - qty} left
+                          </small>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        <div className="fw-bold" style={{ fontSize: 18 }}>
                           {currenncyCodeToSymbol(item.currency_code)}{" "}
                           {price.toLocaleString()}
-                        </del>
-                      </small>
-                      <div className="fw-bold" style={{ fontSize: 18 }}>
-                        {currenncyCodeToSymbol(item.currency_code)}{" "}
-                        {discountedPrice.toLocaleString()}
-                      </div>
-                    </>
+                        </div>
+                        {!isOutOfStock && stock <= 10 && (
+                          <small className="text-danger">
+                            {stock - qty} left
+                          </small>
+                        )}{" "}
+                      </>
+                    )
                   ) : (
-                    <div className="fw-bold" style={{ fontSize: 18 }}>
-                      {currenncyCodeToSymbol(item.currency_code)}{" "}
-                      {price.toLocaleString()}
-                    </div>
+                    <span className="text-danger">{t("item_unavailable")}</span>
                   )}
                 </div>
               </div>
@@ -368,13 +424,17 @@ const ProductItem = ({ item, layout = "grid" }: Props) => {
                 <div className="d-flex align-items-center gap-2">
                   <Button
                     variant="outline-secondary"
-                    disabled={qty === 0}
+                    disabled={qty === 0 || isOutOfStock}
                     onClick={removeOneFromCart}
                   >
                     -
                   </Button>
                   {qtyInput("mobile")}
-                  <Button variant="primary" onClick={addOneToCart}>
+                  <Button
+                    variant="primary"
+                    onClick={addOneToCart}
+                    disabled={isOutOfStock || qty >= stock}
+                  >
                     +
                   </Button>
                 </div>

@@ -31,6 +31,9 @@ import { toast } from "react-toastify";
 const CartItem = ({ item, removeItemHandler, updateCartHandler }) => {
   const [quantity, setQuantity] = useState<number>(item.quantity);
   const [debounceTimeout, setDebounceTimeout] = useState(null);
+
+  const stock = item.stock ?? Infinity; // null = unlimited(remove later when all items have stock)
+
   const handleQuantityChange = (newQuantity: number) => {
     setQuantity(newQuantity);
 
@@ -45,6 +48,7 @@ const CartItem = ({ item, removeItemHandler, updateCartHandler }) => {
     }, 200); // 1-second delay (adjust as needed)
     setDebounceTimeout(timeout);
   };
+  const t = useTranslations();
   return (
     <div key={item.item_code} className="cart_item">
       <div className="cart_item_image">
@@ -99,7 +103,18 @@ const CartItem = ({ item, removeItemHandler, updateCartHandler }) => {
           </div>
         </div>
       </div>
-
+      <div className="c-item-stock mt-4 mt-md-0">
+        {stock === 0 ? (
+          <small style={{ color: "red", fontWeight: "bold" }}>
+            {t("item_unavailable")}
+          </small>
+        ) : stock < 10 ? (
+          <small style={{ color: "red", fontWeight: "bold" }}>
+            {t("remaining_stock")}
+            {stock}
+          </small>
+        ) : null}
+      </div>
       <div
         className="qty-input btn mt-4 mt-md-0"
         style={{
@@ -126,16 +141,23 @@ const CartItem = ({ item, removeItemHandler, updateCartHandler }) => {
           // }}
           className="quantity-input"
           onChange={(e) => {
-            if (parseInt(e.target.value) < 1 || e.target.value === "") {
-              return;
+            let val = parseInt(e.target.value);
+
+            if (!val || val < 1) return;
+
+            if (val > stock) {
+              val = stock;
+              toast.warning(`Only ${stock} available`);
             }
-            handleQuantityChange(parseInt(e.target.value));
+
+            handleQuantityChange(val);
           }}
         />
         <button
           type="button"
           onClick={() => handleQuantityChange(quantity + 1)}
           className="more"
+          disabled={quantity >= stock}
         >
           +
         </button>

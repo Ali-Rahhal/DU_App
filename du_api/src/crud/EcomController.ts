@@ -34,6 +34,7 @@ type Product = {
   cat_code: string;
   sub_cat_code: string;
   barcode: string;
+  stock: number;
 };
 const getSideBarMenu = async () => {
   const menuItems: any = await prisma.$queryRaw`
@@ -239,10 +240,11 @@ const getProducts = async ({
       i.cat as category,
       i.cat_code,
       i.currency_code ,
-      iu.barcode
+      iu.barcode,
+      i.stock
     FROM
       (SELECT DISTINCT it.*, ipl.price, ipl.default_discount, cat = vi.[Category], sub_cat = [SubCategory], cat_code = vi.[CategoryCode], 
-        currency_code= ipl.currency_code 
+        currency_code= ipl.currency_code, stock = wcs.quantity 
       FROM item as it
       LEFT JOIN v_items as vi ON vi.Code = it.item_code
       LEFT JOIN item_price_list as ipl ON ipl.item_code = it.item_code 
@@ -272,6 +274,7 @@ const getProducts = async ({
     const images = item.images.split(",");
     return {
       ...item,
+      stock: item.stock ? Number(item.stock) : null,
       images: images,
       image: images[0],
       tags: [item.category, item.subCategory],
@@ -370,10 +373,10 @@ const getProductInfo = async (item_code: string, user_id: number | null) => {
   i.cat_code,
   i.currency_code ,
   iu.barcode,
-  i.quantity as stock
+  i.stock
 FROM
 (SELECT DISTINCT it.*, ipl.price, ipl.default_discount, cat = vi.[Category], sub_cat = [SubCategory], cat_code = vi.[CategoryCode], 
-  currency_code= ipl.currency_code ,wcs.quantity
+  currency_code= ipl.currency_code , stock = wcs.quantity
  FROM item as it
        LEFT JOIN v_items as vi ON vi.Code = it.item_code
        LEFT JOIN item_price_list as ipl ON ipl.item_code = it.item_code 
@@ -697,7 +700,8 @@ const getCartItems = async (
   WHEN ipl.default_discount = 0 THEN NULL
   ELSE CONVERT(DECIMAL(18, 2), ipl.price - (0.01 * ipl.default_discount * ipl.price))
 END,
-  quantity = SUM(sc.quantity)
+  quantity = SUM(sc.quantity),
+  stock = wcs.quantity
 FROM dbo.shopping_cart AS sc
 JOIN dbo.item_uom AS iu
    ON iu.barcode = sc.barcode
@@ -705,6 +709,8 @@ JOIN dbo.item AS i
    ON i.item_code = iu.item_code
 JOIN dbo.item_price_list AS ipl
    ON ipl.item_code = iu.item_code
+LEFT JOIN dbo.warehouse_current_stock AS wcs
+   ON wcs.item_code = iu.item_code
 WHERE sc.account_id = ${userId}
  AND sc.is_active = 1
  AND iu.is_active = 1
@@ -718,13 +724,15 @@ GROUP BY iu.item_code,
     i.alt_description,
     ipl.price,
     ipl.default_discount,
-    ipl.currency_code
+    ipl.currency_code,
+    wcs.quantity
     `;
 
   const finalResult = res.map((item) => {
     const images = item.images.split(",");
     return {
       ...item,
+      stock: item.stock ? Number(item.stock) : null,
       images: images,
       image: images[0],
       tags: [item.category, item.subCategory],

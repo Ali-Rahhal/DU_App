@@ -311,3 +311,36 @@ export async function getUserIdFromToken(c: Context) {
   const userId = await tokenAuth(token);
   return userId;
 }
+
+export async function getItemStock(itemCode: string) {
+  const item = await prisma.warehouse_current_stock.findFirst({
+    where: {
+      item_code: itemCode,
+    },
+    select: {
+      quantity: true,
+    },
+  });
+  if (!item) return Infinity;
+  return item.quantity ? Number(item.quantity) : Infinity;
+}
+
+export async function checkStock(user_id: number) {
+  const cartItems = await prisma.shopping_cart.findMany({
+    where: {
+      account_id: user_id,
+    },
+    select: {
+      item_code: true,
+      quantity: true,
+    },
+  });
+
+  for (const item of cartItems) {
+    const stock = await getItemStock(item.item_code);
+    if (stock < item.quantity) {
+      throw new Error(`Quantity of some items exceeds available stock`);
+    }
+  }
+  return true;
+}

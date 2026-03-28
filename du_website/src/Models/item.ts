@@ -32,5 +32,6 @@ type Item = {
   barcode: string;
   image: string;
   tags: string[];
+  stock: number;
 };
 export default Item;

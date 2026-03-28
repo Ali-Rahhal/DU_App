@@ -1,4 +1,11 @@
-import { getCartItems, getUserDetails, login, logout } from "@/utils/apiCalls";
+import {
+  getCartItems,
+  getUserDetails,
+  login,
+  logout,
+  removeFromCart,
+  updateCartItem,
+} from "@/utils/apiCalls";
 import { ROLES } from "@/utils/data";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -103,11 +110,36 @@ export const useAccountStore = create<AccountStore>((set) => ({
   },
   refreshCart: async () => {
     if (!useAuthStore.getState().isAuth) return;
+
     getCartItems()
-      .then((res) => {
+      .then(async (res) => {
+        let items = res.data?.result.products;
+
+        const updatedItems = await Promise.all(
+          items.map(async (item) => {
+            const stock = item.stock ?? Infinity; // null = unlimited(remove later when all items have stock)
+            // 🔴 OUT OF STOCK → REMOVE
+            if (!stock || stock === 0) {
+              await removeFromCart(item.item_code);
+              return null; // remove locally
+            }
+
+            // 🟡 EXCEEDS STOCK → CLAMP
+            if (item.quantity > stock) {
+              await updateCartItem(item.item_code, stock);
+              return { ...item, quantity: stock };
+            }
+
+            return item;
+          }),
+        );
+
+        // remove nulls (deleted items)
+        const finalItems = updatedItems.filter(Boolean);
+
         set({
-          cartItems: res.data?.result.products,
-          cart: res.data?.result.products.length,
+          cartItems: finalItems,
+          cart: finalItems.length,
         });
       })
       .catch(() => {

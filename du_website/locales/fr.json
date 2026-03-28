@@ -159,6 +159,9 @@
   "users": "Utilisateurs",
   "manage_your_users": "Gérer vos utilisateurs",
   "version": "Version",
+  "in_stock": "En stock",
+  "remaining_stock": "Stock restant: ",
+  "item_unavailable": "Actuellement indisponible",
 
   "permission": {
     "RETURN": "Retourner la commande",

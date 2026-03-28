@@ -18,12 +18,14 @@ import { ALL_PERMISSIONS } from "@/utils/data";
 const ProductDetails = ({ product }: { product: Item }) => {
   // const dispatch = useDispatch(1);
   const router = useRouter();
-  const { refreshCart, checkPermission } = useAccountStore();
+  const { refreshCart, checkPermission, cartItems } = useAccountStore();
   const { isAuth } = useAuthStore();
   const [quantity, setQuantity] = useState(1);
   const [price, setprice] = useState(0);
   const [discountedPrice, setDiscountedPrice] = useState(0);
   const [isFavorite, setIsFavorite] = useState(product.isFavorite);
+
+  const stock = product.stock ?? Infinity; // null = unlimited(remove later when all items have stock)
 
   const t = useTranslations();
 
@@ -37,6 +39,15 @@ const ProductDetails = ({ product }: { product: Item }) => {
   const handleCart = async (product: Item, quantity: number) => {
     if (!isAuth) {
       toast.info(t("toast.please_login"));
+      return;
+    }
+    const cartItem = cartItems?.find((c) => c.item_code === product.item_code);
+    if (stock < quantity + (cartItem?.quantity || 0)) {
+      toast.info(
+        "This Product only has " +
+          stock +
+          " items in stock. Please reduce the quantity.",
+      );
       return;
     }
     addToCart(product.item_code, product.barcode, quantity)
@@ -200,7 +211,14 @@ const ProductDetails = ({ product }: { product: Item }) => {
                       </span>
 
                       <span className="d-block text-muted mb-2">
-                        <strong>{t("availability")} :</strong> In Stock
+                        <strong>{t("availability")} : </strong>
+                        <span className={stock > 10 ? "" : "text-danger"}>
+                          {stock > 10
+                            ? t("in_stock")
+                            : stock == 0
+                              ? t("item_unavailable")
+                              : `${t("remaining_stock")} (${stock})`}
+                        </span>
                       </span>
                     </div>
 
@@ -278,6 +296,7 @@ const ProductDetails = ({ product }: { product: Item }) => {
                           }}
                           className="btn btn-rounded btn-primary"
                           type="button"
+                          disabled={stock == 0}
                         >
                           <i className="fa fa-shopping-cart"></i>
                           {t("add_to_cart")}

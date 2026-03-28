@@ -169,10 +169,10 @@ function AccountNav() {
               <li className={"nav-item " + (active === "ddf" ? " active" : "")}>
                 <Link
                   className="nav-link"
-                  href="#"
+                  href="/"
                   onClick={() => {
                     logout().then(() => {
-                      window.location.reload();
+                      rt.push("/");
                     });
                   }}
                 >

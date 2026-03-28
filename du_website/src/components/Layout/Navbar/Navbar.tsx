@@ -278,7 +278,7 @@ function Navbar() {
                           </li>
                           <li>
                             <Link
-                              href="#"
+                              href="/"
                               onClick={() => {
                                 logout().then(() => {
                                   window.location.reload();
@@ -457,7 +457,7 @@ function Navbar() {
                   }}
                   onClick={() => {
                     logout().then(() => {
-                      window.location.reload();
+                      window.location.href = "/";
                     });
                   }}
                 >

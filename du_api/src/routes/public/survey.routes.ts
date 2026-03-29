@@ -1,11 +1,7 @@
 import { Hono } from "hono";
 import { getProductsSurvey } from "../../crud/surveyController";
+import { getUserId } from "../../lib/utils";
 const router = new Hono();
-
-async function getUserId(c) {
-  const userId = c.req.user_id;
-  return userId;
-}
 
 router.get(`/get-products`, async (c) => {
   try {

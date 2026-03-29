@@ -22,6 +22,9 @@ const getCookieArray = (cookie: string) => {
   return cookieArray;
 };
 
+//////
+////////Auth ApiCalls
+//////
 const login = async ({
   code,
   password,
@@ -40,43 +43,11 @@ const login = async ({
     },
   );
 };
+
 const logout = async () => {
   return await axios.post(publicApi + "/logout", {}, { withCredentials: true });
 };
 
-const getSurveys = async () => {
-  return await axios.get(privateApi + "/survey/get_surveys", {
-    withCredentials: true,
-  });
-};
-const getSurveyElements = async (survey_id: string) => {
-  return await axios.get(privateApi + "/survey/get_survey_elements", {
-    params: {
-      survey_id,
-    },
-    withCredentials: true,
-  });
-};
-
-const saveSurvey = async (survey: any) => {
-  return await axios.post(privateApi + "/survey/save_survey_answer", survey, {
-    withCredentials: true,
-  });
-};
-const saveComplaint = async (complaint: any) => {
-  return await axios.post(
-    privateApi + "/complaint/save_complaint_answer",
-    complaint,
-    {
-      withCredentials: true,
-    },
-  );
-};
-const getUserComplaints = async () => {
-  return await axios.get(privateApi + "/complaint/get-user-complaints", {
-    withCredentials: true,
-  });
-};
 // const register = async ({
 //   email,
 //   password,
@@ -99,6 +70,24 @@ const getUserComplaints = async () => {
 //   });
 // };
 
+// const sendVerify = async (email: string): Promise<any> => {
+//   return await axios.post(publicApi + "/send_verify_email", {
+//     email,
+//   });
+// };
+
+const forgotPassword = async (email: string): Promise<AxiosResponse> => {
+  return await axios.post(publicApi + "/send_reset_email", {
+    email,
+  });
+};
+
+const validateResetCode = async (key: string): Promise<AxiosResponse> => {
+  return await axios.post(publicApi + "/validate_reset_code", {
+    key,
+  });
+};
+
 // const verifyEmail = async (email: string, key: string): Promise<any> => {
 //   return await axios.post(publicApi + "/verify_email", {
 //     email,
@@ -106,31 +95,35 @@ const getUserComplaints = async () => {
 //   });
 // };
 
-// const sendVerify = async (email: string): Promise<any> => {
-//   return await axios.post(publicApi + "/send_verify_email", {
-//     email,
-//   });
-// };
 const getUserDetails = async (): Promise<AxiosResponse> => {
   return await axios.get(privateApi + "/user_details", {
     withCredentials: true,
   });
 };
-const forgotPassword = async (email: string): Promise<AxiosResponse> => {
-  return await axios.post(publicApi + "/send_reset_email", {
-    email,
-  });
+
+const updateUserDetails = async ({
+  first_name,
+  last_name,
+  phone_number,
+  address,
+}: {
+  first_name: string;
+  last_name: string;
+  phone_number: string;
+  address: string;
+}): Promise<AxiosResponse> => {
+  return await axios.post(
+    privateApi + `/update_user_detail`,
+    {
+      first_name,
+      last_name,
+      phone_number,
+      address,
+    },
+    { withCredentials: true },
+  );
 };
-const validateResetCode = async (key: string): Promise<AxiosResponse> => {
-  return await axios.post(publicApi + "/validate_reset_code", {
-    key,
-  });
-};
-const getDashboardData = async (): Promise<AxiosResponse> => {
-  return await axios.get(privateApi + "/dashboard_data", {
-    withCredentials: true,
-  });
-};
+
 // const changePasswordReset = async (
 //   key: string,
 //   password: string
@@ -155,6 +148,10 @@ const changePassword = async (
     { withCredentials: true },
   );
 };
+
+//////
+////////Products ApiCalls
+//////
 const getProducts = async (
   filters: {
     skip?: number;
@@ -211,26 +208,16 @@ const getProduct = async (
     withCredentials: true,
   });
 };
-const addToFavorite = async (item_code: string): Promise<AxiosResponse> => {
-  return await axios.post(
-    privateApi + `/add_to_favorite`,
-    {
-      item_code: item_code,
-    },
-    { withCredentials: true },
-  );
+
+//////
+////////CartAndFav ApiCalls
+//////
+const getCartItems = async (): Promise<AxiosResponse> => {
+  return await axios.get(privateApi + `/get_cart_items`, {
+    withCredentials: true,
+  });
 };
-const removeFromFavorite = async (
-  item_code: string,
-): Promise<AxiosResponse> => {
-  return await axios.post(
-    privateApi + `/remove_from_favorite`,
-    {
-      item_code: item_code,
-    },
-    { withCredentials: true },
-  );
-};
+
 const addToCart = async (
   item_code: string,
   barcode: string,
@@ -246,6 +233,7 @@ const addToCart = async (
     { withCredentials: true },
   );
 };
+
 const removeFromCart = async (item_code: string): Promise<AxiosResponse> => {
   return await axios.post(
     privateApi + `/remove_from_cart`,
@@ -255,11 +243,7 @@ const removeFromCart = async (item_code: string): Promise<AxiosResponse> => {
     { withCredentials: true },
   );
 };
-const getCartItems = async (): Promise<AxiosResponse> => {
-  return await axios.get(privateApi + `/get_cart_items`, {
-    withCredentials: true,
-  });
-};
+
 const updateCartItem = async (
   item_code: string,
   quantity: number,
@@ -273,6 +257,7 @@ const updateCartItem = async (
     { withCredentials: true },
   );
 };
+
 const getFavoriteItems = async ({
   skip,
   take,
@@ -296,92 +281,46 @@ const getFavoriteItems = async ({
   );
 };
 
-const updateUserDetails = async ({
-  first_name,
-  last_name,
-  phone_number,
-  address,
-}: {
-  first_name: string;
-  last_name: string;
-  phone_number: string;
-  address: string;
-}): Promise<AxiosResponse> => {
+const addToFavorite = async (item_code: string): Promise<AxiosResponse> => {
   return await axios.post(
-    privateApi + `/update_user_detail`,
+    privateApi + `/add_to_favorite`,
     {
-      first_name,
-      last_name,
-      phone_number,
-      address,
+      item_code: item_code,
     },
     { withCredentials: true },
   );
 };
-const placeOrder = async (): Promise<AxiosResponse> => {
-  return await axios.post(
-    privateApi + `/place_order`,
-    {},
-    { withCredentials: true },
-  );
-};
-const getOrders = async (search?: string): Promise<AxiosResponse> => {
-  return await axios.get(privateApi + `/get_orders`, {
-    withCredentials: true,
-    params: {
-      search: search,
-    },
-  });
-};
-const getOrderDetails = async (order_id: string): Promise<AxiosResponse> => {
-  return await axios.get(privateApi + `/get_order_details`, {
-    params: {
-      order_id,
-    },
-    withCredentials: true,
-  });
-};
-const getOrder = async (order_id: string): Promise<AxiosResponse> => {
-  return await axios.get(privateApi + `/get_order`, {
-    params: {
-      order_id,
-    },
-    withCredentials: true,
-  });
-};
-const getComplaints = async (): Promise<AxiosResponse> => {
-  return await axios.get(privateApi + `/complaint/get-complaint-types`, {
-    withCredentials: true,
-  });
-};
-const getComplaintElements = async (complaint_id: string): Promise<any> => {
-  return await axios.get(privateApi + `/complaint/get-complaint-elements`, {
-    params: {
-      complaint_id,
-    },
-    withCredentials: true,
-  });
-};
-const getOpenInvoices = async (): Promise<AxiosResponse> => {
-  return await axios.get(privateApi + `/get_open_invoices`, {
-    withCredentials: true,
-  });
-};
-const getSalesOrder = async (): Promise<AxiosResponse> => {
-  return await axios.get(privateApi + `/get_sales_invoices`, {
-    withCredentials: true,
-  });
-};
-const getInvoiceDetails = async (
-  invoice_no: string,
+
+const removeFromFavorite = async (
+  item_code: string,
 ): Promise<AxiosResponse> => {
-  return await axios.get(privateApi + `/get_invoice_details`, {
-    params: {
-      invoice_no: invoice_no,
+  return await axios.post(
+    privateApi + `/remove_from_favorite`,
+    {
+      item_code: item_code,
     },
+    { withCredentials: true },
+  );
+};
+
+//////
+////////Other ApiCalls
+//////
+const getDashboardData = async (): Promise<AxiosResponse> => {
+  return await axios.get(privateApi + "/dashboard_data", {
     withCredentials: true,
   });
 };
+
+//////
+////////Promotions ApiCalls
+//////
+const getPromotions = async (): Promise<AxiosResponse> => {
+  return await axios.get(publicApi + `/promotions`, {
+    withCredentials: true,
+  });
+};
+
 const getProductPromotion = async (
   item_code: string,
 ): Promise<AxiosResponse> => {
@@ -399,7 +338,127 @@ const getShoppingCartPromotions = async (): Promise<AxiosResponse> => {
   });
 };
 
-// const { password, first_name, last_name, phone_number } = body;
+//////
+////////Orders ApiCalls
+//////
+const placeOrder = async (): Promise<AxiosResponse> => {
+  return await axios.post(
+    privateApi + `/place_order`,
+    {},
+    { withCredentials: true },
+  );
+};
+
+const getOrders = async (search?: string): Promise<AxiosResponse> => {
+  return await axios.get(privateApi + `/get_orders`, {
+    withCredentials: true,
+    params: {
+      search: search,
+    },
+  });
+};
+
+const getOrder = async (order_id: string): Promise<AxiosResponse> => {
+  return await axios.get(privateApi + `/get_order`, {
+    params: {
+      order_id,
+    },
+    withCredentials: true,
+  });
+};
+
+const getOrderDetails = async (order_id: string): Promise<AxiosResponse> => {
+  return await axios.get(privateApi + `/get_order_details`, {
+    params: {
+      order_id,
+    },
+    withCredentials: true,
+  });
+};
+
+const getOpenInvoices = async (): Promise<AxiosResponse> => {
+  return await axios.get(privateApi + `/get_open_invoices`, {
+    withCredentials: true,
+  });
+};
+
+const getSalesOrder = async (): Promise<AxiosResponse> => {
+  return await axios.get(privateApi + `/get_sales_invoices`, {
+    withCredentials: true,
+  });
+};
+
+const getInvoiceDetails = async (
+  invoice_no: string,
+): Promise<AxiosResponse> => {
+  return await axios.get(privateApi + `/get_invoice_details`, {
+    params: {
+      invoice_no: invoice_no,
+    },
+    withCredentials: true,
+  });
+};
+
+//////
+////////Surveys ApiCalls
+//////
+const getSurveys = async () => {
+  return await axios.get(privateApi + "/survey/get_surveys", {
+    withCredentials: true,
+  });
+};
+const getSurveyElements = async (survey_id: string) => {
+  return await axios.get(privateApi + "/survey/get_survey_elements", {
+    params: {
+      survey_id,
+    },
+    withCredentials: true,
+  });
+};
+
+const saveSurvey = async (survey: any) => {
+  return await axios.post(privateApi + "/survey/save_survey_answer", survey, {
+    withCredentials: true,
+  });
+};
+
+//////
+////////Complaints ApiCalls
+//////
+const getUserComplaints = async () => {
+  return await axios.get(privateApi + "/complaint/get-user-complaints", {
+    withCredentials: true,
+  });
+};
+
+const getComplaints = async (): Promise<AxiosResponse> => {
+  return await axios.get(privateApi + `/complaint/get-complaint-types`, {
+    withCredentials: true,
+  });
+};
+
+const getComplaintElements = async (complaint_id: string): Promise<any> => {
+  return await axios.get(privateApi + `/complaint/get-complaint-elements`, {
+    params: {
+      complaint_id,
+    },
+    withCredentials: true,
+  });
+};
+
+const saveComplaint = async (complaint: any) => {
+  return await axios.post(
+    privateApi + "/complaint/save_complaint_answer",
+    complaint,
+    {
+      withCredentials: true,
+    },
+  );
+};
+
+//////
+////////Children ApiCalls
+//////
 const createChild = async ({
   password,
   first_name,
@@ -463,11 +522,6 @@ const getChildren = async (search?: string): Promise<AxiosResponse> => {
   });
 };
 
-const getPromotions = async (): Promise<AxiosResponse> => {
-  return await axios.get(publicApi + `/promotions`, {
-    withCredentials: true,
-  });
-};
 const disableChild = async (child_id: number): Promise<AxiosResponse> => {
   return await axios.post(
     privateApi + `/child/disable`,
@@ -517,7 +571,9 @@ const updateChildPermissions = async ({
   );
 };
 
-// User Management APIs
+//////
+////////Users ApiCalls
+//////
 const getUsers = async (
   page: number = 1,
   pageSize: number = 10,
@@ -618,61 +674,131 @@ const updateUserPermissions = async (
   );
 };
 
+//////
+////////Stock ApiCalls
+//////
+const getItemAlternatives = async (
+  item_code: string,
+): Promise<AxiosResponse> => {
+  return await axios.get(privateApi + `/stock/${item_code}/alternatives`, {
+    withCredentials: true,
+  });
+};
+
+const updateItemAlternatives = async (
+  item_code: string,
+  alternatives: string[],
+): Promise<AxiosResponse> => {
+  return await axios.post(
+    privateApi + `/stock/${item_code}/alternatives`,
+    {
+      alternatives: alternatives,
+    },
+    { withCredentials: true },
+  );
+};
+
+const getRestockConfig = async (item_code: string): Promise<AxiosResponse> => {
+  return await axios.get(privateApi + `/stock/${item_code}/restock-config`, {
+    withCredentials: true,
+  });
+};
+
+const updateRestockConfig = async (
+  item_code: string,
+  data: {
+    min_stock: number;
+    reorder_quantity: number;
+    auto_trigger?: boolean;
+  },
+): Promise<AxiosResponse> => {
+  return await axios.post(
+    privateApi + `/stock/${item_code}/restock-config`,
+    {
+      min_stock: data.min_stock,
+      reorder_quantity: data.reorder_quantity,
+      auto_trigger: data.auto_trigger,
+    },
+    { withCredentials: true },
+  );
+};
+
+const restockItem = async (item_code: string): Promise<AxiosResponse> => {
+  return await axios.post(
+    privateApi + `/stock/${item_code}/restock`,
+    {},
+    { withCredentials: true },
+  );
+};
+
 export {
+  publicApi,
+  privateApi,
+  //Auth
   login,
-  // register,
-  // verifyEmail,
-  // sendVerify,
   logout,
   forgotPassword,
   validateResetCode,
+  changePassword,
   getUserDetails,
   updateUserDetails,
-  changePassword,
+  //Products
   getProducts,
   getProduct,
-  addToFavorite,
-  removeFromFavorite,
+  //CartAndFav
+  getCartItems,
   addToCart,
   removeFromCart,
-  getCartItems,
   updateCartItem,
   getFavoriteItems,
-  placeOrder,
-  getCookieArray,
-  getOrders,
-  getOrderDetails,
-  getOrder,
+  addToFavorite,
+  removeFromFavorite,
+  //Other
   getDashboardData,
-  getOpenInvoices,
-  getSalesOrder,
-  getInvoiceDetails,
+  //Promotions
   getPromotions,
   getProductPromotion,
   getShoppingCartPromotions,
+  //Orders
+  placeOrder,
+  getOrders,
+  getOrder,
+  getOrderDetails,
+  getOpenInvoices,
+  getSalesOrder,
+  getInvoiceDetails,
+  //Surveys
   getSurveys,
   getSurveyElements,
   saveSurvey,
+  //Complaints
+  getUserComplaints,
   getComplaints,
   getComplaintElements,
   saveComplaint,
-  getUserComplaints,
+  //Children
   // createChild,
-  // getChildren,
   // editChild,
-  // updateChildPermissions,
-  // getAllChildPermissions,
+  // getChildren,
   // disableChild,
   // enableChild,
   // deleteChild,
-  publicApi,
-  privateApi,
+  // getAllChildPermissions,
+  // updateChildPermissions,
+  //Users
   getUsers,
   getUserById,
   createUser,
   updateUser,
   toggleUserStatus,
   getUserPermissions,
-  updateUserPermissions,
   getAllPermissions,
+  updateUserPermissions,
+  //Stock
+  getItemAlternatives,
+  updateItemAlternatives,
+  getRestockConfig,
+  updateRestockConfig,
+  restockItem,
+  getCookieArray,
 };

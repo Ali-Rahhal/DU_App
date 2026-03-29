@@ -2,7 +2,7 @@ import ProductDetails from "@/components/common/ProductDetails";
 import RelatedProducts from "@/components/common/RelatedProducts";
 import Layout from "@/components/Layout/Layout";
 // import { findProductIndex, server } from "@/utils";
-import { getCookieArray, getProduct, getProducts } from "@/utils/apiCalls";
+import { getProduct, getProducts } from "@/utils/apiCalls";
 
 export async function getServerSideProps(context: any) {
   const cookie = context.req.headers.cookie || "";

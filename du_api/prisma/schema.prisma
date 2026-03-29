@@ -2607,29 +2607,32 @@ model invoice_type {
 }
 
 model item {
-  item_code                      String                           @id(map: "PK_item") @db.NVarChar(50)
-  description                    String                           @db.NVarChar(250)
-  alt_description                String?                          @db.NVarChar(250)
-  item_erp_code                  String?                          @db.NVarChar(50)
-  tax_code                       String?                          @db.NVarChar(50)
-  base_uom_code                  String?                          @db.NVarChar(50)
-  main_uom_code                  String?                          @db.NVarChar(50)
-  brand_code                     String?                          @db.NVarChar(50)
-  distribution_type              Int                              @default(0, map: "DF_item_is_serialized") @db.TinyInt
-  shortage_limit                 Int?
-  is_active                      Boolean                          @default(true, map: "DF_item_is_ACTIVE")
-  date_added                     DateTime                         @default(now(), map: "DF_item_date_added")
-  last_edited                    DateTime                         @default(now(), map: "DF_item_last_edited")
-  purchase_uom_code              String?                          @db.NVarChar(50)
-  stock_uom_code                 String?                          @db.NVarChar(50)
-  is_consignment                 Boolean                          @default(false, map: "DF_item_is_consignment")
-  return_type                    Int                              @default(1, map: "DF__item__return_typ__55EE00F7")
-  status                         Int                              @default(1, map: "DF__item__status__58CA6DA2")
-  is_dual                        Boolean                          @default(false, map: "DF__item__is_dual__0568D546")
-  Item_type                      Int?
-  item_order                     Int                              @default(0, map: "DF__item__item_order__2A563856")
-  is_new                         Boolean                          @default(false, map: "DF__item__is_new__6CA31EA0")
-  marketing_contract_requirement marketing_contract_requirement[]
+  item_code                                                       String                           @id(map: "PK_item") @db.NVarChar(50)
+  description                                                     String                           @db.NVarChar(250)
+  alt_description                                                 String?                          @db.NVarChar(250)
+  item_erp_code                                                   String?                          @db.NVarChar(50)
+  tax_code                                                        String?                          @db.NVarChar(50)
+  base_uom_code                                                   String?                          @db.NVarChar(50)
+  main_uom_code                                                   String?                          @db.NVarChar(50)
+  brand_code                                                      String?                          @db.NVarChar(50)
+  distribution_type                                               Int                              @default(0, map: "DF_item_is_serialized") @db.TinyInt
+  shortage_limit                                                  Int?
+  is_active                                                       Boolean                          @default(true, map: "DF_item_is_ACTIVE")
+  date_added                                                      DateTime                         @default(now(), map: "DF_item_date_added")
+  last_edited                                                     DateTime                         @default(now(), map: "DF_item_last_edited")
+  purchase_uom_code                                               String?                          @db.NVarChar(50)
+  stock_uom_code                                                  String?                          @db.NVarChar(50)
+  is_consignment                                                  Boolean                          @default(false, map: "DF_item_is_consignment")
+  return_type                                                     Int                              @default(1, map: "DF__item__return_typ__55EE00F7")
+  status                                                          Int                              @default(1, map: "DF__item__status__58CA6DA2")
+  is_dual                                                         Boolean                          @default(false, map: "DF__item__is_dual__0568D546")
+  Item_type                                                       Int?
+  item_order                                                      Int                              @default(0, map: "DF__item__item_order__2A563856")
+  is_new                                                          Boolean                          @default(false, map: "DF__item__is_new__6CA31EA0")
+  item_alternatives_item_alternatives_alternative_item_codeToitem item_alternatives[]              @relation("item_alternatives_alternative_item_codeToitem")
+  item_alternatives_item_alternatives_item_codeToitem             item_alternatives[]              @relation("item_alternatives_item_codeToitem")
+  item_restock_config                                             item_restock_config?
+  marketing_contract_requirement                                  marketing_contract_requirement[]
 }
 
 model item_brand {
@@ -7424,4 +7427,24 @@ model user_daily_distances {
   log_date              DateTime @db.DateTime
   user_code             String   @db.NVarChar(30)
   total_distance_meters Decimal? @db.Decimal(18, 4)
+}
+
+model item_alternatives {
+  id                                                 BigInt   @id(map: "PK__item_alt__3213E83F2B90974D") @default(autoincrement())
+  item_code                                          String   @db.NVarChar(50)
+  alternative_item_code                              String   @db.NVarChar(50)
+  priority                                           Int?     @default(1, map: "DF__item_alte__prior__38134ABB")
+  is_active                                          Boolean? @default(true, map: "DF__item_alte__is_ac__39076EF4")
+  item_item_alternatives_alternative_item_codeToitem item     @relation("item_alternatives_alternative_item_codeToitem", fields: [alternative_item_code], references: [item_code], onUpdate: NoAction, map: "fk_alt_item")
+  item_item_alternatives_item_codeToitem             item     @relation("item_alternatives_item_codeToitem", fields: [item_code], references: [item_code], onUpdate: NoAction, map: "fk_item")
+}
+
+model item_restock_config {
+  id               BigInt   @id(map: "PK__item_res__3213E83FC7731EDB") @default(autoincrement())
+  item_code        String   @unique(map: "UQ__item_res__4A67201E4631D69B") @db.NVarChar(50)
+  min_stock        Decimal  @db.Decimal(18, 4)
+  reorder_quantity Decimal  @db.Decimal(18, 4)
+  auto_trigger     Boolean? @default(false, map: "DF__item_rest__auto___3EC0484A")
+  is_active        Boolean? @default(true, map: "DF__item_rest__is_ac__3FB46C83")
+  item             item     @relation(fields: [item_code], references: [item_code], onUpdate: NoAction, map: "fk_restock_item")
 }

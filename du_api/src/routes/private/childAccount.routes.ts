@@ -9,15 +9,11 @@ import {
   getChildAccounts,
   updatePermissions,
 } from "../../crud/ChildAccountController";
-import { ensureParentAccount } from "../../lib/utils";
+import { ensureParentAccount, getUserId } from "../../lib/utils";
 const router = new Hono();
 const PUBLIC_API = "/api";
 const PRIVATE_API = "/api/auth";
 
-async function getUserId(c) {
-  const userId = c.req.user_id;
-  return userId;
-}
 // const createChild = async ({
 //     password,
 //     first_name,
@@ -42,8 +38,8 @@ async function parentMiddleware(c, next) {
   }
 }
 
-router.use(`${PRIVATE_API}/child/*`, parentMiddleware);
-router.post(`${PRIVATE_API}/child/create`, async (c) => {
+router.use(`/*`, parentMiddleware);
+router.post(`/create`, async (c) => {
   try {
     const parent_id = await getUserId(c);
     const body = await c.req.json();
@@ -68,7 +64,7 @@ router.post(`${PRIVATE_API}/child/create`, async (c) => {
   }
 });
 
-router.get(`${PRIVATE_API}/child`, async (c) => {
+router.get(`/`, async (c) => {
   try {
     const parent_id = await getUserId(c);
     const result = await getChildAccounts({ parent_id });
@@ -78,7 +74,7 @@ router.get(`${PRIVATE_API}/child`, async (c) => {
   }
 });
 
-router.post(`${PRIVATE_API}/child/edit`, async (c) => {
+router.post(`/edit`, async (c) => {
   try {
     const parent_id = await getUserId(c);
     const body = await c.req.json();
@@ -104,7 +100,7 @@ router.post(`${PRIVATE_API}/child/edit`, async (c) => {
 //   child_id,
 //   parent_id,
 // }: {
-router.post(`${PRIVATE_API}/child/disable`, async (c) => {
+router.post(`/disable`, async (c) => {
   try {
     const parent_id = await getUserId(c);
     const body = await c.req.json();
@@ -115,7 +111,7 @@ router.post(`${PRIVATE_API}/child/disable`, async (c) => {
     return c.json({ message: e.message, result: null }, 400);
   }
 });
-router.post(`${PRIVATE_API}/child/enable`, async (c) => {
+router.post(`/enable`, async (c) => {
   try {
     const parent_id = await getUserId(c);
     const body = await c.req.json();
@@ -129,7 +125,7 @@ router.post(`${PRIVATE_API}/child/enable`, async (c) => {
 // const deleteChild = async ({
 //   child_id,
 //   parent_id,
-router.post(`${PRIVATE_API}/child/delete`, async (c) => {
+router.post(`/delete`, async (c) => {
   try {
     const parent_id = await getUserId(c);
     const body = await c.req.json();
@@ -141,7 +137,7 @@ router.post(`${PRIVATE_API}/child/delete`, async (c) => {
   }
 });
 
-router.get(`${PRIVATE_API}/child/all_permissions`, async (c) => {
+router.get(`/all_permissions`, async (c) => {
   try {
     const result = await getAllUserPermisions();
     return c.json({ message: "Permissions fetched", result });
@@ -149,7 +145,7 @@ router.get(`${PRIVATE_API}/child/all_permissions`, async (c) => {
     return c.json({ message: e.message, result: null }, 400);
   }
 });
-router.post(`${PRIVATE_API}/child/update_permissions`, async (c) => {
+router.post(`/update_permissions`, async (c) => {
   try {
     const parent_id = await getUserId(c);
     const body = await c.req.json();

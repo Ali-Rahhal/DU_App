@@ -4,12 +4,8 @@ import {
   getSurveyElements,
   saveSurveyAnswer,
 } from "../../crud/surveyController";
+import { getUserId } from "../../lib/utils";
 const router = new Hono();
-
-async function getUserId(c) {
-  const userId = c.req.user_id;
-  return userId;
-}
 
 router.get(`/get_surveys`, async (c) => {
   try {

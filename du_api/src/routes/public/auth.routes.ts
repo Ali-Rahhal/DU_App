@@ -4,44 +4,6 @@ import { getUserId } from "../../lib/utils";
 import { serialize } from "hono/utils/cookie";
 const router = new Hono();
 
-// router.post(`/register`, async (c) => {
-//   try {
-//     const body = await c.req.json();
-
-//     const email = body["email"];
-//     const password = body["password"];
-//     const first_name = body["first_name"];
-//     const last_name = body["last_name"];
-//     const phone_number = body["phone_number"];
-
-//     if (!email) {
-//       throw new Error("Email not provided");
-//     }
-//     if (!password) {
-//       throw new Error("Password not provided");
-//     }
-//     if (!first_name) {
-//       throw new Error("First name not provided");
-//     }
-//     if (!last_name) {
-//       throw new Error("Last name not provided");
-//     }
-//     // if (!phone_number) {
-//     //   throw new Error("Phone number not provided");
-//     // }
-//     const result = await register({
-//       email,
-//       password,
-//       first_name,
-//       last_name,
-//       phone_number,
-//     });
-//     return c.json({ message: "Creation success", result: result });
-//   } catch (e) {
-//     return c.json({ message: e.message, result: null }, 400);
-//   }
-// });
-
 router.post(`/login`, async (c) => {
   try {
     const body = await c.req.json();
@@ -83,6 +45,45 @@ router.post(`/logout`, async (c) => {
     return c.json({ message: e.message, result: null }, 401);
   }
 });
+
+// router.post(`/register`, async (c) => {
+//   try {
+//     const body = await c.req.json();
+
+//     const email = body["email"];
+//     const password = body["password"];
+//     const first_name = body["first_name"];
+//     const last_name = body["last_name"];
+//     const phone_number = body["phone_number"];
+
+//     if (!email) {
+//       throw new Error("Email not provided");
+//     }
+//     if (!password) {
+//       throw new Error("Password not provided");
+//     }
+//     if (!first_name) {
+//       throw new Error("First name not provided");
+//     }
+//     if (!last_name) {
+//       throw new Error("Last name not provided");
+//     }
+//     // if (!phone_number) {
+//     //   throw new Error("Phone number not provided");
+//     // }
+//     const result = await register({
+//       email,
+//       password,
+//       first_name,
+//       last_name,
+//       phone_number,
+//     });
+//     return c.json({ message: "Creation success", result: result });
+//   } catch (e) {
+//     return c.json({ message: e.message, result: null }, 400);
+//   }
+// });
+
 // router.post(`/send_verify_email`, async (c) => {
 //   try {
 //     const body = await c.req.json();

@@ -16,6 +16,18 @@ import {
 import { ALL_PERMISSIONS } from "../../lib/constants";
 const router = new Hono();
 
+router.get(`/get_cart_items`, async (c) => {
+  try {
+    const userId = await getUserId(c);
+    const result = await getCartItems(userId, {});
+    return c.json({
+      message: "Fetched Cart items",
+      result: result,
+    });
+  } catch (e) {
+    return c.json({ message: e.message, result: null }, 400);
+  }
+});
 router.post(`/add_to_cart`, async (c) => {
   try {
     const userId = await getUserId(c);
@@ -78,19 +90,24 @@ router.post(`/update_cart_item`, async (c) => {
     return c.json({ message: e.message, result: null }, 400);
   }
 });
-router.get(`/get_cart_items`, async (c) => {
+
+router.get(`/get_favorite_items`, async (c) => {
   try {
     const userId = await getUserId(c);
-    const result = await getCartItems(userId, {});
+    const take = c.req.query("take");
+    const skip = c.req.query("skip");
+    const result = await getFavoriteItems(userId, {
+      take: parseInt(take as string),
+      skip: parseInt(skip as string),
+    });
     return c.json({
-      message: "Fetched Cart items",
+      message: "Fetched account info",
       result: result,
     });
   } catch (e) {
     return c.json({ message: e.message, result: null }, 400);
   }
 });
-
 router.post(`/add_to_favorite`, async (c) => {
   try {
     const userId = await getUserId(c);
@@ -125,21 +142,5 @@ router.post(`/remove_from_favorite`, async (c) => {
     return c.json({ message: e.message, result: null }, 400);
   }
 });
-router.get(`/get_favorite_items`, async (c) => {
-  try {
-    const userId = await getUserId(c);
-    const take = c.req.query("take");
-    const skip = c.req.query("skip");
-    const result = await getFavoriteItems(userId, {
-      take: parseInt(take as string),
-      skip: parseInt(skip as string),
-    });
-    return c.json({
-      message: "Fetched account info",
-      result: result,
-    });
-  } catch (e) {
-    return c.json({ message: e.message, result: null }, 400);
-  }
-});
+
 export default router;

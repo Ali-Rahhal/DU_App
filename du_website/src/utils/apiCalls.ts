@@ -680,14 +680,14 @@ const updateUserPermissions = async (
 const getItemAlternatives = async (
   item_code: string,
 ): Promise<AxiosResponse> => {
-  return await axios.get(privateApi + `/stock/${item_code}/alternatives`, {
+  return await axios.get(publicApi + `/stock/${item_code}/alternatives`, {
     withCredentials: true,
   });
 };
 
 const updateItemAlternatives = async (
   item_code: string,
-  alternatives: string[],
+  alternatives: { alternative_item_code: string; priority: number }[],
 ): Promise<AxiosResponse> => {
   return await axios.post(
     privateApi + `/stock/${item_code}/alternatives`,

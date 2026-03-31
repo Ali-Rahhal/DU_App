@@ -19,7 +19,8 @@ import productRoutes from "./routes/public/products.routes";
 import otherPrivateRoutes from "./routes/private/other.routes";
 import otherPublicRoutes from "./routes/public/other.routes";
 import cartAndFavRoutes from "./routes/private/cartAndFav.routes";
-import stockRoutes from "./routes/private/stock.routes";
+import stockPrivateRoutes from "./routes/private/stock.routes";
+import stockPublicRoutes from "./routes/public/stock.routes";
 //@ts-ignore
 BigInt.prototype.toJSON = function () {
   return this.toString();
@@ -70,6 +71,7 @@ app.route(`${PUBLIC_API}`, productRoutes);
 app.route(`${PUBLIC_API}`, otherPublicRoutes);
 app.route(`${PUBLIC_API}`, promotionPublicRoutes);
 app.route(`${PUBLIC_API}/survey`, surveyPublicRoutes);
+app.route(`${PUBLIC_API}/stock`, stockPublicRoutes);
 
 app.route(`${PRIVATE_API}`, authPrivateRoutes);
 app.route(`${PRIVATE_API}`, cartAndFavRoutes);
@@ -80,7 +82,7 @@ app.route(`${PRIVATE_API}/users`, usersRoutes);
 //app.route(`${PRIVATE_API}/child`, childAccountRoutes);
 app.route(`${PRIVATE_API}/survey`, surveyPrivateRoutes);
 app.route(`${PRIVATE_API}/complaint`, complaintRoutes);
-app.route(`${PRIVATE_API}/stock`, stockRoutes);
+app.route(`${PRIVATE_API}/stock`, stockPrivateRoutes);
 
 // server ./images folder
 // app.use(

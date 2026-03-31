@@ -14,6 +14,7 @@ import { useTranslations } from "next-intl";
 
 import ChangeLangDropdown from "@/components/common/ChangeLangDropdown";
 import FloatingMenu from "../FloatingMenu";
+import { ROLES } from "@/utils/data";
 function Navbar() {
   //   const { cart } = useSelector((state) => state.cart);
 
@@ -41,7 +42,7 @@ function Navbar() {
   //     setCartItems(cart);
   //   }, [cart]);
   const { isAuth, logout } = useAuthStore();
-  const { cart, cartItems, refreshCart, name, firstName, lastName } =
+  const { cart, cartItems, refreshCart, name, firstName, lastName, checkRole } =
     useAccountStore();
   useEffect(() => {
     if (!cart) return;
@@ -276,6 +277,13 @@ function Navbar() {
                               {t("sales_invoices")}
                             </Link>
                           </li>
+                          {checkRole(ROLES.Admin) ? (
+                            <li>
+                              <Link href="/stock-management">
+                                {t("stock_management")}
+                              </Link>
+                            </li>
+                          ) : null}
                           <li>
                             <Link
                               href="/"
@@ -402,6 +410,13 @@ function Navbar() {
                   <li>
                     <Link href="/sales-invoice">{t("sales_invoices")}</Link>
                   </li>
+                  {checkRole(ROLES.Admin) ? (
+                    <li>
+                      <Link href="/stock-management">
+                        {t("stock_management")}
+                      </Link>
+                    </li>
+                  ) : null}
                 </ul>
               </div>
             )}

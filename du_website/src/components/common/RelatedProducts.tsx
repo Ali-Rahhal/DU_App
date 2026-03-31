@@ -18,7 +18,7 @@ const RelatedProducts = ({ products }: { products: Item[] }) => {
           {products?.map((item) => (
             <div
               key={item.item_code}
-              className="col-6 col-md-4 col-lg-3 col-xl-2 d-flex justify-content-center"
+              className="col-6 col-md-4 col-lg-3 d-flex justify-content-center"
             >
               <div style={{ maxWidth: "250px", width: "100%" }}>
                 <ProductItem item={item} />

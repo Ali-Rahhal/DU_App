@@ -162,6 +162,8 @@
   "in_stock": "En stock",
   "remaining_stock": "Stock restant: ",
   "item_unavailable": "Actuellement indisponible",
+  "stock_management": "Gestion du stock",
+  "you_can_find_alternative_products_below": "Vous pouvez trouver des produits alternatifs ci-dessous",
 
   "permission": {
     "RETURN": "Retourner la commande",

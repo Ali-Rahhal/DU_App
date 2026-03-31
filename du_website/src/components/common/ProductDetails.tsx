@@ -220,6 +220,11 @@ const ProductDetails = ({ product }: { product: Item }) => {
                               : `${t("remaining_stock")} (${stock})`}
                         </span>
                       </span>
+                      {stock == 0 && (
+                        <strong className="d-block text-danger mb-2">
+                          {t("you_can_find_alternative_products_below")}
+                        </strong>
+                      )}
                     </div>
 
                     {/* <div className="varient mt-4">

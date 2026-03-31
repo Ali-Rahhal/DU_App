@@ -81,7 +81,7 @@ router.get(`/get_product/:item_code`, async (c) => {
       });
 
     // const result = await getProductInfo(item_code);
-    return c.json({ message: "Fetched Products", result: result }, 200);
+    return c.json({ message: "Fetched Product", result: result }, 200);
   } catch (e) {
     console.error(e);
     console.log(e.message);

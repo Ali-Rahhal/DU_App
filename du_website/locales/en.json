@@ -163,6 +163,8 @@
   "in_stock": "In Stock",
   "remaining_stock": "Remaining Stock: ",
   "item_unavailable": "Currently unavailable",
+  "stock_management": "Stock Management",
+  "you_can_find_alternative_products_below": "You can find alternative products below",
 
   "permission": {
     "RETURN": "Return Order",

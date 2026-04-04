@@ -54,7 +54,6 @@ const OrderDetails = () => {
   }, [rt.query]);
   const t = useTranslations();
 
-  console.log(orderItems);
   return (
     <Layout>
       <AccountLayout
@@ -114,7 +113,7 @@ const OrderDetails = () => {
                               <strong>
                                 {currenncyCodeToSymbol(order.currency_code)}{" "}
                                 {parseFloat(
-                                  order.discountedPrice
+                                  order.discountedPrice,
                                 ).toLocaleString()}{" "}
                               </strong>
                             )}
@@ -179,7 +178,7 @@ const OrderDetails = () => {
                             month: "long",
                             day: "numeric",
                             year: "numeric",
-                          }
+                          },
                         )}
                       </p>
                     </div>
@@ -231,7 +230,7 @@ const OrderDetails = () => {
                             month: "long",
                             day: "numeric",
                             year: "numeric",
-                          }
+                          },
                         )}
                       </span>
                     </div>
@@ -284,7 +283,7 @@ const OrderDetails = () => {
                               month: "long",
                               day: "numeric",
                               year: "numeric",
-                            }
+                            },
                           )}
                         </span>
                       </div>
@@ -322,7 +321,7 @@ const OrderDetails = () => {
                               month: "long",
                               day: "numeric",
                               year: "numeric",
-                            }
+                            },
                           )}
                         </span>
                       </div>

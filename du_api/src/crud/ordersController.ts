@@ -26,7 +26,6 @@ const placeOrder = async (userID: number) => {
                                     @output_transaction_header_id = @output_transaction_header_id OUTPUT -- bigint
         SELECT @output_err_code as code, @output_err_msg as message, @output_transaction_header_id as transaction_header_id
   `;
-  console.log(result);
 
   if (result[0].code !== 0) throw new Error(result[0].message);
   const transaction_header_id = result[0].transaction_header_id;

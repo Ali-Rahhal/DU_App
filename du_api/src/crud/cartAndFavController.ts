@@ -246,7 +246,6 @@ const addItemToFavorite = async (userId: number, itemCode: string) => {
       item_code: true,
     },
   });
-  console.log(result);
   return result;
 };
 const removeItemFromFavorite = async (userId: number, itemCode: string) => {

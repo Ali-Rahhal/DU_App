@@ -48,7 +48,6 @@ const MyComplaints = () => {
   const fetchOrders = async () => {
     await getUserComplaints()
       .then((res) => {
-        console.log(res.data.result);
         setComplaints(res.data.result);
       })
       .catch((error) => {

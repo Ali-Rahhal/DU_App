@@ -43,39 +43,32 @@ const replaceItemAlternatives = async (
   });
 };
 
-const getRestockConfig = async (itemCode: string) => {
+const getRestockConfig = async (userId: number, itemCode: string) => {
   const config = await prisma.item_restock_config.findUnique({
-    where: { item_code: itemCode },
+    where: { client_id_item_code: { client_id: userId, item_code: itemCode } },
   });
   if (!config) return null;
   return {
     ...config,
     min_stock: Number(config.min_stock),
-    reorder_quantity: Number(config.reorder_quantity),
   };
 };
 
 const upsertRestockConfig = async (
+  userId: number,
   itemCode: string,
-  data: {
-    min_stock: number;
-    reorder_quantity: number;
-    auto_trigger?: boolean;
-  },
+  min_stock: number,
 ) => {
   const config = await prisma.item_restock_config.upsert({
-    where: { item_code: itemCode },
+    where: { client_id_item_code: { client_id: userId, item_code: itemCode } },
     update: {
-      min_stock: data.min_stock,
-      reorder_quantity: data.reorder_quantity,
-      auto_trigger: data.auto_trigger ?? false,
+      min_stock: min_stock,
       is_active: true,
     },
     create: {
       item_code: itemCode,
-      min_stock: data.min_stock,
-      reorder_quantity: data.reorder_quantity,
-      auto_trigger: data.auto_trigger ?? false,
+      client_id: userId,
+      min_stock: min_stock,
       is_active: true,
     },
   });
@@ -83,43 +76,55 @@ const upsertRestockConfig = async (
   return {
     ...config,
     min_stock: Number(config.min_stock),
-    reorder_quantity: Number(config.reorder_quantity),
   };
 };
 
-const restockItem = async (itemCode: string) => {
+const restockItem = async (
+  userId: number,
+  itemCode: string,
+  current_stock: number,
+) => {
   return await prisma.$transaction(async (tx) => {
-    const config = await tx.item_restock_config.findUnique({
-      where: { item_code: itemCode },
-    });
-
+    const config = await getRestockConfig(userId, itemCode);
     if (!config) throw new Error("Restock config not found");
+    const { min_stock } = config;
+    if (min_stock < current_stock)
+      throw new Error(
+        "Current stock is greater than min stock. Restock is not required",
+      );
 
-    // add stock
-    const stock = await tx.warehouse_current_stock.findFirst({
-      where: { item_code: itemCode },
+    const found = await tx.shopping_cart.findFirst({
+      where: { account_id: userId, item_code: itemCode },
     });
 
-    if (!stock) throw new Error("Stock record not found");
+    if (found) {
+      if (found.quantity >= min_stock)
+        throw new Error(
+          "Item is already restocked in cart. Restock is not required",
+        );
+      const cart = await tx.shopping_cart.update({
+        where: { id: found.id },
+        data: {
+          quantity: min_stock - current_stock,
+        },
+      });
 
-    // Convert Decimal to number for calculation
-    const currentQuantity = Number(stock.quantity);
-    const reorderQuantity = Number(config.reorder_quantity);
-    const newQuantity = currentQuantity + reorderQuantity;
+      return {
+        ...cart,
+      };
+    }
 
-    const updatedStock = await tx.warehouse_current_stock.update({
-      where: { warehouse_current_stock_id: stock.warehouse_current_stock_id },
+    const cart = await tx.shopping_cart.create({
       data: {
-        quantity: newQuantity,
+        account_id: userId,
+        item_code: itemCode,
+        barcode: itemCode,
+        quantity: min_stock - current_stock,
       },
     });
 
-    // (optional) log order / history
-    // you can insert into purchase_order table here
-
     return {
-      ...updatedStock,
-      quantity: Number(updatedStock.quantity),
+      ...cart,
     };
   });
 };

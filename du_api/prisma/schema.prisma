@@ -2631,7 +2631,7 @@ model item {
   is_new                                                          Boolean                          @default(false, map: "DF__item__is_new__6CA31EA0")
   item_alternatives_item_alternatives_alternative_item_codeToitem item_alternatives[]              @relation("item_alternatives_alternative_item_codeToitem")
   item_alternatives_item_alternatives_item_codeToitem             item_alternatives[]              @relation("item_alternatives_item_codeToitem")
-  item_restock_config                                             item_restock_config?
+  item_restock_config                                             item_restock_config[]
   marketing_contract_requirement                                  marketing_contract_requirement[]
 }
 
@@ -7158,6 +7158,7 @@ model web_accounts {
   parent_id                  Int?
   role                       String?                      @default("USER", map: "DF_web_accounts_role") @db.NVarChar(50)
   favorite_items             favorite_items[]
+  item_restock_config        item_restock_config[]
   reset_codes                reset_codes?
   shopping_cart              shopping_cart[]
   user_permission_assignment user_permission_assignment[]
@@ -7430,7 +7431,7 @@ model user_daily_distances {
 }
 
 model item_alternatives {
-  id                                                 BigInt   @id(map: "PK__item_alt__3213E83F2B90974D") @default(autoincrement())
+  id                                                 BigInt   @id(map: "PK__item_alt__3213E83F88BFD43B") @default(autoincrement())
   item_code                                          String   @db.NVarChar(50)
   alternative_item_code                              String   @db.NVarChar(50)
   priority                                           Int?     @default(1, map: "DF__item_alte__prior__38134ABB")
@@ -7440,11 +7441,13 @@ model item_alternatives {
 }
 
 model item_restock_config {
-  id               BigInt   @id(map: "PK__item_res__3213E83FC7731EDB") @default(autoincrement())
-  item_code        String   @unique(map: "UQ__item_res__4A67201E4631D69B") @db.NVarChar(50)
-  min_stock        Decimal  @db.Decimal(18, 4)
-  reorder_quantity Decimal  @db.Decimal(18, 4)
-  auto_trigger     Boolean? @default(false, map: "DF__item_rest__auto___3EC0484A")
-  is_active        Boolean? @default(true, map: "DF__item_rest__is_ac__3FB46C83")
-  item             item     @relation(fields: [item_code], references: [item_code], onUpdate: NoAction, map: "fk_restock_item")
+  id           BigInt       @id(map: "PK__item_res__3213E83FB076E5DC") @default(autoincrement())
+  item_code    String       @db.NVarChar(50)
+  client_id    Int
+  min_stock    Decimal      @db.Decimal(18, 4)
+  is_active    Boolean?     @default(true, map: "DF__item_rest__is_ac__5697D1DB")
+  web_accounts web_accounts @relation(fields: [client_id], references: [id], onUpdate: NoAction, map: "fk_client")
+  item         item         @relation(fields: [item_code], references: [item_code], onUpdate: NoAction, map: "fk_restock_item")
+
+  @@unique([client_id, item_code], map: "uq_client_item")
 }

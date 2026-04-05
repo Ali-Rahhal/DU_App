@@ -279,11 +279,14 @@ function Navbar() {
                           </li>
                           {checkRole(ROLES.Admin) ? (
                             <li>
-                              <Link href="/stock-management">
-                                {t("stock_management")}
+                              <Link href="/item-alternatives">
+                                {t("item_alternatives")}
                               </Link>
                             </li>
                           ) : null}
+                          <li>
+                            <Link href="/restock">{t("restock")}</Link>
+                          </li>
                           <li>
                             <Link
                               href="/"
@@ -412,11 +415,14 @@ function Navbar() {
                   </li>
                   {checkRole(ROLES.Admin) ? (
                     <li>
-                      <Link href="/stock-management">
-                        {t("stock_management")}
+                      <Link href="/item-alternatives">
+                        {t("item_alternatives")}
                       </Link>
                     </li>
                   ) : null}
+                  <li>
+                    <Link href="/restock">{t("restock")}</Link>
+                  </li>
                 </ul>
               </div>
             )}

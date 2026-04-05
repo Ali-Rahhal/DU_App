@@ -6,28 +6,19 @@ import {
   getProducts,
   getItemAlternatives,
   updateItemAlternatives,
-  getRestockConfig,
-  updateRestockConfig,
-  restockItem,
 } from "@/utils/apiCalls";
 import { useState } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { toast } from "react-toastify";
+import { useTranslations } from "next-intl";
 
-const StockManagement = () => {
+const ItemAlternatives = () => {
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [selectedAlternatives, setSelectedAlternatives] = useState<any[]>([]);
-  const [restock, setRestock] = useState({
-    min_stock: 0,
-    reorder_quantity: 0,
-    auto_trigger: false,
-  });
-  const [currentStock, setCurrentStock] = useState<number | null>(null);
 
   const loadItemData = async (item) => {
     try {
       setSelectedItem(item);
-      setCurrentStock(item.stock ?? 0);
       const altRes = await getItemAlternatives(item.item_code);
 
       const altResFull: {
@@ -50,15 +41,6 @@ const StockManagement = () => {
       );
 
       setSelectedAlternatives(altResFull);
-
-      const restockRes = await getRestockConfig(item.item_code);
-      setRestock(
-        restockRes.data.result || {
-          min_stock: 0,
-          reorder_quantity: 0,
-          auto_trigger: false,
-        },
-      );
     } catch (e) {
       toast.error(e.response.data.message);
     }
@@ -77,35 +59,15 @@ const StockManagement = () => {
     }
   };
 
-  const saveRestock = async () => {
-    try {
-      await updateRestockConfig(selectedItem.item_code, restock);
-      toast.success("Restock config saved");
-    } catch (e) {
-      toast.error(e.response.data.message);
-    }
-  };
-
-  const handleRestock = async () => {
-    try {
-      await restockItem(selectedItem.item_code);
-      toast.success("Stock increased");
-
-      setCurrentStock((prev) => (prev || 0) + restock.reorder_quantity);
-    } catch (e) {
-      toast.error(e.response.data.message);
-    }
-  };
+  const t = useTranslations();
 
   return (
     <Layout>
       <div className="container mt-5" style={{ minHeight: "60vh" }}>
         {/* Header */}
         <div className="mb-4">
-          <h2 style={{ fontWeight: "bold" }}>Stock Management</h2>
-          <p className="text-muted">
-            Manage item alternatives and automatic restocking rules.
-          </p>
+          <h2 style={{ fontWeight: "bold" }}>{t("item-alternatives")}</h2>
+          <p className="text-muted">Manage item alternatives.</p>
         </div>
 
         <div className="row">
@@ -127,7 +89,9 @@ const StockManagement = () => {
 
           <div className="col-12 col-md-8">
             {!selectedItem ? (
-              <div className="text-muted">Select an item to manage stock</div>
+              <div className="text-muted">
+                Select an item to manage alternatives
+              </div>
             ) : (
               <>
                 {/* Alternatives */}
@@ -184,86 +148,6 @@ const StockManagement = () => {
                     Save Alternatives
                   </Button>
                 </div>
-
-                {/* Restock */}
-                <div>
-                  <h5>Restock</h5>
-                  <div className="text-muted mb-2" style={{ fontSize: 13 }}>
-                    💡 Auto trigger can be used later for automation jobs.
-                  </div>
-
-                  <div className="mb-2">
-                    <strong>Current Stock:</strong>{" "}
-                    <span
-                      style={{
-                        color:
-                          currentStock !== null &&
-                          currentStock <= restock.min_stock
-                            ? "red"
-                            : "green",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      {currentStock}
-                    </span>
-                  </div>
-
-                  <Form.Group className="mb-2">
-                    <Form.Label>Minimum Stock</Form.Label>
-                    <Form.Control
-                      type="number"
-                      value={restock.min_stock}
-                      onChange={(e) =>
-                        setRestock({
-                          ...restock,
-                          min_stock: Number(e.target.value),
-                        })
-                      }
-                    />
-                  </Form.Group>
-
-                  <Form.Group className="mb-2">
-                    <Form.Label>Reorder Quantity</Form.Label>
-                    <Form.Control
-                      type="number"
-                      value={restock.reorder_quantity}
-                      onChange={(e) =>
-                        setRestock({
-                          ...restock,
-                          reorder_quantity: Number(e.target.value),
-                        })
-                      }
-                    />
-                  </Form.Group>
-
-                  <Form.Check
-                    type="checkbox"
-                    label="Auto trigger"
-                    checked={restock.auto_trigger}
-                    onChange={(e) =>
-                      setRestock({
-                        ...restock,
-                        auto_trigger: e.target.checked,
-                      })
-                    }
-                  />
-
-                  <div className="my-3 d-flex flex-wrap">
-                    <Button
-                      onClick={saveRestock}
-                      style={{ marginRight: "0.5rem" }}
-                    >
-                      Save
-                    </Button>
-                    <Button
-                      variant="success"
-                      onClick={handleRestock}
-                      disabled={!restock.reorder_quantity}
-                    >
-                      Restock Now
-                    </Button>
-                  </div>
-                </div>
               </>
             )}
           </div>
@@ -273,4 +157,4 @@ const StockManagement = () => {
   );
 };
 
-export default StockManagement;
+export default ItemAlternatives;

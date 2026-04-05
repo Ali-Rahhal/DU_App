@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { getItemAlternatives } from "../../crud/stockController";
+import { getItemAlternatives } from "../../crud/restockAndAlternativesController";
 const router = new Hono();
 
 router.get(`/:code/alternatives`, async (c) => {

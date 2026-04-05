@@ -680,9 +680,12 @@ const updateUserPermissions = async (
 const getItemAlternatives = async (
   item_code: string,
 ): Promise<AxiosResponse> => {
-  return await axios.get(publicApi + `/stock/${item_code}/alternatives`, {
-    withCredentials: true,
-  });
+  return await axios.get(
+    publicApi + `/restockAndAlt/${item_code}/alternatives`,
+    {
+      withCredentials: true,
+    },
+  );
 };
 
 const updateItemAlternatives = async (
@@ -690,7 +693,7 @@ const updateItemAlternatives = async (
   alternatives: { alternative_item_code: string; priority: number }[],
 ): Promise<AxiosResponse> => {
   return await axios.post(
-    privateApi + `/stock/${item_code}/alternatives`,
+    privateApi + `/restockAndAlt/${item_code}/alternatives`,
     {
       alternatives: alternatives,
     },
@@ -699,34 +702,36 @@ const updateItemAlternatives = async (
 };
 
 const getRestockConfig = async (item_code: string): Promise<AxiosResponse> => {
-  return await axios.get(privateApi + `/stock/${item_code}/restock-config`, {
-    withCredentials: true,
-  });
+  return await axios.get(
+    privateApi + `/restockAndAlt/${item_code}/restock-config`,
+    {
+      withCredentials: true,
+    },
+  );
 };
 
 const updateRestockConfig = async (
   item_code: string,
-  data: {
-    min_stock: number;
-    reorder_quantity: number;
-    auto_trigger?: boolean;
-  },
+  min_stock: number,
 ): Promise<AxiosResponse> => {
   return await axios.post(
-    privateApi + `/stock/${item_code}/restock-config`,
+    privateApi + `/restockAndAlt/${item_code}/restock-config`,
     {
-      min_stock: data.min_stock,
-      reorder_quantity: data.reorder_quantity,
-      auto_trigger: data.auto_trigger,
+      min_stock: min_stock,
     },
     { withCredentials: true },
   );
 };
 
-const restockItem = async (item_code: string): Promise<AxiosResponse> => {
+const restockItem = async (
+  item_code: string,
+  current_stock: number,
+): Promise<AxiosResponse> => {
   return await axios.post(
-    privateApi + `/stock/${item_code}/restock`,
-    {},
+    privateApi + `/restockAndAlt/${item_code}/restock`,
+    {
+      current_stock: current_stock,
+    },
     { withCredentials: true },
   );
 };

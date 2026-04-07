@@ -186,7 +186,35 @@
     "thank_you": "Thank You for Your Feedback",
     "have_a_nice_day": "Have a Nice Day",
     "answer_another_survey": "Answer Another Survey",
-    "choose_option": "Choose an Option"
+    "choose_option": "Choose an Option",
+    "complaint_type": {
+      "Produit manquant": "Product Missing",
+      "Produit endommagé": "Product Damaged",
+      "Retard de livraison": "Delivery Delay",
+      "Problèmes de livraison": "Delivery Problems",
+      "Problème de facturation": "Billing Problem",
+      "Problème avec le livreur": "Delivery Driver Problem",
+      "Problème d’équipement": "Equipment Problem",
+      "Problème de disponibilité des produits": "Product Availability Problem",
+      "Autre": "Other",
+      "Autres": "Other"
+    },
+    "complaint_type_component": {
+      "Nom du produit": "Product Name",
+      "Détails de la plainte": "Complaint Details",
+      "Numéro de facture": "Invoice Number",
+      "Nom du conducteur": "Driver Name",
+      "Délai de livraison": "Delivery Deadline",
+      "Nom du responsable des ventes": "Sales Manager Name",
+      "Date de la dernière visite": "Last Visit Date",
+      "Type": "Type",
+      "Quantité demandée": "Requested Quantity",
+      "Quantité reçue": "Received Quantity",
+      "Produit demandée": "Requested Product",
+      "Produit reçue": "Received Product",
+      "Pièce jointe": "Attachment",
+      "Prendre une note vocale": "Take a Voice Note"
+    }
   },
   "statuses": {
     "draft": "DRAFT",

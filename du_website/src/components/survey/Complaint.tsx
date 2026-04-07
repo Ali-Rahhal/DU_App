@@ -110,11 +110,17 @@ function Complaint() {
     microphone(SurveyCore);
     const getAllComplaints = async () => {
       getComplaints().then((res) => {
-        setComplaintTypes(res.data.result);
+        const data = res.data.result;
+        const translatedData = data.map((item) => ({
+          ...item,
+          name: t("complaint_page.complaint_type." + item.name),
+        }));
+
+        setComplaintTypes(translatedData);
       });
     };
     getAllComplaints();
-  }, []);
+  }, [t]);
   useEffect(() => {
     const getComplaint = async () => {
       getComplaintElements(selectedQuestion).then((res) => {
@@ -123,6 +129,10 @@ function Complaint() {
         const updatedPages = data.pages.map((page) => ({
           name: page?.name,
           elements: page.elements.map((question) => {
+            const translatedTitle = t(
+              "complaint_page.complaint_type_component." + question.title,
+            );
+            question = { ...question, title: translatedTitle };
             if (question.type === "file") {
               return {
                 ...question,
@@ -136,9 +146,13 @@ function Complaint() {
           }),
         }));
 
+        const translatedTitle = t(
+          "complaint_page.complaint_type." + data.title,
+        );
+
         setSurveyJson({
           showProgressBar: "top",
-          title: data.title,
+          title: translatedTitle,
           pages: updatedPages,
         });
       });
@@ -148,7 +162,7 @@ function Complaint() {
       getComplaint();
     }
     //  setSurveyJson(exampleSurvey);
-  }, [selectedQuestion]);
+  }, [selectedQuestion, t]);
 
   var storageName = `quayo_complaint_${selectedQuestion}}`;
   let survey = new Model(surveyJson);
@@ -202,16 +216,16 @@ function Complaint() {
             question.getType() === "file"
               ? removeBase64Prefix(question.value[0].content)
               : question.getType() === "signaturepad"
-              ? removeBase64Prefix(question.displayValue.toString())
-              : question.displayValue.toString(),
+                ? removeBase64Prefix(question.displayValue.toString())
+                : question.displayValue.toString(),
           type: question.getType(),
           question_type_id:
             question.getType() === "file" ||
             question.getType() === "signaturepad"
               ? 1
               : question.getType() === "microphone"
-              ? 2
-              : 0,
+                ? 2
+                : 0,
         };
         resultData.push(item);
       }
@@ -310,7 +324,7 @@ function Complaint() {
                 } else {
                   toast.info(
                     // "Please Select a Complaint Type"
-                    t("complaint_page.select_complaint")
+                    t("complaint_page.select_complaint"),
                   );
                 }
               }}

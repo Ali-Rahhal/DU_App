@@ -185,7 +185,35 @@
     "thank_you": "Merci pour votre retour",
     "have_a_nice_day": "Passez une bonne journée",
     "answer_another_survey": "Répondre à un autre sondage",
-    "choose_option": "Choisir une option"
+    "choose_option": "Choisir une option",
+    "complaint_type": {
+      "Produit manquant": "Produit manquant",
+      "Produit endommagé": "Produit endommagé",
+      "Retard de livraison": "Retard de livraison",
+      "Problèmes de livraison": "Problèmes de livraison",
+      "Problème de facturation": "Problème de facturation",
+      "Problème avec le livreur": "Problème avec le livreur",
+      "Problème d’équipement": "Problème d’équipement",
+      "Problème de disponibilité des produits": "Problème de disponibilité des produits",
+      "Autre": "Autre",
+      "Autres": "Autres"
+    },
+    "complaint_type_component": {
+      "Nom du produit": "Nom du produit",
+      "Détails de la plainte": "Détails de la plainte",
+      "Numéro de facture": "Numéro de facture",
+      "Nom du conducteur": "Nom du conducteur",
+      "Délai de livraison": "Délai de livraison",
+      "Nom du responsable des ventes": "Nom du responsable des ventes",
+      "Date de la dernière visite": "Date de la dernière visite",
+      "Type": "Type",
+      "Quantité demandée": "Quantité demandée",
+      "Quantité reçue": "Quantité reçue",
+      "Produit demandée": "Produit demandée",
+      "Produit reçue": "Produit reçue",
+      "Pièce jointe": "Pièce jointe",
+      "Prendre une note vocale": "Prendre une note vocale"
+    }
   },
   "statuses": {
     "draft": "BROUILLON",

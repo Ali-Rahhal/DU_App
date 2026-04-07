@@ -1,6 +1,6 @@
 import Autocomplete from "@/components/common/Autocomplete";
 import Layout from "@/components/Layout/Layout";
-import SortableAlternatives from "@/components/stock-management/SortableAlternatives";
+import SortableAlternatives from "@/components/item-alternatives/SortableAlternatives";
 import {
   getProduct,
   getProducts,
@@ -66,7 +66,7 @@ const ItemAlternatives = () => {
       <div className="container mt-5" style={{ minHeight: "60vh" }}>
         {/* Header */}
         <div className="mb-4">
-          <h2 style={{ fontWeight: "bold" }}>{t("item-alternatives")}</h2>
+          <h2 style={{ fontWeight: "bold" }}>{t("item_alternatives")}</h2>
           <p className="text-muted">Manage item alternatives.</p>
         </div>
 

@@ -164,7 +164,7 @@
   "item_unavailable": "Actuellement indisponible",
   "item_alternatives": "Produits alternatifs",
   "you_can_find_alternative_products_below": "Vous pouvez trouver des produits alternatifs ci-dessous",
-  "restock_system": "Système de remise en stock",
+  "restock": "Système de remise en stock",
 
   "permission": {
     "RETURN": "Retourner la commande",

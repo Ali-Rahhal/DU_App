@@ -93,9 +93,9 @@ const Restock = () => {
                 {/* Restock */}
                 <div>
                   <h5>Restock</h5>
-                  <div className="text-muted mb-2" style={{ fontSize: 13 }}>
-                    💡
-                  </div>
+                    <div className="text-muted mb-3" style={{ fontSize: 13 }}>
+                    💡 Set a minimum stock level and restock quantity to automatically maintain your inventory.
+                    </div>
 
                   <Form.Group className="mb-2">
                     <Form.Label>Minimum Stock</Form.Label>

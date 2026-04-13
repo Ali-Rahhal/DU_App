@@ -226,7 +226,6 @@ const index = () => {
             <div
               className="card"
               onClick={() => {
-                // http://localhost:5006/category
                 rt.push("/category");
               }}
             >
@@ -246,7 +245,6 @@ const index = () => {
             <div
               className="card"
               onClick={() => {
-                // http://localhost:5006/category
                 setOpenVisitModal(true);
               }}
             >

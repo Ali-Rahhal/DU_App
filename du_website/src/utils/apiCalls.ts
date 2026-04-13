@@ -1,9 +1,4 @@
 import axios, { AxiosResponse } from "axios";
-// export const publicApi = "http://localhost:5005/api";
-// export const privateApi = "http://localhost:5005/api/auth";
-
-// export const publicApi = "http://localhost:5005/api";
-// export const privateApi = "http://localhost:5005/api/auth";
 const publicApi = process.env.NEXT_PUBLIC_API_URL;
 const privateApi = process.env.NEXT_PUBLIC_API_URL + "/auth";
 

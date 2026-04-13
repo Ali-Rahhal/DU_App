@@ -307,6 +307,8 @@ label.error {
   justify-content: space-between;
   align-items: center;
   margin-top: 10px;
+  flex-wrap: wrap; /* allow wrapping */
+  gap: 6px;
 }
 
 .table-action-item {

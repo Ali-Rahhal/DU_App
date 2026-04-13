@@ -7,14 +7,30 @@ import {
   getItemAlternatives,
   updateItemAlternatives,
 } from "@/utils/apiCalls";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/router";
+import { useAccountStore } from "@/store/zustand";
+import { ROLES } from "@/utils/data";
 
 const ItemAlternatives = () => {
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [selectedAlternatives, setSelectedAlternatives] = useState<any[]>([]);
+
+  // Authorization Check:
+  const rt = useRouter();
+  const { role, checkRole } = useAccountStore();
+  const hasShownToast = useRef(false);
+  useEffect(() => {
+    if (!checkRole(ROLES.Admin) && !hasShownToast.current) {
+      toast.error("Only Admins can access this page");
+      hasShownToast.current = true;
+      rt.push("/");
+    }
+  }, [role]);
+  if (!checkRole(ROLES.Admin)) return null;
 
   const loadItemData = async (item) => {
     try {

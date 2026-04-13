@@ -133,7 +133,9 @@ const ProductItem = ({ item, layout = "grid" }: Props) => {
         size === "mobile"
           ? { width: 60, height: 36, fontSize: 16, textAlign: "center" }
           : {
-              width: 50,
+              width: 45,
+              minWidth: 40,
+              maxWidth: 60,
               textAlign: "center",
               border: "1px solid #ccc",
               borderRadius: 6,
@@ -250,13 +252,36 @@ const ProductItem = ({ item, layout = "grid" }: Props) => {
             <Link href={`/products/${item.item_code}`}>
               <div className="product-img-wrapper">{image()}</div>
             </Link>
-            <div className="product-info flex-grow-1">
+            <div className="product-info flex-grow-1 d-flex flex-column">
               <Link href={`/products/${item.item_code}`}>
-                <h6 className="product-title mb-1">{item.name}</h6>
+                <h6
+                  className="product-title mb-1"
+                  style={{
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    lineHeight: "1.5rem",
+                    height: "3rem",
+                  }}
+                >
+                  {item.name}
+                </h6>
               </Link>
-              {priceDisplay()}
+              <div
+                style={{
+                  minHeight: "2.5rem",
+                  maxHeight: "2.5rem",
+                }}
+              >
+                {priceDisplay()}
+              </div>
             </div>
-            <div className="product-actions d-flex align-items-center gap-2 mt-2">
+            <div
+              className="product-actions d-flex align-items-center gap-2 mt-2 flex-wrap"
+              style={{ minWidth: 0 }}
+            >
               <Button
                 variant={fav ? "danger" : "outline-danger"}
                 size="sm"
@@ -264,7 +289,11 @@ const ProductItem = ({ item, layout = "grid" }: Props) => {
               >
                 ♥
               </Button>
-              <div className="d-flex align-items-center gap-2">
+
+              <div
+                className="d-flex align-items-center gap-2 flex-wrap"
+                style={{ minWidth: 0 }}
+              >
                 <Button
                   size="sm"
                   variant="outline-secondary"
@@ -273,7 +302,9 @@ const ProductItem = ({ item, layout = "grid" }: Props) => {
                 >
                   -
                 </Button>
+
                 {qtyInput()}
+
                 <Button
                   size="sm"
                   variant="primary"

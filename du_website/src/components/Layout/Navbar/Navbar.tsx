@@ -261,12 +261,12 @@ function Navbar() {
                           <li>
                             <Link href="/wishlist">{t("wishlist")}</Link>
                           </li>{" "}
-                          {/* <li>
+                          <li>
                             <Link href="/survey">{t("survey")}</Link>
                           </li>
                           <li>
                             <Link href="/complaint">{t("complaint")}</Link>
-                          </li> */}
+                          </li>
                           <li>
                             <Link href="/open-invoice">
                               {t("open_invoices")}
@@ -401,12 +401,12 @@ function Navbar() {
                   <li>
                     <Link href="/wishlist">{t("wishlist")}</Link>
                   </li>
-                  {/* <li>
+                  <li>
                     <Link href="/survey">{t("survey")}</Link>
                   </li>
                   <li>
                     <Link href="/complaint">{t("complaint")}</Link>
-                  </li> */}
+                  </li>
                   <li>
                     <Link href="/open-invoice">{t("open_invoices")}</Link>
                   </li>

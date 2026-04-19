@@ -1,6 +1,15 @@
 import axios, { AxiosResponse } from "axios";
-const publicApi = process.env.NEXT_PUBLIC_API_URL;
-const privateApi = process.env.NEXT_PUBLIC_API_URL + "/auth";
+const isServer = typeof window === "undefined";
+
+const API_BASE_URL = isServer
+  ? process.env.NEXT_PUBLIC_API_SERVER_URL
+  : process.env.NEXT_PUBLIC_API_BROWSER_URL;
+
+const publicApi = API_BASE_URL;
+const privateApi = API_BASE_URL + "/auth";
+
+// const publicApi = process.env.NEXT_PUBLIC_API_URL;
+// const privateApi = process.env.NEXT_PUBLIC_API_URL + "/auth";
 
 const getCookieArray = (cookie: string) => {
   if (!cookie) return [];

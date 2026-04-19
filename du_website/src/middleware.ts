@@ -17,11 +17,17 @@ const authRoutes = [
   "/users",
 ];
 export async function middleware(request: NextRequest) {
+  const isServer = typeof window === "undefined";
+
+  const API_BASE_URL = isServer
+    ? process.env.NEXT_PUBLIC_API_SERVER_URL
+    : process.env.NEXT_PUBLIC_API_BROWSER_URL;
+
   // your middleware stuff here
   const headers = new Headers(request.headers);
   headers.set("x-url", request.nextUrl.pathname);
   const cookie = request.headers.get("cookie");
-  const result = await fetch(process.env.NEXT_PUBLIC_API_URL + "/auth/user", {
+  const result = await fetch(API_BASE_URL + "/auth/user", {
     headers: {
       Cookie: cookie,
     },

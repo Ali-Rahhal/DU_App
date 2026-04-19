@@ -135,10 +135,10 @@ function Navbar() {
                       </li> */}
                       <li className="link-item">
                         <Link
-                          href="#"
+                          href="/"
                           onClick={() => {
                             logout().then(() => {
-                              window.location.reload();
+                              window.location.href = "/";
                             });
                           }}
                         >
@@ -292,7 +292,7 @@ function Navbar() {
                               href="/"
                               onClick={() => {
                                 logout().then(() => {
-                                  window.location.reload();
+                                  window.location.href = "/";
                                 });
                               }}
                             >

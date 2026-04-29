@@ -181,7 +181,7 @@
   "complaint_page": {
     "header": "We Are Here to Help!",
     "body": "If you have complaints, let us know how we can assist, or contact us for other inquiries.",
-    "complaint_type": "Complaint Type",
+    "complaint_type_title": "Complaint Type",
     "select_complaint": "Please Select a Complaint Type",
     "thank_you": "Thank You for Your Feedback",
     "have_a_nice_day": "Have a Nice Day",

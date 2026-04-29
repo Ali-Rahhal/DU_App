@@ -44,6 +44,7 @@ app.use(
   "/api/*",
   cors({
     origin: [
+      "http://159.195.23.130:5006",
       "http://cloud.quayomobility.ca:5006",
       "http://localhost:5006", // optional for dev
     ],

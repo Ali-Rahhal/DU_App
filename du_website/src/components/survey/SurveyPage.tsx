@@ -139,7 +139,7 @@ function SurveyPage() {
     }
   }, [selectedQuestion]);
 
-  var storageName = `quayo_survey_${selectedQuestion}}`;
+  var storageName = `quayo_survey_${selectedQuestion}`;
   let survey = new Model(surveyJson);
   configureQuayoSurvey(survey);
   function saveSurveyData(survey) {
@@ -156,14 +156,24 @@ function SurveyPage() {
     // console.log(sender.data);
   });
 
-  var prevData = window.localStorage.getItem(storageName) || null;
-  if (prevData) {
-    var data = JSON.parse(prevData);
-    survey.data = data;
-    if (data?.pageNo) {
-      survey.currentPageNo = data.pageNo;
+  const prevData = window.localStorage.getItem(storageName);
+  if (prevData && prevData !== "null") {
+    try {
+      const data = JSON.parse(prevData);
+
+      if (data) {
+        survey.data = data;
+
+        if (data.pageNo) {
+          survey.currentPageNo = data.pageNo;
+        }
+      }
+    } catch (err) {
+      console.error("Invalid localStorage data:", prevData);
+      window.localStorage.removeItem(storageName);
     }
   }
+
   const startSurvey = useCallback(() => {
     setCompleted(false);
     setStart(true);
@@ -190,8 +200,8 @@ function SurveyPage() {
             question.getType() === "file"
               ? removeBase64Prefix(question.value[0].content)
               : question.getType() === "signaturepad"
-              ? removeBase64Prefix(question.displayValue.toString())
-              : question.displayValue.toString(),
+                ? removeBase64Prefix(question.displayValue.toString())
+                : question.displayValue.toString(),
           type: question.getType(),
           question_type_id:
             question.getType() === "file" ||
@@ -216,7 +226,7 @@ function SurveyPage() {
       setCompleted(true);
       setSelectedQuestion(null);
       setSurveyJson(null);
-      window.localStorage.setItem(storageName, null);
+      window.localStorage.removeItem(storageName);
     });
 
     // await userRequest

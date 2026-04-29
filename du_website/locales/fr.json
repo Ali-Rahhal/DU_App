@@ -180,7 +180,7 @@
   "complaint_page": {
     "header": "  Nous sommes là pour vous aider!",
     "body": " Si vous avez des Réclamations, veuillez nous faire savoir comment nous pouvons vous aider, ou si vous avez d'autres questions, veuillez nous contacter.",
-    "complaint_type": "Type de Réclamation",
+    "complaint_type_title": "Type de Réclamation",
     "select_complaint": "Veuillez sélectionner un type de Réclamation",
     "thank_you": "Merci pour votre retour",
     "have_a_nice_day": "Passez une bonne journée",

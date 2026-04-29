@@ -164,7 +164,7 @@ function Complaint() {
     //  setSurveyJson(exampleSurvey);
   }, [selectedQuestion, t]);
 
-  var storageName = `quayo_complaint_${selectedQuestion}}`;
+  var storageName = `quayo_complaint_${selectedQuestion}`;
   let survey = new Model(surveyJson);
   configureQuayoSurvey(survey);
   function saveSurveyData(survey) {
@@ -180,14 +180,24 @@ function Complaint() {
     surveyComplete(sender);
   });
 
-  var prevData = window.localStorage.getItem(storageName) || null;
-  if (prevData) {
-    var data = JSON.parse(prevData);
-    survey.data = data;
-    if (data?.pageNo) {
-      survey.currentPageNo = data.pageNo;
+  const prevData = window.localStorage.getItem(storageName);
+  if (prevData && prevData !== "null") {
+    try {
+      const data = JSON.parse(prevData);
+
+      if (data) {
+        survey.data = data;
+
+        if (data.pageNo) {
+          survey.currentPageNo = data.pageNo;
+        }
+      }
+    } catch (err) {
+      console.error("Invalid localStorage data:", prevData);
+      window.localStorage.removeItem(storageName);
     }
   }
+
   const startSurvey = useCallback(() => {
     setCompleted(false);
     setStart(true);
@@ -245,7 +255,7 @@ function Complaint() {
         setCompleted(true);
         setSelectedQuestion(null);
         setSurveyJson(null);
-        window.localStorage.setItem(storageName, null);
+        window.localStorage.removeItem(storageName);
       })
       .catch((err) => {
         setLoading(false);
@@ -313,7 +323,7 @@ function Complaint() {
           <div className="formCon">
             <div className="formHeader">
               {/* Type of Complaint */}
-              {t("complaint_page.complaint_type")}
+              {t("complaint_page.complaint_type_title")}
             </div>
             <form
               className="form"

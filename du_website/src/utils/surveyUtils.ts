@@ -9,13 +9,25 @@ export const removeBase64Prefix = (base64) => {
 };
 function sendRequest(url, onloadSuccessCallback) {
   const xhr = new XMLHttpRequest();
+
   xhr.open("GET", url);
+
+  xhr.withCredentials = true; // ⭐ REQUIRED
+
   xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
   xhr.onload = () => {
     if (xhr.status === 200) {
       onloadSuccessCallback(JSON.parse(xhr.response));
+    } else {
+      console.error("Survey request failed:", xhr.status);
     }
   };
+
+  xhr.onerror = () => {
+    console.error("Survey request network error");
+  };
+
   xhr.send();
 }
 const compressFiles = async (files) => {
@@ -29,11 +41,11 @@ const compressFiles = async (files) => {
       files.map(async (file) => {
         if (file.type.includes("image")) {
           const compressedFile = await imageCompression(file, options).then(
-            (res) => res
+            (res) => res,
           );
           return compressedFile;
         }
-      })
+      }),
     );
 
     return compressedFiles;
@@ -108,7 +120,7 @@ export const configureQuayoSurvey = (survey: Model) => {
 
     try {
       const compressedFiles = await compressFiles(options.files).then(
-        (res) => res
+        (res) => res,
       );
 
       // options.callback("success", compressedFiles);
@@ -120,8 +132,8 @@ export const configureQuayoSurvey = (survey: Model) => {
               content: await blobToBase64(f),
               file: f,
             };
-          })
-        )
+          }),
+        ),
       );
     } catch (error) {
       console.log(error);

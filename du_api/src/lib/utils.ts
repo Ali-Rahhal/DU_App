@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 import * as fs from "fs";
-import path = require("path");
+import path from "path";
 import prisma from "./prisma";
 import { ROLES } from "./constants";
 import { Context } from "hono";
@@ -163,9 +163,10 @@ export const saveAudioReturnUrl = async (base64Audio: string) => {
   // Define the target path for saving
   const savePath = path.join(
     "C:",
-    "inetpub",
-    "wwwroot",
-    "delice_uploads",
+    "webApps",
+    "storage",
+    "duCustomerPortal",
+    "uploads",
     "audio",
   );
 
@@ -179,7 +180,7 @@ export const saveAudioReturnUrl = async (base64Audio: string) => {
   fs.writeFileSync(fullFilePath, base64Data, "base64");
 
   // Construct the URL for accessing the file
-  const fileUrl = `${process.env.IMAGES_URL}/${fileName}`;
+  const fileUrl = `${process.env.FILE_ACCESS_URL}/uploads/audio/${fileName}`;
 
   return {
     path: fullFilePath,
@@ -203,9 +204,10 @@ export const saveImageReturnUrl = async (base64Image: string) => {
   // Define the target path for saving
   const savePath = path.join(
     "C:",
-    "inetpub",
-    "wwwroot",
-    "delice_uploads",
+    "webApps",
+    "storage",
+    "duCustomerPortal",
+    "uploads",
     "images",
   );
 
@@ -219,7 +221,7 @@ export const saveImageReturnUrl = async (base64Image: string) => {
   fs.writeFileSync(fullFilePath, base64Data, "base64");
 
   // Construct the URL for accessing the file
-  const fileUrl = `${process.env.IMAGES_URL}/${fileName}`;
+  const fileUrl = `${process.env.FILE_ACCESS_URL}/uploads/images/${fileName}`;
 
   return {
     path: fullFilePath,

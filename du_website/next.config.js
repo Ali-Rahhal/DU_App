@@ -11,18 +11,24 @@ const nextConfig = {
   },
   images: {
     remotePatterns: [
+      // {
+      //   protocol: "http",
+      //   hostname: "192.168.160.11",
+      //   port: "4198",
+      //   pathname: "/**",
+      // },
       {
         protocol: "http",
         hostname: "159.195.23.130",
         port: "4198",
         pathname: "/**",
       },
-      {
-        protocol: "http",
-        hostname: "cloud.quayomobility.ca",
-        port: "15711",
-        pathname: "/**",
-      },
+      // {
+      //   protocol: "http",
+      //   hostname: "cloud.quayomobility.ca",
+      //   port: "15711",
+      //   pathname: "/**",
+      // },
     ],
   },
   i18n: {

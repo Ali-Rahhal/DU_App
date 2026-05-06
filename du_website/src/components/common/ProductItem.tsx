@@ -96,7 +96,7 @@ const ProductItem = ({ item, layout = "grid" }: Props) => {
     if (isNaN(value) || value < 0) return;
 
     if (value > stock) {
-      toast.warning(`Only ${stock} items available`);
+      toast.warning("Insufficient stock");
       value = stock;
     }
 

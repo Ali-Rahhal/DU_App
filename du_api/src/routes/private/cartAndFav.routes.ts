@@ -79,7 +79,7 @@ router.post(`/update_cart_item`, async (c) => {
     if (!itemCode) throw new Error("Item code not provided");
     const stock = await getItemStock(itemCode);
     if (stock < parseInt(quantity)) {
-      throw new Error(`Only ${stock} items available`);
+      throw new Error("Insufficient stock");
     }
     const result = await updateItemInCart(userId, itemCode, parseInt(quantity));
     return c.json({

@@ -5243,16 +5243,6 @@ model sync_setting {
   suffix               String   @default("", map: "DF__sync_sett__suffi__6B84DD35") @db.VarChar(50)
 }
 
-model sysdiagrams {
-  name         String @db.NVarChar(128)
-  principal_id Int
-  diagram_id   Int    @id(map: "PK__sysdiagr__C2B05B612CCBE422") @default(autoincrement())
-  version      Int?
-  definition   Bytes?
-
-  @@unique([principal_id, name], map: "UK_principal_name")
-}
-
 model system_logs {
   system_err_id   BigInt   @id(map: "PK_system_logs") @default(autoincrement())
   action_name     String?  @db.NVarChar(500)
@@ -7450,4 +7440,14 @@ model item_restock_config {
   item         item         @relation(fields: [item_code], references: [item_code], onUpdate: NoAction, map: "fk_restock_item")
 
   @@unique([client_id, item_code], map: "uq_client_item")
+}
+
+model sysdiagrams {
+  name         String @db.NVarChar(128)
+  principal_id Int
+  diagram_id   Int    @id(map: "PK__sysdiagr__C2B05B612CCBE422") @default(autoincrement())
+  version      Int?
+  definition   Bytes?
+
+  @@unique([principal_id, name], map: "UK_principal_name")
 }

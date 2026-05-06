@@ -47,6 +47,7 @@ app.use(
       "http://159.195.23.130:5006",
       "http://cloud.quayomobility.ca:5006",
       "http://localhost:5006", // optional for dev
+      // "https://quayotest.d-union.com",
     ],
     credentials: true,
     maxAge: 600,
@@ -93,6 +94,7 @@ app.route(`${PRIVATE_API}/restockAndAlt`, restockAndAlternativesPrivateRoutes);
 // );
 
 const port = 5005;
+// const port = 5003;
 console.log(`Server is running on port ${port}`);
 
 serve({

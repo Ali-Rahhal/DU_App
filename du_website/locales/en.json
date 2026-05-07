@@ -166,6 +166,7 @@
   "item_alternatives": "Item Alternatives",
   "you_can_find_alternative_products_below": "You can find alternative products below",
   "restock": "Restock System",
+  "expiry-deal": "Expiry Deals",
 
   "permission": {
     "RETURN": "Return Order",

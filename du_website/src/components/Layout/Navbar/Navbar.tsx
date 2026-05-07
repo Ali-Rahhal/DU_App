@@ -278,11 +278,18 @@ function Navbar() {
                             </Link>
                           </li>
                           {checkRole(ROLES.Admin) ? (
-                            <li>
-                              <Link href="/item-alternatives">
-                                {t("item_alternatives")}
-                              </Link>
-                            </li>
+                            <>
+                              <li>
+                                <Link href="/item-alternatives">
+                                  {t("item_alternatives")}
+                                </Link>
+                              </li>
+                              <li>
+                                <Link href="/expiry-deal">
+                                  {t("expiry-deal")}
+                                </Link>
+                              </li>
+                            </>
                           ) : null}
                           <li>
                             <Link href="/restock">{t("restock")}</Link>
@@ -414,11 +421,16 @@ function Navbar() {
                     <Link href="/sales-invoice">{t("sales_invoices")}</Link>
                   </li>
                   {checkRole(ROLES.Admin) ? (
-                    <li>
-                      <Link href="/item-alternatives">
-                        {t("item_alternatives")}
-                      </Link>
-                    </li>
+                    <>
+                      <li>
+                        <Link href="/item-alternatives">
+                          {t("item_alternatives")}
+                        </Link>
+                      </li>
+                      <li>
+                        <Link href="/expiry-deal">{t("expiry-deal")}</Link>
+                      </li>
+                    </>
                   ) : null}
                   <li>
                     <Link href="/restock">{t("restock")}</Link>

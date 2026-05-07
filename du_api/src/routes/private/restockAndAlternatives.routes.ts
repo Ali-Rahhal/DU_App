@@ -1,6 +1,5 @@
 import { Hono } from "hono";
 import {
-  getItemAlternatives,
   getRestockConfig,
   replaceItemAlternatives,
   restockItem,

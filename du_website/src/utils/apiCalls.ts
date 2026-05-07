@@ -740,6 +740,30 @@ const restockItem = async (
   );
 };
 
+//////
+////////ExpiryDeal ApiCalls
+//////
+const getExpiryDeal = async (item_code: string): Promise<AxiosResponse> => {
+  return await axios.get(privateApi + `/expiryDeal/${item_code}`, {
+    withCredentials: true,
+  });
+};
+
+const updateExpiryDeal = async (
+  item_code: string,
+  expiry_threshold_months: number,
+  discount_percentage: number,
+): Promise<AxiosResponse> => {
+  return await axios.post(
+    privateApi + `/expiryDeal/${item_code}`,
+    {
+      expiry_threshold_months,
+      discount_percentage,
+    },
+    { withCredentials: true },
+  );
+};
+
 export {
   publicApi,
   privateApi,
@@ -810,4 +834,7 @@ export {
   updateRestockConfig,
   restockItem,
   getCookieArray,
+  //ExpiryDeal
+  getExpiryDeal,
+  updateExpiryDeal,
 };

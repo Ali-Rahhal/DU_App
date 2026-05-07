@@ -7451,3 +7451,16 @@ model sysdiagrams {
 
   @@unique([principal_id, name], map: "UK_principal_name")
 }
+
+model item_expiry_deal {
+  id                      BigInt   @id(map: "PK__item_exp__3213E83F71843D7A") @default(autoincrement())
+  item_code               String   @unique(map: "UQ__item_exp__4A67201EECC8131E") @db.NVarChar(50)
+  expiry_threshold_months Int
+  discount_percentage     Float
+  is_active               Boolean  @default(true, map: "DF_item_expiry_deal_is_active")
+  priority                Int      @default(0, map: "DF_item_expiry_deal_priority")
+  date_added              DateTime @default(now(), map: "DF_item_expiry_deal_date_added")
+  last_edited             DateTime @default(now(), map: "DF_item_expiry_deal_last_edited")
+
+  @@index([item_code], map: "IX_item_expiry_deal_item_code")
+}

@@ -7,8 +7,14 @@ import { getItemAlternatives, getProduct, getProducts } from "@/utils/apiCalls";
 export async function getServerSideProps(context: any) {
   const cookie = context.req.headers.cookie || "";
 
+  let isExpiryDeal = false;
+  let itemCode = context.query.slug;
+  if (itemCode.includes("__expiry")) {
+    itemCode = itemCode.split("__expiry")[0];
+    isExpiryDeal = true;
+  }
   // 1. Get main product
-  const product = await getProduct(context.query.slug, cookie).then(
+  const product = await getProduct(itemCode, cookie, isExpiryDeal).then(
     (res) => res.data.result,
   );
 
@@ -16,7 +22,7 @@ export async function getServerSideProps(context: any) {
 
   try {
     // 2. Check if product has alternatives
-    const alternatives = await getItemAlternatives(product.item_code).then(
+    const alternatives = await getItemAlternatives(itemCode).then(
       (res) => res.data.result,
     );
 

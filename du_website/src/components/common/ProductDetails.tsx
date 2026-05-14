@@ -14,8 +14,9 @@ import { useTranslations } from "use-intl";
 import ProductPromotionList from "./ProductPromotionList";
 import { Tooltip } from "react-bootstrap";
 import { ALL_PERMISSIONS } from "@/utils/data";
+import { Product } from "@/types/productTypes";
 
-const ProductDetails = ({ product }: { product: Item }) => {
+const ProductDetails = ({ product }: { product: Product }) => {
   // const dispatch = useDispatch(1);
   const router = useRouter();
   const { refreshCart, checkPermission, cartItems } = useAccountStore();
@@ -25,7 +26,10 @@ const ProductDetails = ({ product }: { product: Item }) => {
   const [discountedPrice, setDiscountedPrice] = useState(0);
   const [isFavorite, setIsFavorite] = useState(product.isFavorite);
 
-  const stock = product.stock ?? Infinity; // null = unlimited(remove later when all items have stock)
+  const stock = product.stock;
+  const itemCode = product.isExpiryDeal
+    ? product.parent_item_code
+    : product.item_code;
 
   const t = useTranslations();
 
@@ -36,7 +40,7 @@ const ProductDetails = ({ product }: { product: Item }) => {
     setDiscountedPrice(discountedPrice);
   }, [product]);
 
-  const handleCart = async (product: Item, quantity: number) => {
+  const handleCart = async (product: Product, quantity: number) => {
     if (!isAuth) {
       toast.info(t("toast.please_login"));
       return;
@@ -44,13 +48,11 @@ const ProductDetails = ({ product }: { product: Item }) => {
     const cartItem = cartItems?.find((c) => c.item_code === product.item_code);
     if (stock < quantity + (cartItem?.quantity || 0)) {
       toast.info(
-        "This Product only has " +
-          stock +
-          " items in stock. Please reduce the quantity.",
+        "This Product only has a limited quantity in stock. Please reduce the quantity.",
       );
       return;
     }
-    addToCart(product.item_code, product.barcode, quantity)
+    addToCart(itemCode, product.barcode, quantity, product.isExpiryDeal)
       .then((res) => {
         refreshCart();
         toast.success(t("toast.added_to_cart"), {
@@ -78,7 +80,7 @@ const ProductDetails = ({ product }: { product: Item }) => {
       return;
     }
     if (!isFavorite) {
-      addToFavorite(product.item_code)
+      addToFavorite(itemCode)
         .then((res) => {
           toast.success(t("toast.added_to_wishlist"));
           setIsFavorite(true);
@@ -89,7 +91,7 @@ const ProductDetails = ({ product }: { product: Item }) => {
           );
         });
     } else {
-      removeFromFavorite(product.item_code)
+      removeFromFavorite(itemCode)
         .then((res) => {
           toast.info(t("toast.removed_from_wishlist"));
           setIsFavorite(false);
@@ -159,7 +161,7 @@ const ProductDetails = ({ product }: { product: Item }) => {
                         textTransform: "uppercase",
                       }}
                     >
-                      {product.cat_code === "P" ? "*" : t("on_promotion")}
+                      {product.cat_code === "PP" ? "*" : t("on_promotion")}
                     </span>
                   ) : null}
                 </div>
@@ -204,7 +206,7 @@ const ProductDetails = ({ product }: { product: Item }) => {
 
                     <div className="single-info">
                       <span className="d-block text-muted mb-2">
-                        <strong>SKU :</strong> {product?.item_code}
+                        <strong>SKU :</strong> {itemCode}
                       </span>
                       <span className="d-block text-muted mb-2">
                         <strong>{t("category")} :</strong> {product?.category}
@@ -217,7 +219,7 @@ const ProductDetails = ({ product }: { product: Item }) => {
                             ? t("in_stock")
                             : stock == 0
                               ? t("item_unavailable")
-                              : `${t("remaining_stock")} (${stock})`}
+                              : `${t("limited_stock")}`}
                         </span>
                       </span>
                       {stock == 0 && (
@@ -280,6 +282,7 @@ const ProductDetails = ({ product }: { product: Item }) => {
                             onClick={handleWishlist}
                             type="button"
                             className="btn btn-rounded btn-soft-primary mr-2"
+                            disabled={product.isExpiryDeal}
                           >
                             <i className="fa fa-heart"></i>{" "}
                             {t("add_to_wishlist")}
@@ -289,6 +292,7 @@ const ProductDetails = ({ product }: { product: Item }) => {
                             onClick={handleWishlist}
                             type="button"
                             className="btn btn-rounded btn-soft-primary mr-2"
+                            disabled={product.isExpiryDeal}
                           >
                             <i className="fa fa-heart"></i>
                             {t("remove_from_wishlist")}
@@ -325,7 +329,7 @@ const ProductDetails = ({ product }: { product: Item }) => {
                 <div className="col-lg-5 mt-4 mt-lg-0">
                   <div className="mb-4">
                     {product.hasPromotion ? (
-                      <ProductPromotionList item_code={product.item_code} />
+                      <ProductPromotionList item_code={itemCode} />
                     ) : null}
                   </div>
                   <div className="bg-light p-3">

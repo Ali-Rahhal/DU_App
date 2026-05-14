@@ -1,12 +1,30 @@
 import axios, { AxiosResponse } from "axios";
+
 const isServer = typeof window === "undefined";
-
-const API_BASE_URL = isServer
-  ? process.env.NEXT_PUBLIC_API_SERVER_URL
-  : process.env.NEXT_PUBLIC_API_BROWSER_URL;
-
+const API_PORT = process.env.NEXT_PUBLIC_DIRECT_API_PORT || "5003";
+let API_BASE_URL = "";
+if (isServer) {
+  API_BASE_URL = process.env.NEXT_PUBLIC_API_SERVER_URL!;
+} else {
+  const { protocol, hostname, port } = window.location;
+  // If app opened directly using a custom frontend port
+  if (port && port !== "80" && port !== "443") {
+    API_BASE_URL = `${protocol}//${hostname}:${API_PORT}/api`;
+  }
+  // If app opened normally behind nginx/domain
+  else {
+    API_BASE_URL = "/api";
+  }
+}
 const publicApi = API_BASE_URL;
-const privateApi = API_BASE_URL + "/auth";
+const privateApi = `${API_BASE_URL}/auth`;
+
+// const isServer = typeof window === "undefined";
+// const API_BASE_URL = isServer
+//   ? process.env.NEXT_PUBLIC_API_SERVER_URL
+//   : process.env.NEXT_PUBLIC_API_BROWSER_URL;
+// const publicApi = API_BASE_URL;
+// const privateApi = API_BASE_URL + "/auth";
 
 // const publicApi = process.env.NEXT_PUBLIC_API_URL;
 // const privateApi = process.env.NEXT_PUBLIC_API_URL + "/auth";
@@ -169,6 +187,7 @@ const getProducts = async (
     onSale?: boolean;
     search?: string;
     onPromotionOnly?: boolean;
+    containExpiryDealProducts?: boolean;
   },
   cookie?: string,
 ): Promise<AxiosResponse> => {
@@ -191,6 +210,7 @@ const getProducts = async (
       show_only_best_deals: filters.onSale,
       search: filters.search,
       onPromotionOnly: filters.onPromotionOnly,
+      containExpiryDealProducts: filters.containExpiryDealProducts,
     },
     {
       withCredentials: true,
@@ -204,13 +224,20 @@ const getProducts = async (
 const getProduct = async (
   item_code: string,
   cookie?: string,
+  isExpiryDealProduct?: boolean,
 ): Promise<AxiosResponse> => {
-  return await axios.get(publicApi + `/get_product/${item_code}`, {
-    headers: {
-      Cookie: cookie || "",
+  return await axios.post(
+    publicApi + `/get_product/${item_code}`,
+    {
+      isExpiryDealProduct: isExpiryDealProduct || false,
     },
-    withCredentials: true,
-  });
+    {
+      headers: {
+        Cookie: cookie || "",
+      },
+      withCredentials: true,
+    },
+  );
 };
 
 //////
@@ -226,6 +253,7 @@ const addToCart = async (
   item_code: string,
   barcode: string,
   quantity: number,
+  isExpiryDeal?: boolean,
 ): Promise<AxiosResponse> => {
   return await axios.post(
     privateApi + `/add_to_cart`,
@@ -233,16 +261,21 @@ const addToCart = async (
       item_code: item_code,
       barcode: barcode,
       quantity: quantity,
+      isExpiryDeal: isExpiryDeal || false,
     },
     { withCredentials: true },
   );
 };
 
-const removeFromCart = async (item_code: string): Promise<AxiosResponse> => {
+const removeFromCart = async (
+  item_code: string,
+  isExpiryDeal?: boolean,
+): Promise<AxiosResponse> => {
   return await axios.post(
     privateApi + `/remove_from_cart`,
     {
       item_code: item_code,
+      isExpiryDeal: isExpiryDeal || false,
     },
     { withCredentials: true },
   );
@@ -251,12 +284,14 @@ const removeFromCart = async (item_code: string): Promise<AxiosResponse> => {
 const updateCartItem = async (
   item_code: string,
   quantity: number,
+  isExpiryDeal?: boolean,
 ): Promise<AxiosResponse> => {
   return await axios.post(
     privateApi + `/update_cart_item`,
     {
       item_code: item_code,
       quantity: quantity,
+      isExpiryDeal: isExpiryDeal || false,
     },
     { withCredentials: true },
   );
@@ -312,6 +347,20 @@ const removeFromFavorite = async (
 //////
 const getDashboardData = async (): Promise<AxiosResponse> => {
   return await axios.get(privateApi + "/dashboard_data", {
+    withCredentials: true,
+  });
+};
+
+const getItemStock = async (item_code: string): Promise<AxiosResponse> => {
+  return await axios.get(privateApi + `/get_item_stock/${item_code}`, {
+    withCredentials: true,
+  });
+};
+
+const getExpiryItemStock = async (
+  item_code: string,
+): Promise<AxiosResponse> => {
+  return await axios.get(privateApi + `/get_expiry_item_stock/${item_code}`, {
     withCredentials: true,
   });
 };
@@ -788,6 +837,8 @@ export {
   removeFromFavorite,
   //Other
   getDashboardData,
+  getItemStock,
+  getExpiryItemStock,
   //Promotions
   getPromotions,
   getProductPromotion,

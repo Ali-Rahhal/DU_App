@@ -314,17 +314,185 @@ export async function getUserIdFromToken(c: Context) {
   return userId;
 }
 
-export async function getItemStock(itemCode: string) {
-  const item = await prisma.warehouse_current_stock.findFirst({
+export const getItemStock = async (itemCode: string): Promise<number> => {
+  // =========================
+  // GET EXPIRY DEAL CONFIG
+  // =========================
+
+  const expiryDeal = await prisma.item_expiry_deal.findUnique({
     where: {
+      item_code: itemCode,
+    },
+  });
+
+  // =========================
+  // GET DISTRIBUTION STOCK
+  // SORTED BY NEAREST EXPIRY
+  // =========================
+
+  const distributionStock: any[] = await prisma.$queryRaw`
+    SELECT
+      quantity,
+      expiry_date
+    FROM warehouse_current_stock_distribution_code
+    WHERE
+      item_code = ${itemCode}
+      AND is_active = 1
+      AND quantity > 0
+      AND expiry_date IS NOT NULL
+    ORDER BY expiry_date ASC
+  `;
+
+  // =========================
+  // IF DIST TABLE EXISTS
+  // =========================
+
+  if (distributionStock.length > 0) {
+    let total = 0;
+
+    for (const row of distributionStock) {
+      const quantity = Number(row.quantity);
+
+      // =========================
+      // IF ITEM HAS EXPIRY DEAL
+      // SKIP NEAR EXPIRY LOTS
+      // =========================
+
+      if (expiryDeal?.is_active && row.expiry_date) {
+        const now = new Date();
+
+        const expiryDate = new Date(row.expiry_date);
+
+        const monthsLeft =
+          (expiryDate.getFullYear() - now.getFullYear()) * 12 +
+          (expiryDate.getMonth() - now.getMonth());
+
+        const isExpiryDealLot =
+          monthsLeft <= expiryDeal.expiry_threshold_months;
+
+        if (isExpiryDealLot) {
+          continue;
+        }
+      }
+
+      total += quantity;
+    }
+
+    return total;
+  }
+
+  // =========================
+  // FALLBACK TO NORMAL STOCK
+  // =========================
+
+  const warehouseStock: any[] = await prisma.$queryRaw`
+    SELECT quantity
+    FROM warehouse_current_stock
+    WHERE
+      item_code = ${itemCode}
+      AND is_active = 1
+      AND quantity > 0
+  `;
+
+  if (warehouseStock.length > 0) {
+    return warehouseStock.reduce((sum, row) => sum + Number(row.quantity), 0);
+  }
+
+  // =========================
+  // NO STOCK TRACKING
+  // =========================
+
+  return 99999;
+};
+
+export const getExpiryItemStock = async (itemCode: string): Promise<number> => {
+  // =========================
+  // GET EXPIRY DEAL CONFIG
+  // =========================
+
+  const expiryDeal = await prisma.item_expiry_deal.findUnique({
+    where: {
+      item_code: itemCode,
+    },
+  });
+
+  // =========================
+  // NO EXPIRY DEAL
+  // =========================
+
+  if (!expiryDeal || !expiryDeal.is_active) {
+    return 0;
+  }
+
+  // =========================
+  // GET EXPIRY LOT STOCK
+  // =========================
+
+  const expiryStock: any[] = await prisma.$queryRaw`
+    SELECT
+      quantity,
+      expiry_date
+    FROM warehouse_current_stock_distribution_code
+    WHERE
+      item_code = ${itemCode}
+      AND is_active = 1
+      AND quantity > 0
+      AND expiry_date IS NOT NULL
+      AND DATEDIFF(
+        MONTH,
+        GETDATE(),
+        expiry_date
+      ) <= ${expiryDeal.expiry_threshold_months}
+  `;
+
+  // =========================
+  // NO MATCHING EXPIRY LOTS
+  // =========================
+
+  if (expiryStock.length === 0) {
+    return 0;
+  }
+
+  // =========================
+  // SUM QUANTITIES
+  // =========================
+
+  const total = expiryStock.reduce((sum, row) => sum + Number(row.quantity), 0);
+
+  return total;
+};
+
+export async function checkSingleStock(
+  user_id: number,
+  itemCode: string,
+  quantity: number,
+  isExpiryDeal: boolean = false,
+) {
+  const cartItem = await prisma.shopping_cart.findFirst({
+    where: {
+      account_id: user_id,
       item_code: itemCode,
     },
     select: {
       quantity: true,
+      item_code: true,
+      is_expiry_deal_item: isExpiryDeal,
     },
   });
-  if (!item) return Infinity;
-  return item.quantity ? Number(item.quantity) : Infinity;
+
+  if (isExpiryDeal === false) {
+    const stock = await getItemStock(itemCode);
+    if (stock < (cartItem?.quantity + quantity || quantity)) {
+      throw new Error(`Quantity of this item exceeds available stock`);
+    }
+    return true;
+  } else {
+    const stock = await getExpiryItemStock(itemCode);
+    if (stock < (cartItem?.quantity + quantity || quantity)) {
+      throw new Error(`Quantity of this item exceeds available stock`);
+    }
+    return true;
+  }
 }
 
 export async function checkStock(user_id: number) {
@@ -335,13 +503,25 @@ export async function checkStock(user_id: number) {
     select: {
       item_code: true,
       quantity: true,
+      is_expiry_deal_item: true,
     },
   });
 
+  if (cartItems.length === 0) {
+    throw new Error("Cart is empty");
+  }
+
   for (const item of cartItems) {
-    const stock = await getItemStock(item.item_code);
-    if (stock < item.quantity) {
-      throw new Error(`Quantity of some items exceeds available stock`);
+    if (!item.is_expiry_deal_item) {
+      const stock = await getItemStock(item.item_code);
+      if (stock < item.quantity) {
+        throw new Error(`Quantity of some items exceeds available stock`);
+      }
+    } else {
+      const stock = await getExpiryItemStock(item.item_code);
+      if (stock < item.quantity) {
+        throw new Error(`Quantity of some items exceeds available stock`);
+      }
     }
   }
   return true;

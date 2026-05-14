@@ -2,8 +2,9 @@ import Link from "next/link";
 import ProductItem from "./common/ProductItem";
 import Item from "@/Models/item";
 import { useTranslations } from "next-intl";
+import { Product } from "@/types/productTypes";
 
-const HomePageDealsOfTheDay = ({ deals }: { deals: Item[] }) => {
+const HomePageDealsOfTheDay = ({ deals }: { deals: Product[] }) => {
   const t = useTranslations("");
   return (
     <>

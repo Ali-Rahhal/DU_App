@@ -1,6 +1,8 @@
 import { Hono } from "hono";
 import {
+  checkSingleStock,
   ensureAccountPermission,
+  getExpiryItemStock,
   getItemStock,
   getUserId,
 } from "../../lib/utils";
@@ -35,17 +37,22 @@ router.post(`/add_to_cart`, async (c) => {
     const itemCode = body["item_code"];
     const barcode = body["barcode"];
     const quantity = body["quantity"];
+    const isExpiryDeal = Boolean(body["isExpiryDeal"]);
     if (!quantity) throw new Error("Quantity not provided");
     if (!barcode) throw new Error("Barcode not provided");
     if (!itemCode) throw new Error("Item code not provided");
+
+    await checkSingleStock(userId, itemCode, parseInt(quantity), isExpiryDeal);
+
     const result = await addItemToCart(
       userId,
       itemCode,
       barcode,
       parseInt(quantity),
+      isExpiryDeal,
     );
     return c.json({
-      message: "Added item to favorite",
+      message: "Added item to cart",
       result: result,
     });
   } catch (e) {
@@ -58,10 +65,11 @@ router.post(`/remove_from_cart`, async (c) => {
     const userId = await getUserId(c);
     const body = await c.req.json();
     const itemCode = body["item_code"];
+    const isExpiryDeal = Boolean(body["isExpiryDeal"]);
 
-    const result = await removeItemFromCart(userId, itemCode);
+    const result = await removeItemFromCart(userId, itemCode, isExpiryDeal);
     return c.json({
-      message: "Added item to favorite",
+      message: "Removed item from cart",
       result: result,
     });
   } catch (e) {
@@ -73,15 +81,28 @@ router.post(`/update_cart_item`, async (c) => {
     const userId = await getUserId(c);
     const body = await c.req.json();
     const itemCode = body["item_code"];
-
     const quantity = body["quantity"];
-    if (!quantity) throw new Error("Quantity not provided");
+    const isExpiryDeal = Boolean(body["isExpiryDeal"]);
+    if (quantity == null) throw new Error("Quantity not provided");
     if (!itemCode) throw new Error("Item code not provided");
-    const stock = await getItemStock(itemCode);
+
+    let stock: number;
+    if (!isExpiryDeal) {
+      stock = await getItemStock(itemCode);
+    } else {
+      stock = await getExpiryItemStock(itemCode);
+    }
     if (stock < parseInt(quantity)) {
+      await updateItemInCart(userId, itemCode, stock);
       throw new Error("Insufficient stock");
     }
-    const result = await updateItemInCart(userId, itemCode, parseInt(quantity));
+
+    const result = await updateItemInCart(
+      userId,
+      itemCode,
+      parseInt(quantity),
+      isExpiryDeal,
+    );
     return c.json({
       message: "Cart Updated",
       result: result,

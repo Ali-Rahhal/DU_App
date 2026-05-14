@@ -1,23 +1,37 @@
 import { Prisma } from "@prisma/client";
 import prisma from "../lib/prisma";
+import { getExpiryItemStock, getItemStock } from "../lib/utils";
 
-const checkStock = async (itemCode: string) => {
-  const result = await prisma.$queryRaw`
-  SELECT
-  quantity = SUM(wcs.quantity)
-FROM
-  dbo.warehouse_current_stock AS wcs
-WHERE
-  wcs.item_code = ${itemCode}
-  AND wcs.is_active = 1;`;
-  // and wcs.quantity > wcs.[minimum_stock_quantity]
-  return result[0].quantity;
+type CartItem = {
+  item_code: string;
+  parent_item_code?: string;
+  name: string;
+  description: string;
+  price: string;
+  discountedPrice: string;
+  images: string;
+  image?: string;
+  category: string;
+  subCategory: string;
+  cat_code: string;
+  barcode: string;
+  quantity: number;
+  stock: number;
+  currency_code: string;
+  tags?: string[];
+  // =========================
+  // EXPIRY DEAL
+  // =========================
+  isExpiryDeal?: boolean;
+  expiryDiscountPercentage?: number;
 };
+
 const addItemToCart = async (
   userId: number,
   itemCode: string,
   barcode: string,
   quantity: number,
+  isExpiryDeal?: boolean,
 ) => {
   // const cart: any = await prisma.$queryRaw`
   // SELECT TOP 1 c.item_code,
@@ -48,6 +62,7 @@ const addItemToCart = async (
         account_id: userId,
         item_code: itemCode,
         barcode: barcode,
+        is_expiry_deal_item: isExpiryDeal || false,
       },
       select: {
         item_code: true,
@@ -57,11 +72,6 @@ const addItemToCart = async (
     });
     if (found) {
       newQuantity += found.quantity;
-      // if (newQuantity > 99) throw new Error("Quantity limit exceeded");
-
-      // const stock = await checkStock(itemCode);
-      // if (stock < newQuantity) throw new Error("Insufficient stock");
-
       const updated = await tx.shopping_cart.update({
         where: {
           id: found.id,
@@ -72,8 +82,6 @@ const addItemToCart = async (
       });
       return { ...updated, id: updated.id.toString() };
     } else {
-      // const stock = await checkStock(itemCode);
-      // if (stock < newQuantity) throw new Error("Insufficient stock");
       const result = await tx.shopping_cart.create({
         data: {
           account_id: userId,
@@ -82,6 +90,7 @@ const addItemToCart = async (
           quantity: quantity,
           date_added: new Date(),
           status: 5,
+          is_expiry_deal_item: isExpiryDeal || false,
         },
       });
       return { ...result, id: result.id.toString() };
@@ -89,11 +98,16 @@ const addItemToCart = async (
   });
   return { ...result, id: result.id.toString() };
 };
-const removeItemFromCart = async (userId: number, itemCode: string) => {
+const removeItemFromCart = async (
+  userId: number,
+  itemCode: string,
+  isExpiryDeal?: boolean,
+) => {
   const result = await prisma.shopping_cart.deleteMany({
     where: {
       account_id: userId,
       item_code: itemCode,
+      is_expiry_deal_item: isExpiryDeal || false,
     },
   });
   return result;
@@ -101,15 +115,15 @@ const removeItemFromCart = async (userId: number, itemCode: string) => {
 const updateItemInCart = async (
   userId: number,
   itemCode: string,
-
   quantity: number,
+  isExpiryDeal?: boolean,
 ) => {
   const result = await prisma.$transaction(async (tx) => {
-    // if (quantity > 99) throw new Error("Quantity limit exceeded");
-    const found = await prisma.shopping_cart.findFirst({
+    const found = await tx.shopping_cart.findFirst({
       where: {
         account_id: userId,
         item_code: itemCode,
+        is_expiry_deal_item: isExpiryDeal || false,
       },
       select: {
         item_code: true,
@@ -117,10 +131,7 @@ const updateItemInCart = async (
       },
     });
     if (found) {
-      // if (quantity > 99) throw new Error("Quantity limit exceeded");
-      const stock = await checkStock(itemCode);
-      // if (stock < quantity) throw new Error("Insufficient stock");
-      const updated = await prisma.shopping_cart.update({
+      const updated = await tx.shopping_cart.update({
         where: {
           id: found.id,
         },
@@ -131,16 +142,14 @@ const updateItemInCart = async (
       if (!updated) throw new Error("Failed to update cart item");
       return { ...updated, id: updated.id.toString() };
     } else {
-      const stock = await checkStock(itemCode);
-
-      // if (stock < quantity) throw new Error("Insufficient stock");
-      const result = await prisma.shopping_cart.create({
+      const result = await tx.shopping_cart.create({
         data: {
           account_id: userId,
           item_code: itemCode,
           barcode: itemCode,
           quantity: quantity,
           date_added: new Date(),
+          is_expiry_deal_item: isExpiryDeal || false,
         },
       });
       return { ...result, id: result.id.toString() };
@@ -159,70 +168,210 @@ const getCartItems = async (
     skip?: number;
   },
 ) => {
+  // =========================
+  // COUNT
+  // =========================
+
   const count = await prisma.shopping_cart.count({
     where: {
       account_id: userId,
       status: 5,
+      is_active: true,
     },
   });
+
+  // =========================
+  // CART ITEMS
+  // =========================
+
   const res: any = await prisma.$queryRaw`
-  SELECT  iu.item_code,
-  name = i.description,
-  barcode = sc.barcode,
-  description = i.alt_description,
-  currency_code = ipl.currency_code,
-  ISNULL(
-    (
-      SELECT STRING_AGG(ISNULL(img.base_path + '/' + img.folder_path + '/' + img.physical_file_name, N''), ',')
-      FROM dbo.image AS img
-      WHERE img.owner_code = iu.item_code AND img.owner_type = 1 AND img.is_active = 1 AND img.is_uploaded = 1
-    ), N''
-  ) as images,
-  price = CONVERT(DECIMAL(18, 2), ipl.price),
-  discountedPrice = CASE
-  WHEN ipl.default_discount = 0 THEN NULL
-  ELSE CONVERT(DECIMAL(18, 2), ipl.price - (0.01 * ipl.default_discount * ipl.price))
-END,
-  quantity = SUM(sc.quantity),
-  stock = wcs.quantity
-FROM dbo.shopping_cart AS sc
-JOIN dbo.item_uom AS iu
-   ON iu.barcode = sc.barcode
-JOIN dbo.item AS i
-   ON i.item_code = iu.item_code
-JOIN dbo.item_price_list AS ipl
-   ON ipl.item_code = iu.item_code
-LEFT JOIN dbo.warehouse_current_stock AS wcs
-   ON wcs.item_code = iu.item_code
-WHERE sc.account_id = ${userId}
- AND sc.is_active = 1
- AND iu.is_active = 1
- AND ipl.is_active = 1
- AND sc.status = 5
+    SELECT
+      iu.item_code,
 
-GROUP BY iu.item_code,
-    i.description,
-    sc.barcode,
-    iu.barcode,
-    i.alt_description,
-    ipl.price,
-    ipl.default_discount,
-    ipl.currency_code,
-    wcs.quantity
-    `;
+      sc.is_expiry_deal_item,
 
-  const finalResult = res.map((item) => {
-    const images = item.images.split(",");
-    return {
-      ...item,
-      stock: item.stock ? Number(item.stock) : null,
-      images: images,
-      image: images[0],
-      tags: [item.category, item.subCategory],
-    };
-  });
+      name =
+        CASE
+          WHEN sc.is_expiry_deal_item = 1
+          THEN i.description + ' (Expiry Deal)'
+          ELSE i.description
+        END,
 
-  return { items_count: count, products: finalResult };
+      barcode = sc.barcode,
+
+      description = i.alt_description,
+
+      currency_code = ipl.currency_code,
+
+      ISNULL(
+        (
+          SELECT STRING_AGG(
+            ISNULL(
+              img.base_path + '/' +
+              img.folder_path + '/' +
+              img.physical_file_name,
+              N''
+            ),
+            ','
+          )
+          FROM dbo.image AS img
+          WHERE
+            img.owner_code = iu.item_code
+            AND img.owner_type = 1
+            AND img.is_active = 1
+            AND img.is_uploaded = 1
+        ),
+        N''
+      ) as images,
+
+      originalPrice =
+        CONVERT(DECIMAL(18,2), ipl.price),
+
+      discountedPrice =
+        CASE
+          -- EXPIRY DEAL PRICE
+          WHEN sc.is_expiry_deal_item = 1
+          THEN CONVERT(
+            DECIMAL(18,2),
+            ipl.price -
+            (
+              ipl.price *
+              ISNULL(ied.discount_percentage, 0) / 100.0
+            )
+          )
+
+          -- NORMAL DEFAULT DISCOUNT
+          WHEN ipl.default_discount > 0
+          THEN CONVERT(
+            DECIMAL(18,2),
+            ipl.price -
+            (
+              0.01 *
+              ipl.default_discount *
+              ipl.price
+            )
+          )
+
+          ELSE NULL
+        END,
+
+      quantity = SUM(sc.quantity),
+
+      category = vi.[Category],
+
+      subCategory = vi.[SubCategory],
+
+      cat_code = vi.[CategoryCode],
+
+      expiryDiscountPercentage = ied.discount_percentage
+
+    FROM dbo.shopping_cart AS sc
+
+    JOIN dbo.item_uom AS iu
+      ON iu.barcode = sc.barcode
+
+    JOIN dbo.item AS i
+      ON i.item_code = iu.item_code
+
+    JOIN dbo.item_price_list AS ipl
+      ON ipl.item_code = iu.item_code
+      AND ipl.is_active = 1
+
+    LEFT JOIN dbo.v_items AS vi
+      ON vi.Code = iu.item_code
+
+    LEFT JOIN dbo.item_expiry_deal AS ied
+      ON ied.item_code = iu.item_code
+      AND ied.is_active = 1
+
+    WHERE
+      sc.account_id = ${userId}
+      AND sc.is_active = 1
+      AND sc.status = 5
+      AND iu.is_active = 1
+
+    GROUP BY
+      iu.item_code,
+      sc.is_expiry_deal_item,
+      i.description,
+      sc.barcode,
+      i.alt_description,
+      ipl.price,
+      ipl.default_discount,
+      ipl.currency_code,
+      vi.[Category],
+      vi.[SubCategory],
+      vi.[CategoryCode],
+      ied.discount_percentage
+
+    ORDER BY iu.item_code
+
+    OFFSET ${skip || 0} ROWS
+    FETCH NEXT ${take || 999999} ROWS ONLY
+  `;
+
+  // =========================
+  // FORMAT RESULT
+  // =========================
+
+  const finalResult: CartItem[] = await Promise.all(
+    res.map(async (item) => {
+      const images = item.images?.split(",") || [];
+
+      const stock = item.is_expiry_deal_item
+        ? await getExpiryItemStock(item.item_code)
+        : await getItemStock(item.item_code);
+
+      return {
+        item_code: item.is_expiry_deal_item
+          ? `${item.item_code}__expiry`
+          : item.item_code,
+
+        parent_item_code: item.is_expiry_deal_item ? item.item_code : null,
+
+        name: item.name,
+
+        barcode: item.barcode,
+
+        description: item.description,
+
+        currency_code: item.currency_code,
+
+        price: item.originalPrice?.toString(),
+
+        discountedPrice: item.discountedPrice
+          ? item.discountedPrice.toString()
+          : null,
+
+        quantity: Number(item.quantity),
+
+        stock,
+
+        images,
+
+        image: images[0],
+
+        category: item.category,
+
+        subCategory: item.subCategory,
+
+        cat_code: item.cat_code,
+
+        tags: [item.category, item.subCategory],
+
+        isExpiryDeal: Boolean(item.is_expiry_deal_item),
+
+        expiryDiscountPercentage: item.expiryDiscountPercentage
+          ? Number(item.expiryDiscountPercentage)
+          : null,
+      };
+    }),
+  );
+
+  return {
+    items_count: count,
+    products: finalResult,
+  };
 };
 
 const addItemToFavorite = async (userId: number, itemCode: string) => {

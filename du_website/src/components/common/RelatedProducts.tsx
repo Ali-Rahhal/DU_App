@@ -1,7 +1,8 @@
+import { Product } from "@/types/productTypes";
 import ProductItem from "./ProductItem";
 import Item from "@/Models/item";
 
-const RelatedProducts = ({ products }: { products: Item[] }) => {
+const RelatedProducts = ({ products }: { products: Product[] }) => {
   return (
     <div className="related-products-area py-5">
       <div className="container">

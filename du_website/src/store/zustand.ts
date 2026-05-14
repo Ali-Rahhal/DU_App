@@ -1,3 +1,4 @@
+import { CartItem } from "@/types/productTypes";
 import {
   getCartItems,
   getUserDetails,
@@ -12,7 +13,7 @@ import { persist } from "zustand/middleware";
 
 type AccountStore = {
   cart: number;
-  cartItems: any[];
+  cartItems: CartItem[];
   name: string;
   code: string;
   firstName: string;
@@ -115,18 +116,23 @@ export const useAccountStore = create<AccountStore>((set) => ({
       .then(async (res) => {
         let items = res.data?.result.products;
 
-        const updatedItems = await Promise.all(
+        const updatedItems: CartItem[] = await Promise.all(
           items.map(async (item) => {
-            const stock = item.stock ?? Infinity; // null = unlimited(remove later when all items have stock)
+            let stock = item.stock;
+            let itemCode = item.item_code;
+            if (item.isExpiryDeal) {
+              itemCode = item.parent_item_code;
+            }
+
             // 🔴 OUT OF STOCK → REMOVE
             if (!stock || stock === 0) {
-              await removeFromCart(item.item_code);
+              await removeFromCart(itemCode, item.isExpiryDeal);
               return null; // remove locally
             }
 
             // 🟡 EXCEEDS STOCK → CLAMP
             if (item.quantity > stock) {
-              await updateCartItem(item.item_code, stock);
+              await updateCartItem(itemCode, stock, item.isExpiryDeal);
               return { ...item, quantity: stock };
             }
 
@@ -135,7 +141,7 @@ export const useAccountStore = create<AccountStore>((set) => ({
         );
 
         // remove nulls (deleted items)
-        const finalItems = updatedItems.filter(Boolean);
+        const finalItems: CartItem[] = updatedItems.filter(Boolean);
 
         set({
           cartItems: finalItems,

@@ -16,19 +16,22 @@ import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import ProductPromotionList from "./ProductPromotionList";
 import { ALL_PERMISSIONS } from "@/utils/data";
+import { Product } from "@/types/productTypes";
 
-interface Props {
-  item: Item;
+const ProductItem = ({
+  item,
+  layout = "grid",
+}: {
+  item: Product;
   layout?: "grid" | "list";
-}
-
-const ProductItem = ({ item, layout = "grid" }: Props) => {
+}) => {
   const t = useTranslations();
   const { isAuth } = useAuthStore();
   const { cartItems, refreshCart, checkPermission } = useAccountStore();
   const [fav, setFav] = useState(item.isFavorite ?? false);
   const [openPromotionPopup, setOpenPromotionPopup] = useState(false);
 
+  const itemCode = item.isExpiryDeal ? item.parent_item_code : item.item_code;
   const price = parseFloat(item.price);
   const discountedPrice = item.discountedPrice
     ? parseFloat(item.discountedPrice)
@@ -37,7 +40,7 @@ const ProductItem = ({ item, layout = "grid" }: Props) => {
   const qty = cartItem?.quantity || 0;
   const [localQty, setLocalQty] = useState(qty);
 
-  const stock = item.stock ?? Infinity; // null = unlimited(remove later when all items have stock)
+  const stock = item.stock;
   const isOutOfStock = stock === 0;
 
   useEffect(() => {
@@ -49,9 +52,7 @@ const ProductItem = ({ item, layout = "grid" }: Props) => {
     if (!checkPermission(ALL_PERMISSIONS.Wishlist))
       return toast.error("You don't have permission to use wishlist");
     try {
-      fav
-        ? await removeFromFavorite(item.item_code)
-        : await addToFavorite(item.item_code);
+      fav ? await removeFromFavorite(itemCode) : await addToFavorite(itemCode);
       setFav(!fav);
     } catch (error: any) {
       toast.error(
@@ -70,24 +71,30 @@ const ProductItem = ({ item, layout = "grid" }: Props) => {
 
     try {
       qty === 0
-        ? await addToCart(item.item_code, item.barcode ?? item.item_code, 1)
-        : await updateCartItem(item.item_code, qty + 1);
+        ? await addToCart(
+            itemCode,
+            item.barcode ?? itemCode,
+            1,
+            item.isExpiryDeal,
+          )
+        : await updateCartItem(itemCode, qty + 1, item.isExpiryDeal);
       await refreshCart();
-    } catch {
-      toast.error("Failed to add to cart");
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to add to cart");
     }
   };
 
   const removeOneFromCart = async () => {
     if (!isAuth) return toast.info("Please login first");
+
     try {
       const newQty = qty - 1;
       newQty <= 0
-        ? await removeFromCart(item.item_code)
-        : await updateCartItem(item.item_code, newQty);
+        ? await removeFromCart(itemCode, item.isExpiryDeal)
+        : await updateCartItem(itemCode, newQty, item.isExpiryDeal);
       await refreshCart();
-    } catch {
-      toast.error("Failed to update cart");
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to update cart");
     }
   };
 
@@ -102,11 +109,11 @@ const ProductItem = ({ item, layout = "grid" }: Props) => {
 
     try {
       value === 0
-        ? await removeFromCart(item.item_code)
-        : await updateCartItem(item.item_code, value);
+        ? await removeFromCart(itemCode, item.isExpiryDeal)
+        : await updateCartItem(itemCode, value, item.isExpiryDeal);
       await refreshCart();
-    } catch {
-      toast.error("Failed to update cart");
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to update cart");
     }
   };
 
@@ -160,7 +167,7 @@ const ProductItem = ({ item, layout = "grid" }: Props) => {
             {discountedPrice.toLocaleString()}
           </div>
           {!isOutOfStock && stock <= 10 && (
-            <small className="text-danger">{stock - qty} left</small>
+            <small className="text-danger">{t("limited_stock")}</small>
           )}
         </>
       ) : (
@@ -169,7 +176,7 @@ const ProductItem = ({ item, layout = "grid" }: Props) => {
             {currenncyCodeToSymbol(item.currency_code)} {price.toLocaleString()}
           </div>
           {!isOutOfStock && stock <= 10 && (
-            <small className="text-danger">{stock - qty} left</small>
+            <small className="text-danger">{t("limited_stock")}</small>
           )}
         </>
       )
@@ -245,6 +252,26 @@ const ProductItem = ({ item, layout = "grid" }: Props) => {
             <i className="fa fa-star"></i>
           </span>
         )}
+        {item.isExpiryDeal === true && (
+          <span
+            className={`badge expiry-badge ${!isGrid ? "d-none d-md-inline" : ""}`}
+            style={{
+              position: "absolute",
+              top: item.hasPromotion ? "42px" : "10px",
+              left: "10px",
+              backgroundColor: "#28a745",
+              color: "#fff",
+              fontWeight: 600,
+              padding: "0.25rem 0.5rem",
+              fontSize: "0.75rem",
+              borderRadius: "4px",
+              zIndex: 10,
+            }}
+            title="Expiry Deal"
+          >
+            Expiry Deal
+          </span>
+        )}
 
         {isGrid ? (
           <>
@@ -279,13 +306,14 @@ const ProductItem = ({ item, layout = "grid" }: Props) => {
               </div>
             </div>
             <div
-              className="product-actions d-flex align-items-center gap-2 mt-2 flex-wrap"
+              className="product-actions d-flex align-items-center gap-2 mt-3 flex-wrap"
               style={{ minWidth: 0 }}
             >
               <Button
                 variant={fav ? "danger" : "outline-danger"}
                 size="sm"
                 onClick={toggleFavorite}
+                disabled={item.isExpiryDeal}
               >
                 ♥
               </Button>
@@ -335,6 +363,7 @@ const ProductItem = ({ item, layout = "grid" }: Props) => {
                   variant={fav ? "danger" : "outline-danger"}
                   size="sm"
                   onClick={toggleFavorite}
+                  disabled={item.isExpiryDeal}
                 >
                   ♥
                 </Button>
@@ -403,6 +432,25 @@ const ProductItem = ({ item, layout = "grid" }: Props) => {
                       <i className="fa fa-star"></i>
                     </span>
                   )}
+                  {item.isExpiryDeal === true && (
+                    <span
+                      className="badge expiry-badge"
+                      style={{
+                        position: "absolute",
+                        top: item.hasPromotion ? 34 : 6,
+                        left: 6,
+                        backgroundColor: "#28a745",
+                        color: "#fff",
+                        fontWeight: 600,
+                        padding: "2px 6px",
+                        fontSize: "0.65rem",
+                        borderRadius: "4px",
+                        zIndex: 10,
+                      }}
+                    >
+                      Expiry Deal
+                    </span>
+                  )}
                 </div>
                 <div
                   className="ml-2 d-flex flex-column justify-content-center"
@@ -423,7 +471,7 @@ const ProductItem = ({ item, layout = "grid" }: Props) => {
                         </div>
                         {!isOutOfStock && stock <= 10 && (
                           <small className="text-danger">
-                            {stock - qty} left
+                            {t("limited_stock")}
                           </small>
                         )}
                       </>
@@ -435,7 +483,7 @@ const ProductItem = ({ item, layout = "grid" }: Props) => {
                         </div>
                         {!isOutOfStock && stock <= 10 && (
                           <small className="text-danger">
-                            {stock - qty} left
+                            {t("limited_stock")}
                           </small>
                         )}{" "}
                       </>
@@ -449,6 +497,7 @@ const ProductItem = ({ item, layout = "grid" }: Props) => {
                 <Button
                   variant={fav ? "danger" : "outline-danger"}
                   onClick={toggleFavorite}
+                  disabled={item.isExpiryDeal}
                 >
                   ♥
                 </Button>

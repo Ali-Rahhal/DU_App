@@ -4652,15 +4652,16 @@ model shift_user {
 }
 
 model shopping_cart {
-  id           BigInt       @id(map: "PK_shopping_cart") @default(autoincrement())
-  account_id   Int
-  item_code    String?      @db.NVarChar(50)
-  barcode      String       @db.NVarChar(50)
-  quantity     Int          @default(1, map: "DF_shopping_cart_quantity")
-  is_active    Boolean      @default(true, map: "DF_shopping_cart_is_active")
-  date_added   DateTime     @default(now(), map: "DF_shopping_cart_date_added") @db.DateTime
-  status       Int          @default(5, map: "DF__shopping___statu__73BA3083")
-  web_accounts web_accounts @relation(fields: [account_id], references: [id], onUpdate: NoAction, map: "FK__shopping___accou__6FE99F9F")
+  id                  BigInt       @id(map: "PK_shopping_cart") @default(autoincrement())
+  account_id          Int
+  item_code           String?      @db.NVarChar(50)
+  barcode             String       @db.NVarChar(50)
+  quantity            Int          @default(1, map: "DF_shopping_cart_quantity")
+  is_active           Boolean      @default(true, map: "DF_shopping_cart_is_active")
+  date_added          DateTime     @default(now(), map: "DF_shopping_cart_date_added") @db.DateTime
+  status              Int          @default(5, map: "DF__shopping___statu__73BA3083")
+  is_expiry_deal_item Boolean      @default(false, map: "DF_shopping_cart_is_expiry_deal_item")
+  web_accounts        web_accounts @relation(fields: [account_id], references: [id], onUpdate: NoAction, map: "FK__shopping___accou__6FE99F9F")
 }
 
 model statistical_record {
@@ -5520,6 +5521,7 @@ model transaction_body {
   source_code                      String?   @db.NVarChar(50)
   destination_code                 String?   @db.NVarChar(50)
   line_status                      Int?
+  is_expiry_deal_item              Boolean   @default(false, map: "DF_transaction_body_is_expiry_deal_item")
 
   @@index([is_active], map: "indx_is_active")
   @@index([is_active], map: "IX_TBODY_QTY")
@@ -6662,6 +6664,7 @@ model warehouse_current_stock_history {
   item_identifier            Int
   transaction_body_id        Decimal  @db.Decimal(17, 0)
   inserted_added             DateTime @db.DateTime
+  is_expiry_deal_item        Boolean  @default(false, map: "DF_warehouse_current_stock_history_is_expiry_deal_item")
 
   @@ignore
 }

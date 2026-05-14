@@ -1,4 +1,5 @@
 import Item from "@/Models/item";
+import { CartItem } from "@/types/productTypes";
 import { currenncyCodeToSymbol } from "@/utils";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -7,7 +8,7 @@ const MiniCart = ({
   cartItems,
   subtotal,
 }: {
-  cartItems: any;
+  cartItems: CartItem[];
   subtotal: {
     currency_code: string;
     price: number;
@@ -90,8 +91,8 @@ const MiniCart = ({
                       a.currency_code === "USD"
                         ? -1
                         : b.currency_code === "USD"
-                        ? 1
-                        : 0
+                          ? 1
+                          : 0,
                     )
                     .map((sub, index) => (
                       <>

@@ -161,7 +161,7 @@
   "manage_your_users": "Manage Your Users",
   "version": "Version",
   "in_stock": "In Stock",
-  "remaining_stock": "Remaining Stock: ",
+  "limited_stock": "Limited quantity available",
   "item_unavailable": "Currently unavailable",
   "item_alternatives": "Item Alternatives",
   "you_can_find_alternative_products_below": "You can find alternative products below",

@@ -32,7 +32,8 @@ const CartItem = ({ item, removeItemHandler, updateCartHandler }) => {
   const [quantity, setQuantity] = useState<number>(item.quantity);
   const [debounceTimeout, setDebounceTimeout] = useState(null);
 
-  const stock = item.stock ?? Infinity; // null = unlimited(remove later when all items have stock)
+  const stock = item.stock;
+  const itemCode = item.isExpiryDeal ? item.parent_item_code : item.item_code;
 
   const handleQuantityChange = (newQuantity: number) => {
     setQuantity(newQuantity);
@@ -44,7 +45,7 @@ const CartItem = ({ item, removeItemHandler, updateCartHandler }) => {
 
     // Set a new timeout to call updateCartHandler
     const timeout = setTimeout(() => {
-      updateCartHandler(item.item_code, newQuantity);
+      updateCartHandler(itemCode, newQuantity, item.isExpiryDeal);
     }, 200); // 1-second delay (adjust as needed)
     setDebounceTimeout(timeout);
   };
@@ -96,7 +97,7 @@ const CartItem = ({ item, removeItemHandler, updateCartHandler }) => {
           <div className="cart_product_remove">
             <button
               type="button"
-              onClick={() => removeItemHandler(item.item_code)}
+              onClick={() => removeItemHandler(itemCode, item.isExpiryDeal)}
             >
               <i className="ti-trash"></i> Remove
             </button>
@@ -110,8 +111,7 @@ const CartItem = ({ item, removeItemHandler, updateCartHandler }) => {
           </small>
         ) : stock < 10 ? (
           <small style={{ color: "red", fontWeight: "bold" }}>
-            {t("remaining_stock")}
-            {stock}
+            {t("limited_stock")}
           </small>
         ) : null}
       </div>
@@ -147,7 +147,7 @@ const CartItem = ({ item, removeItemHandler, updateCartHandler }) => {
 
             if (val > stock) {
               val = stock;
-              toast.warning(`Only ${stock} available`);
+              toast.warning(`Insufficient stock for ${item.name}`);
             }
 
             handleQuantityChange(val);
@@ -194,15 +194,15 @@ const Cart = () => {
   const { cart, cartItems, refreshCart, checkPermission } = useAccountStore();
   const [loading, setLoading] = useState(true);
   const rt = useRouter();
-  const removeItemHandler = (item_code) => {
-    removeFromCart(item_code).then((res) => {
+  const removeItemHandler = (item_code, isExpiryDeal) => {
+    removeFromCart(item_code, isExpiryDeal).then((res) => {
       toast.info("Removed from Cart !");
       refreshCart();
     });
   };
 
-  const updateCartHandler = async (item_code, quantity) => {
-    return updateCartItem(item_code, quantity).then((res) => {
+  const updateCartHandler = async (item_code, quantity, isExpiryDeal) => {
+    return updateCartItem(item_code, quantity, isExpiryDeal).then((res) => {
       // toast("Cart Updated !");
       refreshCart();
     });
@@ -252,7 +252,7 @@ const Cart = () => {
     if (!cartItems) {
       return;
     }
-    const t = getShoppingCartPromotions().then((res) => {
+    getShoppingCartPromotions().then((res) => {
       if (res.data.result.length === 0) {
         setPromotions(null);
       }
@@ -279,7 +279,7 @@ const Cart = () => {
                       <div className="col-12 col-sm-4 text-center text-sm-left mb-2 mb-sm-0">
                         <h4>
                           {t("shopping_cart")}
-                          <span>( {cart} Item )</span>
+                          <span>( {cart} Item/s )</span>
                         </h4>
                       </div>
                       <div className="col-12 col-sm-4 text-center mb-2 mb-sm-0">

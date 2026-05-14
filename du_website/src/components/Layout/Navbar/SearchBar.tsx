@@ -1,6 +1,7 @@
 import Item from "@/Models/item";
 // import ProductItem from "@/components/common/ProductItem";
 import ProductItemList from "@/components/common/ProductItemList";
+import { Product } from "@/types/productTypes";
 import { getProducts } from "@/utils/apiCalls";
 import { useTranslations } from "next-intl";
 // import { searchProduct } from "@/utils/data";
@@ -16,7 +17,7 @@ const SearchBar = ({
 }) => {
   const [hasFocus, setFocus] = useState(false);
   const [search, setSearch] = useState("");
-  const [searchProduct, setSearchProduct] = useState<Item[]>([]);
+  const [searchProduct, setSearchProduct] = useState<Product[]>([]);
   const rt = useRouter();
   const t = useTranslations();
   useEffect(() => {

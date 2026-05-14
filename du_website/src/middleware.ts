@@ -8,6 +8,8 @@ const authRoutes = [
   "/change-password",
   "/orders",
   "/orders-details",
+  "/open-invoice",
+  "/sales-invoice",
   "/dashboard",
   "/survey",
   "/complaint",
@@ -15,13 +17,33 @@ const authRoutes = [
   "/my-complaints",
   //  "/child-accounts",
   "/users",
+  "/item-alternatives",
+  "/restock",
+  "/expiry-deal",
 ];
 export async function middleware(request: NextRequest) {
   const isServer = typeof window === "undefined";
+  const API_PORT = process.env.NEXT_PUBLIC_DIRECT_API_PORT || "5003";
+  let API_BASE_URL = "";
+  if (isServer) {
+    API_BASE_URL = process.env.NEXT_PUBLIC_API_SERVER_URL!;
+  } else {
+    const { protocol, hostname, port } = window.location;
+    // If app opened directly using a custom frontend port
+    if (port && port !== "80" && port !== "443") {
+      API_BASE_URL = `${protocol}//${hostname}:${API_PORT}/api`;
+    }
+    // If app opened normally behind nginx/domain
+    else {
+      API_BASE_URL = "/api";
+    }
+  }
 
-  const API_BASE_URL = isServer
-    ? process.env.NEXT_PUBLIC_API_SERVER_URL
-    : process.env.NEXT_PUBLIC_API_BROWSER_URL;
+  // const isServer = typeof window === "undefined";
+
+  // const API_BASE_URL = isServer
+  //   ? process.env.NEXT_PUBLIC_API_SERVER_URL
+  //   : process.env.NEXT_PUBLIC_API_BROWSER_URL;
 
   // your middleware stuff here
   const headers = new Headers(request.headers);

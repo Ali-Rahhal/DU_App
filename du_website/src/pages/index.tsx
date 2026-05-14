@@ -23,6 +23,7 @@ const getAllProducts = async (onSale, cookie) => {
       skip: 0,
       take: 20,
       onSale: onSale,
+      containExpiryDealProducts: true,
     },
     cookie,
   ).then((res) => {

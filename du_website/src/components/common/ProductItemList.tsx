@@ -1,4 +1,5 @@
 import Item from "@/Models/item";
+import { Product } from "@/types/productTypes";
 import { currenncyCodeToSymbol, discount } from "@/utils";
 
 import Image from "next/image";
@@ -11,7 +12,7 @@ const ProductItemList = ({
   removeItemHandler,
   size = "small",
 }: {
-  item: Item;
+  item: Product;
   withRemove?: boolean;
   removeItemHandler?: (item: string) => void;
   size?: "small" | "large";

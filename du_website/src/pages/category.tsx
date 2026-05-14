@@ -2,6 +2,7 @@ import ProductItem from "@/components/common/ProductItem";
 import Layout from "@/components/Layout/Layout";
 import SearchBar from "@/components/Layout/Navbar/SearchBar";
 import Item from "@/Models/item";
+import { Product } from "@/types/productTypes";
 import { getProducts } from "@/utils/apiCalls";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
@@ -23,6 +24,7 @@ export async function getServerSideProps(context: any) {
       category_code: cat ? [cat] : null,
       search: s ? s : null,
       onPromotionOnly: promo ? true : false,
+      containExpiryDealProducts: true,
     },
     cookie,
   ).then((res) => res.data.result.products);
@@ -163,7 +165,7 @@ const CategoryPage = ({
   min,
   max,
 }: {
-  products: Item[];
+  products: Product[];
   cat: string;
   s: string;
   min: string;
@@ -174,7 +176,7 @@ const CategoryPage = ({
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [hydrated, setHydrated] = useState(false);
 
-  const [productsPag, setProductsPag] = useState<Item[]>(products);
+  const [productsPag, setProductsPag] = useState<Product[]>(products);
   const [loading, setLoading] = useState(false);
   const [reachedEnd, setReachedEnd] = useState(false);
 
@@ -205,6 +207,7 @@ const CategoryPage = ({
       min_price: minPrice ? Number(minPrice) : undefined,
       max_price: maxPrice ? Number(maxPrice) : undefined,
       onPromotionOnly: onPromotionOnly,
+      containExpiryDealProducts: true,
     })
       .then((res) => {
         const newProducts = res.data.result.products;
@@ -232,6 +235,7 @@ const CategoryPage = ({
       min_price: minPrice ? Number(minPrice) : undefined,
       max_price: maxPrice ? Number(maxPrice) : undefined,
       onPromotionOnly: onPromotionOnly,
+      containExpiryDealProducts: true,
     })
       .then((res) => {
         const newProducts = res.data.result.products;

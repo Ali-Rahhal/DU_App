@@ -48,8 +48,11 @@ app.use(
     origin: [
       "http://159.195.23.130:5006",
       "http://cloud.quayomobility.ca:5006",
-      "http://localhost:5006", // optional for dev
+      "http://localhost:5006",
+      //du Server:
       // "https://quayotest.d-union.com",
+      // "http://192.168.160.18:5004",
+      // "http://localhost:5004",
     ],
     credentials: true,
     maxAge: 600,
@@ -96,8 +99,8 @@ app.route(`${PRIVATE_API}/expiryDeal`, expiryDealRoutes);
 //   })
 // );
 
-const port = 5005;
-// const port = 5003;
+const port = Number(process.env.PORT) || 5003;
+
 console.log(`Server is running on port ${port}`);
 
 serve({

@@ -212,7 +212,8 @@ AS (SELECT p.promotion_id,
           AND sc.account_id = @account_id
           AND sc.is_active = 1
           AND sc.status = 5
-          AND sc.quantity >= pc.amount)
+          AND sc.quantity >= pc.amount
+          AND sc.is_expiry_deal_item = 0)
 SELECT promotion_id,
        description,
        item_code,

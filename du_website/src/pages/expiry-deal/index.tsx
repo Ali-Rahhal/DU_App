@@ -1,7 +1,10 @@
 import Autocomplete from "@/components/common/Autocomplete";
 import Layout from "@/components/Layout/Layout";
+import { useAccountStore } from "@/store/zustand";
 import { getProducts, getExpiryDeal, updateExpiryDeal } from "@/utils/apiCalls";
-import { useState } from "react";
+import { ROLES } from "@/utils/data";
+import { useRouter } from "next/router";
+import { useEffect, useRef, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
 
@@ -10,6 +13,19 @@ const ExpiryDeal = () => {
   const [expiryMonths, setExpiryMonths] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [loading, setLoading] = useState(false);
+
+  // Authorization Check:
+  const rt = useRouter();
+  const { role, checkRole } = useAccountStore();
+  const hasShownToast = useRef(false);
+  useEffect(() => {
+    if (!checkRole(ROLES.Admin) && !hasShownToast.current) {
+      toast.error("Only Admins can access this page");
+      hasShownToast.current = true;
+      rt.push("/");
+    }
+  }, [role]);
+  if (!checkRole(ROLES.Admin)) return null;
 
   // =========================
   // Load item data

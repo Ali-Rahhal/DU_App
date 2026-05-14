@@ -17,6 +17,7 @@ import { ALL_PERMISSIONS } from "@/utils/data";
 import { useRef } from "react";
 import { useRouter } from "next/router";
 import { useAccountStore } from "@/store/zustand";
+import { Product } from "@/types/productTypes";
 const Wishlist = () => {
   // Authorization Check:
   const rt = useRouter();
@@ -77,7 +78,7 @@ const Wishlist = () => {
           <div className="card">
             <div className="card-body">
               <div className="cart_product border-0">
-                {items?.map((item: Item) => (
+                {items?.map((item: Product) => (
                   <ProductItemList
                     key={item.item_code}
                     item={item}

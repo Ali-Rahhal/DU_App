@@ -1,8 +1,8 @@
 import ProductItem from "@/components/common/ProductItem";
 import Layout from "@/components/Layout/Layout";
 import SearchBar from "@/components/Layout/Navbar/SearchBar";
-import Item from "@/Models/item";
 import { Product } from "@/types/productTypes";
+import { categorySlider } from "@/utils/data";
 import { getProducts } from "@/utils/apiCalls";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
@@ -104,42 +104,21 @@ const Filters = ({
         >
           All
         </Link>
-        <Link
-          href={{
-            pathname: "/category",
-            query: {
-              cat: "P",
-              promo: onPromotionOnly ? "true" : undefined,
-            },
-          }}
-          className={`btn btn-sm ${activeCat === "P" ? "btn-primary" : "btn-outline-primary"}`}
-        >
-          Pharma
-        </Link>
-        <Link
-          href={{
-            pathname: "/category",
-            query: {
-              cat: "PP",
-              promo: onPromotionOnly ? "true" : undefined,
-            },
-          }}
-          className={`btn btn-sm ${activeCat === "PP" ? "btn-primary" : "btn-outline-primary"}`}
-        >
-          ParaPharma
-        </Link>
-        <Link
-          href={{
-            pathname: "/category",
-            query: {
-              cat: "NP",
-              promo: onPromotionOnly ? "true" : undefined,
-            },
-          }}
-          className={`btn btn-sm ${activeCat === "NP" ? "btn-primary" : "btn-outline-primary"}`}
-        >
-          Non Pharma
-        </Link>
+        {categorySlider.map((cat) => (
+          <Link
+            href={{
+              pathname: "/category",
+              query: {
+                cat: cat.cat_code,
+                promo: onPromotionOnly ? "true" : undefined,
+              },
+            }}
+            className={`btn btn-sm ${activeCat === cat.cat_code ? "btn-primary" : "btn-outline-primary"}`}
+            key={cat.cat_code}
+          >
+            {cat.name}
+          </Link>
+        ))}
       </div>
       <div className="mt-3">
         <h6>{t("promotions")}</h6>

@@ -23,6 +23,7 @@
   "ip_policy": "Politique de propriété intellectuelle",
   "social": "Social",
   "copyright": "Droit d'auteur © 2026 DU | Tous droits réservés.",
+  "copyright_vitalait": "Droit d'auteur © 2026 Vitalait | Tous droits réservés.",
   "shopping_cart": "Panier d'achat",
   "empty_cart": "Panier vide",
   "remove": "Supprimer",
@@ -250,7 +251,8 @@
     "waiting_for approval": "EN ATTENTE D'APPROBATION"
   },
   "company": {
-    "description": "Droguerie de L'Union Pharmaceutical Company est une entreprise pharmaceutique leader au Liban. Nous nous engageons à fournir des solutions de haute qualité, abordables et innovantes à nos clients."
+    "description": "Droguerie de L'Union Pharmaceutical Company est une entreprise pharmaceutique leader au Liban. Nous nous engageons à fournir des solutions de haute qualité, abordables et innovantes à nos clients.",
+    "description_vitalait": "Vitalait est une entreprise leader dans le secteur des produits laitiers et alimentaires, engagée à offrir des produits frais, nutritifs et de haute qualité aux familles. Depuis 1998, nous mettons l’accent sur l’innovation, la confiance et l’excellence afin de proposer des solutions saines et abordables qui répondent aux besoins quotidiens de nos clients."
   },
   "toast": {
     "added_to_cart": "Ajouté au panier",

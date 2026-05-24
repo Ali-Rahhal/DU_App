@@ -23,6 +23,7 @@
   "ip_policy": "Intellectual Property Policy",
   "social": "Social",
   "copyright": "Copyright © 2026 DU | All rights reserved.",
+  "copyright_vitalait": "Copyright © 2026 Vitalait | All rights reserved.",
   "shopping_cart": "Shopping Cart",
   "empty_cart": "Empty Cart",
   "remove": "Remove",
@@ -251,7 +252,8 @@
     "waiting_for approval": "WAITING FOR APPROVAL"
   },
   "company": {
-    "description": "Droguerie de L'Union Pharmaceutical Company is a leading pharmaceutical company in Lebanon. We are committed to providing high-quality, affordable, and innovative solutions to our customers."
+    "description": "Droguerie de L'Union Pharmaceutical Company is a leading pharmaceutical company in Lebanon. We are committed to providing high-quality, affordable, and innovative solutions to our customers.",
+    "description_vitalait": "Vitalait is a leading dairy and food company committed to delivering fresh, nutritious, and high-quality products to families. Since 1998, we have focused on innovation, trust, and excellence to provide healthy and affordable choices that meet the everyday needs of our customers."
   },
   "toast": {
     "added_to_cart": "Added to Cart",

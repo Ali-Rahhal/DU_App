@@ -19,6 +19,11 @@ const HomePageOffers = ({ offers }) => {
                       alt={item.title}
                       width={500}
                       height={300}
+                      style={{
+                        width: "100%",
+                        height: "300px",
+                        objectFit: "cover",
+                      }}
                     />
                   </div>
                   <div className="offer-info">

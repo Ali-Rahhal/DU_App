@@ -50,18 +50,20 @@ const CartItem = ({ item, removeItemHandler, updateCartHandler }) => {
     setDebounceTimeout(timeout);
   };
   const t = useTranslations();
+  const [imgSrcMain, setImgSrcMain] = useState(
+    item.image || process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE,
+  );
   return (
     <div key={item.item_code} className="cart_item">
       <div className="cart_item_image">
         <Link href={"/products/" + item.item_code}>
           <Image
             fill
-            src={
-              item?.image
-                ? item?.image
-                : process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE
-            }
+            src={imgSrcMain}
             alt={item.name}
+            onError={() => {
+              setImgSrcMain(process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE);
+            }}
           />
         </Link>
       </div>
@@ -315,56 +317,63 @@ const Cart = () => {
                       updateCartHandler={updateCartHandler}
                     />
                   ))}
-                  {promotions?.addedItems?.map((item) => (
-                    <div key={item.item_code} className="cart_item">
-                      <div className="cart_item_image">
-                        <Link href={"/products/" + item.item_code}>
-                          <Image
-                            fill
-                            src={
-                              item?.image
-                                ? item?.image
-                                : process.env
-                                    .NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE
-                            }
-                            alt={item.name}
-                          />
-                        </Link>
-                      </div>
-                      <div className="c-item-body mt-4 mt-md-0">
-                        <div className="cart_item_title mb-2">
+                  {promotions?.addedItems?.map((item) => {
+                    const [imgSrcPromo, setImgSrcPromo] = useState(
+                      item.image ||
+                        process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE,
+                    );
+                    return (
+                      <div key={item.item_code} className="cart_item">
+                        <div className="cart_item_image">
                           <Link href={"/products/" + item.item_code}>
-                            <h4>{item.name}</h4>
-
-                            <span className="badge badge-success text-uppercase">
-                              {t("promotion")}
-                            </span>
+                            <Image
+                              fill
+                              src={imgSrcPromo}
+                              alt={item.name}
+                              onError={() => {
+                                setImgSrcPromo(
+                                  process.env
+                                    .NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE,
+                                );
+                              }}
+                            />
                           </Link>
                         </div>
-                        <div className="cart_item_price">
-                          <div className="product-price">
-                            <span
-                              style={{
-                                color: "green",
-                                fontWeight: "bold",
-                                textTransform: "uppercase",
-                              }}
-                            >
-                              <strong>{t("free")}</strong>
-                            </span>
+                        <div className="c-item-body mt-4 mt-md-0">
+                          <div className="cart_item_title mb-2">
+                            <Link href={"/products/" + item.item_code}>
+                              <h4>{item.name}</h4>
+
+                              <span className="badge badge-success text-uppercase">
+                                {t("promotion")}
+                              </span>
+                            </Link>
+                          </div>
+                          <div className="cart_item_price">
+                            <div className="product-price">
+                              <span
+                                style={{
+                                  color: "green",
+                                  fontWeight: "bold",
+                                  textTransform: "uppercase",
+                                }}
+                              >
+                                <strong>{t("free")}</strong>
+                              </span>
+                            </div>
                           </div>
                         </div>
+                        <div
+                          className=" btn mt-4 mt-md-0"
+                          style={{
+                            width: 120,
+                          }}
+                        >
+                          <span>{item.quantity}</span>
+                        </div>
                       </div>
-                      <div
-                        className=" btn mt-4 mt-md-0"
-                        style={{
-                          width: 120,
-                        }}
-                      >
-                        <span>{item.quantity}</span>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
               <div className="col-lg-3 mt-lg-0 mt-6">

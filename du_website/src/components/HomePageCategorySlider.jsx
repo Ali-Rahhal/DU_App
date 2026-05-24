@@ -5,7 +5,7 @@ import CategoryItem from "./common/CategoryItem";
 const HomePageCategorySlider = ({ categorys }) => {
   let setting = {
     dots: false,
-    infinite: true,
+    infinite: false,
     speed: 500,
     slidesToShow: 3,
     slidesToScroll: 1,

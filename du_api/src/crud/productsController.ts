@@ -210,9 +210,14 @@ const getProducts = async ({
       LEFT JOIN item_price_list ipl
         ON ipl.item_code = it.item_code
 
-      JOIN item_uom iu
-        ON iu.item_code = it.item_code
-        AND iu.is_active = 1
+      CROSS APPLY (
+        SELECT TOP 1 *
+        FROM item_uom iu
+        WHERE iu.item_code = it.item_code
+          AND iu.is_active = 1
+        ORDER BY
+          CASE WHEN iu.uom_code = 'P' THEN 0 ELSE 1 END
+      ) iu
 
       LEFT JOIN active_promotions ap
         ON ap.condition_type_code = it.item_code
@@ -311,10 +316,15 @@ const getProducts = async ({
 
             LEFT JOIN v_items vi
               ON vi.Code = it.item_code
-
-            JOIN item_uom iu
-              ON iu.item_code = it.item_code
-              AND iu.is_active = 1
+            
+            CROSS APPLY (
+              SELECT TOP 1 *
+              FROM item_uom iu
+              WHERE iu.item_code = it.item_code
+                AND iu.is_active = 1
+              ORDER BY
+                CASE WHEN iu.uom_code = 'P' THEN 0 ELSE 1 END
+            ) iu
 
             WHERE
               wcsdc.expiry_date IS NOT NULL
@@ -558,8 +568,14 @@ const getProductInfo = async (
 
       ) as i
 
-      JOIN dbo.item_uom AS iu
-        ON iu.item_code = i.item_code
+      CROSS APPLY (
+        SELECT TOP 1 *
+        FROM item_uom iu
+        WHERE iu.item_code = i.item_code
+          AND iu.is_active = 1
+        ORDER BY
+          CASE WHEN iu.uom_code = 'P' THEN 0 ELSE 1 END
+      ) iu
 
       WHERE
         iu.is_active = 1
@@ -663,9 +679,14 @@ const getProductInfo = async (
     LEFT JOIN v_items vi
       ON vi.Code = it.item_code
 
-    JOIN item_uom iu
-      ON iu.item_code = it.item_code
-      AND iu.is_active = 1
+    CROSS APPLY (
+      SELECT TOP 1 *
+      FROM item_uom iu
+      WHERE iu.item_code = it.item_code
+        AND iu.is_active = 1
+      ORDER BY
+        CASE WHEN iu.uom_code = 'P' THEN 0 ELSE 1 END
+    ) iu
 
     WHERE
       it.item_code = ${item_code}

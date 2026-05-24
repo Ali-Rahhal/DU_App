@@ -17,13 +17,17 @@ function Footer() {
                 <div className="widget">
                   <div className="footer-brand">
                     <Image
-                      src={"/assets/img/logo.png"}
+                      // src={"/assets/img/logo.png"}
+                      src={"/assets/img/logo_vitalait.png"}
                       alt="Logo"
                       height={40}
                       width={250}
                     />
                   </div>
-                  <p>{t("company.description")}</p>
+                  <p>
+                    {/* {t("company.description")} */}
+                    {t("company.description_vitalait")}
+                  </p>
                 </div>
               </div>
               <div className="col-lg-2 col-md-2 col-6">
@@ -138,7 +142,10 @@ function Footer() {
           <div className="lower-footer">
             <div className="row">
               <div className="col-md-6 text-md-left">
-                <p className="mb-4 mb-md-0 text-muted">{t("copyright")}</p>
+                <p className="mb-4 mb-md-0 text-muted">
+                  {/* {t("copyright")} */}
+                  {t("copyright_vitalait")}
+                </p>
                 <p className="mb-4 mb-md-0 text-muted">
                   {t("version") + " " + pkg.version}
                 </p>

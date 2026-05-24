@@ -12,11 +12,11 @@ import dynamic from "next/dynamic";
 import { NextIntlClientProvider } from "next-intl";
 const ProgressBar = dynamic(
   () => import("next-nprogress-bar").then((mod) => mod.PagesProgressBar),
-  { ssr: false }
+  { ssr: false },
 );
 const ToastContainer = dynamic(
   () => import("react-toastify").then((mod) => mod.ToastContainer),
-  { ssr: false }
+  { ssr: false },
 );
 
 const headingFont = Poppins({
@@ -49,7 +49,7 @@ function App({ Component, pageProps }) {
   return (
     <>
       <Head>
-        <title>Droguerie de L'Union</title>
+        {/* <title>Droguerie de L'Union</title>
         <meta
           name="description"
           content="
@@ -61,7 +61,16 @@ function App({ Component, pageProps }) {
              We are proud to be a trusted partner in the health and well-being of our customers.
           "
         />
-        <link rel="icon" href="/assets/img/favicon.png" />
+        <link rel="icon" href="/assets/img/favicon.png" /> */}
+        <title>Vitalait</title>
+        <meta
+          name="description"
+          content="
+             Vitalait is a leading dairy and food company committed to delivering fresh, nutritious, and high-quality products to families. 
+             Since 1998, we have focused on innovation, trust, and excellence to provide healthy and affordable choices that meet the everyday needs of our customers.
+          "
+        />
+        <link rel="icon" href="/assets/img/favicon_vitalait.ico" />
 
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />

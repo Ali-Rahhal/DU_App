@@ -99,43 +99,78 @@ export const Product = {
 };
 
 export const homeSlider = [
+  // {
+  //   image: "/assets/img/slider/slider-1.jpg",
+  //   url: "category",
+  // },
+  // {
+  //   image: "/assets/img/slider/slider-2.jpg",
+  //   url: "category",
+  // },
+  // {
+  //   image: "/assets/img/slider/slider-3.jpg",
+  //   url: "category",
+  // },
   {
-    image: "/assets/img/slider/slider-1.jpg",
+    image: "/assets/img/slider/slider_vitalait-1.jpg",
     url: "category",
   },
   {
-    image: "/assets/img/slider/slider-2.jpg",
+    image: "/assets/img/slider/slider_vitalait-4.jpg",
     url: "category",
   },
   {
-    image: "/assets/img/slider/slider-3.jpg",
+    image: "/assets/img/slider/slider_vitalait-5.jpg",
+    url: "category",
+  },
+  {
+    image: "/assets/img/slider/slider_vitalait-6.jpg",
     url: "category",
   },
 ];
 export const homeSlider2 = [
+  // {
+  //   image: "/assets/img/slider/slider-9.jpg",
+  //   url: "category",
+  // },
+  // {
+  //   image: "/assets/img/slider/slider-5.jpg",
+  //   url: "category",
+  // },
+  // {
+  //   image: "/assets/img/slider/slider-6.jpg",
+  //   url: "category",
+  // },
+  // {
+  //   image: "/assets/img/slider/slider-7.jpg",
+  //   url: "category",
+  // },
+  // {
+  //   image: "/assets/img/slider/slider-8.jpg",
+  //   url: "category",
+  // },
+  // {
+  //   image: "/assets/img/slider/slider-10.jpg",
+  //   url: "category",
+  // },
   {
-    image: "/assets/img/slider/slider-9.jpg",
+    image: "/assets/img/slider/slider_vitalait-7.jpg",
     url: "category",
   },
   {
-    image: "/assets/img/slider/slider-5.jpg",
+    image: "/assets/img/slider/slider_vitalait-8.jpg",
     url: "category",
   },
   {
-    image: "/assets/img/slider/slider-6.jpg",
+    image: "/assets/img/slider/slider_vitalait-9.jpg",
     url: "category",
   },
   {
-    image: "/assets/img/slider/slider-7.jpg",
+    image: "/assets/img/slider/slider_vitalait-10.jpg",
     url: "category",
   },
   {
-    image: "/assets/img/slider/slider-8.jpg",
-    url: "category",
-  },
-
-  {
-    image: "/assets/img/slider/slider-10.jpg",
+    image: "/assets/img/slider/slider_vitalait-11.jpg",
     url: "category",
   },
 ];
@@ -201,20 +236,32 @@ export const menu = [
 //   },
 // ];
 export const categorySlider = [
+  // {
+  //   image: "/assets/img/category/category-1.png",
+  //   url: "category?cat=P",
+  //   name: "Pharma",
+  // },
+  // {
+  //   image: "/assets/img/category/category-2.png",
+  //   url: "category?cat=PP",
+  //   name: "ParaPharma",
+  // },
+  // {
+  //   image: "/assets/img/category/category-3.png",
+  //   url: "category?cat=NP",
+  //   name: "Non Pharma",
+  // },
   {
-    image: "/assets/img/category/category-1.png",
-    url: "category?cat=P",
-    name: "Pharma",
+    image: "/assets/img/category/Normal.png",
+    url: "category?cat=N",
+    name: "Dairy",
+    cat_code: "N",
   },
   {
-    image: "/assets/img/category/category-2.png",
-    url: "category?cat=PP",
-    name: "ParaPharma",
-  },
-  {
-    image: "/assets/img/category/category-3.png",
-    url: "category?cat=NP",
-    name: "Non Pharma",
+    image: "/assets/img/category/Desserts.png",
+    url: "category?cat=D",
+    name: "Desserts",
+    cat_code: "D",
   },
 ];
 
@@ -335,17 +382,29 @@ export const productSlider = [
 ];
 
 export const homeOffer = [
+  // {
+  //   image: "/assets/img/product/product-2.png",
+  //   url: "category",
+  //   title: "CENTRUN Multivitamin 30 Tablets",
+  //   subTitle: "Up to 50% off",
+  // },
+  // {
+  //   image: "/assets/img/product/product-1.png",
+  //   url: "category",
+  //   title: "Advil 200mg 20 Tablets",
+  //   subTitle: "Up to 50% off",
+  // },
   {
-    image: "/assets/img/product/product-2.png",
+    image: "/assets/img/product/L400.png",
     url: "category",
-    title: "CENTRUN Multivitamin 30 Tablets",
-    subTitle: "Up to 50% off",
+    title: "LAIT ENTIER UHT 1L",
+    subTitle: "Healthy!",
   },
   {
-    image: "/assets/img/product/product-1.png",
+    image: "/assets/img/product/YAB43.png",
     url: "category",
-    title: "Advil 200mg 20 Tablets",
-    subTitle: "Up to 50% off",
+    title: "GRANDI FRUITS DE BOIS 330 G",
+    subTitle: "Yummy!!",
   },
 ];
 
@@ -443,6 +502,7 @@ export const popularCategorySlider = [
     name: "BrandName",
   },
 ];
+
 export const ALL_PERMISSIONS = {
   Complaint: "COMPLAINT",
   Wishlist: "WISHLIST",
@@ -450,7 +510,7 @@ export const ALL_PERMISSIONS = {
   OpenInvoice: "OPEN_INVOICE",
   SalesInvoice: "SALES_INVOICE",
   Survey: "SURVEY",
-  ChangePassword: "CHANGE_PASSWORD"
+  ChangePassword: "CHANGE_PASSWORD",
 };
 
 export const ROLES = {

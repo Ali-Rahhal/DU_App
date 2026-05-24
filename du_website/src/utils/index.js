@@ -23,7 +23,7 @@ export const findProductIndexById = (list, id) => {
 };
 
 export const currenncyCodeToSymbol = (code) => {
-  return code?.includes("USD") ? "$" : "L.L.";
+  return code?.includes("USD") ? "$" : code?.includes("TND") ? "TND" : "L.L.";
 };
 export const statusIdToText = (status_id) => {
   //with themify icons

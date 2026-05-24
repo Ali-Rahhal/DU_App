@@ -97,7 +97,8 @@ function Navbar() {
               >
                 <Link href="/">
                   <Image
-                    src={"/assets/img/logo_cropped.png"}
+                    // src={"/assets/img/logo_cropped.png"}
+                    src={"/assets/img/logo_vitalait.png"}
                     alt="Logo"
                     height={40}
                     width={250}
@@ -342,7 +343,8 @@ function Navbar() {
             <div className="col text-center">
               <Link href="/">
                 <Image
-                  src={"/assets/img/logo.png"}
+                  // src={"/assets/img/logo.png"}
+                  src={"/assets/img/logo_vitalait.png"}
                   alt="Logo"
                   height={40}
                   width={250}

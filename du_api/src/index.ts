@@ -50,9 +50,10 @@ app.use(
       "http://cloud.quayomobility.ca:5006",
       "http://localhost:5006",
       //du Server:
-      // "https://quayotest.d-union.com",
-      // "http://192.168.160.18:5004",
-      // "http://localhost:5004",
+      // "https://duquayo-test.d-union.com",
+      // "https://duquayo-test.d-union.com:5004",
+      // "http://192.168.160.18:5005",
+      // "http://localhost:5005",
     ],
     credentials: true,
     maxAge: 600,

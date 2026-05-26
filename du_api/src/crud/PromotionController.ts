@@ -342,6 +342,7 @@ GROUP BY iu.item_code,
     ipl.price,
     ipl.default_discount,
     ipl.currency_code
+ORDER BY CASE WHEN iu.uom_code = 'P' THEN 0 ELSE 1 END
     `;
 
   const finalResult = res.map((item) => {

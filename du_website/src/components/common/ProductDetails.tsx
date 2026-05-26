@@ -52,7 +52,12 @@ const ProductDetails = ({ product }: { product: Product }) => {
       );
       return;
     }
-    addToCart(itemCode, product.barcode, quantity, product.isExpiryDeal)
+    addToCart(
+      itemCode,
+      product.barcode ?? itemCode,
+      quantity,
+      product.isExpiryDeal,
+    )
       .then((res) => {
         refreshCart();
         toast.success(t("toast.added_to_cart"), {

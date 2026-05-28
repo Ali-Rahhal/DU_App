@@ -1,5 +1,6 @@
 import { Modal, Button, Badge, Form, Spinner } from "react-bootstrap";
 import Select from "react-select";
+import { useTranslations } from "next-intl";
 import { Permission, PermissionsState } from "@/types/usersTypes";
 import { ROLES } from "@/utils/data";
 
@@ -24,12 +25,14 @@ const PermissionsModal = ({
   updatingPermissions,
   onUpdate,
 }: Props) => {
+  const t = useTranslations();
+
   return (
     <Modal show={show} onHide={onClose} centered size="lg">
       <Modal.Header closeButton className="border-0 pb-0">
         <Modal.Title className="fw-semibold">
           <i className="fa fa-key me-2"></i>
-          Manage Permissions
+          {t("users.permissions.title")}
         </Modal.Title>
       </Modal.Header>
 
@@ -37,23 +40,28 @@ const PermissionsModal = ({
         {permissionsState && (
           <>
             <div className="mb-4">
-              <h6 className="text-muted mb-2">User</h6>
+              <h6 className="text-muted mb-2">{t("users.permissions.user")}</h6>
 
               <p className="fw-semibold mb-1">
-                {permissionsState.userName || "Unknown User"}
+                {permissionsState.userName ||
+                  t("users.permissions.unknown_user")}
               </p>
 
               {permissionsState.userRole === ROLES.SysUser ? (
-                <Badge bg="primary">SysUser Account</Badge>
+                <Badge bg="primary">
+                  {t("users.permissions.sysuser_account")}
+                </Badge>
               ) : (
                 <Badge bg="light" text="dark">
-                  Regular Account
+                  {t("users.permissions.regular_account")}
                 </Badge>
               )}
             </div>
 
             <Form.Group>
-              <Form.Label className="fw-semibold">Permissions</Form.Label>
+              <Form.Label className="fw-semibold">
+                {t("users.permissions.permissions_label")}
+              </Form.Label>
 
               <Select
                 isMulti
@@ -63,7 +71,7 @@ const PermissionsModal = ({
                 }))}
                 value={selectedPermissions}
                 onChange={(value) => setSelectedPermissions([...value])}
-                placeholder="Select permissions..."
+                placeholder={t("users.permissions.select_placeholder")}
                 styles={{
                   option: (base, state) => ({
                     ...base,
@@ -84,17 +92,17 @@ const PermissionsModal = ({
 
       <Modal.Footer className="border-0 pt-0">
         <Button variant="light" onClick={onClose}>
-          Cancel
+          {t("users.permissions.cancel")}
         </Button>
 
         <Button variant="dark" onClick={onUpdate}>
           {updatingPermissions ? (
             <>
               <Spinner size="sm" className="me-2" />
-              Updating...
+              {t("users.permissions.updating")}
             </>
           ) : (
-            "Update Permissions"
+            t("users.permissions.update_btn")
           )}
         </Button>
       </Modal.Footer>

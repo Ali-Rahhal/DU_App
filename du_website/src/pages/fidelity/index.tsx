@@ -153,15 +153,11 @@ const FidelityPage = () => {
   const progress = useMemo(() => {
     if (!nextReward) return 100;
 
-    const prev = milestoneRewards
-      .filter((r) => r.required_points <= points.totalEarned)
-      .slice(-1)[0];
-
-    const start = prev?.required_points || 0;
-    const end = nextReward.required_points;
-
-    return Math.min(100, ((points.totalEarned - start) / (end - start)) * 100);
-  }, [nextReward, milestoneRewards, points.totalEarned]);
+    return Math.min(
+      100,
+      (points.totalEarned / nextReward.required_points) * 100,
+    );
+  }, [nextReward, points.totalEarned]);
 
   /* ================= REDEEM ================= */
 
@@ -249,7 +245,7 @@ const FidelityPage = () => {
                 fontSize: 14,
               }}
             >
-              {points.availablePoints} {t("fidelity.points")}
+              {points.totalEarned} {t("fidelity.points")}
             </div>
           </div>
 
@@ -259,7 +255,7 @@ const FidelityPage = () => {
                 <span className="fw-semibold">{nextReward.name}</span>
 
                 <span className="text-muted">
-                  {points.availablePoints} / {nextReward.required_points}
+                  {points.totalEarned} / {nextReward.required_points}
                 </span>
               </div>
 
@@ -275,7 +271,7 @@ const FidelityPage = () => {
 
               <div className="d-flex justify-content-between align-items-center flex-wrap gap-2">
                 <small className="text-muted">
-                  {nextReward.required_points - points.availablePoints}{" "}
+                  {nextReward.required_points - points.totalEarned}{" "}
                   {t("fidelity.more_points_needed")}
                 </small>
 

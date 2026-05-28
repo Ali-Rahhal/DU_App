@@ -15,20 +15,21 @@ const ChangePassword = () => {
   const rt = useRouter();
   const t = useTranslations();
   const { role, checkPermission } = useAccountStore();
+
   useEffect(() => {
     if (!checkPermission(ALL_PERMISSIONS.ChangePassword)) {
-      toast.error("You don't have permission to change password");
+      toast.error(t("change_password.no_permission"));
       rt.push("/account");
     }
-  }, [role]);
+  }, [role, t]);
+
   if (!checkPermission(ALL_PERMISSIONS.ChangePassword)) return null;
+
   return (
     <Layout>
       <AccountLayout
-        // title="Change Password"
-        title={t("change_password")}
-        // subTitle="You have full control to manage your own Account."
-        subTitle={t("you_have_full_control_to_manage_your_own_account")}
+        title={t("change_password.title")}
+        subTitle={t("change_password.subtitle")}
       >
         <div className="card">
           <div className="card-body">
@@ -38,11 +39,14 @@ const ChangePassword = () => {
                 e.preventDefault();
                 changePassword(oldPassword, newPassword, confirmPassword)
                   .then(() => {
-                    toast.success("Password Changed Successfully");
+                    toast.success(t("change_password.success_message"));
                     rt.push("/dashboard");
                   })
                   .catch((err) => {
-                    toast.error(err.response.data.message);
+                    toast.error(
+                      err.response?.data?.message ||
+                        t("change_password.error_message"),
+                    );
                     setOldPassword("");
                     setNewPassword("");
                     setConfirmPassword("");
@@ -52,7 +56,9 @@ const ChangePassword = () => {
               <div className="row">
                 <div className="col-lg-12">
                   <div className="form-group mb-4">
-                    <label className="form-label">Old Password</label>
+                    <label className="form-label">
+                      {t("change_password.old_password")}
+                    </label>
                     <input
                       value={oldPassword}
                       onChange={(e) => setOldPassword(e.target.value)}
@@ -65,21 +71,25 @@ const ChangePassword = () => {
                 </div>
                 <div className="col-lg-6">
                   <div className="form-group mb-4">
-                    <label className="form-label">New Password</label>
+                    <label className="form-label">
+                      {t("change_password.new_password")}
+                    </label>
                     <input
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                       className="form-control"
                       id="new_password"
                       name="new_password"
-                      type="text"
+                      type="password"
                       required
                     />
                   </div>
                 </div>
                 <div className="col-lg-6">
                   <div className="form-group mb-4">
-                    <label className="form-label">Confirm Password</label>
+                    <label className="form-label">
+                      {t("change_password.confirm_password")}
+                    </label>
                     <input
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
@@ -97,7 +107,7 @@ const ChangePassword = () => {
                   type="submit"
                   className="btn btn-primary btn-medium"
                 >
-                  Change Password
+                  {t("change_password.change_password_btn")}
                 </button>
               </div>
             </form>

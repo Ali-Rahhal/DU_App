@@ -97,7 +97,7 @@ const Users = () => {
       setAllPermissions(response.data.result || []);
     } catch (error: any) {
       toast.error(
-        error.response?.data?.message || "Failed to fetch permissions",
+        error.response?.data?.message || t("users.permissions_fetch_error"),
       );
     }
   };
@@ -113,13 +113,13 @@ const Users = () => {
         setUsers(response.data.result.users);
         setPagination(response.data.result.pagination);
       } catch (error: any) {
-        toast.error(error.response?.data?.message || "Failed to fetch users");
+        toast.error(error.response?.data?.message || t("users.fetch_error"));
       } finally {
         setLoading(false);
         setPageLoading(false);
       }
     },
-    [searchTerm, pagination.pageSize],
+    [searchTerm, pagination.pageSize, t],
   );
 
   useEffect(() => {
@@ -138,10 +138,12 @@ const Users = () => {
     try {
       const response = await toggleUserStatus(userId);
 
+      const statusMessage = response.data.result.is_active
+        ? t("users.activated")
+        : t("users.deactivated");
+
       toast.success(
-        `User ${
-          response.data.result.is_active ? "activated" : "deactivated"
-        } successfully`,
+        `${t("users.user")} ${statusMessage} ${t("users.successfully")}`,
       );
 
       setUsers((prev) =>
@@ -153,7 +155,7 @@ const Users = () => {
       );
     } catch (error: any) {
       const errorMessage =
-        error?.response?.data?.message || "Failed to update status";
+        error?.response?.data?.message || t("users.status_update_error");
 
       toast.error(errorMessage);
     }
@@ -184,7 +186,7 @@ const Users = () => {
       setSelectedPermissions(selected);
     } catch (error: any) {
       toast.error(
-        error.response?.data?.message || "Failed to fetch user permissions",
+        error.response?.data?.message || t("users.permissions_fetch_error"),
       );
     }
   };
@@ -209,12 +211,12 @@ const Users = () => {
 
       await updateUserPermissions(permissionsState.userId, permissionIds);
 
-      toast.success("Permissions updated successfully");
+      toast.success(t("users.permissions_update_success"));
 
       handleClosePermissionsModal();
     } catch (error: any) {
       toast.error(
-        error.response?.data?.message || "Failed to update permissions",
+        error.response?.data?.message || t("users.permissions_update_error"),
       );
     } finally {
       setUpdatingPermissions(false);
@@ -251,7 +253,7 @@ const Users = () => {
         confirmPassword: "",
       });
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to fetch user");
+      toast.error(error.response?.data?.message || t("users.fetch_error"));
       setShowModal(false);
     } finally {
       setModalLoading(false);
@@ -283,23 +285,23 @@ const Users = () => {
     const errors: Partial<Record<keyof UserFormData, string>> = {};
 
     if (!formData.first_name.trim()) {
-      errors.first_name = "First name is required";
+      errors.first_name = t("users.errors.first_name_required");
     }
 
     if (!formData.role) {
-      errors.role = "Role is required";
+      errors.role = t("users.errors.role_required");
     }
 
     if (modalMode === "add" && !formData.password) {
-      errors.password = "Password is required";
+      errors.password = t("users.errors.password_required");
     }
 
     if (formData.password && formData.password.length < 6) {
-      errors.password = "Password must be at least 6 characters";
+      errors.password = t("users.errors.password_min_length");
     }
 
     if (formData.password !== formData.confirmPassword) {
-      errors.confirmPassword = "Passwords do not match";
+      errors.confirmPassword = t("users.errors.passwords_mismatch");
     }
 
     setFormErrors(errors);
@@ -328,7 +330,7 @@ const Users = () => {
           await handleOpenPermissionsModal(response.data.result);
         }
 
-        toast.success("User created successfully");
+        toast.success(t("users.create_success"));
       } else {
         if (!editingId) return;
 
@@ -346,13 +348,16 @@ const Users = () => {
           ),
         );
 
-        toast.success("User updated successfully");
+        toast.success(t("users.update_success"));
       }
 
       handleCloseModal();
     } catch (error: any) {
       toast.error(
-        error.response?.data?.message || `Failed to ${modalMode} user`,
+        error.response?.data?.message ||
+          (modalMode === "add"
+            ? t("users.create_error")
+            : t("users.update_error")),
       );
     } finally {
       setModalLoading(false);
@@ -369,10 +374,7 @@ const Users = () => {
 
   return (
     <Layout>
-      <AccountLayout
-        title={t("users") || "Users"}
-        subTitle={t("manage_your_users") || "Manage your users"}
-      >
+      <AccountLayout title={t("users.title")} subTitle={t("users.subtitle")}>
         <Row className="mb-4 align-items-center">
           <Col md={6}>
             <InputGroup>
@@ -381,7 +383,7 @@ const Users = () => {
               </InputGroup.Text>
 
               <Form.Control
-                placeholder="Search users..."
+                placeholder={t("users.search_placeholder")}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -391,7 +393,7 @@ const Users = () => {
           <Col md={6} className="text-md-end mt-3 mt-md-0">
             <Button variant="dark" onClick={handleOpenAddModal}>
               <i className="fa fa-plus me-2"></i>
-              Add User
+              {t("users.add_user")}
             </Button>
           </Col>
         </Row>
@@ -399,10 +401,10 @@ const Users = () => {
         <Card className="border-0 shadow-sm rounded-4 overflow-hidden">
           <Card.Header className="bg-white border-0 py-3 px-4 d-flex justify-content-between">
             <div>
-              <h5 className="mb-0 fw-semibold">{t("users")}</h5>
+              <h5 className="mb-0 fw-semibold">{t("users.title")}</h5>
 
               <small className="text-muted">
-                {pagination.totalCount} total users
+                {pagination.totalCount} {t("users.total_users")}
               </small>
             </div>
 
@@ -438,13 +440,13 @@ const Users = () => {
             <Card.Footer className="bg-white border-0 py-3 px-4">
               <div className="d-flex justify-content-between align-items-center">
                 <small className="text-muted">
-                  Showing{" "}
+                  {t("users.showing")}{" "}
                   {(pagination.currentPage - 1) * pagination.pageSize + 1} -{" "}
                   {Math.min(
                     pagination.currentPage * pagination.pageSize,
                     pagination.totalCount,
                   )}{" "}
-                  of {pagination.totalCount}
+                  {t("users.of")} {pagination.totalCount}
                 </small>
 
                 <div className="d-flex gap-2">
@@ -456,7 +458,7 @@ const Users = () => {
                       fetchUsers(pagination.currentPage - 1, searchTerm, true)
                     }
                   >
-                    Previous
+                    {t("users.previous")}
                   </Button>
 
                   <Button
@@ -470,7 +472,7 @@ const Users = () => {
                       fetchUsers(pagination.currentPage + 1, searchTerm, true)
                     }
                   >
-                    Next
+                    {t("users.next")}
                   </Button>
                 </div>
               </div>

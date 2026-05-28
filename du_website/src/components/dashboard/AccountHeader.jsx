@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { useTranslations } from "use-intl";
 
-function AccountHeader() {
+function AccountHeader({ title }) {
   const rt = useRouter();
   const [active, setActive] = useState(rt.pathname.split("/")[1]);
   const t = useTranslations();
@@ -31,7 +31,7 @@ function AccountHeader() {
                       textTransform: "capitalize",
                     }}
                   >
-                    {t(active.replace(/-/g, "_"))}
+                    {title}
                   </li>
                 </ol>
               </nav>
@@ -43,7 +43,7 @@ function AccountHeader() {
                   textTransform: "capitalize",
                 }}
               >
-                {t(active.replace(/-/g, "_"))}
+                {title}
               </h1>
             </div>
           </div>

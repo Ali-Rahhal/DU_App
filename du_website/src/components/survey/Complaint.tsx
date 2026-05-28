@@ -298,7 +298,8 @@ function Complaint() {
         <div className="main-con">
           <div className="left">
             <img
-              src={"/assets/img/logo_cropped.png"}
+              // src={"/assets/img/logo_cropped.png"}
+              src={"/assets/img/logo_vitalait.png"}
               alt="Logo"
               style={{
                 width: "100px",
@@ -390,7 +391,8 @@ function Complaint() {
       <div className="App" id="surveyElement">
         <div className="thank-you-con">
           <img
-            src={"/assets/img/logo_cropped.png"}
+            // src={"/assets/img/logo_cropped.png"}
+            src={"/assets/img/logo_vitalait.png"}
             alt="Logo"
             style={{
               width: "200px",

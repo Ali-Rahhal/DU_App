@@ -260,40 +260,40 @@ function Navbar() {
                             <Link href="/orders">{t("my_orders")}</Link>
                           </li>
                           <li>
-                            <Link href="/wishlist">{t("wishlist")}</Link>
+                            <Link href="/wishlist">{t("wishlist.title")}</Link>
                           </li>{" "}
-                          <li>
+                          {/* <li>
                             <Link href="/survey">{t("survey")}</Link>
-                          </li>
+                          </li> */}
                           <li>
                             <Link href="/complaint">{t("complaint")}</Link>
                           </li>
                           <li>
                             <Link href="/open-invoice">
-                              {t("open_invoices")}
+                              {t("open_invoices.title")}
                             </Link>
                           </li>
                           <li>
                             <Link href="/sales-invoice">
-                              {t("sales_invoices")}
+                              {t("sales_invoice.title")}
                             </Link>
                           </li>
                           {checkRole(ROLES.Admin) ? (
                             <>
                               <li>
                                 <Link href="/item-alternatives">
-                                  {t("item_alternatives")}
+                                  {t("item_alternatives.title")}
                                 </Link>
                               </li>
                               <li>
                                 <Link href="/expiry-deal">
-                                  {t("expiry-deal")}
+                                  {t("expiry_deal.title")}
                                 </Link>
                               </li>
                             </>
                           ) : null}
                           <li>
-                            <Link href="/restock">{t("restock")}</Link>
+                            <Link href="/restock">{t("restock.title")}</Link>
                           </li>
                           <li>
                             <Link href="/fidelity">{t("fidelity.link")}</Link>
@@ -411,34 +411,38 @@ function Navbar() {
                     <Link href="/promotions">{t("promotion")}</Link>
                   </li>
                   <li>
-                    <Link href="/wishlist">{t("wishlist")}</Link>
+                    <Link href="/wishlist">{t("wishlist.title")}</Link>
                   </li>
-                  <li>
+                  {/* <li>
                     <Link href="/survey">{t("survey")}</Link>
-                  </li>
+                  </li> */}
                   <li>
                     <Link href="/complaint">{t("complaint")}</Link>
                   </li>
                   <li>
-                    <Link href="/open-invoice">{t("open_invoices")}</Link>
+                    <Link href="/open-invoice">{t("open_invoices.title")}</Link>
                   </li>
                   <li>
-                    <Link href="/sales-invoice">{t("sales_invoices")}</Link>
+                    <Link href="/sales-invoice">
+                      {t("sales_invoice.title")}
+                    </Link>
                   </li>
                   {checkRole(ROLES.Admin) ? (
                     <>
                       <li>
                         <Link href="/item-alternatives">
-                          {t("item_alternatives")}
+                          {t("item_alternatives.title")}
                         </Link>
                       </li>
                       <li>
-                        <Link href="/expiry-deal">{t("expiry-deal")}</Link>
+                        <Link href="/expiry-deal">
+                          {t("expiry_deal.title")}
+                        </Link>
                       </li>
                     </>
                   ) : null}
                   <li>
-                    <Link href="/restock">{t("restock")}</Link>
+                    <Link href="/restock">{t("restock.title")}</Link>
                   </li>
                   <li>
                     <Link href="/fidelity">{t("fidelity.link")}</Link>

@@ -1,5 +1,6 @@
 import { Modal, Form, Row, Col, Button, Spinner } from "react-bootstrap";
 import Select from "react-select";
+import { useTranslations } from "next-intl";
 import { ROLES } from "@/utils/data";
 import { UserFormData } from "@/types/usersTypes";
 
@@ -30,11 +31,15 @@ const UserFormModal = ({
   handleClose,
   getRoleLabel,
 }: Props) => {
+  const t = useTranslations();
+
   return (
     <Modal show={show} onHide={handleClose} centered size="lg">
       <Modal.Header closeButton className="border-0 pb-0">
         <Modal.Title className="fw-semibold">
-          {modalMode === "add" ? "Add New User" : "Edit User"}
+          {modalMode === "add"
+            ? t("users.modal.add_title")
+            : t("users.modal.edit_title")}
         </Modal.Title>
       </Modal.Header>
 
@@ -48,7 +53,7 @@ const UserFormModal = ({
             <Row>
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label>First Name *</Form.Label>
+                  <Form.Label>{t("users.modal.first_name")} *</Form.Label>
 
                   <Form.Control
                     name="first_name"
@@ -56,12 +61,15 @@ const UserFormModal = ({
                     onChange={handleInputChange}
                     isInvalid={!!formErrors.first_name}
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {formErrors.first_name}
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
 
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Last Name</Form.Label>
+                  <Form.Label>{t("users.modal.last_name")}</Form.Label>
 
                   <Form.Control
                     name="last_name"
@@ -73,7 +81,7 @@ const UserFormModal = ({
             </Row>
 
             <Form.Group className="mb-3">
-              <Form.Label>Description</Form.Label>
+              <Form.Label>{t("users.modal.description")}</Form.Label>
 
               <Form.Control
                 name="description"
@@ -84,9 +92,9 @@ const UserFormModal = ({
 
             <Form.Group className="mb-3">
               <Form.Label>
-                Role *
+                {t("users.modal.role")} *
                 {editingRole === ROLES.Admin &&
-                  "(You can't change the role of an Admin)"}
+                  ` (${t("users.modal.cannot_change_role")})`}
               </Form.Label>
 
               <Select
@@ -112,35 +120,48 @@ const UserFormModal = ({
                   }))
                 }
               />
+              {formErrors.role && (
+                <div className="text-danger small mt-1">{formErrors.role}</div>
+              )}
             </Form.Group>
 
             <Row>
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Password</Form.Label>
+                  <Form.Label>{t("users.modal.password")}</Form.Label>
 
                   <Form.Control
                     type="password"
                     name="password"
                     value={formData.password}
                     placeholder={
-                      modalMode === "edit" ? "Leave blank to keep current" : ""
+                      modalMode === "edit"
+                        ? t("users.modal.password_placeholder")
+                        : ""
                     }
                     onChange={handleInputChange}
+                    isInvalid={!!formErrors.password}
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {formErrors.password}
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
 
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Confirm Password</Form.Label>
+                  <Form.Label>{t("users.modal.confirm_password")}</Form.Label>
 
                   <Form.Control
                     type="password"
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
+                    isInvalid={!!formErrors.confirmPassword}
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {formErrors.confirmPassword}
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>
@@ -150,19 +171,19 @@ const UserFormModal = ({
 
       <Modal.Footer className="border-0 pt-0">
         <Button variant="light" onClick={handleClose}>
-          Cancel
+          {t("users.modal.cancel")}
         </Button>
 
         <Button variant="dark" onClick={handleSubmit}>
           {modalLoading ? (
             <>
               <Spinner size="sm" className="me-2" />
-              Saving...
+              {t("users.modal.saving")}
             </>
           ) : modalMode === "add" ? (
-            "Create User"
+            t("users.modal.create_btn")
           ) : (
-            "Update User"
+            t("users.modal.update_btn")
           )}
         </Button>
       </Modal.Footer>

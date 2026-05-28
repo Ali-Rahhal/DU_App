@@ -82,13 +82,13 @@ const ItemAlternatives = () => {
       <div className="container mt-5" style={{ minHeight: "60vh" }}>
         {/* Header */}
         <div className="mb-4">
-          <h2 style={{ fontWeight: "bold" }}>{t("item_alternatives")}</h2>
-          <p className="text-muted">Manage item alternatives.</p>
+          <h2 style={{ fontWeight: "bold" }}>{t("item_alternatives.title")}</h2>
+          <p className="text-muted">{t("item_alternatives.description")}</p>
         </div>
 
         <div className="row">
           <div className="col-12 col-md-4 mb-4">
-            <h5>Items</h5>
+            <h5>{t("item_alternatives.items")}</h5>
             <Autocomplete
               fetchFn={(params) =>
                 getProducts({
@@ -99,22 +99,22 @@ const ItemAlternatives = () => {
               }
               value={selectedItem}
               onChange={(item) => loadItemData(item)}
-              placeholder="Search items..."
+              placeholder={t("item_alternatives.search_items")}
             />
           </div>
 
           <div className="col-12 col-md-8">
             {!selectedItem ? (
               <div className="text-muted">
-                Select an item to manage alternatives
+                {t("item_alternatives.search_description")}
               </div>
             ) : (
               <>
                 {/* Alternatives */}
                 <div className="mb-4">
-                  <h5>Alternatives</h5>
+                  <h5>{t("item_alternatives.alternatives")}</h5>
                   <div className="text-muted mb-2" style={{ fontSize: 13 }}>
-                    💡 Drag to reorder. Top item = highest priority.
+                    {t("item_alternatives.alternatives_description")}
                   </div>
 
                   <Autocomplete
@@ -150,7 +150,7 @@ const ItemAlternatives = () => {
                         });
                       })
                     }
-                    placeholder="Search alternatives..."
+                    placeholder={t("item_alternatives.search_alternatives")}
                     exclude={selectedItem ? [selectedItem.item_code] : []}
                   />
 
@@ -161,7 +161,7 @@ const ItemAlternatives = () => {
                   />
 
                   <Button className="mt-2" onClick={saveAlternatives}>
-                    Save Alternatives
+                    {t("item_alternatives.save")}
                   </Button>
                 </div>
               </>

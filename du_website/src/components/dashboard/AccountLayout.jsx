@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 function AccountLayout({ children, title, subTitle }) {
   return (
     <>
-      <AccountHeader></AccountHeader>
+      <AccountHeader title={title}></AccountHeader>
       <div className="accounnt_body">
         <div className="container">
           <div className="row justify-content-between">

@@ -1,6 +1,6 @@
 {
   "name": "du_website",
-  "version": "25.05.2026-1.0.8",
+  "version": "28.05.2026-1.0.9",
   "private": true,
   "scripts": {
     "dev": "next dev -p 5006",

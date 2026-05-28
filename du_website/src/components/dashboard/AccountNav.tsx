@@ -68,7 +68,7 @@ function AccountNav() {
                 <Link className="nav-link" href="account">
                   <i className="fa fa-user"></i>
                   {/* My Account */}
-                  {t("my_account")}
+                  {t("my_account.title")}
                 </Link>
               </li>
               {checkPermission(ALL_PERMISSIONS.ChangePassword) ? (
@@ -80,7 +80,7 @@ function AccountNav() {
                 >
                   <Link className="nav-link" href="change-password">
                     <i className="fa fa-lock"></i>
-                    {t("change_password")}
+                    {t("change_password.title")}
                   </Link>
                 </li>
               ) : null}
@@ -93,7 +93,7 @@ function AccountNav() {
                 >
                   <Link className="nav-link" href="users">
                     <i className="fa fa-users"></i>
-                    {t("users")}
+                    {t("users.title")}
                   </Link>
                 </li>
               ) : null}
@@ -106,7 +106,7 @@ function AccountNav() {
                 <Link className="nav-link" href="wishlist">
                   <i className="fa fa-heart"></i>
                   {/* Wishlist */}
-                  {t("wishlist")}
+                  {t("wishlist.title")}
                 </Link>
               </li>
               <li
@@ -115,7 +115,7 @@ function AccountNav() {
                 <Link className="nav-link" href="orders">
                   <i className="fa fa-shopping-cart"></i>
                   {/* Order */}
-                  {t("order")}
+                  {t("orders.title")}
                 </Link>
               </li>
               <li
@@ -126,7 +126,7 @@ function AccountNav() {
                 <Link className="nav-link" href="open-invoice">
                   <i className="fa fa-university"></i>
                   {/* Open Invoices */}
-                  {t("open_invoices")}
+                  {t("open_invoices.title")}
                 </Link>
               </li>
               <li
@@ -137,7 +137,7 @@ function AccountNav() {
                 <Link className="nav-link" href="sales-invoice">
                   <i className="fa fa-money "></i>
                   {/* Sales Invoices */}
-                  {t("sales_invoices")}
+                  {t("sales_invoice.title")}
                 </Link>
               </li>
               {/* {checkPermission(ALL_PERMISSIONS.COMPLAINT) ? (

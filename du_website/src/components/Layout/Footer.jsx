@@ -70,7 +70,9 @@ function Footer() {
                       <Link href="/orders">{t("my_orders")}</Link>
                     </li>
                     <li>
-                      <Link href="/open-invoice">{t("open_invoices")}</Link>
+                      <Link href="/open-invoice">
+                        {t("open_invoices.title")}
+                      </Link>
                     </li>
 
                     <li>

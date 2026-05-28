@@ -1,4 +1,5 @@
 import { Table, Badge, Spinner } from "react-bootstrap";
+import { useTranslations } from "next-intl";
 import TableActionsMenu from "@/components/common/TableActionsMenu";
 import TableActionsItem from "@/components/common/TableActionsItem";
 import { User } from "@/types/usersTypes";
@@ -12,16 +13,20 @@ interface Props {
   onToggle: (id: number) => void;
 }
 
-const getUserRole = (role: string | null) => {
+const getUserRole = (role: string | null, t: any) => {
   switch (role) {
     case ROLES.User:
-      return { label: "User", bg: "light", text: "dark" };
+      return { label: t("users.table.role_user"), bg: "light", text: "dark" };
     case ROLES.SysUser:
-      return { label: "SysUser", bg: "primary" };
+      return { label: t("users.table.role_sysuser"), bg: "primary" };
     case ROLES.Admin:
-      return { label: "Admin", bg: "danger" };
+      return { label: t("users.table.role_admin"), bg: "danger" };
     default:
-      return { label: "Unknown", bg: "warning", text: "dark" };
+      return {
+        label: t("users.table.role_unknown"),
+        bg: "warning",
+        text: "dark",
+      };
   }
 };
 
@@ -32,16 +37,18 @@ const UsersTable = ({
   onPermissions,
   onToggle,
 }: Props) => {
+  const t = useTranslations();
+
   return (
     <Table hover className="mb-0 align-middle">
       <thead className="bg-light small text-uppercase text-muted">
         <tr>
-          <th>Code</th>
-          <th>Name</th>
-          <th>Role</th>
-          <th>Status</th>
-          <th>Joined</th>
-          <th className="text-center">Actions</th>
+          <th>{t("users.table.code")}</th>
+          <th>{t("users.table.name")}</th>
+          <th>{t("users.table.role")}</th>
+          <th>{t("users.table.status")}</th>
+          <th>{t("users.table.joined")}</th>
+          <th className="text-center">{t("users.table.actions")}</th>
         </tr>
       </thead>
 
@@ -54,7 +61,7 @@ const UsersTable = ({
           </tr>
         ) : (
           users.map((user) => {
-            const role = getUserRole(user.role);
+            const role = getUserRole(user.role, t);
 
             return (
               <tr key={user.id}>
@@ -66,8 +73,7 @@ const UsersTable = ({
 
                 <td>
                   <Badge bg={role.bg} text={role.text || "white"}>
-                    {" "}
-                    {role.label}{" "}
+                    {role.label}
                   </Badge>
                 </td>
 
@@ -76,7 +82,9 @@ const UsersTable = ({
                     bg={user.is_active ? "success" : "warning"}
                     text="white"
                   >
-                    {user.is_active ? "Active" : "Inactive"}
+                    {user.is_active
+                      ? t("users.table.active")
+                      : t("users.table.inactive")}
                   </Badge>
                 </td>
 
@@ -86,14 +94,14 @@ const UsersTable = ({
                   <TableActionsMenu>
                     <TableActionsItem
                       icon="fa-edit"
-                      label="Edit"
+                      label={t("users.table.edit")}
                       onClick={() => onEdit(user.id, user.role)}
                     />
 
                     {user.role === ROLES.SysUser && (
                       <TableActionsItem
                         icon="fa-key"
-                        label="Permissions"
+                        label={t("users.table.permissions")}
                         onClick={() => onPermissions(user)}
                       />
                     )}
@@ -102,7 +110,11 @@ const UsersTable = ({
 
                     <TableActionsItem
                       icon="fa-ban"
-                      label={user.is_active ? "Deactivate" : "Activate"}
+                      label={
+                        user.is_active
+                          ? t("users.table.deactivate")
+                          : t("users.table.activate")
+                      }
                       onClick={() => onToggle(user.id)}
                       danger
                     />

@@ -18,23 +18,28 @@ import { useRef } from "react";
 import { useRouter } from "next/router";
 import { useAccountStore } from "@/store/zustand";
 import { Product } from "@/types/productTypes";
+
 const Wishlist = () => {
   // Authorization Check:
   const rt = useRouter();
   const { role, checkPermission } = useAccountStore();
   const hasShownToast = useRef(false);
+  const t = useTranslations();
+
   useEffect(() => {
     if (!checkPermission(ALL_PERMISSIONS.Wishlist) && !hasShownToast.current) {
-      toast.error("You don't have permission to access the wishlist page");
+      toast.error(t("wishlist.no_permission"));
       hasShownToast.current = true;
       rt.push("/");
     }
-  }, [role]);
+  }, [role, t]);
+
   if (!checkPermission(ALL_PERMISSIONS.Wishlist)) return null;
 
   const { isAuth } = useAuthStore();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
+
   const fetchFavoriteItems = () => {
     setLoading(true);
     getFavoriteItems({
@@ -47,32 +52,31 @@ const Wishlist = () => {
       })
       .catch((err) => {
         setLoading(false);
+        toast.error(t("wishlist.fetch_error"));
       });
   };
+
   const removeItemHandler = (item) => {
     removeFromFavorite(item)
       .then((res) => {
-        toast.success(res.data.message);
+        toast.success(t("wishlist.removed_success"));
         fetchFavoriteItems();
-        // setItems((prev) => prev.filter((i) => i.item_code !== item));
       })
       .catch((err) => {
-        toast.error(err.response.data.message);
+        toast.error(err.response?.data?.message || t("wishlist.remove_error"));
       });
-    // dispatch(deleteFormWishlist(item));
   };
+
   useEffect(() => {
     if (!isAuth) return;
     fetchFavoriteItems();
   }, [isAuth]);
-  const t = useTranslations();
+
   return (
     <Layout>
       <AccountLayout
-        // title="Wishlist"
-        title={t("wishlist")}
-        // subTitle="You have full control to manage your own account setting."
-        subTitle={t("you_have_full_control_to_manage_your_own_account")}
+        title={t("wishlist.title")}
+        subTitle={t("wishlist.subtitle")}
       >
         {items && items.length > 0 ? (
           <div className="card">
@@ -92,9 +96,10 @@ const Wishlist = () => {
           </div>
         ) : !loading ? (
           <div className="cart_item py-5 border text-center rounded bg-white">
-            <h4 className="text-muted mb-4">No Items in Wishlist</h4>
+            <h4 className="text-muted mb-4">{t("wishlist.empty_message")}</h4>
             <Link href="/" className="btn btn-primary btn-rounded">
-              Continue shopping &nbsp; <i className="ti-arrow-right"></i>
+              {t("wishlist.continue_shopping")} &nbsp;{" "}
+              <i className="ti-arrow-right"></i>
             </Link>
           </div>
         ) : (

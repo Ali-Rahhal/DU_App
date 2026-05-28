@@ -126,13 +126,13 @@ const MiniCart = ({
 
           <li className="w-100 d-block">
             <Link href="/cart" className="btn btn-primary w-100 d-block">
-              Proceed to Cart
+              {t("proceed_to_cart")}
             </Link>
           </li>
         </ul>
       ) : (
         <ul className="shopping-cart-items">
-          <li>You have no items in your shopping cart.</li>
+          <li>{t("you_have_no_items_in_your_shopping_cart")}</li>
         </ul>
       )}
     </>

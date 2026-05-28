@@ -62,15 +62,13 @@ const Restock = () => {
       <div className="container mt-5" style={{ minHeight: "60vh" }}>
         {/* Header */}
         <div className="mb-4">
-          <h2 style={{ fontWeight: "bold" }}>{t("restock")}</h2>
-          <p className="text-muted">
-            Manage automatic restocking of your inventory.
-          </p>
+          <h2 style={{ fontWeight: "bold" }}>{t("restock.title")}</h2>
+          <p className="text-muted">{t("restock.description")}</p>
         </div>
 
         <div className="row">
           <div className="col-12 col-md-4 mb-4">
-            <h5>Items</h5>
+            <h5>{t("restock.items")}</h5>
             <Autocomplete
               fetchFn={(params) =>
                 getProducts({
@@ -81,24 +79,26 @@ const Restock = () => {
               }
               value={selectedItem}
               onChange={(item) => loadItemData(item)}
-              placeholder="Search items..."
+              placeholder={t("restock.search_items")}
             />
           </div>
 
           <div className="col-12 col-md-8">
             {!selectedItem ? (
-              <div className="text-muted">Select an item to manage stock</div>
+              <div className="text-muted">
+                {t("restock.search_description")}
+              </div>
             ) : (
               <>
                 {/* Restock */}
                 <div>
                   <h5>Restock</h5>
-                    <div className="text-muted mb-3" style={{ fontSize: 13 }}>
-                    💡 Set a minimum stock level and restock quantity to automatically maintain your inventory.
-                    </div>
+                  <div className="text-muted mb-3" style={{ fontSize: 13 }}>
+                    {t("restock.restock_description")}
+                  </div>
 
                   <Form.Group className="mb-2">
-                    <Form.Label>Minimum Stock</Form.Label>
+                    <Form.Label>{t("restock.minimum_stock")}</Form.Label>
                     <Form.Control
                       type="number"
                       min="0"
@@ -109,11 +109,11 @@ const Restock = () => {
                     />
                   </Form.Group>
                   <div className="mb-2">
-                    <Button onClick={saveRestock}>Save</Button>
+                    <Button onClick={saveRestock}>{t("restock.save")}</Button>
                   </div>
 
                   <Form.Group className="mb-2">
-                    <Form.Label>Current Quantity</Form.Label>
+                    <Form.Label>{t("restock.current_quantity")}</Form.Label>
                     <Form.Control
                       type="number"
                       min="0"
@@ -123,7 +123,7 @@ const Restock = () => {
                   </Form.Group>
                   <div className="mb-2">
                     <Button variant="success" onClick={handleRestock}>
-                      Restock Now
+                      {t("restock.restock_now")}
                     </Button>
                   </div>
                 </div>

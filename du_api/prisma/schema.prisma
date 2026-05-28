@@ -7424,7 +7424,7 @@ model user_daily_distances {
 }
 
 model item_alternatives {
-  id                                                 BigInt   @id(map: "PK__item_alt__3213E83F88BFD43B") @default(autoincrement())
+  id                                                 BigInt   @id(map: "PK__item_alt__3213E83F397A21D5") @default(autoincrement())
   item_code                                          String   @db.NVarChar(50)
   alternative_item_code                              String   @db.NVarChar(50)
   priority                                           Int?     @default(1, map: "DF__item_alte__prior__38134ABB")
@@ -7434,11 +7434,11 @@ model item_alternatives {
 }
 
 model item_restock_config {
-  id           BigInt       @id(map: "PK__item_res__3213E83FB076E5DC") @default(autoincrement())
+  id           BigInt       @id(map: "PK__item_res__3213E83F0F72F324") @default(autoincrement())
   item_code    String       @db.NVarChar(50)
   client_id    Int
   min_stock    Decimal      @db.Decimal(18, 4)
-  is_active    Boolean?     @default(true, map: "DF__item_rest__is_ac__5697D1DB")
+  is_active    Boolean?     @default(true, map: "DF__item_rest__is_ac__447921A0")
   web_accounts web_accounts @relation(fields: [client_id], references: [id], onUpdate: NoAction, map: "fk_client")
   item         item         @relation(fields: [item_code], references: [item_code], onUpdate: NoAction, map: "fk_restock_item")
 
@@ -7456,8 +7456,8 @@ model sysdiagrams {
 }
 
 model item_expiry_deal {
-  id                      BigInt   @id(map: "PK__item_exp__3213E83F71843D7A") @default(autoincrement())
-  item_code               String   @unique(map: "UQ__item_exp__4A67201EECC8131E") @db.NVarChar(50)
+  id                      BigInt   @id(map: "PK__item_exp__3213E83FACFAD68F") @default(autoincrement())
+  item_code               String   @unique(map: "UQ__item_exp__4A67201E7B0DAD0F") @db.NVarChar(50)
   expiry_threshold_months Int
   discount_percentage     Float
   is_active               Boolean  @default(true, map: "DF_item_expiry_deal_is_active")
@@ -7466,4 +7466,462 @@ model item_expiry_deal {
   last_edited             DateTime @default(now(), map: "DF_item_expiry_deal_last_edited")
 
   @@index([item_code], map: "IX_item_expiry_deal_item_code")
+}
+
+model fidelity_gift {
+  fidelity_gift_id         BigInt                     @id(map: "PK__fidelity__B5DBAD87DEF0CDB3") @default(autoincrement())
+  name                     String                     @db.NVarChar(250)
+  description              String?
+  image_url                String?
+  required_points          Int
+  stock_quantity           Int                        @default(0, map: "DF__fidelity___stock__7EA5C335")
+  is_active                Boolean                    @default(true, map: "DF__fidelity___is_ac__7F99E76E")
+  created_at               DateTime                   @default(now(), map: "DF__fidelity___creat__008E0BA7") @db.DateTime
+  fidelity_gift_redemption fidelity_gift_redemption[]
+}
+
+model fidelity_gift_redemption {
+  fidelity_gift_redemption_id BigInt        @id(map: "PK__fidelity__C3C09E3E92E36B2F") @default(autoincrement())
+  account_id                  Int
+  fidelity_gift_id            BigInt
+  points_spent                Int
+  redemption_status           Int           @default(1, map: "DF__fidelity___redem__036A7852")
+  redeemed_at                 DateTime      @default(now(), map: "DF__fidelity___redee__045E9C8B") @db.DateTime
+  fidelity_gift               fidelity_gift @relation(fields: [fidelity_gift_id], references: [fidelity_gift_id], onUpdate: NoAction, map: "FK_fidelity_gift_redemption_gift")
+}
+
+model fidelity_points_ledger {
+  fidelity_points_ledger_id BigInt   @id(map: "PK__fidelity__6817B7484420D320") @default(autoincrement())
+  account_id                Int
+  transaction_header_id     BigInt?
+  points_earned             Int      @default(0, map: "DF__fidelity___point__714BC817")
+  points_redeemed           Int      @default(0, map: "DF__fidelity___point__723FEC50")
+  description               String?  @db.NVarChar(500)
+  created_at                DateTime @default(now(), map: "DF__fidelity___creat__73341089") @db.DateTime
+}
+
+model fidelity_reward_rule {
+  fidelity_reward_rule_id BigInt                 @id(map: "PK__fidelity__A9E1A1797C6CD14E") @default(autoincrement())
+  name                    String                 @db.NVarChar(200)
+  required_points         Int
+  reward_type             Int
+  discount_percentage     Decimal?               @db.Decimal(18, 2)
+  fixed_discount_amount   Decimal?               @db.Decimal(18, 2)
+  is_active               Boolean                @default(true, map: "DF__fidelity___is_ac__76107D34")
+  created_at              DateTime               @default(now(), map: "DF__fidelity___creat__7704A16D") @db.DateTime
+  fidelity_user_reward    fidelity_user_reward[]
+}
+
+model fidelity_user_reward {
+  fidelity_user_reward_id BigInt               @id(map: "PK__fidelity__AF3384F9CCE1EB55") @default(autoincrement())
+  account_id              Int
+  fidelity_reward_rule_id BigInt
+  granted_at              DateTime             @default(now(), map: "DF__fidelity___grant__79E10E18") @db.DateTime
+  is_active               Boolean              @default(true, map: "DF__fidelity___is_ac__7AD53251")
+  fidelity_reward_rule    fidelity_reward_rule @relation(fields: [fidelity_reward_rule_id], references: [fidelity_reward_rule_id], onUpdate: NoAction, map: "FK_user_fidelity_reward_rule")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model TEMP_CLIENT__007 {
+  client_code          String    @db.NVarChar(50)
+  erp_client_code      String?   @db.NVarChar(50)
+  description          String?   @db.NVarChar(400)
+  alt_description      String?   @db.NVarChar(400)
+  currency_code        String?   @db.NVarChar(50)
+  longitude            String?   @db.VarChar(20)
+  latitude             String?   @db.VarChar(20)
+  type                 Int?
+  parent_client_code   String?   @db.NVarChar(50)
+  status_id            Int
+  generator_user_code  String?   @db.NVarChar(50)
+  generation_date      DateTime?
+  approver_user_code   String?   @db.NVarChar(50)
+  approval_date        DateTime?
+  creator_user_code    String?   @db.NVarChar(50)
+  is_processed         Int       @db.TinyInt
+  date_added           DateTime
+  last_edited          DateTime
+  client_type          Int       @db.TinyInt
+  barcode              String?   @db.NVarChar(50)
+  nfc_code             String?   @db.NVarChar(50)
+  default_user_code    String?   @db.NVarChar(50)
+  billing_address_type Int
+  unique_identifier    Int
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model TEMP_CLIENT__0071 {
+  client_code          String    @db.NVarChar(50)
+  erp_client_code      String?   @db.NVarChar(50)
+  description          String?   @db.NVarChar(400)
+  alt_description      String?   @db.NVarChar(400)
+  currency_code        String?   @db.NVarChar(50)
+  longitude            String?   @db.VarChar(20)
+  latitude             String?   @db.VarChar(20)
+  type                 Int?
+  parent_client_code   String?   @db.NVarChar(50)
+  status_id            Int
+  generator_user_code  String?   @db.NVarChar(50)
+  generation_date      DateTime?
+  approver_user_code   String?   @db.NVarChar(50)
+  approval_date        DateTime?
+  creator_user_code    String?   @db.NVarChar(50)
+  is_processed         Int       @db.TinyInt
+  date_added           DateTime
+  last_edited          DateTime
+  client_type          Int       @db.TinyInt
+  barcode              String?   @db.NVarChar(50)
+  nfc_code             String?   @db.NVarChar(50)
+  default_user_code    String?   @db.NVarChar(50)
+  billing_address_type Int
+  unique_identifier    Int
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model TEMP_CLIENT__00711 {
+  client_code          String    @db.NVarChar(50)
+  erp_client_code      String?   @db.NVarChar(50)
+  description          String?   @db.NVarChar(400)
+  alt_description      String?   @db.NVarChar(400)
+  currency_code        String?   @db.NVarChar(50)
+  longitude            String?   @db.VarChar(20)
+  latitude             String?   @db.VarChar(20)
+  type                 Int?
+  parent_client_code   String?   @db.NVarChar(50)
+  status_id            Int
+  generator_user_code  String?   @db.NVarChar(50)
+  generation_date      DateTime?
+  approver_user_code   String?   @db.NVarChar(50)
+  approval_date        DateTime?
+  creator_user_code    String?   @db.NVarChar(50)
+  is_processed         Int       @db.TinyInt
+  date_added           DateTime
+  last_edited          DateTime
+  client_type          Int       @db.TinyInt
+  barcode              String?   @db.NVarChar(50)
+  nfc_code             String?   @db.NVarChar(50)
+  default_user_code    String?   @db.NVarChar(50)
+  billing_address_type Int
+  unique_identifier    Int
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model TEMP_CLIENT__0071111 {
+  client_code          String    @db.NVarChar(50)
+  erp_client_code      String?   @db.NVarChar(50)
+  description          String?   @db.NVarChar(400)
+  alt_description      String?   @db.NVarChar(400)
+  currency_code        String?   @db.NVarChar(50)
+  longitude            String?   @db.VarChar(20)
+  latitude             String?   @db.VarChar(20)
+  type                 Int?
+  parent_client_code   String?   @db.NVarChar(50)
+  status_id            Int
+  generator_user_code  String?   @db.NVarChar(50)
+  generation_date      DateTime?
+  approver_user_code   String?   @db.NVarChar(50)
+  approval_date        DateTime?
+  creator_user_code    String?   @db.NVarChar(50)
+  is_processed         Int       @db.TinyInt
+  date_added           DateTime
+  last_edited          DateTime
+  client_type          Int       @db.TinyInt
+  barcode              String?   @db.NVarChar(50)
+  nfc_code             String?   @db.NVarChar(50)
+  default_user_code    String?   @db.NVarChar(50)
+  billing_address_type Int
+  unique_identifier    Int
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model TEMP_CLIENT__07 {
+  client_code          String    @db.NVarChar(50)
+  erp_client_code      String?   @db.NVarChar(50)
+  description          String?   @db.NVarChar(400)
+  alt_description      String?   @db.NVarChar(400)
+  currency_code        String?   @db.NVarChar(50)
+  longitude            String?   @db.VarChar(20)
+  latitude             String?   @db.VarChar(20)
+  type                 Int?
+  parent_client_code   String?   @db.NVarChar(50)
+  status_id            Int
+  generator_user_code  String?   @db.NVarChar(50)
+  generation_date      DateTime?
+  approver_user_code   String?   @db.NVarChar(50)
+  approval_date        DateTime?
+  creator_user_code    String?   @db.NVarChar(50)
+  is_processed         Int       @db.TinyInt
+  date_added           DateTime
+  last_edited          DateTime
+  client_type          Int       @db.TinyInt
+  barcode              String?   @db.NVarChar(50)
+  nfc_code             String?   @db.NVarChar(50)
+  default_user_code    String?   @db.NVarChar(50)
+  billing_address_type Int
+  unique_identifier    Int
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model TEMP_ITEM__007 {
+  Id                    Int?
+  Item_Code             String?  @db.VarChar(250)
+  description           String?  @db.VarChar(250)
+  Uom_Code              String?  @db.VarChar(250)
+  Client_Code           String?  @db.VarChar(250)
+  Price                 Float?
+  IS_TTC                Int?
+  Price_List_Code       String?  @db.VarChar(250)
+  PRICE_MARGIN          Float?
+  CURRENCY_CODE         String?  @db.VarChar(250)
+  CURRENCY_SYMBOL       String?  @db.VarChar(250)
+  Tax                   Float?
+  Tax_Code              String?  @db.VarChar(250)
+  Default_Discount      Float?
+  BARCODE               String?  @db.VarChar(2250)
+  RATIO_TO_BASE_UOM     Float?
+  CONSIGNMENT_ITEM_CODE String?  @db.VarChar(250)
+  PRICING_UOM_CODE      String?  @db.VarChar(250)
+  CONVERSION_MARGIN     Float?
+  SYMBOL                String?  @db.VarChar(250)
+  DECIMAL_DIGITS        Int?
+  is_dual               Boolean?
+  Stock_uom             String?  @db.VarChar(250)
+  stock_uom_ratio       Float?
+  item_order            Int?
+  brand_code            String?  @db.VarChar(250)
+  is_Consignment        Boolean?
+  distribution_type     Int?
+  item_type             Int?
+  return_type           Int?
+  is_main_uom           Boolean
+  must_stock_list       Int
+  return_price          Decimal? @db.Decimal(18, 4)
+  added_price           Decimal? @db.Decimal(18, 4)
+  is_new_item           Boolean
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model TEMP_ITEM__0071 {
+  Id                    Int?
+  Item_Code             String?  @db.VarChar(250)
+  description           String?  @db.VarChar(250)
+  Uom_Code              String?  @db.VarChar(250)
+  Client_Code           String?  @db.VarChar(250)
+  Price                 Float?
+  IS_TTC                Int?
+  Price_List_Code       String?  @db.VarChar(250)
+  PRICE_MARGIN          Float?
+  CURRENCY_CODE         String?  @db.VarChar(250)
+  CURRENCY_SYMBOL       String?  @db.VarChar(250)
+  Tax                   Float?
+  Tax_Code              String?  @db.VarChar(250)
+  Default_Discount      Float?
+  BARCODE               String?  @db.VarChar(2250)
+  RATIO_TO_BASE_UOM     Float?
+  CONSIGNMENT_ITEM_CODE String?  @db.VarChar(250)
+  PRICING_UOM_CODE      String?  @db.VarChar(250)
+  CONVERSION_MARGIN     Float?
+  SYMBOL                String?  @db.VarChar(250)
+  DECIMAL_DIGITS        Int?
+  is_dual               Boolean?
+  Stock_uom             String?  @db.VarChar(250)
+  stock_uom_ratio       Float?
+  item_order            Int?
+  brand_code            String?  @db.VarChar(250)
+  is_Consignment        Boolean?
+  distribution_type     Int?
+  item_type             Int?
+  return_type           Int?
+  is_main_uom           Boolean
+  must_stock_list       Int
+  return_price          Decimal? @db.Decimal(18, 4)
+  added_price           Decimal? @db.Decimal(18, 4)
+  is_new_item           Boolean
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model TEMP_ITEM__00711 {
+  Id                    Int?
+  Item_Code             String?  @db.VarChar(250)
+  description           String?  @db.VarChar(250)
+  Uom_Code              String?  @db.VarChar(250)
+  Client_Code           String?  @db.VarChar(250)
+  Price                 Float?
+  IS_TTC                Int?
+  Price_List_Code       String?  @db.VarChar(250)
+  PRICE_MARGIN          Float?
+  CURRENCY_CODE         String?  @db.VarChar(250)
+  CURRENCY_SYMBOL       String?  @db.VarChar(250)
+  Tax                   Float?
+  Tax_Code              String?  @db.VarChar(250)
+  Default_Discount      Float?
+  BARCODE               String?  @db.VarChar(2250)
+  RATIO_TO_BASE_UOM     Float?
+  CONSIGNMENT_ITEM_CODE String?  @db.VarChar(250)
+  PRICING_UOM_CODE      String?  @db.VarChar(250)
+  CONVERSION_MARGIN     Float?
+  SYMBOL                String?  @db.VarChar(250)
+  DECIMAL_DIGITS        Int?
+  is_dual               Boolean?
+  Stock_uom             String?  @db.VarChar(250)
+  stock_uom_ratio       Float?
+  item_order            Int?
+  brand_code            String?  @db.VarChar(250)
+  is_Consignment        Boolean?
+  distribution_type     Int?
+  item_type             Int?
+  return_type           Int?
+  is_main_uom           Boolean
+  must_stock_list       Int
+  return_price          Decimal? @db.Decimal(18, 4)
+  added_price           Decimal? @db.Decimal(18, 4)
+  is_new_item           Boolean
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model TEMP_ITEM__0071111 {
+  Id                    Int?
+  Item_Code             String?  @db.VarChar(250)
+  description           String?  @db.VarChar(250)
+  Uom_Code              String?  @db.VarChar(250)
+  Client_Code           String?  @db.VarChar(250)
+  Price                 Float?
+  IS_TTC                Int?
+  Price_List_Code       String?  @db.VarChar(250)
+  PRICE_MARGIN          Float?
+  CURRENCY_CODE         String?  @db.VarChar(250)
+  CURRENCY_SYMBOL       String?  @db.VarChar(250)
+  Tax                   Float?
+  Tax_Code              String?  @db.VarChar(250)
+  Default_Discount      Float?
+  BARCODE               String?  @db.VarChar(2250)
+  RATIO_TO_BASE_UOM     Float?
+  CONSIGNMENT_ITEM_CODE String?  @db.VarChar(250)
+  PRICING_UOM_CODE      String?  @db.VarChar(250)
+  CONVERSION_MARGIN     Float?
+  SYMBOL                String?  @db.VarChar(250)
+  DECIMAL_DIGITS        Int?
+  is_dual               Boolean?
+  Stock_uom             String?  @db.VarChar(250)
+  stock_uom_ratio       Float?
+  item_order            Int?
+  brand_code            String?  @db.VarChar(250)
+  is_Consignment        Boolean?
+  distribution_type     Int?
+  item_type             Int?
+  return_type           Int?
+  is_main_uom           Boolean
+  must_stock_list       Int
+  return_price          Decimal? @db.Decimal(18, 4)
+  added_price           Decimal? @db.Decimal(18, 4)
+  is_new_item           Boolean
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model TEMP_ITEM__07 {
+  Id                    Int?
+  Item_Code             String?  @db.VarChar(250)
+  description           String?  @db.VarChar(250)
+  Uom_Code              String?  @db.VarChar(250)
+  Client_Code           String?  @db.VarChar(250)
+  Price                 Float?
+  IS_TTC                Int?
+  Price_List_Code       String?  @db.VarChar(250)
+  PRICE_MARGIN          Float?
+  CURRENCY_CODE         String?  @db.VarChar(250)
+  CURRENCY_SYMBOL       String?  @db.VarChar(250)
+  Tax                   Float?
+  Tax_Code              String?  @db.VarChar(250)
+  Default_Discount      Float?
+  BARCODE               String?  @db.VarChar(2250)
+  RATIO_TO_BASE_UOM     Float?
+  CONSIGNMENT_ITEM_CODE String?  @db.VarChar(250)
+  PRICING_UOM_CODE      String?  @db.VarChar(250)
+  CONVERSION_MARGIN     Float?
+  SYMBOL                String?  @db.VarChar(250)
+  DECIMAL_DIGITS        Int?
+  is_dual               Boolean?
+  Stock_uom             String?  @db.VarChar(250)
+  stock_uom_ratio       Float?
+  item_order            Int?
+  brand_code            String?  @db.VarChar(250)
+  is_Consignment        Boolean?
+  distribution_type     Int?
+  item_type             Int?
+  return_type           Int?
+  is_main_uom           Boolean
+  must_stock_list       Int
+  return_price          Decimal? @db.Decimal(18, 4)
+  added_price           Decimal? @db.Decimal(18, 4)
+  is_new_item           Boolean
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model TEMP_PRICE_LIST_ASSIGNMENT__007 {
+  price_list_assignment_id BigInt
+  price_list_code          String @db.NVarChar(250)
+  assigned_type            Int    @db.TinyInt
+  assigned_code            String @db.NVarChar(50)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model TEMP_PRICE_LIST_ASSIGNMENT__0071 {
+  price_list_assignment_id BigInt
+  price_list_code          String @db.NVarChar(250)
+  assigned_type            Int    @db.TinyInt
+  assigned_code            String @db.NVarChar(50)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model TEMP_PRICE_LIST_ASSIGNMENT__00711 {
+  price_list_assignment_id BigInt
+  price_list_code          String @db.NVarChar(250)
+  assigned_type            Int    @db.TinyInt
+  assigned_code            String @db.NVarChar(50)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model TEMP_PRICE_LIST_ASSIGNMENT__0071111 {
+  price_list_assignment_id BigInt
+  price_list_code          String @db.NVarChar(250)
+  assigned_type            Int    @db.TinyInt
+  assigned_code            String @db.NVarChar(50)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model TEMP_PRICE_LIST_ASSIGNMENT__07 {
+  price_list_assignment_id BigInt
+  price_list_code          String @db.NVarChar(250)
+  assigned_type            Int    @db.TinyInt
+  assigned_code            String @db.NVarChar(50)
+
+  @@ignore
 }

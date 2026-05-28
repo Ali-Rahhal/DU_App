@@ -168,6 +168,50 @@
   "restock": "Système de remise en stock",
   "expiry-deal": "Promotions expirantes",
 
+  "fidelity": {
+    "link": "Fidélité/Cadeaux",
+    "fid_program": "Programme de Fidélité",
+    "fid_program_discription": "Gagnez des points et débloquez des récompenses",
+
+    "total_Earned": "Total Gagné",
+    "redeemed": "Échangés",
+    "available": "Disponibles",
+
+    "next_reward": "Prochaine Récompense",
+    "next_reward_discription": "Continuez à accumuler des points pour débloquer votre prochain palier",
+    "more_points_needed": "points supplémentaires nécessaires",
+    "upcoming_reward": "Récompense à Venir",
+
+    "all_rewards_unlocked": "Toutes les Récompenses Débloquées",
+    "all_rewards_unlocked_description": "Vous avez débloqué toutes les récompenses disponibles",
+
+    "reward_roadmap": "Feuille de Route des Récompenses",
+    "reward_roadmap_discription": "Débloquez de meilleures récompenses à mesure que vos points augmentent",
+
+    "unlocks_at": "Débloqué à",
+    "points": "points",
+
+    "unlocked": "Débloqué",
+    "next_target": "Prochain Objectif",
+
+    "no_milestones": "Aucune récompense de palier configurée pour le moment",
+
+    "percentage_discount_reward": "Récompense de réduction en pourcentage",
+    "fixed_discount_reward": "Récompense de réduction à montant fixe",
+    "loyalty_milestone_reward": "Récompense de fidélité par palier",
+
+    "redeem_gifts": "Échangez des Cadeaux",
+    "redeem": "Échanger",
+    "load_more": "Charger Plus",
+
+    "points_history": "Historique des Points",
+    "points_history_discription": "Suivez tous les points gagnés et échangés",
+    "records": "Enregistrements",
+
+    "no_points_history": "Aucun historique de points pour le moment",
+    "points_history_empty_description": "Votre activité de fidélité apparaîtra ici"
+  },
+
   "permission": {
     "RETURN": "Retourner la commande",
     "ORDER": "Commande",

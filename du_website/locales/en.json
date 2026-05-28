@@ -169,6 +169,50 @@
   "restock": "Restock System",
   "expiry-deal": "Expiry Deals",
 
+  "fidelity": {
+    "link": "Fidelity/Gifts",
+    "fid_program": "Fidelity Program",
+    "fid_program_discription": "Earn points and unlock rewards",
+
+    "total_Earned": "Total Earned",
+    "redeemed": "Redeemed",
+    "available": "Available",
+
+    "next_reward": "Next Reward",
+    "next_reward_discription": "Keep collecting points to unlock your next milestone",
+    "more_points_needed": "more points needed",
+    "upcoming_reward": "Upcoming Reward",
+
+    "all_rewards_unlocked": "All Rewards Unlocked",
+    "all_rewards_unlocked_description": "You have unlocked every available milestone reward",
+
+    "reward_roadmap": "Reward Roadmap",
+    "reward_roadmap_discription": "Unlock better rewards as your points grow",
+
+    "unlocks_at": "Unlocks at",
+    "points": "points",
+
+    "unlocked": "Unlocked",
+    "next_target": "Next Target",
+
+    "no_milestones": "No milestone rewards configured yet",
+
+    "percentage_discount_reward": "Percentage discount reward",
+    "fixed_discount_reward": "Fixed amount discount reward",
+    "loyalty_milestone_reward": "Loyalty milestone reward",
+
+    "redeem_gifts": "Redeem Gifts",
+    "redeem": "Redeem",
+    "load_more": "Load More",
+
+    "points_history": "Points History",
+    "points_history_discription": "Track all earned and redeemed points",
+    "records": "Records",
+
+    "no_points_history": "No points history yet",
+    "points_history_empty_description": "Your loyalty activity will appear here"
+  },
+
   "permission": {
     "RETURN": "Return Order",
     "ORDER": "Order",

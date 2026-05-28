@@ -41,10 +41,11 @@ const Fidelity = () => {
                       textTransform: "uppercase",
                       cursor: "pointer",
                     }}
-                    onClick={() => { }}
-                  >{`${(firstName ? firstName[0] : "") +
+                    onClick={() => {}}
+                  >{`${
+                    (firstName ? firstName[0] : "") +
                     (lastName ? lastName[0] : "")
-                    }`}</div>
+                  }`}</div>
                 </div>
                 <div className="col-auto">
                   <h6 className="d-block font-weight-bold mb-0">{name}</h6>
@@ -167,7 +168,7 @@ const Fidelity = () => {
                   }}
                 >
                   <Image
-                    src="http://cloud.quayomobility.ca:15711/sfa_delice/images/products/LD001.jpeg"
+                    src={process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE}
                     width={200}
                     height={200}
                     alt=""
@@ -212,7 +213,7 @@ const Fidelity = () => {
                   }}
                 >
                   <Image
-                    src="http://cloud.quayomobility.ca:15711/sfa_delice/images/products/LD003.jpeg"
+                    src={process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE}
                     width={200}
                     height={200}
                     alt=""
@@ -257,7 +258,7 @@ const Fidelity = () => {
                   }}
                 >
                   <Image
-                    src="http://cloud.quayomobility.ca:15711/sfa_delice/images/products/LD007.jpeg"
+                    src={process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE}
                     width={200}
                     height={200}
                     alt=""
@@ -313,7 +314,7 @@ const Fidelity = () => {
                       }}
                     >
                       <Image
-                        src="http://cloud.quayomobility.ca:15711/sfa_delice/images/products/LD001.jpeg"
+                        src={process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE}
                         width={50}
                         height={50}
                         alt=""
@@ -342,7 +343,7 @@ const Fidelity = () => {
                       }}
                     >
                       <Image
-                        src="http://cloud.quayomobility.ca:15711/sfa_delice/images/products/LD003.jpeg"
+                        src={process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE}
                         width={50}
                         height={50}
                         alt=""
@@ -371,7 +372,7 @@ const Fidelity = () => {
                       }}
                     >
                       <Image
-                        src="http://cloud.quayomobility.ca:15711/sfa_delice/images/products/LD007.jpeg"
+                        src={process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE}
                         width={50}
                         height={50}
                         alt=""

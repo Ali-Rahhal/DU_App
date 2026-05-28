@@ -296,6 +296,9 @@ function Navbar() {
                             <Link href="/restock">{t("restock")}</Link>
                           </li>
                           <li>
+                            <Link href="/fidelity">{t("fidelity.link")}</Link>
+                          </li>
+                          <li>
                             <Link
                               href="/"
                               onClick={() => {
@@ -436,6 +439,9 @@ function Navbar() {
                   ) : null}
                   <li>
                     <Link href="/restock">{t("restock")}</Link>
+                  </li>
+                  <li>
+                    <Link href="/fidelity">{t("fidelity.link")}</Link>
                   </li>
                 </ul>
               </div>

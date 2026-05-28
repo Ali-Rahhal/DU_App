@@ -819,6 +819,43 @@ const updateExpiryDeal = async (
   );
 };
 
+//////
+////////Fidelity ApiCalls
+//////
+const getFidelityPoints = async (): Promise<AxiosResponse> => {
+  return await axios.get(privateApi + `/fidelity/getPoints`, {
+    withCredentials: true,
+  });
+};
+
+const getFidelityGifts = async (
+  skip = 0,
+  take = 20,
+): Promise<AxiosResponse> => {
+  return await axios.get(
+    privateApi + `/fidelity/getGifts?skip=${skip}&take=${take}`,
+    {
+      withCredentials: true,
+    },
+  );
+};
+
+const getMilestoneRewards = async (): Promise<AxiosResponse> => {
+  return await axios.get(privateApi + `/fidelity/getMilestoneRewards`, {
+    withCredentials: true,
+  });
+};
+
+const redeemGift = async (giftId: string): Promise<AxiosResponse> => {
+  return await axios.post(
+    privateApi + `/fidelity/redeemGift`,
+    {
+      giftId,
+    },
+    { withCredentials: true },
+  );
+};
+
 export {
   publicApi,
   privateApi,
@@ -894,4 +931,9 @@ export {
   //ExpiryDeal
   getExpiryDeal,
   updateExpiryDeal,
+  //Fidelity
+  getFidelityPoints,
+  getFidelityGifts,
+  getMilestoneRewards,
+  redeemGift,
 };

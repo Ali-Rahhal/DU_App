@@ -22,6 +22,7 @@ import cartAndFavRoutes from "./routes/private/cartAndFav.routes";
 import restockAndAlternativesPrivateRoutes from "./routes/private/restockAndAlternatives.routes";
 import restockAndAlternativesPublicRoutes from "./routes/public/restockAndAlternatives.routes";
 import expiryDealRoutes from "./routes/private/expiryDeal.routes";
+import fidelityRoutes from "./routes/private/fidelity.routes";
 
 //@ts-ignore
 BigInt.prototype.toJSON = function () {
@@ -91,6 +92,7 @@ app.route(`${PRIVATE_API}/survey`, surveyPrivateRoutes);
 app.route(`${PRIVATE_API}/complaint`, complaintRoutes);
 app.route(`${PRIVATE_API}/restockAndAlt`, restockAndAlternativesPrivateRoutes);
 app.route(`${PRIVATE_API}/expiryDeal`, expiryDealRoutes);
+app.route(`${PRIVATE_API}/fidelity`, fidelityRoutes);
 
 // server ./images folder
 // app.use(

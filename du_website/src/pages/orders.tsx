@@ -121,42 +121,70 @@ const Orders = () => {
                     </td>
                   </tr>
                 ) : (
-                  orders.map((order) => (
-                    <tr key={order.id}>
-                      <td className="py-3">
-                        <Link
-                          className="nav-link-style fw-medium fs-sm"
-                          href={`/orders-details?id=${order.id}`}
-                        >
-                          {order.orderNb}
-                        </Link>
-                      </td>
-                      <td className="py-3">{order.brand_description}</td>
-                      <td className="py-3">
-                        {new Date(order.creationDate).toLocaleString(
-                          t("orders.locale"),
-                          {
-                            month: "long",
-                            day: "numeric",
-                            year: "numeric",
-                          },
-                        )}
-                      </td>
-                      <td className="py-3">
-                        <span
-                          className={`badge m-0 ${getStatusBadgeClass(order.status)}`}
-                        >
-                          {order.status_text}
-                        </span>
-                      </td>
-                      <td className="py-3">
-                        <span>
-                          {currenncyCodeToSymbol(order.currency_code)}{" "}
-                          {parseFloat(order.total_amount).toLocaleString()}
-                        </span>
-                      </td>
-                    </tr>
-                  ))
+                  orders.map((order) => {
+                    let tempBrandDescription = "";
+                    if (
+                      order.brand_description.includes("Non Pharma") ||
+                      order.brand_description.includes("Pharma") ||
+                      order.brand_description.includes("Para Pharma")
+                    ) {
+                      tempBrandDescription = "Other";
+                    } else {
+                      tempBrandDescription = order.brand_description;
+                    }
+
+                    let translatedStatus = "";
+                    if (order.status_text.includes("Awaiting Approval")) {
+                      translatedStatus = t("orders.awaiting_approval");
+                    } else if (
+                      order.status_text.includes("Awaiting Delivery")
+                    ) {
+                      translatedStatus = t("orders.awaiting_delivery");
+                    } else if (order.status_text.includes("Delivered")) {
+                      translatedStatus = t("orders.delivered");
+                    } else if (order.status_text.includes("Rejected")) {
+                      translatedStatus = t("orders.rejected");
+                    } else {
+                      translatedStatus = t("orders.awaiting_approval");
+                    }
+
+                    return (
+                      <tr key={order.id}>
+                        <td className="py-3">
+                          <Link
+                            className="nav-link-style fw-medium fs-sm"
+                            href={`/orders-details?id=${order.id}`}
+                          >
+                            {order.orderNb}
+                          </Link>
+                        </td>
+                        <td className="py-3">{tempBrandDescription}</td>
+                        <td className="py-3">
+                          {new Date(order.creationDate).toLocaleString(
+                            t("orders.locale"),
+                            {
+                              month: "long",
+                              day: "numeric",
+                              year: "numeric",
+                            },
+                          )}
+                        </td>
+                        <td className="py-3">
+                          <span
+                            className={`badge m-0 ${getStatusBadgeClass(order.status)}`}
+                          >
+                            {translatedStatus}
+                          </span>
+                        </td>
+                        <td className="py-3">
+                          <span>
+                            {currenncyCodeToSymbol(order.currency_code)}{" "}
+                            {parseFloat(order.total_amount).toLocaleString()}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })
                 )}
               </tbody>
             </table>

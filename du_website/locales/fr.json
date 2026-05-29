@@ -276,6 +276,10 @@
     "fetch_error": "Échec du chargement des commandes",
     "no_orders": "Aucune commande trouvée",
     "locale": "fr-FR",
+    "awaiting_approval": "En attente d'approbation",
+    "rejected": "Rejeté",
+    "awaiting_delivery": "En attente de livraison",
+    "delivered": "Livré",
 
     "table": {
       "order_number": "N° de commande",
@@ -284,6 +288,28 @@
       "status": "Statut",
       "total": "Total"
     }
+  },
+  "order_details": {
+    "title": "Détails de la commande",
+    "subtitle": "Vous avez un contrôle total pour gérer votre propre compte.",
+    "fetch_error": "Échec du chargement des détails de la commande",
+    "no_items": "Aucun article dans cette commande",
+    "free": "Gratuit",
+    "return_item": "Retourner l'article",
+    "order_info": "Informations de commande",
+    "amount": "Montant",
+    "payment_type": "Type de paiement",
+    "credit": "Crédit",
+    "cash_on_delivery": "Paiement à la livraison",
+    "order_received_on": "Date de commande",
+    "delivery_address": "Adresse de livraison",
+    "phone_number": "Numéro de téléphone",
+    "na": "N/A",
+    "locale": "fr-FR",
+    "order_placed": "Commande passée",
+    "order_approved": "Commande approuvée",
+    "awaiting_delivery": "En attente de livraison",
+    "delivered_successfully": "Livré avec succès"
   },
   "open_invoices": {
     "title": "Factures Ouvertes",

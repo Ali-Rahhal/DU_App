@@ -278,6 +278,10 @@
     "fetch_error": "Failed to fetch orders",
     "no_orders": "No orders found",
     "locale": "en-US",
+    "awaiting_approval": "Awaiting Approval",
+    "rejected": "Rejected",
+    "awaiting_delivery": "Awaiting Delivery",
+    "delivered": "Delivered",
 
     "table": {
       "order_number": "Order #",
@@ -286,6 +290,28 @@
       "status": "Status",
       "total": "Total"
     }
+  },
+  "order_details": {
+    "title": "Order Details",
+    "subtitle": "You have full control to manage your own Account.",
+    "fetch_error": "Failed to fetch order details",
+    "no_items": "No items in this order",
+    "free": "Free",
+    "return_item": "Return Item",
+    "order_info": "Order Info",
+    "amount": "Amount",
+    "payment_type": "Payment Type",
+    "credit": "Credit",
+    "cash_on_delivery": "Cash on Delivery",
+    "order_received_on": "Order Received On",
+    "delivery_address": "Delivery Address",
+    "phone_number": "Phone Number",
+    "na": "N/A",
+    "locale": "en-US",
+    "order_placed": "Order placed",
+    "order_approved": "Order Approved",
+    "awaiting_delivery": "Awaiting Delivery",
+    "delivered_successfully": "Delivered successfully"
   },
   "open_invoices": {
     "title": "Open Invoices",

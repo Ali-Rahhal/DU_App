@@ -280,6 +280,7 @@
     "rejected": "Rejeté",
     "awaiting_delivery": "En attente de livraison",
     "delivered": "Livré",
+    "other": "Autre",
 
     "table": {
       "order_number": "N° de commande",

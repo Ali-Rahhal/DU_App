@@ -309,40 +309,41 @@ const getPromotionDetails = async (promotion_ids: number[]) => {
 
 const getItemsDetail = async (item_codes: string[]) => {
   const res: any = await prisma.$queryRaw`
-  SELECT  iu.item_code,
-  name = i.description,
-  barcode = iu.barcode,
-  description = i.alt_description,
-  currency_code = ipl.currency_code,
+  SELECT  
+  iu.item_code,
+  i.description AS name,
+  COALESCE(iu.barcode, i.item_code) AS barcode,
+  i.alt_description AS description,
+  ipl.currency_code,
   ISNULL(
     (
       SELECT STRING_AGG(ISNULL(img.base_path + '/' + img.folder_path + '/' + img.physical_file_name, N''), ',')
-      FROM dbo.image AS img
-      WHERE img.owner_code = iu.item_code AND img.owner_type = 1 AND img.is_active = 1 AND img.is_uploaded = 1
+      FROM dbo.image img
+      WHERE img.owner_code = iu.item_code 
+        AND img.owner_type = 1 
+        AND img.is_active = 1 
+        AND img.is_uploaded = 1
     ), N''
-  ) as images,
-  price = CONVERT(DECIMAL(18, 2), ipl.price),
-  discountedPrice = CASE
-  WHEN ipl.default_discount = 0 THEN NULL
-  ELSE CONVERT(DECIMAL(18, 2), ipl.price - (0.01 * ipl.default_discount * ipl.price))
-END
-FROM dbo.item_uom AS iu
-JOIN dbo.item AS i
-   ON i.item_code = iu.item_code
-JOIN dbo.item_price_list AS ipl
-   ON ipl.item_code = iu.item_code 
+  ) AS images,
+  CONVERT(DECIMAL(18,2), ipl.price) AS price,
+  CASE
+    WHEN ipl.default_discount = 0 THEN NULL
+    ELSE CONVERT(DECIMAL(18,2), ipl.price - (0.01 * ipl.default_discount * ipl.price))
+  END AS discountedPrice
+FROM (
+    SELECT *,
+           ROW_NUMBER() OVER (
+             PARTITION BY item_code 
+             ORDER BY CASE WHEN uom_code = 'P' THEN 0 ELSE 1 END
+           ) AS rn
+    FROM dbo.item_uom
+    WHERE is_active = 1
+) iu
+JOIN dbo.item i ON i.item_code = iu.item_code
+JOIN dbo.item_price_list ipl ON ipl.item_code = iu.item_code
 WHERE i.item_code IN (${Prisma.join(item_codes)})
- AND iu.is_active = 1
- AND ipl.is_active = 1
-
-GROUP BY iu.item_code,
-    i.description,
-    iu.barcode,
-    i.alt_description,
-    ipl.price,
-    ipl.default_discount,
-    ipl.currency_code
-ORDER BY CASE WHEN iu.uom_code = 'P' THEN 0 ELSE 1 END
+  AND iu.rn = 1
+  AND ipl.is_active = 1
     `;
 
   const finalResult = res.map((item) => {

@@ -318,10 +318,9 @@ const Cart = () => {
                     />
                   ))}
                   {promotions?.addedItems?.map((item) => {
-                    const [imgSrcPromo, setImgSrcPromo] = useState(
+                    const imgSrcPromo =
                       item.image ||
-                        process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE,
-                    );
+                      process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE;
                     return (
                       <div key={item.item_code} className="cart_item">
                         <div className="cart_item_image">
@@ -330,11 +329,9 @@ const Cart = () => {
                               fill
                               src={imgSrcPromo}
                               alt={item.name}
-                              onError={() => {
-                                setImgSrcPromo(
-                                  process.env
-                                    .NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE,
-                                );
+                              onError={(e) => {
+                                e.currentTarget.src =
+                                  process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE;
                               }}
                             />
                           </Link>

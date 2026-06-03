@@ -52,13 +52,14 @@ const PromotionContainer = ({ promotion }: { promotion: Promotion }) => {
                   href={`/products/${condition.condition_type_code}`}
                   style={{
                     display: "flex",
-                    justifyContent: "flex-end",
                     alignItems: "center",
-                    flexDirection: "row",
-                    border: "1px solid rgba(0,0,0,0.1)",
-                    padding: "0.2rem 0.5rem",
-                    borderRadius: "6px",
-                    gap: "0.5rem",
+                    gap: "12px",
+                    padding: "10px",
+                    border: "1px solid #e9ecef",
+                    borderRadius: "10px",
+                    background: "#fff",
+                    textDecoration: "none",
+                    transition: "all .2s ease",
                   }}
                 >
                   <Image
@@ -66,22 +67,40 @@ const PromotionContainer = ({ promotion }: { promotion: Promotion }) => {
                       condition.images[0] ||
                       process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE
                     }
-                    width={50}
-                    height={50}
+                    width={70}
+                    height={70}
                     alt={condition.item_description}
+                    style={{
+                      borderRadius: "8px",
+                      objectFit: "contain",
+                      flexShrink: 0,
+                    }}
                   />
+
                   <div
                     style={{
                       display: "flex",
                       flexDirection: "column",
+                      flex: 1,
+                      minWidth: 0,
                     }}
                   >
-                    <span>{condition.item_description}</span>
                     <span
-                      key={index}
                       style={{
-                        color: "#868e96",
-                        fontSize: "0.7rem",
+                        fontWeight: 600,
+                        color: "#212529",
+                        fontSize: "0.9rem",
+                        lineHeight: 1.3,
+                      }}
+                    >
+                      {condition.item_description}
+                    </span>
+
+                    <span
+                      style={{
+                        color: "#6c757d",
+                        fontSize: "0.8rem",
+                        marginTop: "4px",
                       }}
                     >
                       {condition.description}
@@ -136,13 +155,13 @@ const PromotionContainer = ({ promotion }: { promotion: Promotion }) => {
                   href={`/products/${result.result_type_code}`}
                   style={{
                     display: "flex",
-                    justifyContent: "flex-end",
                     alignItems: "center",
-                    flexDirection: "row",
-                    border: "1px solid rgba(0,0,0,0.1)",
-                    padding: "0.2rem 0.5rem",
-                    borderRadius: "6px",
-                    gap: "0.5rem",
+                    gap: "12px",
+                    padding: "10px",
+                    border: "1px solid #e9ecef",
+                    borderRadius: "10px",
+                    background: "#fff",
+                    textDecoration: "none",
                   }}
                 >
                   <Image
@@ -150,22 +169,39 @@ const PromotionContainer = ({ promotion }: { promotion: Promotion }) => {
                       result.images[0] ||
                       process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE
                     }
-                    width={50}
-                    height={50}
+                    width={70}
+                    height={70}
                     alt={result.item_description}
+                    style={{
+                      borderRadius: "8px",
+                      objectFit: "contain",
+                      flexShrink: 0,
+                    }}
                   />
+
                   <div
                     style={{
                       display: "flex",
                       flexDirection: "column",
+                      flex: 1,
+                      minWidth: 0,
                     }}
                   >
-                    <span>{result.item_description}</span>
                     <span
-                      key={index}
                       style={{
-                        color: "#868e96",
-                        fontSize: "0.7rem",
+                        fontWeight: 600,
+                        color: "#212529",
+                        fontSize: "0.9rem",
+                      }}
+                    >
+                      {result.item_description}
+                    </span>
+
+                    <span
+                      style={{
+                        color: "#6c757d",
+                        fontSize: "0.8rem",
+                        marginTop: "4px",
                       }}
                     >
                       {result.description}

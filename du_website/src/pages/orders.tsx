@@ -128,7 +128,7 @@ const Orders = () => {
                       order.brand_description.includes("Pharma") ||
                       order.brand_description.includes("Para Pharma")
                     ) {
-                      tempBrandDescription = "Other";
+                      tempBrandDescription = t("orders.other");
                     } else {
                       tempBrandDescription = order.brand_description;
                     }

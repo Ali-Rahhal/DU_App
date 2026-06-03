@@ -282,6 +282,7 @@
     "rejected": "Rejected",
     "awaiting_delivery": "Awaiting Delivery",
     "delivered": "Delivered",
+    "other": "Other",
 
     "table": {
       "order_number": "Order #",

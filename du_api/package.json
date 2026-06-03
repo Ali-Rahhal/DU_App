@@ -1,6 +1,6 @@
 {
   "name": "du_api",
-  "version": "28.05.2026-1.0.9",
+  "version": "03.06.2026-1.1.0",
   "private": true,
   "scripts": {
     "dev": "tsx watch src/index.ts",

@@ -2,7 +2,7 @@ import dashboardData from "@/Models/dashboardData";
 import Layout from "@/components/Layout/Layout";
 import { useAccountStore } from "@/store/zustand";
 import { statusIdToText } from "@/utils";
-import { getDashboardData } from "@/utils/apiCalls";
+import { getDashboardData, getFidelityPoints } from "@/utils/apiCalls";
 import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import Image from "next/image";
@@ -17,6 +17,8 @@ const index = () => {
   const { firstName, lastName, name, code } = useAccountStore();
   const [dashboardData, setDashboardData] = useState<dashboardData>();
   const [openVisitModal, setOpenVisitModal] = useState(false);
+  const [availablePoints, setAvailablePoints] = useState(0);
+
   const rt = useRouter();
   const t = useTranslations();
   // const [active, setActive] = useState(rt.pathname.split("/")[1]);
@@ -34,6 +36,10 @@ const index = () => {
       setDashboardData({
         ...res.data.result,
       });
+    });
+
+    getFidelityPoints().then((res) => {
+      setAvailablePoints(res.data.result.availablePoints);
     });
   }, []);
   if (!dashboardData)
@@ -96,7 +102,7 @@ const index = () => {
                   <small className="text-muted">{code}</small>
                 </div>
               </div>
-              {/* <div className="row no-gutters align-items-center">
+              <div className="row no-gutters align-items-center">
                 <div className="col-auto">
                   <div
                     style={{
@@ -122,7 +128,7 @@ const index = () => {
                         fontWeight: "bold",
                       }}
                     >
-                      230 pts
+                      {availablePoints} pts
                     </div>
                     <button
                       className="btn btn-primary"
@@ -138,7 +144,7 @@ const index = () => {
                     </button>
                   </div>
                 </div>
-              </div> */}
+              </div>
             </div>
           </div>
         </div>

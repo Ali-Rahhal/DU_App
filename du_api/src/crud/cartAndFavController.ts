@@ -271,6 +271,7 @@ const getCartItems = async (
       SELECT TOP 1 *
       FROM dbo.item_uom iu
       WHERE iu.barcode = sc.barcode
+      And iu.is_active = 1
       ORDER BY
         CASE WHEN iu.uom_code = 'P' THEN 0 ELSE 1 END
     ) iu
@@ -293,7 +294,6 @@ const getCartItems = async (
       sc.account_id = ${userId}
       AND sc.is_active = 1
       AND sc.status = 5
-      AND iu.is_active = 1
 
     GROUP BY
       iu.item_code,

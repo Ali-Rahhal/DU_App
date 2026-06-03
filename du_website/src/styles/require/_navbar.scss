@@ -306,7 +306,9 @@
       &.show {
         opacity: 1;
         visibility: visible;
-        transition: visibility 0.5s, opacity 0.5s cubic-bezier(0.3, 0, 0.3, 1);
+        transition:
+          visibility 0.5s,
+          opacity 0.5s cubic-bezier(0.3, 0, 0.3, 1);
       }
     }
     .menu-sidebar {
@@ -443,4 +445,101 @@
   width: 100%;
   z-index: 9999;
   transition: all 0.3s linear 0s;
+}
+
+.ai-magic-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 8px 14px;
+  border-radius: 999px;
+
+  font-weight: 800;
+  font-size: 14px;
+  color: #fff;
+  text-decoration: none !important;
+
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+
+  background: linear-gradient(135deg, #7f5af0, #2cb67d, #ef4565);
+  background-size: 300% 300%;
+
+  box-shadow: 0 6px 18px rgba(127, 90, 240, 0.35);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px) scale(1.05);
+    animation: ai-gradient-move 2s ease infinite;
+    box-shadow: 0 12px 30px rgba(127, 90, 240, 0.55);
+  }
+
+  &:active {
+    transform: scale(0.96);
+  }
+
+  /* sparkle overlay */
+  &::after {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+
+    background: radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.35) 0%,
+      transparent 60%
+    );
+
+    opacity: 0;
+    transform: rotate(25deg);
+    pointer-events: none;
+  }
+
+  &:hover::after {
+    animation: ai-sparkle 0.8s ease-out;
+  }
+
+  &__icon {
+    font-size: 16px;
+    line-height: 1;
+  }
+
+  &__text {
+    letter-spacing: 1px;
+  }
+}
+
+/* animations */
+@keyframes ai-sparkle {
+  0% {
+    opacity: 0;
+    transform: scale(0.6) rotate(25deg);
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.4) rotate(25deg);
+  }
+}
+
+@keyframes ai-gradient-move {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }

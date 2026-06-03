@@ -80,6 +80,15 @@ function Navbar() {
 
   const t = useTranslations();
 
+  const AIMagicButton = ({ isMobile = false }) => {
+    return (
+      <Link href="/ai-order-proposal" className="ai-magic-btn">
+        {!isMobile && <span className="ai-magic-btn__icon">🤖</span>}
+        <span className="ai-magic-btn__text">AI</span>
+      </Link>
+    );
+  };
+
   return (
     <>
       <div className="header">
@@ -148,6 +157,9 @@ function Navbar() {
                       </li>
                     </>
                   )}
+                  <li style={{ display: "flex", alignItems: "center" }}>
+                    <AIMagicButton />
+                  </li>
                   <li className="dropdown head-cart-content">
                     {isAuth ? (
                       <Dropdown>
@@ -299,6 +311,11 @@ function Navbar() {
                             <Link href="/fidelity">{t("fidelity.link")}</Link>
                           </li>
                           <li>
+                            <Link href="/ai-order-proposal">
+                              {t("ai_proposal.title")}
+                            </Link>
+                          </li>
+                          <li>
                             <Link
                               href="/"
                               onClick={() => {
@@ -356,7 +373,12 @@ function Navbar() {
               </Link>
             </div>
             <div className="col-auto">
-              <ul className="header-right-options">
+              <ul
+                className="header-right-options"
+                style={{ display: "flex", alignItems: "center", gap: 10 }}
+              >
+                <AIMagicButton isMobile />
+
                 <Link href={"/cart"} className="link-item">
                   <span className="badge badge-secondary">{cart}</span>
                   <i className="ti-bag"></i>
@@ -446,6 +468,11 @@ function Navbar() {
                   </li>
                   <li>
                     <Link href="/fidelity">{t("fidelity.link")}</Link>
+                  </li>
+                  <li>
+                    <Link href="/ai-order-proposal">
+                      {t("ai_proposal.title")}
+                    </Link>
                   </li>
                 </ul>
               </div>

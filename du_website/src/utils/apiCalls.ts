@@ -856,6 +856,15 @@ const redeemGift = async (giftId: string): Promise<AxiosResponse> => {
   );
 };
 
+//////
+////////AI ApiCalls
+//////
+const getAISuggestedProducts = async (): Promise<AxiosResponse> => {
+  return await axios.get(`${privateApi}/ai/suggested-products`, {
+    withCredentials: true,
+  });
+};
+
 export {
   publicApi,
   privateApi,
@@ -936,4 +945,6 @@ export {
   getFidelityGifts,
   getMilestoneRewards,
   redeemGift,
+  //AI
+  getAISuggestedProducts,
 };

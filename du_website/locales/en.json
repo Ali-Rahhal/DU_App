@@ -453,6 +453,32 @@
     "no_points_history": "No points history yet",
     "points_history_empty_description": "Your loyalty activity will appear here"
   },
+  "ai_proposal": {
+    "title": "AI Automatic Order Proposal",
+    "subtitle": "Smart product suggestions based on customer history",
+    "ai_generated_badge": "AI GENERATED",
+    "regenerate_btn": "Regenerate Proposal",
+    "load_error": "Failed loading AI proposal",
+    "add_success": "Proposal added to cart successfully",
+    "add_error": "Failed adding proposal to cart",
+    "remove_btn": "Remove",
+    "add_all_btn": "Add Entire Proposal To Cart",
+    "adding": "Adding...",
+    "suggested_products": "Suggested Products",
+    "upcoming_visit": "Upcoming Cash Van Visit",
+    "driver": "Driver",
+    "expected_visit": "Expected Visit",
+    "estimated_arrival": "Estimated Arrival",
+    "no_cashvan_title": "Cash Van Information Unavailable",
+    "no_cashvan_description": "We couldn't determine the next planned visit for this customer.",
+    "loading_title": "Creating Your Smart Order Proposal",
+    "loading_description": "Reviewing previous purchases, identifying buying patterns and preparing product recommendations.",
+    "step_analyzing": "Analyzing customer purchase history",
+    "step_detecting": "Detecting frequently purchased products",
+    "step_estimating": "Estimating recommended quantities",
+    "step_calculating": "Calculating next cash van visit",
+    "locale": "en-US"
+  },
 
   "permission": {
     "RETURN": "Return Order",

@@ -20,6 +20,7 @@ const authRoutes = [
   "/item-alternatives",
   "/restock",
   "/expiry-deal",
+  "/ai-order-proposal",
 ];
 export async function middleware(request: NextRequest) {
   const isServer = typeof window === "undefined";

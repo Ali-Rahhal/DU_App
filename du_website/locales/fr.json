@@ -452,6 +452,32 @@
     "no_points_history": "Aucun historique de points pour le moment",
     "points_history_empty_description": "Votre activité de fidélité apparaîtra ici"
   },
+  "ai_proposal": {
+    "title": "Proposition de commande IA automatique",
+    "subtitle": "Suggestions de produits intelligentes basées sur l'historique client",
+    "ai_generated_badge": "GÉNÉRÉ PAR IA",
+    "regenerate_btn": "Régénérer la proposition",
+    "load_error": "Échec du chargement de la proposition IA",
+    "add_success": "Proposition ajoutée au panier avec succès",
+    "add_error": "Échec de l'ajout de la proposition au panier",
+    "remove_btn": "Supprimer",
+    "add_all_btn": "Ajouter toute la proposition au panier",
+    "adding": "Ajout en cours...",
+    "suggested_products": "Produits suggérés",
+    "upcoming_visit": "Prochaine visite Cash Van",
+    "driver": "Chauffeur",
+    "expected_visit": "Visite prévue",
+    "estimated_arrival": "Arrivée estimée",
+    "no_cashvan_title": "Informations Cash Van indisponibles",
+    "no_cashvan_description": "Impossible de déterminer la prochaine visite prévue pour ce client.",
+    "loading_title": "Création de votre proposition de commande intelligente",
+    "loading_description": "Analyse des achats précédents, identification des habitudes d'achat et préparation des recommandations de produits.",
+    "step_analyzing": "Analyse de l'historique des achats client",
+    "step_detecting": "Détection des produits fréquemment achetés",
+    "step_estimating": "Estimation des quantités recommandées",
+    "step_calculating": "Calcul de la prochaine visite Cash Van",
+    "locale": "fr-FR"
+  },
 
   "permission": {
     "RETURN": "Retourner la commande",

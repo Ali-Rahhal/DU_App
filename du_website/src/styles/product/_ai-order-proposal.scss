@@ -1,0 +1,95 @@
+.ai-product-card {
+  min-height: 500px;
+  border-radius: 16px;
+  transition: all 0.2s ease;
+}
+
+.ai-product-card:hover {
+  transform: translateY(-4px);
+}
+
+@media (max-width: 768px) {
+  .ai-product-card {
+    min-height: 340px;
+  }
+}
+
+.ai-product-image {
+  height: 220px;
+  position: relative;
+  padding: 15px;
+}
+
+@media (max-width: 768px) {
+  .ai-product-image {
+    height: 140px;
+    padding: 10px;
+  }
+}
+
+.qty-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  background: #f8f9fa;
+  border-radius: 50px;
+  padding: 6px;
+}
+
+.qty-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-weight: bold;
+}
+
+.qty-value {
+  min-width: 30px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.ai-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+@media (max-width: 768px) {
+  .ai-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ai-header button {
+    width: 100%;
+  }
+}
+
+.proposal-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .proposal-summary {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .proposal-summary button {
+    width: 100%;
+  }
+}

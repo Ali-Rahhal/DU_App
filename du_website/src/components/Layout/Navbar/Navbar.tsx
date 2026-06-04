@@ -157,9 +157,13 @@ function Navbar() {
                       </li>
                     </>
                   )}
-                  <li style={{ display: "flex", alignItems: "center" }}>
-                    <AIMagicButton />
-                  </li>
+
+                  {isAuth && (
+                    <li style={{ display: "flex", alignItems: "center" }}>
+                      <AIMagicButton />
+                    </li>
+                  )}
+
                   <li className="dropdown head-cart-content">
                     {isAuth ? (
                       <Dropdown>
@@ -377,7 +381,7 @@ function Navbar() {
                 className="header-right-options"
                 style={{ display: "flex", alignItems: "center", gap: 10 }}
               >
-                <AIMagicButton isMobile />
+                {isAuth && <AIMagicButton isMobile />}
 
                 <Link href={"/cart"} className="link-item">
                   <span className="badge badge-secondary">{cart}</span>

@@ -156,6 +156,7 @@
   "item_unavailable": "Currently unavailable",
   "proceed_to_cart": "Proceed to Cart",
   "you_have_no_items_in_your_shopping_cart": "You have no items in your shopping cart.",
+  "go_back": "Go Back",
 
   "my_account": {
     "title": "Account Details",
@@ -478,6 +479,42 @@
     "step_estimating": "Estimating recommended quantities",
     "step_calculating": "Calculating next cash van visit",
     "locale": "en-US"
+  },
+  "returns": {
+    "title": "Returns",
+    "subtitle": "Create return requests for delivered invoices",
+    "fetch_error": "Failed to fetch sales invoices",
+    "no_invoices": "No invoices available for return",
+    "days_left": "days left",
+    "expired": "Expired",
+    "pending_request": "Return Request Pending",
+    "return_btn": "Return",
+    "window_expired": "Return Window Expired",
+    "locale": "en-US",
+    "table": {
+      "invoice_code": "Invoice Code",
+      "date": "Date",
+      "total_amount": "Total Amount",
+      "return_window": "Return Window",
+      "action": "Action"
+    },
+    "return_request": {
+      "title": "Return Request",
+      "invoice": "Invoice",
+      "select_items_title": "Select Items To Return",
+      "select_items_description": "Tap an item to select it.",
+      "selected": "Selected",
+      "purchased_qty": "Purchased Qty",
+      "return_limit": "Return Limit",
+      "quantity_to_return": "Quantity To Return",
+      "return_reason": "Return Reason",
+      "reason_placeholder": "Please explain why you are returning these items...",
+      "submit_btn": "Submit Return Request",
+      "select_item_error": "Select at least one item",
+      "reason_error": "Please provide a reason",
+      "success_message": "Return request submitted",
+      "error_message": "Failed to submit return request"
+    }
   },
 
   "permission": {

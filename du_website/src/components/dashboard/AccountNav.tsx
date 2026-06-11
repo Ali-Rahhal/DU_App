@@ -65,7 +65,7 @@ function AccountNav() {
               <li
                 className={"nav-item" + (active === "account" ? " active" : "")}
               >
-                <Link className="nav-link" href="account">
+                <Link className="nav-link" href="/account">
                   <i className="fa fa-user"></i>
                   {/* My Account */}
                   {t("my_account.title")}
@@ -78,7 +78,7 @@ function AccountNav() {
                     (active === "change-password" ? " active" : "")
                   }
                 >
-                  <Link className="nav-link" href="change-password">
+                  <Link className="nav-link" href="/change-password">
                     <i className="fa fa-lock"></i>
                     {t("change_password.title")}
                   </Link>
@@ -91,7 +91,7 @@ function AccountNav() {
                     "nav-item " + (active === "users" ? " active" : "")
                   }
                 >
-                  <Link className="nav-link" href="users">
+                  <Link className="nav-link" href="/users">
                     <i className="fa fa-users"></i>
                     {t("users.title")}
                   </Link>
@@ -103,7 +103,7 @@ function AccountNav() {
                   "nav-item " + (active === "wishlist" ? " active" : "")
                 }
               >
-                <Link className="nav-link" href="wishlist">
+                <Link className="nav-link" href="/wishlist">
                   <i className="fa fa-heart"></i>
                   {/* Wishlist */}
                   {t("wishlist.title")}
@@ -112,7 +112,7 @@ function AccountNav() {
               <li
                 className={"nav-item " + (active === "orders" ? " active" : "")}
               >
-                <Link className="nav-link" href="orders">
+                <Link className="nav-link" href="/orders">
                   <i className="fa fa-shopping-cart"></i>
                   {/* Order */}
                   {t("orders.title")}
@@ -123,7 +123,7 @@ function AccountNav() {
                   "nav-item " + (active === "open-invoice" ? " active" : "")
                 }
               >
-                <Link className="nav-link" href="open-invoice">
+                <Link className="nav-link" href="/open-invoice">
                   <i className="fa fa-university"></i>
                   {/* Open Invoices */}
                   {t("open_invoices.title")}
@@ -134,10 +134,21 @@ function AccountNav() {
                   "nav-item " + (active === "sales-invoice" ? " active" : "")
                 }
               >
-                <Link className="nav-link" href="sales-invoice">
+                <Link className="nav-link" href="/sales-invoice">
                   <i className="fa fa-money "></i>
                   {/* Sales Invoices */}
                   {t("sales_invoice.title")}
+                </Link>
+              </li>
+              <li
+                className={
+                  "nav-item " + (active === "returns" ? " active" : "")
+                }
+              >
+                <Link className="nav-link" href="/returns">
+                  <i className="fa fa-exchange "></i>
+                  {/* Returns */}
+                  {t("returns.title")}
                 </Link>
               </li>
               {/* {checkPermission(ALL_PERMISSIONS.COMPLAINT) ? (

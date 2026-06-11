@@ -865,6 +865,56 @@ const getAISuggestedProducts = async (): Promise<AxiosResponse> => {
   });
 };
 
+//////
+////////Return ApiCalls
+//////
+const getReturnableInvoices = async (): Promise<AxiosResponse> => {
+  return await axios.get(privateApi + "/returns/get_returnable_invoices", {
+    withCredentials: true,
+  });
+};
+
+const getPurchasedItems = async (
+  transactionHeaderId: number,
+  cookie?: string,
+): Promise<AxiosResponse> => {
+  return await axios.get(
+    privateApi +
+      `/returns/get_purchased_items?transaction_header_id=${transactionHeaderId}`,
+    {
+      withCredentials: true,
+      headers: {
+        Cookie: cookie || "",
+      },
+    },
+  );
+};
+
+const createReturnRequest = async ({
+  invoice_transaction_header_id,
+  reason,
+  items,
+}: {
+  invoice_transaction_header_id: number;
+  reason: string;
+  items: {
+    item_code: string;
+    quantity: number;
+  }[];
+}): Promise<AxiosResponse> => {
+  return await axios.post(
+    privateApi + "/returns/create_return_request",
+    {
+      invoice_transaction_header_id,
+      reason,
+      items,
+    },
+    {
+      withCredentials: true,
+    },
+  );
+};
+
 export {
   publicApi,
   privateApi,
@@ -947,4 +997,8 @@ export {
   redeemGift,
   //AI
   getAISuggestedProducts,
+  //Return
+  getReturnableInvoices,
+  getPurchasedItems,
+  createReturnRequest,
 };

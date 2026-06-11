@@ -294,6 +294,9 @@ function Navbar() {
                               {t("sales_invoice.title")}
                             </Link>
                           </li>
+                          <li>
+                            <Link href="/returns">{t("returns.title")}</Link>
+                          </li>
                           {checkRole(ROLES.Admin) ? (
                             <>
                               <li>
@@ -452,6 +455,9 @@ function Navbar() {
                     <Link href="/sales-invoice">
                       {t("sales_invoice.title")}
                     </Link>
+                  </li>
+                  <li>
+                    <Link href="/returns">{t("returns.title")}</Link>
                   </li>
                   {checkRole(ROLES.Admin) ? (
                     <>

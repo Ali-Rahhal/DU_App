@@ -4,6 +4,7 @@ import AccountNav from "./AccountNav";
 import { useTranslations } from "next-intl";
 
 function AccountLayout({ children, title, subTitle }) {
+  const t = useTranslations();
   return (
     <>
       <AccountHeader title={title}></AccountHeader>
@@ -24,7 +25,7 @@ function AccountLayout({ children, title, subTitle }) {
                     <div className="col-auto">
                       <a href="account" className=" btn btn-primary btn-sm">
                         {" "}
-                        <i className="ti-angle-left"></i> go back
+                        <i className="ti-angle-left"></i> {t("go_back")}
                       </a>
                     </div>
                   </div>

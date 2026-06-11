@@ -154,6 +154,7 @@
   "item_unavailable": "Actuellement indisponible",
   "proceed_to_cart": "Passer au panier",
   "you_have_no_items_in_your_shopping_cart": "Vous n'avez aucun article dans votre panier",
+  "go_back": "Retour",
 
   "my_account": {
     "title": "Détails du Compte",
@@ -477,6 +478,42 @@
     "step_estimating": "Estimation des quantités recommandées",
     "step_calculating": "Calcul de la prochaine visite Cash Van",
     "locale": "fr-FR"
+  },
+  "returns": {
+    "title": "Retours",
+    "subtitle": "Créez des demandes de retour pour les factures livrées",
+    "fetch_error": "Échec du chargement des factures",
+    "no_invoices": "Aucune facture disponible pour retour",
+    "days_left": "jours restants",
+    "expired": "Expiré",
+    "pending_request": "Demande de retour en attente",
+    "return_btn": "Retourner",
+    "window_expired": "Délai de retour expiré",
+    "locale": "fr-FR",
+    "table": {
+      "invoice_code": "N° de facture",
+      "date": "Date",
+      "total_amount": "Montant total",
+      "return_window": "Délai de retour",
+      "action": "Action"
+    },
+    "return_request": {
+      "title": "Demande de retour",
+      "invoice": "Facture",
+      "select_items_title": "Sélectionnez les articles à retourner",
+      "select_items_description": "Appuyez sur un article pour le sélectionner.",
+      "selected": "Sélectionné",
+      "purchased_qty": "Quantité achetée",
+      "return_limit": "Limite de retour",
+      "quantity_to_return": "Quantité à retourner",
+      "return_reason": "Motif du retour",
+      "reason_placeholder": "Veuillez expliquer pourquoi vous retournez ces articles...",
+      "submit_btn": "Soumettre la demande de retour",
+      "select_item_error": "Sélectionnez au moins un article",
+      "reason_error": "Veuillez fournir un motif",
+      "success_message": "Demande de retour soumise",
+      "error_message": "Échec de la soumission de la demande de retour"
+    }
   },
 
   "permission": {

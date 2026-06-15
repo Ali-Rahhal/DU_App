@@ -13,6 +13,7 @@ import { toast } from "react-toastify";
 import { useTranslations } from "next-intl";
 
 const Restock = () => {
+  const t = useTranslations();
   const { refreshCart } = useAccountStore();
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [minStock, setMinStock] = useState(0);
@@ -54,8 +55,6 @@ const Restock = () => {
       );
     }
   };
-
-  const t = useTranslations();
 
   return (
     <Layout>

@@ -515,6 +515,30 @@
       "error_message": "Échec de la soumission de la demande de retour"
     }
   },
+  "return_admin": {
+    "title": "Demandes de retour (Admin)",
+    "subtitle": "Gérez les demandes de retour des clients",
+    "load_error": "Échec du chargement des demandes de retour",
+    "no_requests": "Aucune demande de retour trouvée",
+    "customer_label": "Client",
+    "invoice_label": "Facture",
+    "reason_label": "Motif",
+    "quantity_label": "Quantité demandée",
+    "approve_btn": "Approuver",
+    "reject_btn": "Rejeter",
+    "approve_success": "Demande de retour approuvée",
+    "reject_success": "Demande de retour rejetée",
+    "process_error": "Impossible de traiter la demande",
+    "status_pending": "En attente",
+    "status_approved": "Approuvé",
+    "status_rejected": "Rejeté",
+    "first_page": "Première page",
+    "previous_page": "Page précédente",
+    "next_page": "Page suivante",
+    "last_page": "Dernière page",
+    "loading": "Chargement...",
+    "locale": "fr-FR"
+  },
 
   "permission": {
     "RETURN": "Retourner la commande",

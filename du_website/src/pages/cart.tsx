@@ -29,6 +29,7 @@ import { toast } from "react-toastify";
 // import { toast } from 'react-toastify';
 
 const CartItem = ({ item, removeItemHandler, updateCartHandler }) => {
+  const t = useTranslations();
   const [quantity, setQuantity] = useState<number>(item.quantity);
   const [debounceTimeout, setDebounceTimeout] = useState(null);
 
@@ -49,7 +50,7 @@ const CartItem = ({ item, removeItemHandler, updateCartHandler }) => {
     }, 200); // 1-second delay (adjust as needed)
     setDebounceTimeout(timeout);
   };
-  const t = useTranslations();
+
   const [imgSrcMain, setImgSrcMain] = useState(
     item.image || process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE,
   );
@@ -329,6 +330,7 @@ const Cart = () => {
                               fill
                               src={imgSrcPromo}
                               alt={item.name}
+                              unoptimized
                               onError={(e) => {
                                 e.currentTarget.src =
                                   process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE;

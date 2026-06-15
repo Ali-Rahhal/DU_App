@@ -12,24 +12,25 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 type AccountStore = {
+  hydrated: boolean;
+
   cart: number;
   cartItems: CartItem[];
+
   name: string;
   code: string;
   firstName: string;
   lastName: string;
   phone: string;
   address: string;
+
   permissions: string[];
   type: number | null;
   role: string | null;
-  setAccount: ({
-    name,
-    code,
-    phone,
-    address,
-    cart,
-  }: {
+
+  setHydrated: (v: boolean) => void;
+
+  setAccount: (data: {
     name: string;
     code: string;
     phone: string;
@@ -37,8 +38,10 @@ type AccountStore = {
     cart: number;
     cartItems: any[];
   }) => void;
+
   refreshUserInfo: () => void;
   refreshCart: () => void;
+
   checkPermission: (permission: string) => boolean;
   checkRole: (role: string) => boolean;
 };
@@ -56,107 +59,123 @@ type AuthStore = {
   logout: () => Promise<void>;
 };
 
-export const useAccountStore = create<AccountStore>((set) => ({
-  cart: 0,
-  cartItems: [],
-  name: "",
-  firstName: "",
-  lastName: "",
-  code: "",
-  phone: "",
-  address: "",
-  type: null,
-  role: null,
-  permissions: [],
-  checkPermission: (permission) => {
-    if (useAccountStore.getState().role !== ROLES.SysUser) return true;
-    else return useAccountStore.getState().permissions.includes(permission);
-  },
-  checkRole: (role) => {
-    if (useAccountStore.getState().role !== role) return false;
-    else return true;
-  },
-  refreshUserInfo: async () => {
-    if (!useAuthStore.getState().isAuth) return;
-    getUserDetails()
-      .then((res) => {
-        set({
-          name: `${res.data.result.first_name} ${
-            res.data.result.last_name || ""
-          }`,
-          cart: res.data.result.cart,
-          lastName: res.data.result.last_name || "",
-          firstName: res.data.result.first_name,
-          code: res.data.result.code,
-          phone: res.data.result.phone,
-          address: res.data.result.address,
-          type: res.data.result.type,
-          role: res.data.result.role,
-          permissions: res.data.result.permissions,
-        });
-      })
-      .catch(() => {
-        useAuthStore.getState().logout();
-        useAuthStore.setState({ isAuth: false, token: null });
-        set({
-          firstName: "",
-          lastName: "",
-          name: "",
-          cart: 0,
-          code: "",
-          phone: "",
-          address: "",
-        });
-      });
-  },
-  refreshCart: async () => {
-    if (!useAuthStore.getState().isAuth) return;
+export const useAccountStore = create<AccountStore>()(
+  persist(
+    (set, get) => ({
+      hydrated: false,
 
-    getCartItems()
-      .then(async (res) => {
-        let items = res.data?.result.products;
+      setHydrated: (v) => set({ hydrated: v }),
 
-        const updatedItems: CartItem[] = await Promise.all(
-          items.map(async (item) => {
-            let stock = item.stock;
-            let itemCode = item.item_code;
-            if (item.isExpiryDeal) {
-              itemCode = item.parent_item_code;
-            }
+      cart: 0,
+      cartItems: [],
+      name: "",
+      firstName: "",
+      lastName: "",
+      code: "",
+      phone: "",
+      address: "",
+      type: null,
+      role: null,
+      permissions: [],
 
-            // 🔴 OUT OF STOCK → REMOVE
-            if (!stock || stock === 0) {
-              await removeFromCart(itemCode, item.isExpiryDeal);
-              return null; // remove locally
-            }
+      checkPermission: (permission) => {
+        const state = get();
+        if (state.role !== ROLES.SysUser) return true;
+        return state.permissions.includes(permission);
+      },
 
-            // 🟡 EXCEEDS STOCK → CLAMP
-            if (item.quantity > stock) {
-              await updateCartItem(itemCode, stock, item.isExpiryDeal);
-              return { ...item, quantity: stock };
-            }
+      checkRole: (role) => {
+        const state = get();
+        return state.role === role;
+      },
 
-            return item;
-          }),
-        );
+      refreshUserInfo: async () => {
+        if (!useAuthStore.getState().isAuth) return;
 
-        // remove nulls (deleted items)
-        const finalItems: CartItem[] = updatedItems.filter(Boolean);
+        try {
+          const res = await getUserDetails();
 
-        set({
-          cartItems: finalItems,
-          cart: finalItems.length,
-        });
-      })
-      .catch(() => {
-        useAuthStore.getState().logout();
-        useAuthStore.setState({ isAuth: false, token: null });
-        set({ cartItems: [] });
-      });
-  },
-  setAccount: ({ name, code, phone, address, cart }) =>
-    set({ name, code, phone, address, cart }),
-}));
+          set({
+            name: `${res.data.result.first_name} ${res.data.result.last_name || ""}`,
+            firstName: res.data.result.first_name,
+            lastName: res.data.result.last_name || "",
+            code: res.data.result.code,
+            phone: res.data.result.phone,
+            address: res.data.result.address,
+            type: res.data.result.type,
+            role: res.data.result.role,
+            permissions: res.data.result.permissions,
+            cart: res.data.result.cart,
+          });
+        } catch (e) {
+          useAuthStore.getState().logout();
+          set({
+            name: "",
+            firstName: "",
+            lastName: "",
+            code: "",
+            phone: "",
+            address: "",
+            role: null,
+            permissions: [],
+            cart: 0,
+          });
+        }
+      },
+
+      refreshCart: async () => {
+        if (!useAuthStore.getState().isAuth) return;
+
+        try {
+          const res = await getCartItems();
+          const items = res.data?.result.products || [];
+
+          const updatedItems = await Promise.all(
+            items.map(async (item) => {
+              let stock = item.stock;
+              let itemCode = item.item_code;
+
+              if (item.isExpiryDeal) {
+                itemCode = item.parent_item_code;
+              }
+
+              if (!stock || stock === 0) {
+                await removeFromCart(itemCode, item.isExpiryDeal);
+                return null;
+              }
+
+              if (item.quantity > stock) {
+                await updateCartItem(itemCode, stock, item.isExpiryDeal);
+                return { ...item, quantity: stock };
+              }
+
+              return item;
+            }),
+          );
+
+          const finalItems = updatedItems.filter(Boolean) as CartItem[];
+
+          set({
+            cartItems: finalItems,
+            cart: finalItems.length,
+          });
+        } catch (e) {
+          useAuthStore.getState().logout();
+          set({ cartItems: [], cart: 0 });
+        }
+      },
+
+      setAccount: ({ name, code, phone, address, cart }) =>
+        set({ name, code, phone, address, cart }),
+    }),
+    {
+      name: "account",
+      onRehydrateStorage: () => (state) => {
+        state?.setHydrated(true);
+      },
+    },
+  ),
+);
 
 export const useAuthStore = create<AuthStore>()(
   persist(

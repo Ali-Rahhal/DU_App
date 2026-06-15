@@ -4,7 +4,8 @@ import ProductItem from "./common/ProductItem";
 import { useTranslations } from "next-intl";
 import { Product } from "@/types/productTypes";
 
-const HomePageDealsSlider = ({ deals }: { deals: Product[]}) => {
+const HomePageDealsSlider = ({ deals }: { deals: Product[] }) => {
+  const t = useTranslations();
   let setting = {
     dots: false,
     infinite: true,
@@ -41,7 +42,7 @@ const HomePageDealsSlider = ({ deals }: { deals: Product[]}) => {
       },
     ],
   };
-  const t = useTranslations();
+
   return (
     <>
       <div className="pt-4 pt-md-5">

@@ -302,6 +302,21 @@ export const ensureAccountPermission = async (
   }
 };
 
+export const ensureAccountRole = async (user_id: number, role: string) => {
+  const user = await prisma.web_accounts.findUnique({
+    where: {
+      id: user_id,
+    },
+  });
+  if (!user) {
+    throw new Error("Account not found");
+  }
+
+  if (user.role !== role) {
+    throw new Error(`Account role is not ${role}`);
+  }
+};
+
 export async function getUserId(c) {
   const userId = c.req.user_id;
   return userId;

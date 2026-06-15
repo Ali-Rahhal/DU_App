@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
 function AccountNav() {
+  const t = useTranslations();
   const [showMenu, setShowMenu] = useState(false);
   const { firstName, lastName, name, code, type, checkPermission, checkRole } =
     useAccountStore();
@@ -17,7 +18,7 @@ function AccountNav() {
     const currentPage = urlSplit[urlSplit.length - 1] || "";
     setActive(currentPage);
   }, [rt.pathname]);
-  const t = useTranslations();
+
   const { isAuth, logout } = useAuthStore();
   return (
     <>
@@ -86,16 +87,29 @@ function AccountNav() {
               ) : null}
 
               {checkRole(ROLES.Admin) ? (
-                <li
-                  className={
-                    "nav-item " + (active === "users" ? " active" : "")
-                  }
-                >
-                  <Link className="nav-link" href="/users">
-                    <i className="fa fa-users"></i>
-                    {t("users.title")}
-                  </Link>
-                </li>
+                <>
+                  <li
+                    className={
+                      "nav-item " + (active === "users" ? " active" : "")
+                    }
+                  >
+                    <Link className="nav-link" href="/users">
+                      <i className="fa fa-users"></i>
+                      {t("users.title")}
+                    </Link>
+                  </li>
+                  <li
+                    className={
+                      "nav-item " + (active === "return-admin" ? " active" : "")
+                    }
+                  >
+                    <Link className="nav-link" href="/return-admin">
+                      <i className="fa fa-undo"></i>
+                      {/* Return Admin */}
+                      {t("return_admin.title")}
+                    </Link>
+                  </li>
+                </>
               ) : null}
 
               <li

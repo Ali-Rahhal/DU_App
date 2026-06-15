@@ -915,6 +915,38 @@ const createReturnRequest = async ({
   );
 };
 
+const getReturnRequests = async (
+  page = 1,
+  pageSize = 20,
+): Promise<AxiosResponse> => {
+  return await axios.get(privateApi + "/returns/get_return_requests", {
+    withCredentials: true,
+    params: {
+      page,
+      page_size: pageSize,
+    },
+  });
+};
+
+const approveOrRejectReturnRequest = async ({
+  transaction_header_id,
+  approved,
+}: {
+  transaction_header_id: number;
+  approved: boolean;
+}): Promise<AxiosResponse> => {
+  return await axios.post(
+    privateApi + "/returns/approve_or_reject",
+    {
+      transaction_header_id,
+      approved,
+    },
+    {
+      withCredentials: true,
+    },
+  );
+};
+
 export {
   publicApi,
   privateApi,
@@ -1001,4 +1033,6 @@ export {
   getReturnableInvoices,
   getPurchasedItems,
   createReturnRequest,
+  getReturnRequests,
+  approveOrRejectReturnRequest,
 };

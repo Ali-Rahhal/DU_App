@@ -1,10 +1,13 @@
 import { Hono } from "hono";
-import { getUserId } from "../../lib/utils";
+import { ensureAccountRole, getUserId } from "../../lib/utils";
 import {
   createReturnRequest,
   getReturnableInvoices,
   getPurchasedItems,
+  getReturnRequests,
+  approveOrRejectReturnRequest,
 } from "../../crud/returnsController";
+import { ROLES } from "../../lib/constants";
 const router = new Hono();
 
 router.get("/get_returnable_invoices", async (c) => {
@@ -71,6 +74,58 @@ router.post("/create_return_request", async (c) => {
       },
       200,
     );
+  } catch (e: any) {
+    return c.json(
+      {
+        message: e.message,
+        result: null,
+      },
+      400,
+    );
+  }
+});
+
+router.get("/get_return_requests", async (c) => {
+  try {
+    const userId = await getUserId(c);
+    await ensureAccountRole(userId, ROLES.Admin);
+
+    const page = Number(c.req.query("page") || 1);
+    const pageSize = Number(c.req.query("page_size") || 20);
+
+    const result = await getReturnRequests(page, pageSize);
+
+    return c.json({
+      message: "Fetched return requests",
+      result,
+    });
+  } catch (e: any) {
+    return c.json(
+      {
+        message: e.message,
+        result: null,
+      },
+      400,
+    );
+  }
+});
+
+router.post("/approve_or_reject", async (c) => {
+  try {
+    const { transaction_header_id, approved } = await c.req.json();
+
+    const userId = await getUserId(c);
+    await ensureAccountRole(userId, ROLES.Admin);
+
+    const result = await approveOrRejectReturnRequest(
+      transaction_header_id,
+      approved,
+    );
+
+    return c.json({
+      message: approved ? "Return request approved" : "Return request rejected",
+      result,
+    });
   } catch (e: any) {
     return c.json(
       {

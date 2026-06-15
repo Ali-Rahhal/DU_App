@@ -4,6 +4,7 @@ import BrandItem from "./common/BrandItem";
 import { useTranslations } from "use-intl";
 
 const HomePageBrandSlider = ({ brands }) => {
+  const t = useTranslations();
   let setting = {
     dots: false,
     infinite: true,
@@ -40,7 +41,7 @@ const HomePageBrandSlider = ({ brands }) => {
       },
     ],
   };
-  const t = useTranslations();
+
   return (
     <>
       <div className="pt-4 pt-md-5">

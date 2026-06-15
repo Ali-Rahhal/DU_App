@@ -17,7 +17,7 @@ import FloatingMenu from "../FloatingMenu";
 import { ROLES } from "@/utils/data";
 function Navbar() {
   //   const { cart } = useSelector((state) => state.cart);
-
+  const t = useTranslations();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showModal, setShowModal] = useState("");
 
@@ -77,8 +77,6 @@ function Navbar() {
   useEffect(() => {
     refreshCart();
   }, []);
-
-  const t = useTranslations();
 
   const AIMagicButton = ({ isMobile = false }) => {
     return (
@@ -309,6 +307,11 @@ function Navbar() {
                                   {t("expiry_deal.title")}
                                 </Link>
                               </li>
+                              <li>
+                                <Link href="/return-admin">
+                                  {t("return_admin.title")}
+                                </Link>
+                              </li>
                             </>
                           ) : null}
                           <li>
@@ -469,6 +472,11 @@ function Navbar() {
                       <li>
                         <Link href="/expiry-deal">
                           {t("expiry_deal.title")}
+                        </Link>
+                      </li>
+                      <li>
+                        <Link href="/return-admin">
+                          {t("return_admin.title")}
                         </Link>
                       </li>
                     </>

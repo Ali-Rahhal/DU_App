@@ -7,30 +7,16 @@ import {
   getItemAlternatives,
   updateItemAlternatives,
 } from "@/utils/apiCalls";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { Button } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/router";
-import { useAccountStore } from "@/store/zustand";
-import { ROLES } from "@/utils/data";
+import AdminGuard from "@/components/guards/AdminGuard";
 
 const ItemAlternatives = () => {
+  const t = useTranslations();
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [selectedAlternatives, setSelectedAlternatives] = useState<any[]>([]);
-
-  // Authorization Check:
-  const rt = useRouter();
-  const { role, checkRole } = useAccountStore();
-  const hasShownToast = useRef(false);
-  useEffect(() => {
-    if (!checkRole(ROLES.Admin) && !hasShownToast.current) {
-      toast.error("Only Admins can access this page");
-      hasShownToast.current = true;
-      rt.push("/");
-    }
-  }, [role]);
-  if (!checkRole(ROLES.Admin)) return null;
 
   const loadItemData = async (item) => {
     try {
@@ -75,101 +61,104 @@ const ItemAlternatives = () => {
     }
   };
 
-  const t = useTranslations();
-
   return (
-    <Layout>
-      <div className="container mt-5" style={{ minHeight: "60vh" }}>
-        {/* Header */}
-        <div className="mb-4">
-          <h2 style={{ fontWeight: "bold" }}>{t("item_alternatives.title")}</h2>
-          <p className="text-muted">{t("item_alternatives.description")}</p>
-        </div>
-
-        <div className="row">
-          <div className="col-12 col-md-4 mb-4">
-            <h5>{t("item_alternatives.items")}</h5>
-            <Autocomplete
-              fetchFn={(params) =>
-                getProducts({
-                  search: params.search,
-                  skip: params.skip,
-                  take: params.take,
-                })
-              }
-              value={selectedItem}
-              onChange={(item) => loadItemData(item)}
-              placeholder={t("item_alternatives.search_items")}
-            />
+    <AdminGuard>
+      <Layout>
+        <div className="container mt-5" style={{ minHeight: "60vh" }}>
+          {/* Header */}
+          <div className="mb-4">
+            <h2 style={{ fontWeight: "bold" }}>
+              {t("item_alternatives.title")}
+            </h2>
+            <p className="text-muted">{t("item_alternatives.description")}</p>
           </div>
 
-          <div className="col-12 col-md-8">
-            {!selectedItem ? (
-              <div className="text-muted">
-                {t("item_alternatives.search_description")}
-              </div>
-            ) : (
-              <>
-                {/* Alternatives */}
-                <div className="mb-4">
-                  <h5>{t("item_alternatives.alternatives")}</h5>
-                  <div className="text-muted mb-2" style={{ fontSize: 13 }}>
-                    {t("item_alternatives.alternatives_description")}
-                  </div>
+          <div className="row">
+            <div className="col-12 col-md-4 mb-4">
+              <h5>{t("item_alternatives.items")}</h5>
+              <Autocomplete
+                fetchFn={(params) =>
+                  getProducts({
+                    search: params.search,
+                    skip: params.skip,
+                    take: params.take,
+                  })
+                }
+                value={selectedItem}
+                onChange={(item) => loadItemData(item)}
+                placeholder={t("item_alternatives.search_items")}
+              />
+            </div>
 
-                  <Autocomplete
-                    multiple
-                    fetchFn={(params) =>
-                      getProducts({
-                        search: params.search,
-                        skip: params.skip,
-                        take: params.take,
-                      })
-                    }
-                    value={selectedAlternatives.map((a) => ({
-                      item_code: a.alternative_item_code,
-                      name: a.name,
-                      image: a.image,
-                    }))}
-                    onChange={(vals) =>
-                      setSelectedAlternatives((prev) => {
-                        return vals.map((v, i) => {
-                          const existing = prev.find(
-                            (p) => p.alternative_item_code === v.item_code,
-                          );
-
-                          return {
-                            alternative_item_code: v.item_code,
-                            name: existing?.name || v.name,
-                            image:
-                              existing?.image ||
-                              v.image ||
-                              process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE,
-                            priority: i + 1,
-                          };
-                        });
-                      })
-                    }
-                    placeholder={t("item_alternatives.search_alternatives")}
-                    exclude={selectedItem ? [selectedItem.item_code] : []}
-                  />
-
-                  {/* Drag & Drop */}
-                  <SortableAlternatives
-                    alternatives={selectedAlternatives}
-                    setAlternatives={setSelectedAlternatives}
-                  />
-
-                  <Button className="mt-2" onClick={saveAlternatives}>
-                    {t("item_alternatives.save")}
-                  </Button>
+            <div className="col-12 col-md-8">
+              {!selectedItem ? (
+                <div className="text-muted">
+                  {t("item_alternatives.search_description")}
                 </div>
-              </>
-            )}
+              ) : (
+                <>
+                  {/* Alternatives */}
+                  <div className="mb-4">
+                    <h5>{t("item_alternatives.alternatives")}</h5>
+                    <div className="text-muted mb-2" style={{ fontSize: 13 }}>
+                      {t("item_alternatives.alternatives_description")}
+                    </div>
+
+                    <Autocomplete
+                      multiple
+                      fetchFn={(params) =>
+                        getProducts({
+                          search: params.search,
+                          skip: params.skip,
+                          take: params.take,
+                        })
+                      }
+                      value={selectedAlternatives.map((a) => ({
+                        item_code: a.alternative_item_code,
+                        name: a.name,
+                        image: a.image,
+                      }))}
+                      onChange={(vals) =>
+                        setSelectedAlternatives((prev) => {
+                          return vals.map((v, i) => {
+                            const existing = prev.find(
+                              (p) => p.alternative_item_code === v.item_code,
+                            );
+
+                            return {
+                              alternative_item_code: v.item_code,
+                              name: existing?.name || v.name,
+                              image:
+                                existing?.image ||
+                                v.image ||
+                                process.env
+                                  .NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE,
+                              priority: i + 1,
+                            };
+                          });
+                        })
+                      }
+                      placeholder={t("item_alternatives.search_alternatives")}
+                      exclude={selectedItem ? [selectedItem.item_code] : []}
+                    />
+
+                    {/* Drag & Drop */}
+                    <SortableAlternatives
+                      alternatives={selectedAlternatives}
+                      setAlternatives={setSelectedAlternatives}
+                    />
+
+                    <Button className="mt-2" onClick={saveAlternatives}>
+                      {t("item_alternatives.save")}
+                    </Button>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-    </Layout>
+      </Layout>
+    </AdminGuard>
   );
 };
 

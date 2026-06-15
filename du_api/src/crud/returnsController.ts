@@ -408,4 +408,138 @@ const createReturnRequest = async (
   });
 };
 
-export { getReturnableInvoices, getPurchasedItems, createReturnRequest };
+const getReturnRequests = async (page: number, pageSize: number) => {
+  const skip = (page - 1) * pageSize;
+
+  const countResult: any[] = await prisma.$queryRaw`
+    SELECT COUNT(*) total
+    FROM transaction_header
+    WHERE
+      transaction_type = 70
+      AND is_active = 1
+  `;
+
+  const requests: any[] = await prisma.$queryRaw`
+    SELECT
+      th.transaction_header_id,
+      th.transaction_header_code,
+      th.date_added,
+
+      th.comment AS reason,
+
+      th.transaction_status,
+
+      wa.description AS customer_name,
+
+      invoice.transaction_header_code AS invoice_code
+
+    FROM transaction_header th
+
+    LEFT JOIN web_accounts wa
+      ON wa.code = th.source_code
+
+    LEFT JOIN transaction_header invoice
+      ON invoice.transaction_header_id =
+         th.parent_transaction_header_id
+
+    WHERE
+      th.transaction_type = 70
+      AND th.is_active = 1
+
+    ORDER BY th.date_added DESC
+
+    OFFSET ${skip} ROWS
+    FETCH NEXT ${pageSize} ROWS ONLY
+  `;
+
+  for (const request of requests) {
+    request.items = await prisma.$queryRaw`
+      SELECT
+        tb.transaction_body_id,
+
+        tb.item_code,
+
+        it.description AS item_name,
+
+        tb.requested_quantity AS quantity,
+
+        ISNULL(
+          (
+            SELECT TOP 1
+              img.base_path + '/' +
+              img.folder_path + '/' +
+              img.physical_file_name
+            FROM image img
+            WHERE
+              img.owner_code = it.item_code
+              AND img.owner_type = 1
+              AND img.is_active = 1
+              AND img.is_uploaded = 1
+          ),
+          ''
+        ) AS image
+
+      FROM transaction_body tb
+
+      INNER JOIN item it
+        ON it.item_code = tb.item_code
+
+      WHERE
+        tb.transaction_header_id =
+            ${request.transaction_header_id}
+
+      ORDER BY tb.line_id
+    `;
+  }
+
+  return {
+    requests,
+    total: Number(countResult[0].total),
+    page,
+    pageSize,
+    totalPages: Math.ceil(Number(countResult[0].total) / pageSize),
+  };
+};
+
+const approveOrRejectReturnRequest = async (
+  transactionHeaderId: number,
+  approved: boolean,
+) => {
+  const request = await prisma.transaction_header.findFirst({
+    where: {
+      transaction_header_id: BigInt(transactionHeaderId),
+      transaction_type: 70,
+      is_active: true,
+    },
+  });
+
+  if (!request) {
+    throw new Error("Return request not found");
+  }
+
+  if (request.transaction_status !== 3) {
+    throw new Error("Return request already processed");
+  }
+
+  await prisma.transaction_header.update({
+    where: {
+      transaction_header_id: BigInt(transactionHeaderId),
+    },
+    data: {
+      transaction_status: approved ? 4 : 9,
+      last_edited: new Date(),
+    },
+  });
+
+  return {
+    success: true,
+  };
+};
+
+export {
+  getReturnableInvoices,
+  getPurchasedItems,
+  createReturnRequest,
+  getReturnRequests,
+  approveOrRejectReturnRequest,
+};

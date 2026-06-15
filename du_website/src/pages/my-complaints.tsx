@@ -42,6 +42,7 @@ type Complaint = {
 };
 
 const MyComplaints = () => {
+  const t = useTranslations();
   const [complaints, setComplaints] = useState<Complaint[]>([]);
   const [barcode, setBarcode] = useState("");
   const [openBarcodeScanner, setOpenBarcodeScanner] = useState(false);
@@ -65,7 +66,7 @@ const MyComplaints = () => {
       t && clearTimeout(t);
     };
   }, [barcode]);
-  const t = useTranslations();
+
   return (
     <Layout>
       <AccountLayout
@@ -166,23 +167,23 @@ const MyComplaints = () => {
                           (complaint.status === 0
                             ? "bg-soft-info"
                             : complaint.status === 1
-                            ? "bg-soft-info"
-                            : complaint.status === 2
-                            ? "bg-soft-success"
-                            : complaint.status === 3
-                            ? "bg-soft-danger"
-                            : "bg-soft-danger")
+                              ? "bg-soft-info"
+                              : complaint.status === 2
+                                ? "bg-soft-success"
+                                : complaint.status === 3
+                                  ? "bg-soft-danger"
+                                  : "bg-soft-danger")
                         }
                       >
                         {complaint.status === 0
                           ? t("pending")
                           : complaint.status === 1
-                          ? t("in_progress")
-                          : complaint.status === 2
-                          ? t("resolved")
-                          : complaint.status === 3
-                          ? "Overdue"
-                          : "Closed"}
+                            ? t("in_progress")
+                            : complaint.status === 2
+                              ? t("resolved")
+                              : complaint.status === 3
+                                ? "Overdue"
+                                : "Closed"}
                       </span>
                     </td>
                     <td className="py-3">
@@ -193,7 +194,7 @@ const MyComplaints = () => {
                           month: "long",
                           day: "numeric",
                           year: "numeric",
-                        }
+                        },
                       )}
                     </td>
                     <td className="py-3">
@@ -204,7 +205,7 @@ const MyComplaints = () => {
                               month: "long",
                               day: "numeric",
                               year: "numeric",
-                            }
+                            },
                           )
                         : t("not_closed")}
                     </td>

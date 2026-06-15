@@ -516,6 +516,30 @@
       "error_message": "Failed to submit return request"
     }
   },
+  "return_admin": {
+    "title": "Return Requests (Admin)",
+    "subtitle": "Manage customer return requests",
+    "load_error": "Failed to load return requests",
+    "no_requests": "No return requests found",
+    "customer_label": "Customer",
+    "invoice_label": "Invoice",
+    "reason_label": "Reason",
+    "quantity_label": "Quantity Requested",
+    "approve_btn": "Approve",
+    "reject_btn": "Reject",
+    "approve_success": "Return request approved",
+    "reject_success": "Return request rejected",
+    "process_error": "Unable to process request",
+    "status_pending": "Pending",
+    "status_approved": "Approved",
+    "status_rejected": "Rejected",
+    "first_page": "First page",
+    "previous_page": "Previous page",
+    "next_page": "Next page",
+    "last_page": "Last page",
+    "loading": "Loading...",
+    "locale": "en-US"
+  },
 
   "permission": {
     "RETURN": "Return Order",

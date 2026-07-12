@@ -96,32 +96,39 @@ const getUserOrder = async (order_id: number, userId: number) => {
   let res: any = await prisma.$queryRaw`
   DECLARE @TRX_TYPE INT = 3;
 
-  SELECT id = th.transaction_header_id,
-         orderNb = th.transaction_header_code,
-         creationDate = th.date_added,
-         account = ISNULL(wa.description, th.destination_code),
-         [status]= th.transaction_status,
-         [status_text] = CASE
-                        WHEN th.transaction_status = 3 THEN
-                            'Awaiting Approval'
-                        WHEN th.transaction_status = 4 THEN
-                            'Awaiting Delivery'
-                        WHEN th.transaction_status = 8 THEN
-                            'Delivered'
-                        ELSE
-                            'Rejected'
+  SELECT  id = th.transaction_header_id,
+          orderNb = th.transaction_header_code,
+          creationDate = th.date_added,
+          account = ISNULL(wa.description, th.destination_code),
+          [status]= th.transaction_status,
+          [status_text] = CASE
+                              WHEN th.transaction_status = 3 THEN
+                                  'Awaiting Approval'
+                              WHEN th.transaction_status = 4 THEN
+                                  'Awaiting Delivery'
+                              WHEN th.transaction_status = 8 THEN
+                                  'Delivered'
+                              ELSE
+                                  'Rejected'
+                          END,
+          phone = CASE 
+                      WHEN vc.Phone IS NOT NULL THEN vc.Phone
+                      ELSE 'N/A'
+                  END,
+          address = CASE 
+                        WHEN vc.Address IS NOT NULL THEN vc.Address
+                        WHEN vc.Zone IS NOT NULL THEN vc.Zone
+                        ELSE 'N/A'
                     END,
-         phone = vc.Phone,
-         address= vc.Address,
-         brand = th.item_brand_code,
-         brand_description= ib.description,
-         items = (SELECT COUNT(*) FROM transaction_body WHERE transaction_header_id = th.transaction_header_id),
-         th.currency_code,
-         th.total_amount,
-         lastEdited = th.last_edited,
-         paymentType = th.expected_payment_type,
-         totalAmount = th.total_amount - ISNULL(th.added_price, 0),
-     status=th.transaction_status
+          brand = th.item_brand_code,
+          brand_description= ib.description,
+          items = (SELECT COUNT(*) FROM transaction_body WHERE transaction_header_id = th.transaction_header_id),
+          th.currency_code,
+          th.total_amount,
+          lastEdited = th.last_edited,
+          paymentType = th.expected_payment_type,
+          totalAmount = th.total_amount - ISNULL(th.added_price, 0),
+      status=th.transaction_status
   FROM dbo.transaction_header AS th
       INNER JOIN dbo.web_accounts AS wa
           ON wa.code = th.source_code
@@ -250,24 +257,35 @@ WHERE th.transaction_type = 4
 const getInvoiceDetails = async (invoice_no: string, userId: number) => {
   const res: any = await prisma.$queryRaw`
     SELECT invoice_no = th.transaction_header_code,
-       oracle_number = th.erp_transaction_header_code,
-       cat = th.item_brand_code,
-       date_added = CONVERT(DATE, th.date_added),
-       total_amount = th.total_amount,
-	   sales_person = sp.description,
-	   customer_name= vc.Description,
+      oracle_number = th.erp_transaction_header_code,
+      cat = th.item_brand_code,
+      date_added = CONVERT(DATE, th.date_added),
+      total_amount = th.total_amount,
+      sales_person = sp.description,
+      customer_name= vc.Description,
       customer_no = vc.Code,
-	   tel = vc.Phone,
-	   region = vc.Region,
-	   [address] =  vc.Address,
-        currency = CASE
-                       WHEN th.currency_code = '1' THEN
-                           'L.L.'
-                       WHEN th.currency_code = '2' THEN
-                           'USD'
-                       ELSE
-                       th.currency_code
-                   END,
+      tel = CASE 
+                WHEN vc.Phone IS NOT NULL THEN vc.Phone
+                ELSE 'N/A'
+            END,
+      region =  CASE 
+                    WHEN vc.Region IS NOT NULL THEN vc.Region
+                    WHEN vc.Région IS NOT NULL THEN vc.Région
+                    ELSE 'N/A'
+                END,
+      [address] = CASE 
+                      WHEN vc.Address IS NOT NULL THEN vc.Address
+                      WHEN vc.Zone IS NOT NULL THEN vc.Zone
+                      ELSE 'N/A'
+                  END,
+      currency =  CASE
+                    WHEN th.currency_code = '1' THEN
+                        'L.L.'
+                    WHEN th.currency_code = '2' THEN
+                        'USD'
+                    ELSE
+                    th.currency_code
+                  END,
 	   delivery_date = th.expected_payment_date,
        remaining_amount = ISNULL(oi.remaining_amount, 0)
 FROM dbo.transaction_header AS th

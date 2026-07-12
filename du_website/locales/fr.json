@@ -393,7 +393,7 @@
     "restock_now": "Réapprovisionner Maintenant",
     "items": "Articles",
     "search_items": "Rechercher des articles...",
-    "search_discription": "Sélectionnez un article pour gérer son stock"
+    "search_description": "Sélectionnez un article pour gérer son stock"
   },
   "expiry_deal": {
     "title": "Offres de Péremption",

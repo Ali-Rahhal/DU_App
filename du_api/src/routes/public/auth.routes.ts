@@ -6,13 +6,16 @@ const router = new Hono();
 
 router.post(`/login`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const body = await c.req.json();
 
     const code = body["code"];
     const password = body["password"];
 
     if (!code || !password) throw new Error("email or password not provided");
-    const result = await login({ code, password }, c);
+    const result = await login({ code, password }, c, companyId);
     return result;
     // return c.json({ message: "Login success", result: result });
   } catch (e) {

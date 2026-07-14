@@ -8,10 +8,13 @@ const router = new Hono();
 
 router.get(`/:code`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const itemCode = c.req.param("code");
     if (!itemCode) throw new Error("Item code is required");
 
-    const result = await getExpiryDeal(itemCode);
+    const result = await getExpiryDeal(itemCode, companyId);
 
     return c.json({ message: "Fetched expiry deal", result }, 200);
   } catch (e) {
@@ -21,6 +24,9 @@ router.get(`/:code`, async (c) => {
 
 router.post(`/:code`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const itemCode = c.req.param("code");
     const body = await c.req.json();
 
@@ -36,6 +42,7 @@ router.post(`/:code`, async (c) => {
       itemCode,
       expiry_threshold_months,
       discount_percentage,
+      companyId,
     );
 
     return c.json({ message: "Expiry deal updated", result }, 200);

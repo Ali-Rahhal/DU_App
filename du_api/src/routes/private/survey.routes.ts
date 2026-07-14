@@ -9,8 +9,11 @@ const router = new Hono();
 
 router.get(`/get_surveys`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
-    const result = await getSurveys();
+    const result = await getSurveys(companyId);
     return c.json({
       message: "Fetched surveys",
       result: result,
@@ -22,9 +25,12 @@ router.get(`/get_surveys`, async (c) => {
 
 router.get(`/get_survey_elements`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
     const surveyId = c.req.query("survey_id");
-    const result = await getSurveyElements(parseInt(surveyId));
+    const result = await getSurveyElements(parseInt(surveyId), companyId);
     return c.json({
       message: "Fetched surveys",
       result: result,
@@ -47,13 +53,21 @@ router.get(`/get_survey_elements`, async (c) => {
 
 router.post(`/save_survey_answer`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
     const body = await c.req.json();
     const surveyId = body["survey_id"];
     const answers = body["answers"];
     if (!surveyId) throw new Error("Survey id not provided");
     if (!answers) throw new Error("Answers not provided");
-    const result: any = await saveSurveyAnswer(surveyId, answers, userId);
+    const result: any = await saveSurveyAnswer(
+      surveyId,
+      answers,
+      userId,
+      companyId,
+    );
 
     return c.json({
       message: "Survey Answer saved",

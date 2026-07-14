@@ -1,15 +1,19 @@
 import Layout from "@/components/Layout/Layout";
 import PageHeading from "@/components/common/PageHeading";
+import { useCompanyAssets } from "@/hooks/useCompanyAssets";
+import { useCompanyStore } from "@/store/zustand";
 import React from "react";
 
 const contact = () => {
+  const { companyAbout } = useCompanyAssets();
+
   return (
     <>
       <Layout>
         <PageHeading
           title="Contact Us"
           subtitle="Lorem ipsum dolor sit amet, adipisicing elit."
-          image="/assets/img/extra/page-about.jpg"
+          image={companyAbout}
         />
         <section className="pt-5 pt-md-7">
           <div className="container">

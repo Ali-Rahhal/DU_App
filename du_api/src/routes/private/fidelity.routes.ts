@@ -13,9 +13,12 @@ const router = new Hono();
 // =========================
 router.get(`/getPoints`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
 
-    const result = await getFidelityPoints(userId);
+    const result = await getFidelityPoints(userId, companyId);
 
     return c.json({
       message: "Fidelity points fetched successfully",
@@ -37,10 +40,13 @@ router.get(`/getPoints`, async (c) => {
 // =========================
 router.get(`/getGifts`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const skip = Number(c.req.query("skip") || 0);
     const take = Number(c.req.query("take") || 20);
 
-    const result = await getFidelityGifts(skip, take);
+    const result = await getFidelityGifts(skip, take, companyId);
 
     return c.json({
       message: "Fidelity gifts fetched successfully",
@@ -62,7 +68,10 @@ router.get(`/getGifts`, async (c) => {
 // =========================
 router.get(`/getMilestoneRewards`, async (c) => {
   try {
-    const result = await getMilestoneRewards();
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
+    const result = await getMilestoneRewards(companyId);
 
     return c.json({
       message: "Milestone rewards fetched successfully",
@@ -84,6 +93,9 @@ router.get(`/getMilestoneRewards`, async (c) => {
 // =========================
 router.post(`/redeemGift`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
 
     const body = await c.req.json();
@@ -94,7 +106,7 @@ router.post(`/redeemGift`, async (c) => {
       throw new Error("Gift ID is required");
     }
 
-    const result = await redeemGift(userId, BigInt(giftId));
+    const result = await redeemGift(userId, BigInt(giftId), companyId);
 
     return c.json({
       message: "Gift redeemed successfully",

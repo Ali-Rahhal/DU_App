@@ -1,4 +1,4 @@
-import prisma from "../lib/prisma";
+import { getPrisma } from "../lib/prisma";
 import { createHash } from "crypto";
 import { Context } from "hono";
 import * as jwt from "jsonwebtoken";
@@ -117,7 +117,9 @@ const login = async (
     password: string;
   },
   c: Context,
+  companyId: string,
 ) => {
+  const prisma = getPrisma(companyId);
   const user = await prisma.web_accounts.findFirst({
     where: {
       code: code,
@@ -383,7 +385,8 @@ const login = async (
 //   // res.status(200).send({ message: "Email Verified", result: result });
 //   return c.json({ message: "Email Verified", result: result }, 200);
 // };
-const forgotPassword = async (email: string, c: Context) => {
+const forgotPassword = async (email: string, c: Context, companyId: string) => {
+  const prisma = getPrisma(companyId);
   //get user
   const user = await prisma.web_accounts.findFirst({
     where: {
@@ -484,7 +487,12 @@ const forgotPassword = async (email: string, c: Context) => {
     200,
   );
 };
-const validateResetCode = async (key: string, c: Context) => {
+const validateResetCode = async (
+  key: string,
+  c: Context,
+  companyId: string,
+) => {
+  const prisma = getPrisma(companyId);
   //get user
 
   //get verification code created_at
@@ -517,7 +525,9 @@ const changePasswordReset = async (
   confitrmedPassword: string,
   key: string,
   c: Context,
+  companyId: string,
 ) => {
+  const prisma = getPrisma(companyId);
   if (newPassword !== confitrmedPassword) {
     throw new Error("Password Not Matched");
   }
@@ -577,7 +587,8 @@ const changePasswordReset = async (
   // res.status(200).send({ message: "Email Verified", result: result });
   return c.json({ message: "Password Changed", result: result }, 200);
 };
-const getUserDetails = async (id: number) => {
+const getUserDetails = async (id: number, companyId: string) => {
+  const prisma = getPrisma(companyId);
   const userInfo = await prisma.web_accounts.findFirst({
     where: {
       id: id,
@@ -642,14 +653,16 @@ const updateUserDetails = async ({
   last_name,
   phone,
   address,
+  companyId,
 }: {
   userId: number;
-
   first_name: string;
   last_name: string;
   phone: string;
   address: string;
+  companyId: string;
 }) => {
+  const prisma = getPrisma(companyId);
   if (!userId) throw new Error("User not found");
   if (!address) throw new Error("Address is required");
   if (!first_name) throw new Error("First Name is required");
@@ -698,17 +711,21 @@ const updateUserDetails = async ({
     address: newAddress ? newAddress.address : "",
   };
 };
-const changePassword = async ({
-  userId,
-  oldPassword,
-  newPassword,
-  confirmedPassword,
-}: {
-  userId: number;
-  oldPassword: string;
-  newPassword: string;
-  confirmedPassword: string;
-}) => {
+const changePassword = async (
+  {
+    userId,
+    oldPassword,
+    newPassword,
+    confirmedPassword,
+  }: {
+    userId: number;
+    oldPassword: string;
+    newPassword: string;
+    confirmedPassword: string;
+  },
+  companyId: string,
+) => {
+  const prisma = getPrisma(companyId);
   const user = await prisma.web_accounts.findFirst({
     where: {
       id: userId,

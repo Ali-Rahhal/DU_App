@@ -1,5 +1,6 @@
 import ProductPromotionList from "@/components/common/ProductPromotionList";
 import Layout from "@/components/Layout/Layout";
+import { useCompanyAssets } from "@/hooks/useCompanyAssets";
 
 import { useAccountStore, useAuthStore } from "@/store/zustand";
 // import {
@@ -30,6 +31,7 @@ import { toast } from "react-toastify";
 
 const CartItem = ({ item, removeItemHandler, updateCartHandler }) => {
   const t = useTranslations();
+  const { companyPlaceholder } = useCompanyAssets();
   const [quantity, setQuantity] = useState<number>(item.quantity);
   const [debounceTimeout, setDebounceTimeout] = useState(null);
 
@@ -52,7 +54,7 @@ const CartItem = ({ item, removeItemHandler, updateCartHandler }) => {
   };
 
   const [imgSrcMain, setImgSrcMain] = useState(
-    item.image || process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE,
+    item.image || companyPlaceholder,
   );
   return (
     <div key={item.item_code} className="cart_item">
@@ -63,7 +65,7 @@ const CartItem = ({ item, removeItemHandler, updateCartHandler }) => {
             src={imgSrcMain}
             alt={item.name}
             onError={() => {
-              setImgSrcMain(process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE);
+              setImgSrcMain(companyPlaceholder);
             }}
           />
         </Link>
@@ -268,6 +270,7 @@ const Cart = () => {
     });
   }, [cartItems]);
   const t = useTranslations();
+  const { companyPlaceholder } = useCompanyAssets();
 
   return (
     <Layout>
@@ -319,9 +322,7 @@ const Cart = () => {
                     />
                   ))}
                   {promotions?.addedItems?.map((item) => {
-                    const imgSrcPromo =
-                      item.image ||
-                      process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE;
+                    const imgSrcPromo = item.image || companyPlaceholder;
                     return (
                       <div key={item.item_code} className="cart_item">
                         <div className="cart_item_image">
@@ -332,8 +333,7 @@ const Cart = () => {
                               alt={item.name}
                               unoptimized
                               onError={(e) => {
-                                e.currentTarget.src =
-                                  process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE;
+                                e.currentTarget.src = companyPlaceholder;
                               }}
                             />
                           </Link>

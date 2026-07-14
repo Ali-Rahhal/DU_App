@@ -4,7 +4,10 @@ const router = new Hono();
 
 router.get(`/get_side_bar`, async (c) => {
   try {
-    const result = await getSideBarMenu();
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
+    const result = await getSideBarMenu(companyId);
     return c.json({
       message: "Fetched side bar",
       result: result,

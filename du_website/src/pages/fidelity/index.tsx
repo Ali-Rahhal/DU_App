@@ -9,6 +9,7 @@ import {
 import { Button, Spinner, ProgressBar, Card } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { useTranslations } from "next-intl";
+import { useCompanyAssets } from "@/hooks/useCompanyAssets";
 
 /* ================= TYPES ================= */
 
@@ -52,6 +53,7 @@ const PAGE_SIZE = 6;
 const FidelityPage = () => {
   const [loading, setLoading] = useState(true);
   const t = useTranslations();
+  const { companyPlaceholder } = useCompanyAssets();
   const [points, setPoints] = useState({
     totalEarned: 0,
     totalRedeemed: 0,
@@ -494,14 +496,10 @@ const FidelityPage = () => {
               <div key={g.fidelity_gift_id} className="col-6 col-md-4 mb-3">
                 <Card className="p-2 h-100">
                   <img
-                    src={
-                      g.image ||
-                      process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE
-                    }
+                    src={g.image || companyPlaceholder}
                     className="img-fluid mb-2"
                     onError={(e) => {
-                      e.currentTarget.src =
-                        process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE;
+                      e.currentTarget.src = companyPlaceholder;
                     }}
                   />
 

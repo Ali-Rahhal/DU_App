@@ -4,8 +4,9 @@ import { Promotion } from "@/Models/Promotion";
 import { getPromotions } from "@/utils/apiCalls";
 import { useTranslations } from "next-intl";
 import React from "react";
-export async function getServerSideProps() {
-  const res: any = await getPromotions();
+export async function getServerSideProps(context: any) {
+  const cookie = context.req.headers.cookie || "";
+  const res: any = await getPromotions(cookie);
 
   return {
     props: {

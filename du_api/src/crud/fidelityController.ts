@@ -1,7 +1,8 @@
 import { Prisma } from "@prisma/client";
-import prisma from "../lib/prisma";
+import { getPrisma } from "../lib/prisma";
 
-const getFidelityPoints = async (userId: number) => {
+const getFidelityPoints = async (userId: number, companyId: string) => {
+  const prisma = getPrisma(companyId);
   // =========================
   // Get user account
   // =========================
@@ -248,7 +249,8 @@ const getFidelityPoints = async (userId: number) => {
   };
 };
 
-const getFidelityGifts = async (skip = 0, take = 20) => {
+const getFidelityGifts = async (skip = 0, take = 20, companyId: string) => {
+  const prisma = getPrisma(companyId);
   const gifts = await prisma.fidelity_gift.findMany({
     where: {
       is_active: true,
@@ -276,7 +278,8 @@ const getFidelityGifts = async (skip = 0, take = 20) => {
   };
 };
 
-const getMilestoneRewards = async () => {
+const getMilestoneRewards = async (companyId: string) => {
+  const prisma = getPrisma(companyId);
   const rewards = await prisma.fidelity_reward_rule.findMany({
     where: {
       is_active: true,
@@ -292,7 +295,12 @@ const getMilestoneRewards = async () => {
   }));
 };
 
-const redeemGift = async (userId: number, giftId: bigint) => {
+const redeemGift = async (
+  userId: number,
+  giftId: bigint,
+  companyId: string,
+) => {
+  const prisma = getPrisma(companyId);
   try {
     const result = await prisma.$queryRaw<any[]>(
       Prisma.sql`

@@ -2,13 +2,14 @@ import ProductItem from "@/components/common/ProductItem";
 import Layout from "@/components/Layout/Layout";
 import SearchBar from "@/components/Layout/Navbar/SearchBar";
 import { Product } from "@/types/productTypes";
-import { categorySlider } from "@/utils/data";
+import { categorySlider, getDefaultCategorySlider } from "@/utils/data";
 import { getProducts } from "@/utils/apiCalls";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Button, Spinner, Form, Row, Col, Collapse } from "react-bootstrap";
+import { useCompanyAssets } from "@/hooks/useCompanyAssets";
 
 /* ---------------- SERVER SIDE ---------------- */
 
@@ -48,6 +49,7 @@ const Filters = ({
 }: any) => {
   const router = useRouter();
   const t = useTranslations();
+  const { companyHydrated, companyId } = useCompanyAssets();
 
   const clearSearch = () => {
     router.push({
@@ -104,7 +106,10 @@ const Filters = ({
         >
           All
         </Link>
-        {categorySlider.map((cat) => (
+        {(companyHydrated
+          ? categorySlider[companyId]
+          : getDefaultCategorySlider()
+        ).map((cat) => (
           <Link
             href={{
               pathname: "/category",

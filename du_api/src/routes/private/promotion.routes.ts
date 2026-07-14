@@ -5,8 +5,11 @@ const router = new Hono();
 
 router.get(`/get_shopping_cart_promotions`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
-    const result = await getShoppingCartPromotions(userId);
+    const result = await getShoppingCartPromotions(userId, companyId);
     return c.json({
       message: "Fetched Promotions ",
       result: result,

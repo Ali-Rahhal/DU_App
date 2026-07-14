@@ -1,3 +1,4 @@
+import { useCompanyAssets } from "@/hooks/useCompanyAssets";
 import { Promotion } from "@/Models/Promotion";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -7,6 +8,7 @@ import { Button } from "react-bootstrap";
 
 const PromotionContainer = ({ promotion }: { promotion: Promotion }) => {
   const t = useTranslations();
+  const { companyPlaceholder } = useCompanyAssets();
   return (
     <>
       <div className="promotion_con">
@@ -63,10 +65,7 @@ const PromotionContainer = ({ promotion }: { promotion: Promotion }) => {
                   }}
                 >
                   <Image
-                    src={
-                      condition.images[0] ||
-                      process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE
-                    }
+                    src={condition.images[0] || companyPlaceholder}
                     width={70}
                     height={70}
                     alt={condition.item_description}
@@ -165,10 +164,7 @@ const PromotionContainer = ({ promotion }: { promotion: Promotion }) => {
                   }}
                 >
                   <Image
-                    src={
-                      result.images[0] ||
-                      process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE
-                    }
+                    src={result.images[0] || companyPlaceholder}
                     width={70}
                     height={70}
                     alt={result.item_description}

@@ -20,8 +20,11 @@ const router = new Hono();
 
 router.get(`/get_cart_items`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
-    const result = await getCartItems(userId, {});
+    const result = await getCartItems(userId, {}, companyId);
     return c.json({
       message: "Fetched Cart items",
       result: result,
@@ -32,6 +35,9 @@ router.get(`/get_cart_items`, async (c) => {
 });
 router.post(`/add_to_cart`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
     const body = await c.req.json();
     const itemCode = body["item_code"];
@@ -42,13 +48,20 @@ router.post(`/add_to_cart`, async (c) => {
     if (!barcode) throw new Error("Barcode not provided");
     if (!itemCode) throw new Error("Item code not provided");
 
-    await checkSingleStock(userId, itemCode, parseInt(quantity), isExpiryDeal);
+    await checkSingleStock(
+      userId,
+      itemCode,
+      parseInt(quantity),
+      companyId,
+      isExpiryDeal,
+    );
 
     const result = await addItemToCart(
       userId,
       itemCode,
       barcode,
       parseInt(quantity),
+      companyId,
       isExpiryDeal,
     );
     return c.json({
@@ -62,12 +75,20 @@ router.post(`/add_to_cart`, async (c) => {
 });
 router.post(`/remove_from_cart`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
     const body = await c.req.json();
     const itemCode = body["item_code"];
     const isExpiryDeal = Boolean(body["isExpiryDeal"]);
 
-    const result = await removeItemFromCart(userId, itemCode, isExpiryDeal);
+    const result = await removeItemFromCart(
+      userId,
+      itemCode,
+      companyId,
+      isExpiryDeal,
+    );
     return c.json({
       message: "Removed item from cart",
       result: result,
@@ -78,6 +99,9 @@ router.post(`/remove_from_cart`, async (c) => {
 });
 router.post(`/update_cart_item`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
     const body = await c.req.json();
     const itemCode = body["item_code"];
@@ -88,12 +112,12 @@ router.post(`/update_cart_item`, async (c) => {
 
     let stock: number;
     if (!isExpiryDeal) {
-      stock = await getItemStock(itemCode);
+      stock = await getItemStock(itemCode, companyId);
     } else {
-      stock = await getExpiryItemStock(itemCode);
+      stock = await getExpiryItemStock(itemCode, companyId);
     }
     if (stock < parseInt(quantity)) {
-      await updateItemInCart(userId, itemCode, stock);
+      await updateItemInCart(userId, itemCode, stock, companyId);
       throw new Error("Insufficient stock");
     }
 
@@ -101,6 +125,7 @@ router.post(`/update_cart_item`, async (c) => {
       userId,
       itemCode,
       parseInt(quantity),
+      companyId,
       isExpiryDeal,
     );
     return c.json({
@@ -114,13 +139,20 @@ router.post(`/update_cart_item`, async (c) => {
 
 router.get(`/get_favorite_items`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
     const take = c.req.query("take");
     const skip = c.req.query("skip");
-    const result = await getFavoriteItems(userId, {
-      take: parseInt(take as string),
-      skip: parseInt(skip as string),
-    });
+    const result = await getFavoriteItems(
+      userId,
+      {
+        take: parseInt(take as string),
+        skip: parseInt(skip as string),
+      },
+      companyId,
+    );
     return c.json({
       message: "Fetched account info",
       result: result,
@@ -131,13 +163,22 @@ router.get(`/get_favorite_items`, async (c) => {
 });
 router.post(`/add_to_favorite`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
-    if (!(await ensureAccountPermission(userId, ALL_PERMISSIONS.Wishlist))) {
+    if (
+      !(await ensureAccountPermission(
+        userId,
+        ALL_PERMISSIONS.Wishlist,
+        companyId,
+      ))
+    ) {
       throw new Error("You don't have permission to use wishlist");
     }
     const body = await c.req.json();
     const itemCode = body["item_code"];
-    const result = await addItemToFavorite(userId, itemCode);
+    const result = await addItemToFavorite(userId, itemCode, companyId);
     return c.json({
       message: "Added item to favorite",
       result: result,
@@ -148,13 +189,22 @@ router.post(`/add_to_favorite`, async (c) => {
 });
 router.post(`/remove_from_favorite`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
-    if (!(await ensureAccountPermission(userId, ALL_PERMISSIONS.Wishlist))) {
+    if (
+      !(await ensureAccountPermission(
+        userId,
+        ALL_PERMISSIONS.Wishlist,
+        companyId,
+      ))
+    ) {
       throw new Error("You don't have permission to use wishlist");
     }
     const body = await c.req.json();
     const itemCode = body["item_code"];
-    const result = await removeItemFromFavorite(userId, itemCode);
+    const result = await removeItemFromFavorite(userId, itemCode, companyId);
     return c.json({
       message: "Removed item to favorite",
       result: result,

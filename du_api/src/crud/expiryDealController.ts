@@ -1,6 +1,7 @@
-import prisma from "../lib/prisma";
+import { getPrisma } from "../lib/prisma";
 
-const getExpiryDeal = async (itemCode: string) => {
+const getExpiryDeal = async (itemCode: string, companyId: string) => {
+  const prisma = getPrisma(companyId);
   const config = await prisma.item_expiry_deal.findUnique({
     where: {
       item_code: itemCode,
@@ -20,7 +21,9 @@ const upsertExpiryDeal = async (
   itemCode: string,
   expiry_threshold_months: number,
   discount_percentage: number,
+  companyId: string,
 ) => {
+  const prisma = getPrisma(companyId);
   const config = await prisma.item_expiry_deal.upsert({
     where: {
       item_code: itemCode,

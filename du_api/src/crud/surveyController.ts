@@ -1,6 +1,7 @@
 import { Prisma } from "@prisma/client";
-import prisma from "../lib/prisma";
-const getSurveys = async () => {
+import { getPrisma } from "../lib/prisma";
+const getSurveys = async (companyId: string) => {
+  const prisma = getPrisma(companyId);
   // AND CONVERT(DATE, GETDATE())
   //       BETWEEN CONVERT(DATE, sti.start_date) AND CONVERT(DATE, sti.end_date)
   const surveys = await prisma.survey_template_instance.findMany({
@@ -27,7 +28,8 @@ const getSurveys = async () => {
   });
 };
 
-const getSurveyElements = async (surveyId: number) => {
+const getSurveyElements = async (surveyId: number, companyId: string) => {
+  const prisma = getPrisma(companyId);
   const elements: any = await prisma.$queryRaw`
   DECLARE @lang NVARCHAR(2) = 'EN';
 
@@ -197,15 +199,19 @@ const getSurveyElements = async (surveyId: number) => {
   };
 };
 
-const getProductsSurvey = async ({
-  take,
-  skip,
-  search,
-}: {
-  take: number;
-  skip: number;
-  search: string;
-}) => {
+const getProductsSurvey = async (
+  {
+    take,
+    skip,
+    search,
+  }: {
+    take: number;
+    skip: number;
+    search: string;
+  },
+  companyId: string,
+) => {
+  const prisma = getPrisma(companyId);
   const searchFilter = search
     ? Prisma.sql`AND it.description LIKE ${`%${search}%`}`
     : Prisma.empty;
@@ -237,7 +243,9 @@ const saveSurveyAnswer = async (
     type: string;
   }[],
   userId: number,
+  companyId: string,
 ) => {
+  const prisma = getPrisma(companyId);
   const user = await prisma.web_accounts.findUnique({
     where: {
       id: userId,

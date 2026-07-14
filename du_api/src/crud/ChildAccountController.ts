@@ -1,7 +1,11 @@
 import { createHash } from "crypto";
-import prisma from "../lib/prisma";
+import { getPrisma } from "../lib/prisma";
 
-const getChildAccounts = async ({ parent_id }: { parent_id: number }) => {
+const getChildAccounts = async (
+  { parent_id }: { parent_id: number },
+  companyId: string,
+) => {
+  const prisma = getPrisma(companyId);
   const w = await prisma.web_accounts.findMany({
     where: {
       parent_id,
@@ -34,19 +38,23 @@ const getChildAccounts = async ({ parent_id }: { parent_id: number }) => {
   return w;
 };
 
-const createChild = async ({
-  password,
-  first_name,
-  last_name,
-  phone_number,
-  parent_id,
-}: {
-  password: string;
-  first_name: string;
-  last_name: string;
-  phone_number: string;
-  parent_id: number;
-}) => {
+const createChild = async (
+  {
+    password,
+    first_name,
+    last_name,
+    phone_number,
+    parent_id,
+  }: {
+    password: string;
+    first_name: string;
+    last_name: string;
+    phone_number: string;
+    parent_id: number;
+  },
+  companyId: string,
+) => {
+  const prisma = getPrisma(companyId);
   const childCount = await prisma.web_accounts.count({
     where: { parent_id: parent_id, is_active: true },
   });
@@ -102,11 +110,14 @@ const changeChildPassword = async ({
   child_id,
   password,
   parent_id,
+  companyId,
 }: {
   child_id: number;
   password: string;
   parent_id: number;
+  companyId: string;
 }) => {
+  const prisma = getPrisma(companyId);
   const child = await prisma.web_accounts.findFirst({
     where: {
       id: child_id,
@@ -133,13 +144,17 @@ const changeChildPassword = async ({
   return w;
 };
 
-const disableChild = async ({
-  child_id,
-  parent_id,
-}: {
-  child_id: number;
-  parent_id: number;
-}) => {
+const disableChild = async (
+  {
+    child_id,
+    parent_id,
+  }: {
+    child_id: number;
+    parent_id: number;
+  },
+  companyId: string,
+) => {
+  const prisma = getPrisma(companyId);
   const child = await prisma.web_accounts.findFirst({
     where: {
       id: child_id,
@@ -159,13 +174,17 @@ const disableChild = async ({
 
   return w;
 };
-const enableChild = async ({
-  child_id,
-  parent_id,
-}: {
-  child_id: number;
-  parent_id: number;
-}) => {
+const enableChild = async (
+  {
+    child_id,
+    parent_id,
+  }: {
+    child_id: number;
+    parent_id: number;
+  },
+  companyId: string,
+) => {
+  const prisma = getPrisma(companyId);
   const child = await prisma.web_accounts.findFirst({
     where: {
       id: child_id,
@@ -185,21 +204,25 @@ const enableChild = async ({
 
   return w;
 };
-const editChild = async ({
-  child_id,
-  first_name,
-  last_name,
-  phone_number,
-  parent_id,
-  password,
-}: {
-  child_id: number;
-  first_name: string;
-  last_name: string;
-  phone_number: string;
-  parent_id: number;
-  password: string;
-}) => {
+const editChild = async (
+  {
+    child_id,
+    first_name,
+    last_name,
+    phone_number,
+    parent_id,
+    password,
+  }: {
+    child_id: number;
+    first_name: string;
+    last_name: string;
+    phone_number: string;
+    parent_id: number;
+    password: string;
+  },
+  companyId: string,
+) => {
+  const prisma = getPrisma(companyId);
   const child = await prisma.web_accounts.findFirst({
     where: {
       id: child_id,
@@ -228,13 +251,17 @@ const editChild = async ({
 
   return w;
 };
-const deleteChild = async ({
-  child_id,
-  parent_id,
-}: {
-  child_id: number;
-  parent_id: number;
-}) => {
+const deleteChild = async (
+  {
+    child_id,
+    parent_id,
+  }: {
+    child_id: number;
+    parent_id: number;
+  },
+  companyId: string,
+) => {
+  const prisma = getPrisma(companyId);
   const child = await prisma.web_accounts.findFirst({
     where: {
       id: child_id,
@@ -282,15 +309,19 @@ const deleteChild = async ({
 //   return result;
 // };
 
-const updatePermissions = async ({
-  web_account_id,
-  permissionsIds,
-  parent_id,
-}: {
-  web_account_id: number;
-  permissionsIds: number[];
-  parent_id: number;
-}) => {
+const updatePermissions = async (
+  {
+    web_account_id,
+    permissionsIds,
+    parent_id,
+  }: {
+    web_account_id: number;
+    permissionsIds: number[];
+    parent_id: number;
+  },
+  companyId: string,
+) => {
+  const prisma = getPrisma(companyId);
   const webAccount = await prisma.web_accounts.findUnique({
     where: {
       id: web_account_id,
@@ -321,10 +352,10 @@ const updatePermissions = async ({
     throw new Error("Some permissions not found");
   }
   const newPermissionsToAdd = newPermissions.filter(
-    (x) => !oldPermissions.map((x) => x.user_permission_id).includes(x.id)
+    (x) => !oldPermissions.map((x) => x.user_permission_id).includes(x.id),
   );
   const newPermissionsToRemove = oldPermissions.filter(
-    (x) => !permissionsIds.includes(x.user_permission_id || -1)
+    (x) => !permissionsIds.includes(x.user_permission_id || -1),
   );
   if (newPermissionsToAdd.length > 0) {
     await prisma.user_permission_assignment.createMany({
@@ -344,12 +375,16 @@ const updatePermissions = async ({
       },
     });
   }
-  const result = await getChildAccounts({
-    parent_id: web_account_id,
-  });
+  const result = await getChildAccounts(
+    {
+      parent_id: web_account_id,
+    },
+    companyId,
+  );
   return result;
 };
-const getAllUserPermisions = async () => {
+const getAllUserPermisions = async (companyId: string) => {
+  const prisma = getPrisma(companyId);
   const result = await prisma.user_permission.findMany({
     select: {
       id: true,

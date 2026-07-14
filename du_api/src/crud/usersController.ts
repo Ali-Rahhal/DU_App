@@ -1,6 +1,6 @@
 // controllers/userController.ts
 import { Prisma } from "@prisma/client";
-import prisma from "../lib/prisma";
+import { getPrisma } from "../lib/prisma";
 import { createHash } from "crypto";
 import { ROLES } from "../lib/constants";
 
@@ -16,7 +16,9 @@ export const getUsers = async (
   page: number = 1,
   pageSize: number = 10,
   search: string = "",
+  companyId: string,
 ) => {
+  const prisma = getPrisma(companyId);
   const skip = (page - 1) * pageSize;
 
   const whereCondition = search
@@ -75,7 +77,8 @@ export const getUsers = async (
 };
 
 // Get single user with details
-export const getUserById = async (id: number) => {
+export const getUserById = async (id: number, companyId: string) => {
+  const prisma = getPrisma(companyId);
   const user = await prisma.web_accounts.findUnique({
     where: {
       id: id,
@@ -121,7 +124,11 @@ export const getUserById = async (id: number) => {
 };
 
 // Create new user
-export const createUser = async (userData: Prisma.web_accountsCreateInput) => {
+export const createUser = async (
+  userData: Prisma.web_accountsCreateInput,
+  companyId: string,
+) => {
+  const prisma = getPrisma(companyId);
   return await prisma.$transaction(async (tx) => {
     // Get highest current ID safely inside transaction
     const lastUser = await tx.web_accounts.findFirst({
@@ -190,7 +197,12 @@ export const createUser = async (userData: Prisma.web_accountsCreateInput) => {
 };
 
 // Update user
-export const updateUser = async (id: number, userData: any) => {
+export const updateUser = async (
+  id: number,
+  userData: any,
+  companyId: string,
+) => {
+  const prisma = getPrisma(companyId);
   // Check if user exists
   const existingUser = await prisma.web_accounts.findUnique({
     where: { id },
@@ -267,7 +279,8 @@ export const updateUser = async (id: number, userData: any) => {
 };
 
 // Toggle user status
-export const toggleUserStatus = async (id: number) => {
+export const toggleUserStatus = async (id: number, companyId: string) => {
+  const prisma = getPrisma(companyId);
   const user = await prisma.web_accounts.findUnique({
     where: { id },
     select: { is_active: true, role: true },
@@ -298,7 +311,8 @@ export const toggleUserStatus = async (id: number) => {
 };
 
 // Get user permissions (for type 2 users)
-export const getUserPermissions = async (id: number) => {
+export const getUserPermissions = async (id: number, companyId: string) => {
+  const prisma = getPrisma(companyId);
   const user = await prisma.web_accounts.findUnique({
     where: { id },
     select: { type: true },
@@ -331,7 +345,8 @@ export const getUserPermissions = async (id: number) => {
 };
 
 // Get all permissions
-export const getAllPermissions = async () => {
+export const getAllPermissions = async (companyId: string) => {
+  const prisma = getPrisma(companyId);
   const permissions = await prisma.user_permission.findMany({
     where: {
       is_active: true,
@@ -353,7 +368,9 @@ export const getAllPermissions = async () => {
 export const updateUserPermissions = async (
   userId: number,
   permissionIds: number[],
+  companyId: string,
 ) => {
+  const prisma = getPrisma(companyId);
   // Check if user exists
   const user = await prisma.web_accounts.findUnique({
     where: { id: userId },

@@ -5,19 +5,30 @@ import MiniCart from "./MiniCart";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
+import { Spinner } from "react-bootstrap";
 // import { useSelector } from "react-redux";
 import LoginModal from "./modals/Login";
 // import RegisterModal from "./modals/Register";
 import ForgotModal from "./modals/Forgot";
-import { useAccountStore, useAuthStore } from "@/store/zustand";
+import {
+  useAccountStore,
+  useAuthStore,
+  useCompanyStore,
+} from "@/store/zustand";
 import { useTranslations } from "next-intl";
 
 import ChangeLangDropdown from "@/components/common/ChangeLangDropdown";
 import FloatingMenu from "../FloatingMenu";
 import { ROLES } from "@/utils/data";
+import { Companies, CompanyId } from "@/utils/config_companies";
+import { useCompanyAssets } from "@/hooks/useCompanyAssets";
 function Navbar() {
   //   const { cart } = useSelector((state) => state.cart);
   const t = useTranslations();
+  const { companyId, setCompany } = useCompanyStore();
+  const { companyHydrated, companyName, companyLogo } = useCompanyAssets();
+
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showModal, setShowModal] = useState("");
 
@@ -103,21 +114,65 @@ function Navbar() {
                 }}
               >
                 <Link href="/">
-                  <Image
-                    // src={"/assets/img/logo_cropped.png"}
-                    src={"/assets/img/logo_vitalait.png"}
-                    alt="Logo"
-                    height={40}
-                    width={250}
-                    className="header-logo"
-                  />
+                  {(companyHydrated && (
+                    <Image
+                      src={companyLogo}
+                      alt={companyName}
+                      height={40}
+                      width={250}
+                      className="header-logo"
+                    />
+                  )) || (
+                    <Spinner
+                      animation="border"
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                      }}
+                    />
+                  )}
                 </Link>
-                <ChangeLangDropdown />
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.75rem",
+                  }}
+                >
+                  <ChangeLangDropdown />
+
+                  <FormSelect
+                    value={companyId}
+                    disabled={isAuth}
+                    onChange={(e) => {
+                      const selectedCompany = e.target.value as CompanyId;
+
+                      setCompany(selectedCompany);
+
+                      document.cookie = `companyId=${selectedCompany}; path=/; max-age=31536000; SameSite=Lax`;
+
+                      window.location.href = "/";
+                    }}
+                    style={{
+                      width: 150,
+                      minWidth: 150,
+                      borderRadius: 10,
+                      fontWeight: 500,
+                      cursor: isAuth ? "not-allowed" : "pointer",
+                    }}
+                  >
+                    {Object.values(Companies).map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.abreviation}
+                      </option>
+                    ))}
+                  </FormSelect>
+                </div>
               </div>
-              <div className="col">
-                <SearchBar showSearch={true} />
+              <div className="col px-4">
+                <SearchBar showSearch />
               </div>
-              <div className="col-auto">
+              <div className="col-auto ms-auto">
                 <ul className="header-right-options">
                   {!isAuth ? (
                     <>
@@ -372,14 +427,23 @@ function Navbar() {
             </div>
             <div className="col text-center">
               <Link href="/">
-                <Image
-                  // src={"/assets/img/logo.png"}
-                  src={"/assets/img/logo_vitalait.png"}
-                  alt="Logo"
-                  height={40}
-                  width={250}
-                  className="header-logo"
-                />
+                {(companyHydrated && (
+                  <Image
+                    src={companyLogo}
+                    alt={companyName}
+                    height={40}
+                    width={250}
+                    className="header-logo"
+                  />
+                )) || (
+                  <Spinner
+                    animation="border"
+                    style={{
+                      width: "40px",
+                      height: "40px",
+                    }}
+                  />
+                )}
               </Link>
             </div>
             <div className="col-auto">
@@ -420,6 +484,33 @@ function Navbar() {
 
             <div className="col mt-3">
               <SearchBar showSearch={false} text={"search_products"} />
+            </div>
+
+            <div
+              style={{
+                padding: "0 1rem",
+                marginTop: "0.75rem",
+              }}
+            >
+              <FormSelect
+                value={companyId}
+                disabled={isAuth}
+                onChange={(e) => {
+                  const selectedCompany = e.target.value as CompanyId;
+
+                  setCompany(selectedCompany);
+
+                  document.cookie = `companyId=${selectedCompany}; path=/; max-age=31536000; SameSite=Lax`;
+
+                  window.location.href = "/";
+                }}
+              >
+                {Object.values(Companies).map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.abreviation}
+                  </option>
+                ))}
+              </FormSelect>
             </div>
             {isAuth && (
               <div className="mobileMenuLinks mb-2 mt-2">

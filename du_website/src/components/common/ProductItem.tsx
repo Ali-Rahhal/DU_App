@@ -1,5 +1,9 @@
 import Item from "@/Models/item";
-import { useAuthStore, useAccountStore } from "@/store/zustand";
+import {
+  useAuthStore,
+  useAccountStore,
+  useCompanyStore,
+} from "@/store/zustand";
 import { currenncyCodeToSymbol } from "@/utils";
 import {
   addToFavorite,
@@ -17,6 +21,7 @@ import { useEffect, useState } from "react";
 import ProductPromotionList from "./ProductPromotionList";
 import { ALL_PERMISSIONS } from "@/utils/data";
 import { Product } from "@/types/productTypes";
+import { useCompanyAssets } from "@/hooks/useCompanyAssets";
 
 const ProductItem = ({
   item,
@@ -26,6 +31,7 @@ const ProductItem = ({
   layout?: "grid" | "list";
 }) => {
   const t = useTranslations();
+  const { companyPlaceholder } = useCompanyAssets();
   const { isAuth } = useAuthStore();
   const { cartItems, refreshCart, checkPermission } = useAccountStore();
   const [fav, setFav] = useState(item.isFavorite ?? false);
@@ -43,9 +49,7 @@ const ProductItem = ({
   const stock = item.stock;
   const isOutOfStock = stock === 0;
 
-  const [imgSrc, setImgSrc] = useState(
-    item.image || process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE,
-  );
+  const [imgSrc, setImgSrc] = useState(item.image || companyPlaceholder);
 
   useEffect(() => {
     setLocalQty(qty);
@@ -197,7 +201,7 @@ const ProductItem = ({
       height={h}
       style={{ objectFit: "cover", width: "100%", height: "100%" }}
       onError={() => {
-        setImgSrc(process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE);
+        setImgSrc(companyPlaceholder);
       }}
     />
   );

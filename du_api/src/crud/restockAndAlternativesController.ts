@@ -1,6 +1,7 @@
-import prisma from "../lib/prisma";
+import { getPrisma } from "../lib/prisma";
 
-const getItemAlternatives = async (itemCode: string) => {
+const getItemAlternatives = async (itemCode: string, companyId: string) => {
+  const prisma = getPrisma(companyId);
   return await prisma.item_alternatives.findMany({
     where: {
       item_code: itemCode,
@@ -19,7 +20,9 @@ const getItemAlternatives = async (itemCode: string) => {
 const replaceItemAlternatives = async (
   itemCode: string,
   alternatives: { alternative_item_code: string; priority: number }[],
+  companyId: string,
 ) => {
+  const prisma = getPrisma(companyId);
   return await prisma.$transaction(async (tx) => {
     // remove old
     await tx.item_alternatives.deleteMany({
@@ -43,7 +46,12 @@ const replaceItemAlternatives = async (
   });
 };
 
-const getRestockConfig = async (userId: number, itemCode: string) => {
+const getRestockConfig = async (
+  userId: number,
+  itemCode: string,
+  companyId: string,
+) => {
+  const prisma = getPrisma(companyId);
   const config = await prisma.item_restock_config.findUnique({
     where: { client_id_item_code: { client_id: userId, item_code: itemCode } },
   });
@@ -58,7 +66,9 @@ const upsertRestockConfig = async (
   userId: number,
   itemCode: string,
   min_stock: number,
+  companyId: string,
 ) => {
+  const prisma = getPrisma(companyId);
   const config = await prisma.item_restock_config.upsert({
     where: { client_id_item_code: { client_id: userId, item_code: itemCode } },
     update: {
@@ -83,9 +93,11 @@ const restockItem = async (
   userId: number,
   itemCode: string,
   current_stock: number,
+  companyId: string,
 ) => {
+  const prisma = getPrisma(companyId);
   return await prisma.$transaction(async (tx) => {
-    const config = await getRestockConfig(userId, itemCode);
+    const config = await getRestockConfig(userId, itemCode, companyId);
     if (!config) throw new Error("Restock config not found");
     const { min_stock } = config;
     if (min_stock < current_stock)

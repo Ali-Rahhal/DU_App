@@ -12,9 +12,11 @@ import { Button } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { useTranslations } from "next-intl";
 import AdminGuard from "@/components/guards/AdminGuard";
+import { useCompanyAssets } from "@/hooks/useCompanyAssets";
 
 const ItemAlternatives = () => {
   const t = useTranslations();
+  const { companyPlaceholder } = useCompanyAssets();
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [selectedAlternatives, setSelectedAlternatives] = useState<any[]>([]);
 
@@ -36,8 +38,7 @@ const ItemAlternatives = () => {
           return {
             ...alt,
             name: data.name,
-            image:
-              data.image || process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE,
+            image: data.image || companyPlaceholder,
           };
         }),
       );
@@ -131,8 +132,7 @@ const ItemAlternatives = () => {
                               image:
                                 existing?.image ||
                                 v.image ||
-                                process.env
-                                  .NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE,
+                                companyPlaceholder,
                               priority: i + 1,
                             };
                           });

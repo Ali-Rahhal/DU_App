@@ -1,5 +1,6 @@
 import AccountLayout from "@/components/dashboard/AccountLayout";
 import Layout from "@/components/Layout/Layout";
+import { useCompanyAssets } from "@/hooks/useCompanyAssets";
 import { currenncyCodeToSymbol } from "@/utils";
 import { getOrder, getOrderDetails } from "@/utils/apiCalls";
 import { useTranslations } from "next-intl";
@@ -30,6 +31,7 @@ const OrderDetails = () => {
   });
   const rt = useRouter();
   const t = useTranslations();
+  const { companyPlaceholder } = useCompanyAssets();
 
   const fetchOrder = async (order_id: string) => {
     await getOrderDetails(order_id)
@@ -98,10 +100,7 @@ const OrderDetails = () => {
                             width: "100%",
                             height: "100%",
                           }}
-                          src={
-                            order.image ||
-                            process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE
-                          }
+                          src={order.image || companyPlaceholder}
                           alt="shop"
                         />
                       </div>

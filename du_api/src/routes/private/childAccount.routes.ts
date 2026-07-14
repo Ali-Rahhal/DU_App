@@ -29,9 +29,12 @@ const PRIVATE_API = "/api/auth";
 //   }) => {
 
 async function parentMiddleware(c, next) {
+  const companyId = String(
+    c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+  );
   const userId = await getUserId(c);
   try {
-    await ensureParentAccount(parseInt(userId));
+    await ensureParentAccount(parseInt(userId), companyId);
     await next();
   } catch (e) {
     return c.json({ message: e.message, result: null }, 401);
@@ -41,16 +44,22 @@ async function parentMiddleware(c, next) {
 router.use(`/*`, parentMiddleware);
 router.post(`/create`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const parent_id = await getUserId(c);
     const body = await c.req.json();
     const { password, first_name, last_name, phone_number } = body;
-    const result = await createChild({
-      password,
-      first_name,
-      last_name,
-      phone_number,
-      parent_id,
-    });
+    const result = await createChild(
+      {
+        password,
+        first_name,
+        last_name,
+        phone_number,
+        parent_id,
+      },
+      companyId,
+    );
     if (!password) throw new Error("Password is required");
     if (!first_name) throw new Error("First name is required");
     if (!last_name) throw new Error("Last name is required");
@@ -66,8 +75,11 @@ router.post(`/create`, async (c) => {
 
 router.get(`/`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const parent_id = await getUserId(c);
-    const result = await getChildAccounts({ parent_id });
+    const result = await getChildAccounts({ parent_id }, companyId);
     return c.json({ message: "Child accounts fetched", result });
   } catch (e) {
     return c.json({ message: e.message, result: null }, 400);
@@ -76,6 +88,9 @@ router.get(`/`, async (c) => {
 
 router.post(`/edit`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const parent_id = await getUserId(c);
     const body = await c.req.json();
     const { child_id, password, first_name, last_name, phone_number } = body;
@@ -83,14 +98,17 @@ router.post(`/edit`, async (c) => {
     if (!password) throw new Error("Password is required");
     if (!first_name) throw new Error("First name is required");
     if (!last_name) throw new Error("Last name is required");
-    const result = await editChild({
-      child_id,
-      password,
-      first_name,
-      last_name,
-      phone_number,
-      parent_id,
-    });
+    const result = await editChild(
+      {
+        child_id,
+        password,
+        first_name,
+        last_name,
+        phone_number,
+        parent_id,
+      },
+      companyId,
+    );
     return c.json({ message: "Child account updated", result: null });
   } catch (e) {
     return c.json({ message: e.message, result: null }, 400);
@@ -102,10 +120,13 @@ router.post(`/edit`, async (c) => {
 // }: {
 router.post(`/disable`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const parent_id = await getUserId(c);
     const body = await c.req.json();
     const { child_id } = body;
-    const result = await disableChild({ child_id, parent_id });
+    const result = await disableChild({ child_id, parent_id }, companyId);
     return c.json({ message: "Child account disabled", result: null });
   } catch (e) {
     return c.json({ message: e.message, result: null }, 400);
@@ -113,10 +134,13 @@ router.post(`/disable`, async (c) => {
 });
 router.post(`/enable`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const parent_id = await getUserId(c);
     const body = await c.req.json();
     const { child_id } = body;
-    const result = await enableChild({ child_id, parent_id });
+    const result = await enableChild({ child_id, parent_id }, companyId);
     return c.json({ message: "Child account enabled", result: null });
   } catch (e) {
     return c.json({ message: e.message, result: null }, 400);
@@ -127,10 +151,13 @@ router.post(`/enable`, async (c) => {
 //   parent_id,
 router.post(`/delete`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const parent_id = await getUserId(c);
     const body = await c.req.json();
     const { child_id } = body;
-    const result = await deleteChild({ child_id, parent_id });
+    const result = await deleteChild({ child_id, parent_id }, companyId);
     return c.json({ message: "Child account deleted", result: null });
   } catch (e) {
     return c.json({ message: e.message, result: null }, 400);
@@ -139,7 +166,10 @@ router.post(`/delete`, async (c) => {
 
 router.get(`/all_permissions`, async (c) => {
   try {
-    const result = await getAllUserPermisions();
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
+    const result = await getAllUserPermisions(companyId);
     return c.json({ message: "Permissions fetched", result });
   } catch (e) {
     return c.json({ message: e.message, result: null }, 400);
@@ -147,15 +177,21 @@ router.get(`/all_permissions`, async (c) => {
 });
 router.post(`/update_permissions`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const parent_id = await getUserId(c);
     const body = await c.req.json();
     const { child_id, permissionsIds } = body;
     console.log(permissionsIds);
-    const result = await updatePermissions({
-      web_account_id: child_id,
-      permissionsIds: permissionsIds,
-      parent_id: parent_id,
-    });
+    const result = await updatePermissions(
+      {
+        web_account_id: child_id,
+        permissionsIds: permissionsIds,
+        parent_id: parent_id,
+      },
+      companyId,
+    );
     return c.json({ message: "Permissions updated", result: null });
   } catch (e) {
     return c.json({ message: e.message, result: null }, 400);

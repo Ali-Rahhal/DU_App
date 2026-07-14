@@ -1,17 +1,36 @@
 import { PrismaClient } from "@prisma/client";
 
-let prisma: PrismaClient;
+const prismaClients: Record<string, PrismaClient> = {};
 
-// if (process.env.NODE_ENV === "production") {
-prisma = new PrismaClient();
-// } else {
-//   let globalWithPrisma = global as typeof globalThis & {
-//     prisma: PrismaClient;
-//   };
-//   if (!globalWithPrisma.prisma) {
-//     globalWithPrisma.prisma = new PrismaClient();
-//   }
-//   prisma = globalWithPrisma.prisma;
-// }
+export function getPrisma(companyId: string) {
+  if (!companyId) {
+    companyId = process.env.DEFAULT_COMPANY;
+  }
 
-export default prisma;
+  if (!prismaClients[companyId]) {
+    const databaseUrl = getDatabaseUrl(companyId);
+
+    prismaClients[companyId] = new PrismaClient({
+      datasources: {
+        db: {
+          url: databaseUrl,
+        },
+      },
+    });
+  }
+
+  return prismaClients[companyId];
+}
+
+function getDatabaseUrl(companyId: string) {
+  switch (companyId) {
+    case "DU":
+      return process.env.DU_DATABASE_URL!;
+
+    case "VI":
+      return process.env.VI_DATABASE_URL!;
+
+    default:
+      throw new Error("Invalid company");
+  }
+}

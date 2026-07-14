@@ -12,11 +12,18 @@ import {
   homeOffer,
   homeSlider,
   homeSlider2,
+  getDefaultHomeOffer,
+  getDefaultHomeSlider,
+  getDefaultHomeSlider2,
+  getDefaultPopularCategorySlider,
+  getDefaultCategorySlider,
 } from "@/utils/data";
 import React from "react";
 import Layout from "@/components/Layout/Layout";
 import { getProducts } from "@/utils/apiCalls";
 import HomePageSlider from "@/components/HomePageSlider";
+import { useCompanyAssets } from "@/hooks/useCompanyAssets";
+
 const getAllProducts = async (onSale, cookie) => {
   return await getProducts(
     {
@@ -44,16 +51,39 @@ export async function getServerSideProps(context: any) {
 }
 
 const HomePage = ({ products }) => {
+  const { companyHydrated, companyId } = useCompanyAssets();
   return (
     <Layout>
-      <HomePageBannerSlider banners={homeSlider} />
-      <HomePageCategorySlider categorys={categorySlider} />{" "}
+      <HomePageBannerSlider
+        banners={
+          companyHydrated ? homeSlider[companyId] : getDefaultHomeSlider()
+        }
+      />
+      <HomePageCategorySlider
+        categorys={
+          companyHydrated
+            ? categorySlider[companyId]
+            : getDefaultCategorySlider()
+        }
+      />{" "}
       <HomePageDealsSlider deals={products} />
-      <HomePageOffers offers={homeOffer} />
+      <HomePageOffers
+        offers={companyHydrated ? homeOffer[companyId] : getDefaultHomeOffer()}
+      />
       <HomePageDealsOfTheDay deals={products} />
-      <HomePageSlider banners={homeSlider2} />
+      <HomePageSlider
+        banners={
+          companyHydrated ? homeSlider2[companyId] : getDefaultHomeSlider2()
+        }
+      />
       <HomePageDealsSlider deals={products} />
-      <HomePagePopularCategorySlider categorys={popularCategorySlider} />
+      <HomePagePopularCategorySlider
+        categorys={
+          companyHydrated
+            ? popularCategorySlider[companyId]
+            : getDefaultPopularCategorySlider()
+        }
+      />
       <HomePageDealsSlider deals={products} />
     </Layout>
   );

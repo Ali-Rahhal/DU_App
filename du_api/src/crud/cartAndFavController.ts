@@ -1,5 +1,5 @@
 import { Prisma } from "@prisma/client";
-import prisma from "../lib/prisma";
+import { getPrisma } from "../lib/prisma";
 import { getExpiryItemStock, getItemStock } from "../lib/utils";
 
 type CartItem = {
@@ -31,8 +31,10 @@ const addItemToCart = async (
   itemCode: string,
   barcode: string,
   quantity: number,
+  companyId: string,
   isExpiryDeal?: boolean,
 ) => {
+  const prisma = getPrisma(companyId);
   // const cart: any = await prisma.$queryRaw`
   // SELECT TOP 1 c.item_code,
   // category = iv.[CategoryCode]
@@ -101,8 +103,10 @@ const addItemToCart = async (
 const removeItemFromCart = async (
   userId: number,
   itemCode: string,
+  companyId: string,
   isExpiryDeal?: boolean,
 ) => {
+  const prisma = getPrisma(companyId);
   const result = await prisma.shopping_cart.deleteMany({
     where: {
       account_id: userId,
@@ -116,8 +120,10 @@ const updateItemInCart = async (
   userId: number,
   itemCode: string,
   quantity: number,
+  companyId: string,
   isExpiryDeal?: boolean,
 ) => {
+  const prisma = getPrisma(companyId);
   const result = await prisma.$transaction(async (tx) => {
     const found = await tx.shopping_cart.findFirst({
       where: {
@@ -167,7 +173,9 @@ const getCartItems = async (
     take?: number;
     skip?: number;
   },
+  companyId: string,
 ) => {
+  const prisma = getPrisma(companyId);
   // =========================
   // COUNT
   // =========================
@@ -379,7 +387,12 @@ const getCartItems = async (
   };
 };
 
-const addItemToFavorite = async (userId: number, itemCode: string) => {
+const addItemToFavorite = async (
+  userId: number,
+  itemCode: string,
+  companyId: string,
+) => {
+  const prisma = getPrisma(companyId);
   const found = await prisma.favorite_items.findFirst({
     where: {
       account_id: userId,
@@ -402,7 +415,12 @@ const addItemToFavorite = async (userId: number, itemCode: string) => {
   });
   return result;
 };
-const removeItemFromFavorite = async (userId: number, itemCode: string) => {
+const removeItemFromFavorite = async (
+  userId: number,
+  itemCode: string,
+  companyId: string,
+) => {
+  const prisma = getPrisma(companyId);
   const result = await prisma.favorite_items.deleteMany({
     where: {
       account_id: userId,
@@ -420,7 +438,9 @@ const getFavoriteItems = async (
     take?: number;
     skip?: number;
   },
+  companyId: string,
 ) => {
+  const prisma = getPrisma(companyId);
   const count = await prisma.favorite_items.count({
     where: {
       account_id: userId,

@@ -4,9 +4,21 @@ import Link from "next/link";
 import React from "react";
 import ChangeLangDropdown from "../common/ChangeLangDropdown";
 import pkg from "../../../package.json";
+import { Spinner } from "react-bootstrap";
+import { useCompanyAssets } from "@/hooks/useCompanyAssets";
 
 function Footer() {
   const t = useTranslations();
+  const {
+    companyHydrated,
+    companyLogo,
+    companyName,
+    companyDescription,
+    companyCopyright,
+    companyFacebook,
+    companyLinkedin,
+    companyInstagram,
+  } = useCompanyAssets();
   return (
     <>
       <footer className="site-footer footer-padding-lg bg-light">
@@ -16,18 +28,24 @@ function Footer() {
               <div className="col-lg-4 col-md-4 col-12">
                 <div className="widget">
                   <div className="footer-brand">
-                    <Image
-                      // src={"/assets/img/logo.png"}
-                      src={"/assets/img/logo_vitalait.png"}
-                      alt="Logo"
-                      height={40}
-                      width={250}
-                    />
+                    {(companyHydrated && (
+                      <Image
+                        src={companyLogo}
+                        alt={companyName}
+                        height={40}
+                        width={250}
+                      />
+                    )) || (
+                      <Spinner
+                        animation="border"
+                        style={{
+                          width: "40px",
+                          height: "40px",
+                        }}
+                      />
+                    )}
                   </div>
-                  <p>
-                    {/* {t("company.description")} */}
-                    {t("company.description_vitalait")}
-                  </p>
+                  <p>{t(companyDescription)}</p>
                 </div>
               </div>
               <div className="col-lg-2 col-md-2 col-6">
@@ -97,9 +115,6 @@ function Footer() {
                       <Link href="policy">{t("refund_policy")}</Link>
                     </li>
                     <li>
-                      <Link href="policy">Refund Policy</Link>
-                    </li>
-                    <li>
                       <Link href="policy">{t("ip_policy")}</Link>
                     </li>
                   </ul>
@@ -112,27 +127,17 @@ function Footer() {
                   </div>
                   <ul>
                     <li>
-                      <Link
-                        target="_blank"
-                        href="https://www.facebook.com/delicetunisie/"
-                      >
+                      <Link target="_blank" href={companyFacebook}>
                         Facebook
                       </Link>
                     </li>
-                    {/* <li>
-                      <Link
-                        target="_blank"
-                        href="https://www.instagram.com/unionhealthcare/"
-                      >
+                    <li>
+                      <Link target="_blank" href={companyInstagram}>
                         Instagram
                       </Link>
-                    </li> */}
-
+                    </li>
                     <li>
-                      <Link
-                        target="_blank"
-                        href="https://tn.linkedin.com/company/delice-holding"
-                      >
+                      <Link target="_blank" href={companyLinkedin}>
                         Linkedin
                       </Link>
                     </li>
@@ -144,10 +149,7 @@ function Footer() {
           <div className="lower-footer">
             <div className="row">
               <div className="col-md-6 text-md-left">
-                <p className="mb-4 mb-md-0 text-muted">
-                  {/* {t("copyright")} */}
-                  {t("copyright_vitalait")}
-                </p>
+                <p className="mb-4 mb-md-0 text-muted">{t(companyCopyright)}</p>
                 <p className="mb-4 mb-md-0 text-muted">
                   {t("version") + " " + pkg.version}
                 </p>

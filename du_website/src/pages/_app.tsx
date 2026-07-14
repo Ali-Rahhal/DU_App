@@ -10,6 +10,7 @@ import { useAccountStore, useAuthStore } from "@/store/zustand";
 import { Poppins, Nunito } from "next/font/google";
 import dynamic from "next/dynamic";
 import { NextIntlClientProvider } from "next-intl";
+import { useCompanyAssets } from "@/hooks/useCompanyAssets";
 const ProgressBar = dynamic(
   () => import("next-nprogress-bar").then((mod) => mod.PagesProgressBar),
   { ssr: false },
@@ -37,6 +38,7 @@ function App({ Component, pageProps }) {
   const { refreshUserInfo, refreshCart } = useAccountStore();
   const { isAuth } = useAuthStore();
   const { locale } = router;
+  const { companyName, companyFavicon } = useCompanyAssets();
 
   useEffect(() => {
     if (!isAuth) return;
@@ -49,28 +51,9 @@ function App({ Component, pageProps }) {
   return (
     <>
       <Head>
-        {/* <title>Droguerie de L'Union</title>
-        <meta
-          name="description"
-          content="
-             Droguerie de L'Union Pharmaceutical Company is a leading pharmaceutical company in Lebanon. 
-             We are committed to providing high-quality, affordable, and innovative solutions to our customers.
-             Our products are manufactured in state-of-the-art facilities and are subject to rigorous quality control standards. 
-             We offer a wide range of products, including prescription and over-the-counter medications, vitamins, supplements, and personal care items. 
-             Our team of experts is dedicated to providing exceptional customer service and support. 
-             We are proud to be a trusted partner in the health and well-being of our customers.
-          "
-        />
-        <link rel="icon" href="/assets/img/favicon.png" /> */}
-        <title>Vitalait</title>
-        <meta
-          name="description"
-          content="
-             Vitalait is a leading dairy and food company committed to delivering fresh, nutritious, and high-quality products to families. 
-             Since 1998, we have focused on innovation, trust, and excellence to provide healthy and affordable choices that meet the everyday needs of our customers.
-          "
-        />
-        <link rel="icon" href="/assets/img/favicon_vitalait.ico" />
+        <title>{companyName}</title>
+        <meta name="description" content="" />
+        <link rel="icon" href={companyFavicon} />
 
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />

@@ -1,5 +1,6 @@
 import dashboardData from "@/Models/dashboardData";
 import Layout from "@/components/Layout/Layout";
+import { useCompanyAssets } from "@/hooks/useCompanyAssets";
 import { useAccountStore } from "@/store/zustand";
 import { statusIdToText } from "@/utils";
 import { getDashboardData, getFidelityPoints } from "@/utils/apiCalls";
@@ -21,6 +22,7 @@ const index = () => {
 
   const rt = useRouter();
   const t = useTranslations();
+  const { companyPlaceholder } = useCompanyAssets();
   // const [active, setActive] = useState(rt.pathname.split("/")[1]);
   var pieChart = {
     options: {
@@ -833,10 +835,7 @@ const index = () => {
                       }}
                     >
                       <Image
-                        src={
-                          item.image_url ||
-                          process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE
-                        }
+                        src={item.image_url || companyPlaceholder}
                         alt=""
                         // style={{
                         //   width: "50px",

@@ -5,13 +5,19 @@ const router = new Hono();
 
 router.get(`/get-products`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
     const { skip, take, search } = c.req.query();
-    const result = await getProductsSurvey({
-      skip: parseInt(skip as string) || 0,
-      take: parseInt(take as string) || 25,
-      search: search,
-    });
+    const result = await getProductsSurvey(
+      {
+        skip: parseInt(skip as string) || 0,
+        take: parseInt(take as string) || 25,
+        search: search,
+      },
+      companyId,
+    );
     return c.json({
       message: "Fetched Products",
       result: result,

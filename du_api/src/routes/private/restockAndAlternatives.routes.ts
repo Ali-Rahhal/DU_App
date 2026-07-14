@@ -10,6 +10,9 @@ const router = new Hono();
 
 router.post(`/:code/alternatives`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const itemCode = c.req.param("code");
     const body = await c.req.json();
     const alternatives = body.alternatives; // array of item_codes
@@ -18,7 +21,11 @@ router.post(`/:code/alternatives`, async (c) => {
     if (!Array.isArray(alternatives))
       throw new Error("Alternatives must be an array");
 
-    const result = await replaceItemAlternatives(itemCode, alternatives);
+    const result = await replaceItemAlternatives(
+      itemCode,
+      alternatives,
+      companyId,
+    );
 
     return c.json({ message: "Alternatives updated", result }, 200);
   } catch (e) {
@@ -28,12 +35,15 @@ router.post(`/:code/alternatives`, async (c) => {
 
 router.get(`/:code/restock-config`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
     const itemCode = c.req.param("code");
 
     if (!itemCode) throw new Error("Item code is required");
 
-    const result = await getRestockConfig(userId, itemCode);
+    const result = await getRestockConfig(userId, itemCode, companyId);
 
     return c.json({ message: "Fetched restock config", result }, 200);
   } catch (e) {
@@ -43,6 +53,9 @@ router.get(`/:code/restock-config`, async (c) => {
 
 router.post(`/:code/restock-config`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
     const itemCode = c.req.param("code");
     const body = await c.req.json();
@@ -52,7 +65,12 @@ router.post(`/:code/restock-config`, async (c) => {
     if (!itemCode) throw new Error("Item code is required");
     if (!min_stock) throw new Error("Missing required min_stock field");
 
-    const result = await upsertRestockConfig(userId, itemCode, min_stock);
+    const result = await upsertRestockConfig(
+      userId,
+      itemCode,
+      min_stock,
+      companyId,
+    );
 
     return c.json({ message: "Restock config updated", result }, 200);
   } catch (e) {
@@ -62,6 +80,9 @@ router.post(`/:code/restock-config`, async (c) => {
 
 router.post(`/:code/restock`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
 
     const itemCode = c.req.param("code");
@@ -71,7 +92,12 @@ router.post(`/:code/restock`, async (c) => {
     if (!current_stock && current_stock !== 0)
       throw new Error("Missing required current_stock field");
 
-    const result = await restockItem(userId, itemCode, current_stock);
+    const result = await restockItem(
+      userId,
+      itemCode,
+      current_stock,
+      companyId,
+    );
 
     return c.json(
       { message: "Item added to cart successfully for restocking", result },

@@ -1,6 +1,7 @@
-import prisma from "../lib/prisma";
+import { getPrisma } from "../lib/prisma";
 
-const getReturnableInvoices = async (userId: number) => {
+const getReturnableInvoices = async (userId: number, companyId: string) => {
+  const prisma = getPrisma(companyId);
   const result = await prisma.$queryRaw`
     SELECT
       th.transaction_header_id,
@@ -76,7 +77,9 @@ const getReturnableInvoices = async (userId: number) => {
 const getPurchasedItems = async (
   userId: number,
   invoiceTransactionHeaderId: number,
+  companyId: string,
 ) => {
+  const prisma = getPrisma(companyId);
   const result = await prisma.$queryRaw`
 
     SELECT
@@ -154,7 +157,9 @@ const createReturnRequest = async (
     item_code: string;
     quantity: number;
   }[],
+  companyId: string,
 ) => {
+  const prisma = getPrisma(companyId);
   if (!items?.length) {
     throw new Error("No items selected");
   }
@@ -408,7 +413,12 @@ const createReturnRequest = async (
   });
 };
 
-const getReturnRequests = async (page: number, pageSize: number) => {
+const getReturnRequests = async (
+  page: number,
+  pageSize: number,
+  companyId: string,
+) => {
+  const prisma = getPrisma(companyId);
   const skip = (page - 1) * pageSize;
 
   const countResult: any[] = await prisma.$queryRaw`
@@ -504,7 +514,9 @@ const getReturnRequests = async (page: number, pageSize: number) => {
 const approveOrRejectReturnRequest = async (
   transactionHeaderId: number,
   approved: boolean,
+  companyId: string,
 ) => {
+  const prisma = getPrisma(companyId);
   const request = await prisma.transaction_header.findFirst({
     where: {
       transaction_header_id: BigInt(transactionHeaderId),

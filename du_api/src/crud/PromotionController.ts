@@ -4,9 +4,10 @@ import {
   promotion_condition,
   promotion_result,
 } from "@prisma/client";
-import prisma from "../lib/prisma";
+import { getPrisma } from "../lib/prisma";
 
-const getAllAvailablePromotions = async () => {
+const getAllAvailablePromotions = async (companyId: string) => {
+  const prisma = getPrisma(companyId);
   // Fetch active promotions
   const activePromotions: promotion[] = await prisma.$queryRaw`SELECT * 
      FROM promotion p 
@@ -104,7 +105,9 @@ const getAllAvailablePromotions = async () => {
 const getProductPromotions = async (
   item_code: string,
   user_id: number | null,
+  companyId: string,
 ) => {
+  const prisma = getPrisma(companyId);
   const res: any = await prisma.$queryRaw`
 SELECT DISTINCT
        name = p.description,
@@ -168,7 +171,11 @@ GROUP BY p.description,
   return groupedResults;
 };
 
-const getShoppingCartPromotions = async (user_id: number) => {
+const getShoppingCartPromotions = async (
+  user_id: number,
+  companyId: string,
+) => {
+  const prisma = getPrisma(companyId);
   const res: any[] = await prisma.$queryRaw`
   DECLARE @account_id INT = ${user_id};
 
@@ -231,8 +238,11 @@ WHERE rn = 1;
   if (promotion_ids.length === 0) {
     return [];
   }
-  const promotionDetails = await getPromotionDetails(promotion_ids);
-  const items = await getItemsDetail(res.map((p) => p.item_code));
+  const promotionDetails = await getPromotionDetails(promotion_ids, companyId);
+  const items = await getItemsDetail(
+    res.map((p) => p.item_code),
+    companyId,
+  );
   const addedItems = items.products.map((item) => {
     const found = res.find((i) => i.item_code === item.item_code);
     return {
@@ -247,7 +257,11 @@ WHERE rn = 1;
   };
 };
 
-const getPromotionDetails = async (promotion_ids: number[]) => {
+const getPromotionDetails = async (
+  promotion_ids: number[],
+  companyId: string,
+) => {
+  const prisma = getPrisma(companyId);
   const res: any = await prisma.$queryRaw`
   SELECT DISTINCT
          name = p.description,
@@ -307,7 +321,8 @@ const getPromotionDetails = async (promotion_ids: number[]) => {
   return groupedResults;
 };
 
-const getItemsDetail = async (item_codes: string[]) => {
+const getItemsDetail = async (item_codes: string[], companyId: string) => {
+  const prisma = getPrisma(companyId);
   const res: any = await prisma.$queryRaw`
   SELECT  
   iu.item_code,

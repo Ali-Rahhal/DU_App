@@ -10,6 +10,7 @@ import {
 import { ROLES } from "@/utils/data";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { Companies, CompanyId, CompanyConfig } from "@/utils/config_companies";
 
 type AccountStore = {
   hydrated: boolean;
@@ -44,19 +45,6 @@ type AccountStore = {
 
   checkPermission: (permission: string) => boolean;
   checkRole: (role: string) => boolean;
-};
-type AuthStore = {
-  token: string | null;
-  isAuth: boolean;
-
-  login: ({
-    code,
-    password,
-  }: {
-    code: string;
-    password: string;
-  }) => Promise<any>;
-  logout: () => Promise<void>;
 };
 
 export const useAccountStore = create<AccountStore>()(
@@ -177,6 +165,20 @@ export const useAccountStore = create<AccountStore>()(
   ),
 );
 
+type AuthStore = {
+  token: string | null;
+  isAuth: boolean;
+
+  login: ({
+    code,
+    password,
+  }: {
+    code: string;
+    password: string;
+  }) => Promise<any>;
+  logout: () => Promise<void>;
+};
+
 export const useAuthStore = create<AuthStore>()(
   persist(
     (set) => ({
@@ -214,6 +216,46 @@ export const useAuthStore = create<AuthStore>()(
     }),
     {
       name: "auth",
+    },
+  ),
+);
+
+type CompanyStore = {
+  hydrated: boolean;
+
+  companyId: CompanyId;
+
+  setCompany: (companyId: CompanyId) => void;
+
+  setHydrated: (v: boolean) => void;
+
+  getCompanyConfig: () => CompanyConfig;
+};
+
+export const useCompanyStore = create<CompanyStore>()(
+  persist(
+    (set, get) => ({
+      hydrated: false,
+
+      companyId: process.env.NEXT_PUBLIC_DEFAULT_COMPANY as CompanyId,
+
+      setCompany: (companyId) => {
+        set({ companyId });
+      },
+
+      setHydrated: (v) => set({ hydrated: v }),
+
+      getCompanyConfig: () => {
+        const state = get();
+
+        return Companies[state.companyId];
+      },
+    }),
+    {
+      name: "company",
+      onRehydrateStorage: () => (state) => {
+        state?.setHydrated(true);
+      },
     },
   ),
 );

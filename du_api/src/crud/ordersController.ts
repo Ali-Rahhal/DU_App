@@ -1,7 +1,8 @@
 import { Prisma } from "@prisma/client";
-import prisma from "../lib/prisma";
+import { getPrisma } from "../lib/prisma";
 
-const placeOrder = async (userID: number) => {
+const placeOrder = async (userID: number, companyId: string) => {
+  const prisma = getPrisma(companyId);
   //1=cash, 2=cards ,3=crypto,
   const userDetail = await prisma.web_accounts.findFirst({
     where: {
@@ -38,7 +39,12 @@ const placeOrder = async (userID: number) => {
 
   return { transaction_header_id };
 };
-const getUserOrders = async (userId: number, search: string) => {
+const getUserOrders = async (
+  userId: number,
+  search: string,
+  companyId: string,
+) => {
+  const prisma = getPrisma(companyId);
   // const user = await prisma.web_accounts.findFirst({
   //   where: {
   //     id: userId,
@@ -92,7 +98,12 @@ const getUserOrders = async (userId: number, search: string) => {
 
   return res;
 };
-const getUserOrder = async (order_id: number, userId: number) => {
+const getUserOrder = async (
+  order_id: number,
+  userId: number,
+  companyId: string,
+) => {
+  const prisma = getPrisma(companyId);
   let res: any = await prisma.$queryRaw`
   DECLARE @TRX_TYPE INT = 3;
 
@@ -148,7 +159,12 @@ const getUserOrder = async (order_id: number, userId: number) => {
   return res[0];
 };
 
-const getOrderDetails = async (orderId: number, userId: number) => {
+const getOrderDetails = async (
+  orderId: number,
+  userId: number,
+  companyId: string,
+) => {
+  const prisma = getPrisma(companyId);
   const res: any[] = await prisma.$queryRaw`
 
   SELECT 
@@ -194,7 +210,8 @@ WHERE
 
   return finalResult;
 };
-const getOpenInvoices = async (userId: number) => {
+const getOpenInvoices = async (userId: number, companyId: string) => {
+  const prisma = getPrisma(companyId);
   const res: any = await prisma.$queryRaw`
   SELECT order_no = transaction_header_code,
   invoice_date = CONVERT(DATE, oi.invoice_date),
@@ -218,7 +235,8 @@ ORDER BY oi.date_added DESC;
 `;
   return res;
 };
-const getInvoices = async (userId: number) => {
+const getInvoices = async (userId: number, companyId: string) => {
+  const prisma = getPrisma(companyId);
   const res: any = await prisma.$queryRaw`
   SELECT invoice_no = th.transaction_header_code,
        oracle_number = th.erp_transaction_header_code,
@@ -254,7 +272,12 @@ WHERE th.transaction_type = 4
   return res;
 };
 
-const getInvoiceDetails = async (invoice_no: string, userId: number) => {
+const getInvoiceDetails = async (
+  invoice_no: string,
+  userId: number,
+  companyId: string,
+) => {
+  const prisma = getPrisma(companyId);
   const res: any = await prisma.$queryRaw`
     SELECT invoice_no = th.transaction_header_code,
       oracle_number = th.erp_transaction_header_code,

@@ -1,5 +1,5 @@
 import { Prisma } from "@prisma/client";
-import prisma from "../lib/prisma";
+import { getPrisma } from "../lib/prisma";
 import { getItemStock } from "../lib/utils";
 
 export interface AISuggestedProduct {
@@ -24,7 +24,9 @@ export interface AISuggestedProductsResponse {
 
 const getAISuggestedProducts = async (
   userId: number,
+  companyId: string,
 ): Promise<AISuggestedProductsResponse> => {
+  const prisma = getPrisma(companyId);
   // =========================
   // GET USER CLIENT CODE
   // =========================

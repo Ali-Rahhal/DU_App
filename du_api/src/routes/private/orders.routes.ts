@@ -18,16 +18,21 @@ const router = new Hono();
 
 router.post(`/place_order`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
 
-    if (!(await ensureAccountPermission(userId, ALL_PERMISSIONS.Order))) {
+    if (
+      !(await ensureAccountPermission(userId, ALL_PERMISSIONS.Order, companyId))
+    ) {
       throw new Error("You don't have permission to place order");
     }
     const body = await c.req.json();
 
-    await checkStock(userId);
+    await checkStock(userId, companyId);
 
-    const result = await placeOrder(userId);
+    const result = await placeOrder(userId, companyId);
     return c.json({
       message: "Order placed",
       result: result,
@@ -75,9 +80,12 @@ router.post(`/place_order`, async (c) => {
 
 router.get(`/get_orders`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
     const { search } = c.req.query();
-    const result = await getUserOrders(userId, search);
+    const result = await getUserOrders(userId, search, companyId);
     return c.json({
       message: "Fetched orders",
       result: result,
@@ -88,9 +96,12 @@ router.get(`/get_orders`, async (c) => {
 });
 router.get(`/get_order`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
     const orderId = c.req.query("order_id");
-    const result = await getUserOrder(parseInt(orderId), userId);
+    const result = await getUserOrder(parseInt(orderId), userId, companyId);
 
     return c.json({
       message: "Fetched order",
@@ -102,11 +113,14 @@ router.get(`/get_order`, async (c) => {
 });
 router.get(`/get_order_details`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
     const orderId = c.req.query("order_id");
     if (!orderId) throw new Error("Order id not provided");
     if (!userId) throw new Error("User id not provided");
-    const result = await getOrderDetails(parseInt(orderId), userId);
+    const result = await getOrderDetails(parseInt(orderId), userId, companyId);
     return c.json({
       message: "Fetched orders",
       result: result,
@@ -118,8 +132,11 @@ router.get(`/get_order_details`, async (c) => {
 
 router.get(`/get_open_invoices`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
-    const result = await getOpenInvoices(userId);
+    const result = await getOpenInvoices(userId, companyId);
     return c.json({
       message: "Fetched Open Invoices ",
       result: result,
@@ -130,8 +147,11 @@ router.get(`/get_open_invoices`, async (c) => {
 });
 router.get(`/get_sales_invoices`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
-    const result = await getInvoices(userId);
+    const result = await getInvoices(userId, companyId);
     return c.json({
       message: "Fetched Sales Invoices ",
       result: result,
@@ -144,10 +164,13 @@ router.get(`/get_sales_invoices`, async (c) => {
 
 router.get(`/get_invoice_details`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
     const invoice_no = c.req.query("invoice_no");
     if (!invoice_no) throw new Error("Invoice no not provided");
-    const result = await getInvoiceDetails(invoice_no, userId);
+    const result = await getInvoiceDetails(invoice_no, userId, companyId);
     return c.json({
       message: "Fetched Invoice Details ",
       result: result,

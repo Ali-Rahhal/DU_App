@@ -17,6 +17,9 @@ const router = new Hono();
 // Get all users with pagination and search
 router.get(`/`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
     const page = c.req.query("page") || "1";
     const pageSize = c.req.query("pageSize") || "10";
@@ -26,6 +29,7 @@ router.get(`/`, async (c) => {
       parseInt(page as string),
       parseInt(pageSize as string),
       search as string,
+      companyId,
     );
 
     return c.json(
@@ -40,10 +44,13 @@ router.get(`/`, async (c) => {
 // Get single user by ID
 router.get(`/:id`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
     const id = c.req.param("id");
 
-    const result = await getUserById(parseInt(id));
+    const result = await getUserById(parseInt(id), companyId);
 
     return c.json(
       { message: "User fetched successfully", result: result },
@@ -57,10 +64,13 @@ router.get(`/:id`, async (c) => {
 // Create new user
 router.post(`/`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
     const body = await c.req.json();
 
-    const result = await createUser(body);
+    const result = await createUser(body, companyId);
 
     return c.json(
       { message: "User created successfully", result: result },
@@ -74,11 +84,14 @@ router.post(`/`, async (c) => {
 // Update user
 router.put(`/:id`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
     const id = c.req.param("id");
     const body = await c.req.json();
 
-    const result = await updateUser(parseInt(id), body);
+    const result = await updateUser(parseInt(id), body, companyId);
 
     return c.json(
       { message: "User updated successfully", result: result },
@@ -92,10 +105,13 @@ router.put(`/:id`, async (c) => {
 // Toggle user status (activate/deactivate)
 router.patch(`/:id/toggle-status`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
     const id = c.req.param("id");
 
-    const result = await toggleUserStatus(parseInt(id));
+    const result = await toggleUserStatus(parseInt(id), companyId);
 
     return c.json(
       {
@@ -112,10 +128,13 @@ router.patch(`/:id/toggle-status`, async (c) => {
 // Get user permissions (for type 2 users)
 router.get(`/:id/permissions`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
     const id = c.req.param("id");
 
-    const result = await getUserPermissions(parseInt(id));
+    const result = await getUserPermissions(parseInt(id), companyId);
 
     return c.json(
       { message: "User permissions fetched successfully", result: result },
@@ -129,7 +148,10 @@ router.get(`/:id/permissions`, async (c) => {
 // Get all permissions
 router.get(`/permissions/all`, async (c) => {
   try {
-    const result = await getAllPermissions();
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
+    const result = await getAllPermissions(companyId);
     return c.json({ message: "Permissions fetched successfully", result }, 200);
   } catch (e) {
     return c.json({ message: e.message, result: null }, 400);
@@ -139,6 +161,9 @@ router.get(`/permissions/all`, async (c) => {
 // Update user permissions
 router.put(`/:id/permissions`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
     const id = c.req.param("id");
     const body = await c.req.json();
@@ -146,6 +171,7 @@ router.put(`/:id/permissions`, async (c) => {
     const result = await updateUserPermissions(
       parseInt(id),
       body.permissionIds,
+      companyId,
     );
 
     return c.json({ message: "Permissions updated successfully", result }, 200);

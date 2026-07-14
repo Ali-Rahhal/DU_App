@@ -15,6 +15,7 @@ import ProductPromotionList from "./ProductPromotionList";
 import { Tooltip } from "react-bootstrap";
 import { ALL_PERMISSIONS } from "@/utils/data";
 import { Product } from "@/types/productTypes";
+import { useCompanyAssets } from "@/hooks/useCompanyAssets";
 
 const ProductDetails = ({ product }: { product: Product }) => {
   // const dispatch = useDispatch(1);
@@ -32,6 +33,7 @@ const ProductDetails = ({ product }: { product: Product }) => {
     : product.item_code;
 
   const t = useTranslations();
+  const { companyPlaceholder } = useCompanyAssets();
 
   useEffect(() => {
     let price = parseFloat(product?.price);
@@ -146,11 +148,7 @@ const ProductDetails = ({ product }: { product: Product }) => {
                 }}
               >
                 <ThumbSlider
-                  images={
-                    product.image
-                      ? product.images
-                      : [process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE]
-                  }
+                  images={product.image ? product.images : [companyPlaceholder]}
                 />
                 <div className="product-labels">
                   {product.hasPromotion ? (

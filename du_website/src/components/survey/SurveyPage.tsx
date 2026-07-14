@@ -10,6 +10,8 @@ import {
   removeBase64Prefix,
 } from "../../utils/surveyUtils";
 import { getSurveyElements, getSurveys, saveSurvey } from "@/utils/apiCalls";
+import { Spinner } from "react-bootstrap";
+import { useCompanyAssets } from "@/hooks/useCompanyAssets";
 
 function SurveyPage() {
   const [surveys, setSurveys] = useState([]);
@@ -18,6 +20,8 @@ function SurveyPage() {
   const [surveyJson, setSurveyJson] = useState(null);
   const [surveyData, setSurveyData] = useState(null);
   const [completed, setCompleted] = useState(false);
+  const { companyHydrated, companyName, companyLogo } = useCompanyAssets();
+
   // const exampleSurvey = {
   //   showProgressBar: "top",
   //   pages: [
@@ -254,14 +258,25 @@ function SurveyPage() {
       <div id="surveyElement">
         <div className="main-con">
           <div className="left">
-            <img
-              src={"/assets/img/logo_cropped.png"}
-              alt="Logo"
-              style={{
-                width: "100px",
-                height: "34px",
-              }}
-            />
+            {(companyHydrated && (
+              <img
+                src={companyLogo}
+                alt={companyName}
+                style={{
+                  width: "100px",
+                  height: "34px",
+                }}
+              />
+            )) || (
+              <Spinner
+                animation="border"
+                style={{
+                  width: "40px",
+                  height: "40px",
+                }}
+              />
+            )}
+
             <p className="header_survey">Customer Satisfaction Survey</p>
             <p className="sub-text">
               We are always looking for ways to improve our products and

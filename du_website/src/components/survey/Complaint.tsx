@@ -15,8 +15,10 @@ import {
 } from "@/utils/apiCalls";
 import { useTranslations } from "next-intl";
 import { Spinner } from "react-bootstrap";
+import { useCompanyAssets } from "@/hooks/useCompanyAssets";
 function Complaint() {
   const t = useTranslations();
+  const { companyHydrated, companyName, companyLogo } = useCompanyAssets();
   const [selectedQuestion, setSelectedQuestion] = useState(null);
   const [start, setStart] = useState(false);
   const [complaintTypes, setComplaintTypes] = useState([]);
@@ -297,15 +299,25 @@ function Complaint() {
       <div id="surveyElement" className="complaint-con">
         <div className="main-con">
           <div className="left">
-            <img
-              // src={"/assets/img/logo_cropped.png"}
-              src={"/assets/img/logo_vitalait.png"}
-              alt="Logo"
-              style={{
-                width: "100px",
-                height: "34px",
-              }}
-            />
+            {(companyHydrated && (
+              <img
+                src={companyLogo}
+                alt={companyName}
+                style={{
+                  width: "100px",
+                  height: "34px",
+                }}
+              />
+            )) || (
+              <Spinner
+                animation="border"
+                style={{
+                  width: "40px",
+                  height: "40px",
+                }}
+              />
+            )}
+
             <h2 className="header_survey">
               {/* We are here to assist you! */}
               {/* to french */}
@@ -390,15 +402,25 @@ function Complaint() {
     return (
       <div className="App" id="surveyElement">
         <div className="thank-you-con">
-          <img
-            // src={"/assets/img/logo_cropped.png"}
-            src={"/assets/img/logo_vitalait.png"}
-            alt="Logo"
-            style={{
-              width: "200px",
-              height: "100px",
-            }}
-          />
+          {(companyHydrated && (
+            <img
+              src={companyLogo}
+              alt={companyName}
+              style={{
+                width: "200px",
+                height: "100px",
+              }}
+            />
+          )) || (
+            <Spinner
+              animation="border"
+              style={{
+                width: "40px",
+                height: "40px",
+              }}
+            />
+          )}
+
           <h1>
             {/* Thank you for your feedback */}
             {t("complaint_page.thank_you")}

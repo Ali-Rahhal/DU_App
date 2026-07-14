@@ -1,507 +1,310 @@
-export const Product = {
-  image: "/assets/img/product/product-1.png",
-  gallery: [
-    "/assets/img/product/product-1.png",
-    "/assets/img/product/product-2.png",
-    "/assets/img/product/product-3.png",
-    "/assets/img/product/product-4.png",
-  ],
-  url: "product",
-  name: " TruRadix Curcumin Oral Strip Orange Mango",
-  varient: [
+// ============ SLIDER CONFIGURATIONS ============
+
+export const homeSlider = {
+  DU: [
     {
-      price: 100,
-      oldPrice: 50,
-      weight: "250g",
+      image: "/assets/img/DU/slider/slider-1.jpg",
+      url: "category",
     },
     {
-      price: 400,
-      oldPrice: 200,
-      weight: "1kg",
-    },
-    {
-      price: 800,
-      oldPrice: 200,
-      weight: "2kg",
+      image: "/assets/img/DU/slider/slider-2.jpeg",
+      url: "category",
     },
   ],
-  quantity: 1,
-  description:
-    "Lorem ipsum dolor sit amet consectetur adipisicing elit. A tenetur culpa quis aut, ex totam fugit nam consequuntur corporis deserunt quos molestias temporibus sit aliquam, provident molestiae modi, rem pariatur. Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum voluptates sunt tempore exer cum labore, delectus asperiores molestias saepe consequatur totam sed. Pellentesque aliquet, sem eget laoreet ultrices, ipsum metus feugiat sem, quis fermentum turpis eros eget velit. Donec ac tempus ante. Fusce ultricies massa massa. Fusce aliquam, purus eget sagittis vulputate, sapien libero hendrerit est, sed commodo augue nisi non neque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tempor, lorem et placerat vestibulum, metus nisi posuere nisl, in accumsan elit odio quis mi. Cras neque metus, consequat et blandit et, luctus a nunc. Etiam gravida vehicula tellus, in imperdiet ligula euismod eget.",
-  highlights: [
-    "Comprise of WPC",
-    "Helps in Muscle Building",
-    "Generally Consumed With Water",
-    "Helps to strengthen the immune system",
-    "Supports healthy functioning of the cardiovascular system",
-  ],
-  social_links: [
-    { facebook: "#" },
-    { twitter: "#" },
-    { youtube: "#" },
-    { dribbble: "#" },
-    { behance: "#" },
-  ],
-  additional_information: [
-    { name: "Number of Servings", value: "33" },
-    { name: "Serving Size", value: "30 g" },
-    { name: "Protein per Serving", value: "12 g" },
-    { name: "Vegetarian/Non-Vegetarian", value: "Vegetarian" },
-  ],
-  reviews: [
+  UPO: [],
+  FDC: [],
+  SADCO: [],
+  VI: [
     {
-      date: "20-04-2022",
-      rating: "4",
-      title: "Commpletely satisfied",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium",
+      image: "/assets/img/VITALAIT/slider/slider-1.jpg",
+      url: "category",
     },
     {
-      date: "20-04-2022",
-      rating: "5",
-      title: "Always the best",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium",
+      image: "/assets/img/VITALAIT/slider/slider-2.jpg",
+      url: "category",
     },
     {
-      date: "20-04-2022",
-      rating: "1",
-      title: "Commpletely satisfied",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium",
+      image: "/assets/img/VITALAIT/slider/slider-3.jpg",
+      url: "category",
     },
     {
-      date: "20-04-2022",
-      rating: "5",
-      title: "Always the best",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium",
-    },
-    {
-      date: "20-04-2022",
-      rating: "3",
-      title: "Commpletely satisfied",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium",
-    },
-    {
-      date: "20-04-2022",
-      rating: "2",
-      title: "Always the best",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus autem, distinctio hic omnis molestiae, perspiciatis deserunt labore nisi exercitationem non laudantium",
+      image: "/assets/img/VITALAIT/slider/slider-4.jpg",
+      url: "category",
     },
   ],
-  rating: {
-    average_rating: 4.5,
-    total_rating: 2000,
-  },
 };
 
-export const homeSlider = [
-  // {
-  //   image: "/assets/img/slider/slider-1.jpg",
-  //   url: "category",
-  // },
-  // {
-  //   image: "/assets/img/slider/slider-2.jpg",
-  //   url: "category",
-  // },
-  // {
-  //   image: "/assets/img/slider/slider-3.jpg",
-  //   url: "category",
-  // },
-  {
-    image: "/assets/img/slider/slider_vitalait-1.jpg",
-    url: "category",
-  },
-  {
-    image: "/assets/img/slider/slider_vitalait-4.jpg",
-    url: "category",
-  },
-  {
-    image: "/assets/img/slider/slider_vitalait-5.jpg",
-    url: "category",
-  },
-  {
-    image: "/assets/img/slider/slider_vitalait-6.jpg",
-    url: "category",
-  },
-];
-export const homeSlider2 = [
-  // {
-  //   image: "/assets/img/slider/slider-9.jpg",
-  //   url: "category",
-  // },
-  // {
-  //   image: "/assets/img/slider/slider-5.jpg",
-  //   url: "category",
-  // },
-  // {
-  //   image: "/assets/img/slider/slider-6.jpg",
-  //   url: "category",
-  // },
-  // {
-  //   image: "/assets/img/slider/slider-7.jpg",
-  //   url: "category",
-  // },
-  // {
-  //   image: "/assets/img/slider/slider-8.jpg",
-  //   url: "category",
-  // },
-  // {
-  //   image: "/assets/img/slider/slider-10.jpg",
-  //   url: "category",
-  // },
-  {
-    image: "/assets/img/slider/slider_vitalait-7.jpg",
-    url: "category",
-  },
-  {
-    image: "/assets/img/slider/slider_vitalait-8.jpg",
-    url: "category",
-  },
-  {
-    image: "/assets/img/slider/slider_vitalait-9.jpg",
-    url: "category",
-  },
-  {
-    image: "/assets/img/slider/slider_vitalait-10.jpg",
-    url: "category",
-  },
-  {
-    image: "/assets/img/slider/slider_vitalait-11.jpg",
-    url: "category",
-  },
-];
-export const menu = [
-  {
-    title: "Jus Et Boissons",
-    url: "/collection",
-    cat: "Activité_1",
-    sub: [{ title: "PRODUITS FINIS SBC", sub_cat: "Catégorie_4" }],
-  },
-  {
-    title: "Produits Laitiers",
-    url: "/collection",
-    cat: "Activité_2",
-    sub: [
-      { title: "PRODUITS FINIS STIAL", sub_cat: "Catégorie_1" },
-      { title: "PRODUITS FINIS POLE LAITIER", sub_cat: "Catégorie_3" },
-    ],
-  },
-  {
-    title: "Fromage",
-    url: "/collection",
-    cat: "Activité_3",
-    sub: [{ title: "PRODUITS FINIS CF", sub_cat: "Catégorie_2" }],
-  },
-  {
-    title: "Eau Delice",
-    url: "/collection",
-    cat: "Activité_4",
-    sub: [{ title: "PRODUITS FINIS SDEM", sub_cat: "Catégorie_5" }],
-  },
-];
-// export const categorySlider = [
-//   // {
-//   //   image: "/assets/img/category/category-1.png",
-//   //   url: "category?cat=P",
-//   //   name: "Pharma",
-//   // },
-//   // {
-//   //   image: "/assets/img/category/category-2.png",
-//   //   url: "category?cat=PP",
-//   //   name: "ParaPharma",
-//   // },
-//   // {
-//   //   image: "/assets/img/category/category-3.png",
-//   //   url: "category?cat=NP",
-//   //   name: "Non Pharma",
-//   // },
-//   {
-//     image: "/assets/img/category/Activité_1.png",
-//     url: "category?cat=Activité_1",
-//     name: "Jus Et Boissons",
-//   },
-//   {
-//     image: "/assets/img/category/Activité_2.png",
-//     url: "category?cat=Activité_2",
-//     name: "Produits Laitiers",
-//   },
-//   {
-//     image: "/assets/img/category/category-8.png",
-//     url: "category?cat=Activité_3",
-//     name: "Fromage",
-//   },
-// ];
-export const categorySlider = [
-  // {
-  //   image: "/assets/img/category/category-1.png",
-  //   url: "category?cat=P",
-  //   name: "Pharma",
-  // },
-  // {
-  //   image: "/assets/img/category/category-2.png",
-  //   url: "category?cat=PP",
-  //   name: "ParaPharma",
-  // },
-  // {
-  //   image: "/assets/img/category/category-3.png",
-  //   url: "category?cat=NP",
-  //   name: "Non Pharma",
-  // },
-  {
-    image: "/assets/img/category/Normal.png",
-    url: "category?cat=N",
-    name: "Dairy",
-    cat_code: "N",
-  },
-  {
-    image: "/assets/img/category/Desserts.png",
-    url: "category?cat=D",
-    name: "Desserts",
-    cat_code: "D",
-  },
-];
+export const getDefaultHomeSlider = () => {
+  const defaultKey = process.env.NEXT_PUBLIC_DEFAULT_COMPANY || "DU";
+  return homeSlider[defaultKey] || homeSlider.DU;
+};
 
-export const searchProduct = [
-  {
-    image: "/assets/img/product/product-1.png",
-    url: "product",
-    name: " TruRadix Curcumin Oral Strip Orange Mango",
-    price: 400,
-    oldPrice: 200,
-  },
-  {
-    image: "/assets/img/product/product-1.png",
-    url: "product",
-    name: " TruRadix Curcumin Oral Strip Orange Mango",
-    price: 400,
-    oldPrice: 200,
-  },
-  {
-    image: "/assets/img/product/product-1.png",
-    url: "product",
-    name: " TruRadix Curcumin Oral Strip Orange Mango",
-    price: 400,
-    oldPrice: 200,
-  },
-  {
-    image: "/assets/img/product/product-1.png",
-    url: "product",
-    name: " TruRadix Curcumin Oral Strip Orange Mango",
-    price: 400,
-    oldPrice: 200,
-  },
-];
+// ============ HOME SLIDER 2 ============
 
-export const productSlider = [
-  {
-    image: "/assets/img/product/product-1.png",
-    url: "product",
-    name: " TruRadix Curcumin Oral Strip Orange Mango",
-    price: 400,
-    oldPrice: 200,
-  },
-  {
-    image: "/assets/img/product/product-2.png",
-    url: "product",
-    name: "TruRadix Curcumin Oral Strip Orange Mango",
-    price: 570,
-    oldPrice: 120,
-  },
-  {
-    image: "/assets/img/product/product-3.png",
-    url: "product",
-    name: "TruRadix Curcumin Oral Strip Orange Mango",
-    price: 60,
-    oldPrice: 10,
-  },
-  {
-    image: "/assets/img/product/product-4.png",
-    url: "product",
-    name: "TruRadix Curcumin Oral Strip Orange Mango",
-    price: 600,
-    oldPrice: 500,
-  },
-  {
-    image: "/assets/img/product/product-5.png",
-    url: "product",
-    name: "TruRadix Curcumin Oral Strip Orange Mango",
-    price: 1000,
-    oldPrice: 300,
-  },
-  {
-    image: "/assets/img/product/product-6.png",
-    url: "product",
-    name: "TruRadix Curcumin Oral Strip Orange Mango",
-    price: 200,
-    oldPrice: 199,
-  },
-  {
-    image: "/assets/img/product/product-7.png",
-    url: "product",
-    name: "TruRadix Curcumin Oral Strip Orange Mango",
-    price: 600,
-  },
-  {
-    image: "/assets/img/product/product-8.png",
-    url: "product",
-    name: "TruRadix Curcumin Oral Strip Orange Mango",
-    price: 600,
-    oldPrice: 200,
-  },
-  {
-    image: "/assets/img/product/product-9.png",
-    url: "product",
-    name: "TruRadix Curcumin Oral Strip Orange Mango",
-    price: 1000,
-    oldPrice: 300,
-  },
-  {
-    image: "/assets/img/product/product-10.png",
-    url: "product",
-    name: "TruRadix Curcumin Oral Strip Orange Mango",
-    price: 200,
-    oldPrice: 199,
-  },
-  {
-    image: "/assets/img/product/product-11.png",
-    url: "product",
-    name: "TruRadix Curcumin Oral Strip Orange Mango",
-    price: 600,
-  },
-  {
-    image: "/assets/img/product/product-12.png",
-    url: "product",
-    name: "TruRadix Curcumin Oral Strip Orange Mango",
-    price: 600,
-    oldPrice: 200,
-  },
-];
+export const homeSlider2 = {
+  DU: [
+    {
+      image: "/assets/img/DU/slider2/slider-1.jpg",
+      url: "category",
+    },
+    {
+      image: "/assets/img/DU/slider2/slider-2.jpg",
+      url: "category",
+    },
+    {
+      image: "/assets/img/DU/slider2/slider-3.jpg",
+      url: "category",
+    },
+    {
+      image: "/assets/img/DU/slider2/slider-4.jpg",
+      url: "category",
+    },
+    {
+      image: "/assets/img/DU/slider2/slider-5.jpg",
+      url: "category",
+    },
+    {
+      image: "/assets/img/DU/slider2/slider-6.jpg",
+      url: "category",
+    },
+  ],
+  UPO: [],
+  FDC: [],
+  SADCO: [],
+  VI: [
+    {
+      image: "/assets/img/VITALAIT/slider2/slider-1.jpg",
+      url: "category",
+    },
+    {
+      image: "/assets/img/VITALAIT/slider2/slider-2.jpg",
+      url: "category",
+    },
+    {
+      image: "/assets/img/VITALAIT/slider2/slider-3.jpg",
+      url: "category",
+    },
+    {
+      image: "/assets/img/VITALAIT/slider2/slider-4.jpg",
+      url: "category",
+    },
+    {
+      image: "/assets/img/VITALAIT/slider2/slider-5.jpg",
+      url: "category",
+    },
+  ],
+};
 
-export const homeOffer = [
-  // {
-  //   image: "/assets/img/product/product-2.png",
-  //   url: "category",
-  //   title: "CENTRUN Multivitamin 30 Tablets",
-  //   subTitle: "Up to 50% off",
-  // },
-  // {
-  //   image: "/assets/img/product/product-1.png",
-  //   url: "category",
-  //   title: "Advil 200mg 20 Tablets",
-  //   subTitle: "Up to 50% off",
-  // },
-  {
-    image: "/assets/img/product/L400.png",
-    url: "category",
-    title: "LAIT ENTIER UHT 1L",
-    subTitle: "Healthy!",
-  },
-  {
-    image: "/assets/img/product/YAB43.png",
-    url: "category",
-    title: "GRANDI FRUITS DE BOIS 330 G",
-    subTitle: "Yummy!!",
-  },
-];
+export const getDefaultHomeSlider2 = () => {
+  const defaultKey = process.env.NEXT_PUBLIC_DEFAULT_COMPANY || "DU";
+  return homeSlider2[defaultKey] || homeSlider2.DU;
+};
 
-export const brandSlider = [
-  {
-    image: "/assets/img/brand/brand-1.png",
-    url: "category",
-    name: "BrandName",
-  },
-  {
-    image: "/assets/img/brand/brand-2.png",
-    url: "category",
-    name: "BrandName",
-  },
-  {
-    image: "/assets/img/brand/brand-3.png",
-    url: "category",
-    name: "BrandName",
-  },
-  {
-    image: "/assets/img/brand/brand-4.png",
-    url: "category",
-    name: "BrandName",
-  },
-  {
-    image: "/assets/img/brand/brand-5.png",
-    url: "category",
-    name: "BrandName",
-  },
-  {
-    image: "/assets/img/brand/brand-6.png",
-    url: "category",
-    name: "BrandName",
-  },
-  {
-    image: "/assets/img/brand/brand-7.png",
-    url: "category",
-    name: "BrandName",
-  },
-  {
-    image: "/assets/img/brand/brand-8.png",
-    url: "category",
-    name: "BrandName",
-  },
-  {
-    image: "/assets/img/brand/brand-9.png",
-    url: "category",
-    name: "BrandName",
-  },
-];
-export const popularCategorySlider = [
-  {
-    image: "/assets/img/brand/brand-1.png",
-    url: "category",
-    name: "BrandName",
-  },
-  {
-    image: "/assets/img/brand/brand-2.png",
-    url: "category",
-    name: "BrandName",
-  },
-  {
-    image: "/assets/img/brand/brand-3.png",
-    url: "category",
-    name: "BrandName",
-  },
-  {
-    image: "/assets/img/brand/brand-4.png",
-    url: "category",
-    name: "BrandName",
-  },
-  {
-    image: "/assets/img/brand/brand-5.png",
-    url: "category",
-    name: "BrandName",
-  },
-  {
-    image: "/assets/img/brand/brand-6.png",
-    url: "category",
-    name: "BrandName",
-  },
-  {
-    image: "/assets/img/brand/brand-7.png",
-    url: "category",
-    name: "BrandName",
-  },
-  {
-    image: "/assets/img/brand/brand-8.png",
-    url: "category",
-    name: "BrandName",
-  },
-  {
-    image: "/assets/img/brand/brand-9.png",
-    url: "category",
-    name: "BrandName",
-  },
-];
+// ============ CATEGORY SLIDER ============
+
+export const categorySlider = {
+  DU: [
+    {
+      image: "/assets/img/DU/category/category-1.png",
+      url: "category?cat=P",
+      name: "Pharma",
+      cat_code: "P",
+    },
+    {
+      image: "/assets/img/DU/category/category-2.png",
+      url: "category?cat=PP",
+      name: "ParaPharma",
+      cat_code: "PP",
+    },
+    {
+      image: "/assets/img/DU/category/category-3.png",
+      url: "category?cat=NP",
+      name: "Non Pharma",
+      cat_code: "NP",
+    },
+  ],
+  UPO: [],
+  FDC: [],
+  SADCO: [],
+  VI: [
+    {
+      image: "/assets/img/VITALAIT/category/category-1.png",
+      url: "category?cat=N",
+      name: "Dairy",
+      cat_code: "N",
+    },
+    {
+      image: "/assets/img/VITALAIT/category/category-2.png",
+      url: "category?cat=D",
+      name: "Desserts",
+      cat_code: "D",
+    },
+  ],
+};
+
+export const getDefaultCategorySlider = () => {
+  const defaultKey = process.env.NEXT_PUBLIC_DEFAULT_COMPANY || "DU";
+  return categorySlider[defaultKey] || categorySlider.DU;
+};
+
+// ============ HOME OFFER ============
+
+export const homeOffer = {
+  DU: [
+    {
+      image: "/assets/img/DU/product/product-1.png",
+      url: "category",
+      title: "Advil 200mg 20 Tablets",
+      subTitle: "Up to 50% off",
+    },
+    {
+      image: "/assets/img/DU/product/product-2.png",
+      url: "category",
+      title: "CENTRUN Multivitamin 30 Tablets",
+      subTitle: "Up to 50% off",
+    },
+  ],
+  UPO: [],
+  FDC: [],
+  SADCO: [],
+  VI: [
+    {
+      image: "/assets/img/VITALAIT/product/product-1.png",
+      url: "category",
+      title: "LAIT ENTIER UHT 1L",
+      subTitle: "Healthy!",
+    },
+    {
+      image: "/assets/img/VITALAIT/product/product-2.png",
+      url: "category",
+      title: "GRANDI FRUITS DE BOIS 330 G",
+      subTitle: "Yummy!!",
+    },
+  ],
+};
+
+export const getDefaultHomeOffer = () => {
+  const defaultKey = process.env.NEXT_PUBLIC_DEFAULT_COMPANY || "DU";
+  return homeOffer[defaultKey] || homeOffer.DU;
+};
+
+// ============ BRAND SLIDER ============
+
+export const brandSlider = {
+  DU: [
+    {
+      image: "/assets/img/DU/brand/brand-1.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/DU/brand/brand-2.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/DU/brand/brand-3.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/DU/brand/brand-4.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/DU/brand/brand-5.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/DU/brand/brand-6.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/DU/brand/brand-7.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/DU/brand/brand-8.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/DU/brand/brand-9.png",
+      url: "category",
+      name: "BrandName",
+    },
+  ],
+  UPO: [],
+  FDC: [],
+  SADCO: [],
+  VI: [
+    {
+      image: "/assets/img/VITALAIT/brand/brand-1.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/VITALAIT/brand/brand-2.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/VITALAIT/brand/brand-3.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/VITALAIT/brand/brand-4.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/VITALAIT/brand/brand-5.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/VITALAIT/brand/brand-6.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/VITALAIT/brand/brand-7.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/VITALAIT/brand/brand-8.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/VITALAIT/brand/brand-9.png",
+      url: "category",
+      name: "BrandName",
+    },
+  ],
+};
+
+export const getDefaultBrandSlider = () => {
+  const defaultKey = process.env.NEXT_PUBLIC_DEFAULT_COMPANY || "DU";
+  return brandSlider[defaultKey] || brandSlider.DU;
+};
+
+// ============ POPULAR CATEGORY SLIDER (alias of brandSlider) ============
+
+export const popularCategorySlider = brandSlider;
+
+export const getDefaultPopularCategorySlider = () => {
+  const defaultKey = process.env.NEXT_PUBLIC_DEFAULT_COMPANY || "DU";
+  return popularCategorySlider[defaultKey] || popularCategorySlider.DU;
+};
+
+// ============ PERMISSIONS ============
 
 export const ALL_PERMISSIONS = {
   Complaint: "COMPLAINT",
@@ -512,6 +315,8 @@ export const ALL_PERMISSIONS = {
   Survey: "SURVEY",
   ChangePassword: "CHANGE_PASSWORD",
 };
+
+// ============ ROLES ============
 
 export const ROLES = {
   User: "USER",

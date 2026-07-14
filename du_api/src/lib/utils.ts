@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
 import * as fs from "fs";
 import path from "path";
-import prisma from "./prisma";
+import { getPrisma } from "../lib/prisma";
 import { ROLES } from "./constants";
 import { Context } from "hono";
 import tokenAuth from "./tokenAuth";
@@ -149,7 +149,10 @@ export const groupProducts = (
 //   };
 // };
 
-export const saveAudioReturnUrl = async (base64Audio: string) => {
+export const saveAudioReturnUrl = async (
+  base64Audio: string,
+  companyId: string,
+) => {
   // Extract MIME type and file extension
   const mimeType = base64Audio.split(";")[0].split(":")[1];
   const fileExtension = mimeType.split("/")[1]; // e.g., "webm" or "ogg"
@@ -179,8 +182,21 @@ export const saveAudioReturnUrl = async (base64Audio: string) => {
   const fullFilePath = path.join(savePath, fileName);
   fs.writeFileSync(fullFilePath, base64Data, "base64");
 
+  let fileAccessUrl: string;
+  switch (companyId) {
+    case "DU":
+      fileAccessUrl = process.env.DU_FILE_ACCESS_URL!;
+      break;
+
+    case "VI":
+      fileAccessUrl = process.env.VI_FILE_ACCESS_URL!;
+      break;
+
+    default:
+      throw new Error("Invalid company");
+  }
   // Construct the URL for accessing the file
-  const fileUrl = `${process.env.FILE_ACCESS_URL}/uploads/audio/${fileName}`;
+  const fileUrl = `${fileAccessUrl}/uploads/audio/${fileName}`;
 
   return {
     path: fullFilePath,
@@ -189,7 +205,10 @@ export const saveAudioReturnUrl = async (base64Audio: string) => {
   };
 };
 
-export const saveImageReturnUrl = async (base64Image: string) => {
+export const saveImageReturnUrl = async (
+  base64Image: string,
+  companyId: string,
+) => {
   // Extract MIME type and file extension
   const mimeType = base64Image.split(";")[0].split(":")[1];
   const fileExtension = mimeType.split("/")[1]; // e.g., "webm" or "ogg"
@@ -220,8 +239,21 @@ export const saveImageReturnUrl = async (base64Image: string) => {
   const fullFilePath = path.join(savePath, fileName);
   fs.writeFileSync(fullFilePath, base64Data, "base64");
 
+  let fileAccessUrl: string;
+  switch (companyId) {
+    case "DU":
+      fileAccessUrl = process.env.DU_FILE_ACCESS_URL!;
+      break;
+
+    case "VI":
+      fileAccessUrl = process.env.VI_FILE_ACCESS_URL!;
+      break;
+
+    default:
+      throw new Error("Invalid company");
+  }
   // Construct the URL for accessing the file
-  const fileUrl = `${process.env.FILE_ACCESS_URL}/uploads/images/${fileName}`;
+  const fileUrl = `${fileAccessUrl}/uploads/images/${fileName}`;
 
   return {
     path: fullFilePath,
@@ -230,7 +262,11 @@ export const saveImageReturnUrl = async (base64Image: string) => {
   };
 };
 
-export const ensureParentAccount = async (parent_id: number) => {
+export const ensureParentAccount = async (
+  parent_id: number,
+  companyId: string,
+) => {
+  const prisma = getPrisma(companyId);
   const parent = await prisma.web_accounts.findFirst({
     where: {
       id: parent_id,
@@ -248,7 +284,9 @@ export const ensureParentAccount = async (parent_id: number) => {
 export const ensureChildAccountPermission = async (
   child_id: number,
   permission_code: string,
+  companyId: string,
 ) => {
+  const prisma = getPrisma(companyId);
   const found = await prisma.user_permission_assignment.findMany({
     where: {
       web_account_id: child_id,
@@ -270,7 +308,9 @@ export const ensureChildAccountPermission = async (
 export const ensureAccountPermission = async (
   user_id: number,
   permission_code: string,
+  companyId: string,
 ): Promise<boolean> => {
+  const prisma = getPrisma(companyId);
   const user = await prisma.web_accounts.findUnique({
     where: {
       id: user_id,
@@ -302,7 +342,12 @@ export const ensureAccountPermission = async (
   }
 };
 
-export const ensureAccountRole = async (user_id: number, role: string) => {
+export const ensureAccountRole = async (
+  user_id: number,
+  role: string,
+  companyId: string,
+) => {
+  const prisma = getPrisma(companyId);
   const user = await prisma.web_accounts.findUnique({
     where: {
       id: user_id,
@@ -321,15 +366,19 @@ export async function getUserId(c) {
   const userId = c.req.user_id;
   return userId;
 }
-export async function getUserIdFromToken(c: Context) {
+export async function getUserIdFromToken(c: Context, companyId: string) {
   // const token = c.req.header("Authorization");
   const token = getCookie(c, "auth");
   if (!token) throw new Error("No token provided");
-  const userId = await tokenAuth(token);
+  const userId = await tokenAuth(token, companyId);
   return userId;
 }
 
-export const getItemStock = async (itemCode: string): Promise<number> => {
+export const getItemStock = async (
+  itemCode: string,
+  companyId: string,
+): Promise<number> => {
+  const prisma = getPrisma(companyId);
   // =========================
   // GET EXPIRY DEAL CONFIG
   // =========================
@@ -420,7 +469,11 @@ export const getItemStock = async (itemCode: string): Promise<number> => {
   return 99999;
 };
 
-export const getExpiryItemStock = async (itemCode: string): Promise<number> => {
+export const getExpiryItemStock = async (
+  itemCode: string,
+  companyId: string,
+): Promise<number> => {
+  const prisma = getPrisma(companyId);
   // =========================
   // GET EXPIRY DEAL CONFIG
   // =========================
@@ -481,8 +534,10 @@ export async function checkSingleStock(
   user_id: number,
   itemCode: string,
   quantity: number,
+  companyId: string,
   isExpiryDeal: boolean = false,
 ) {
+  const prisma = getPrisma(companyId);
   const cartItem = await prisma.shopping_cart.findFirst({
     where: {
       account_id: user_id,
@@ -496,13 +551,13 @@ export async function checkSingleStock(
   });
 
   if (isExpiryDeal === false) {
-    const stock = await getItemStock(itemCode);
+    const stock = await getItemStock(itemCode, companyId);
     if (stock < (cartItem?.quantity + quantity || quantity)) {
       throw new Error(`Quantity of this item exceeds available stock`);
     }
     return true;
   } else {
-    const stock = await getExpiryItemStock(itemCode);
+    const stock = await getExpiryItemStock(itemCode, companyId);
     if (stock < (cartItem?.quantity + quantity || quantity)) {
       throw new Error(`Quantity of this item exceeds available stock`);
     }
@@ -510,7 +565,8 @@ export async function checkSingleStock(
   }
 }
 
-export async function checkStock(user_id: number) {
+export async function checkStock(user_id: number, companyId: string) {
+  const prisma = getPrisma(companyId);
   const cartItems = await prisma.shopping_cart.findMany({
     where: {
       account_id: user_id,
@@ -528,12 +584,12 @@ export async function checkStock(user_id: number) {
 
   for (const item of cartItems) {
     if (!item.is_expiry_deal_item) {
-      const stock = await getItemStock(item.item_code);
+      const stock = await getItemStock(item.item_code, companyId);
       if (stock < item.quantity) {
         throw new Error(`Quantity of some items exceeds available stock`);
       }
     } else {
-      const stock = await getExpiryItemStock(item.item_code);
+      const stock = await getExpiryItemStock(item.item_code, companyId);
       if (stock < item.quantity) {
         throw new Error(`Quantity of some items exceeds available stock`);
       }

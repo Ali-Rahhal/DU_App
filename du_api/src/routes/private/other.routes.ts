@@ -5,9 +5,12 @@ const router = new Hono();
 
 router.get(`/dashboard_data`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
 
-    const result = await getDashboardData(userId);
+    const result = await getDashboardData(userId, companyId);
 
     return c.json({
       message: "Order placed",
@@ -21,9 +24,12 @@ router.get(`/dashboard_data`, async (c) => {
 
 router.get(`/get_item_stock/:itemCode`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
     const itemCode = c.req.param("itemCode");
-    const result = await getItemStock(itemCode);
+    const result = await getItemStock(itemCode, companyId);
 
     return c.json({
       message: "Stock fetched successfully",
@@ -37,9 +43,12 @@ router.get(`/get_item_stock/:itemCode`, async (c) => {
 
 router.get(`/get_expiry_item_stock/:itemCode`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
     const itemCode = c.req.param("itemCode");
-    const result = await getExpiryItemStock(itemCode);
+    const result = await getExpiryItemStock(itemCode, companyId);
 
     return c.json({
       message: "ExpiryDeal Stock fetched successfully",

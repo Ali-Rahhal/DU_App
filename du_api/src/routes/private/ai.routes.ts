@@ -5,6 +5,9 @@ const router = new Hono();
 
 router.get("/suggested-products", async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
     if (!userId) {
       return c.json(
@@ -16,7 +19,7 @@ router.get("/suggested-products", async (c) => {
       );
     }
 
-    const result = await getAISuggestedProducts(userId);
+    const result = await getAISuggestedProducts(userId, companyId);
 
     return c.json(
       {

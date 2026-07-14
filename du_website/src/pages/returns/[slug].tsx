@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { Button, Card, Form, Spinner, Badge } from "react-bootstrap";
 import { toast } from "react-toastify";
+import { useCompanyAssets } from "@/hooks/useCompanyAssets";
 
 export async function getServerSideProps(context: any) {
   const { slug } = context.query;
@@ -51,6 +52,7 @@ const ReturnRequestPage = ({
   items: Item[];
 }) => {
   const t = useTranslations();
+  const { companyPlaceholder } = useCompanyAssets();
   const router = useRouter();
   const [selectedItems, setSelectedItems] = useState<Record<string, number>>(
     {},
@@ -135,8 +137,7 @@ const ReturnRequestPage = ({
               item.purchased_quantity,
               item.quantityRestriction,
             );
-            const image =
-              item.image || process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE;
+            const image = item.image || companyPlaceholder;
 
             return (
               <Card

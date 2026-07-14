@@ -11,6 +11,7 @@ import { Accordion, Badge, Button, Card, Spinner } from "react-bootstrap";
 import AdminGuard from "@/components/guards/AdminGuard";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { useCompanyAssets } from "@/hooks/useCompanyAssets";
 
 const ReturnAdminPage = () => {
   const [requests, setRequests] = useState<any[]>([]);
@@ -20,6 +21,7 @@ const ReturnAdminPage = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const t = useTranslations();
+  const { companyPlaceholder } = useCompanyAssets();
 
   useEffect(() => {
     const load = async () => {
@@ -148,9 +150,7 @@ const ReturnAdminPage = () => {
 
                       <div className="d-flex flex-column gap-3">
                         {request.items?.map((item: any) => {
-                          const image =
-                            item.image ||
-                            process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE;
+                          const image = item.image || companyPlaceholder;
 
                           return (
                             <Card key={item.transaction_body_id}>
@@ -174,7 +174,7 @@ const ReturnAdminPage = () => {
                                       unoptimized
                                       onError={(e) => {
                                         e.currentTarget.src =
-                                          process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE;
+                                          companyPlaceholder;
                                       }}
                                     />
                                   </div>

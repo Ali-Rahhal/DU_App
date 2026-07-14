@@ -1,4 +1,4 @@
-import Item from "@/Models/item";
+import { useCompanyAssets } from "@/hooks/useCompanyAssets";
 import { CartItem } from "@/types/productTypes";
 import { currenncyCodeToSymbol } from "@/utils";
 import { useTranslations } from "next-intl";
@@ -16,6 +16,7 @@ const MiniCart = ({
   }[];
 }) => {
   const t = useTranslations();
+  const { companyPlaceholder } = useCompanyAssets();
   return (
     <>
       {cartItems && cartItems.length > 0 ? (
@@ -28,10 +29,7 @@ const MiniCart = ({
                     <Image
                       height={300}
                       width={300}
-                      src={
-                        item.image ||
-                        process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE
-                      }
+                      src={item.image || companyPlaceholder}
                       alt={item.name}
                     />
                   </Link>

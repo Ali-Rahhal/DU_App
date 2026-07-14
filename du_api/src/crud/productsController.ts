@@ -1,5 +1,5 @@
 import { Prisma } from "@prisma/client";
-import prisma from "../lib/prisma";
+import { getPrisma } from "../lib/prisma";
 import { getExpiryItemStock, getItemStock } from "../lib/utils";
 
 type Product = {
@@ -32,33 +32,37 @@ type Product = {
   nearest_expiry_date?: string;
 };
 
-const getProducts = async ({
-  take,
-  skip,
-  category_code,
-  sort_by,
-  sort_direction,
-  show_only_best_deals,
-  min_price,
-  max_price,
-  user_id,
-  search,
-  onPromotionOnly,
-  containExpiryDealProducts,
-}: {
-  take?: number;
-  skip?: number;
-  category_code?: string[];
-  sort_by?: string;
-  sort_direction?: string;
-  show_only_best_deals?: boolean;
-  min_price?: string;
-  max_price?: string;
-  user_id?: number;
-  search?: string;
-  onPromotionOnly?: boolean;
-  containExpiryDealProducts?: boolean;
-}) => {
+const getProducts = async (
+  {
+    take,
+    skip,
+    category_code,
+    sort_by,
+    sort_direction,
+    show_only_best_deals,
+    min_price,
+    max_price,
+    user_id,
+    search,
+    onPromotionOnly,
+    containExpiryDealProducts,
+  }: {
+    take?: number;
+    skip?: number;
+    category_code?: string[];
+    sort_by?: string;
+    sort_direction?: string;
+    show_only_best_deals?: boolean;
+    min_price?: string;
+    max_price?: string;
+    user_id?: number;
+    search?: string;
+    onPromotionOnly?: boolean;
+    containExpiryDealProducts?: boolean;
+  },
+  companyId: string,
+) => {
+  const prisma = getPrisma(companyId);
   // =========================
   // FAVORITES
   // =========================
@@ -433,8 +437,10 @@ const getProducts = async ({
 const getProductInfo = async (
   item_code: string,
   user_id: number | null,
+  companyId: string,
   isExpiryDealProduct?: boolean,
 ) => {
+  const prisma = getPrisma(companyId);
   // =========================
   // FAVORITES
   // =========================

@@ -4,7 +4,6 @@ import ProductItemList from "@/components/common/ProductItemList";
 import { Product } from "@/types/productTypes";
 import { getProducts } from "@/utils/apiCalls";
 import { useTranslations } from "next-intl";
-// import { searchProduct } from "@/utils/data";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 

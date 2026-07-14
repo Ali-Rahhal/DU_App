@@ -11,8 +11,11 @@ const router = new Hono();
 // getUserComplaints
 router.get(`/get-user-complaints`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
-    const result = await getUserComplaints(userId);
+    const result = await getUserComplaints(userId, companyId);
     return c.json({
       message: "Fetched Complaints",
       result: result,
@@ -24,8 +27,11 @@ router.get(`/get-user-complaints`, async (c) => {
 
 router.get(`/get-complaint-types`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
-    const result = await getComplaints();
+    const result = await getComplaints(companyId);
     return c.json({
       message: "Fetched Complaint Types",
       result: result,
@@ -38,9 +44,15 @@ router.get(`/get-complaint-types`, async (c) => {
 
 router.get(`/get-complaint-elements`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
     const complaintId = c.req.query("complaint_id");
-    const result = await getComplaintsElements(parseInt(complaintId));
+    const result = await getComplaintsElements(
+      parseInt(complaintId),
+      companyId,
+    );
     return c.json({
       message: "Fetched Complaint Elements",
       result: result,
@@ -52,13 +64,21 @@ router.get(`/get-complaint-elements`, async (c) => {
 
 router.post(`/save_complaint_answer`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const userId = await getUserId(c);
     const body = await c.req.json();
     const compId = body["complaint_id"];
     const answers = body["answers"];
     if (!compId) throw new Error("Complaint id not provided");
     if (!answers) throw new Error("Answers not provided");
-    const result: any = await saveComplaintAnswer(compId, answers, userId);
+    const result: any = await saveComplaintAnswer(
+      compId,
+      answers,
+      userId,
+      companyId,
+    );
 
     return c.json({
       message: "Complaint Answer saved",

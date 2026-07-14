@@ -1,7 +1,8 @@
 import { Prisma } from "@prisma/client";
-import prisma from "../lib/prisma";
+import { getPrisma } from "../lib/prisma";
 
-const getSideBarMenu = async () => {
+const getSideBarMenu = async (companyId: string) => {
+  const prisma = getPrisma(companyId);
   const menuItems: any = await prisma.$queryRaw`
   SELECT cat_code = cat.attribute_value_code,
            cat_description = cat.description,
@@ -79,7 +80,8 @@ const getSideBarMenu = async () => {
  * @ param user_id - The ID of the user/web_account
  * @ returns Combined dashboard data object
  */
-const getDashboardData = async (user_id: number) => {
+const getDashboardData = async (user_id: number, companyId: string) => {
+  const prisma = getPrisma(companyId);
   // ============================================
   // STORED PROCEDURE REFERENCE (commented out)
   // ============================================

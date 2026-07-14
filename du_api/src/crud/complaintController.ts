@@ -1,8 +1,9 @@
 import { Prisma } from "@prisma/client";
-import prisma from "../lib/prisma";
+import { getPrisma } from "../lib/prisma";
 import { saveAudioReturnUrl, saveImageReturnUrl } from "../lib/utils";
 
-const getComplaints = async () => {
+const getComplaints = async (companyId: string) => {
+  const prisma = getPrisma(companyId);
   const complaints = await prisma.web_complaint_type.findMany({
     where: {
       is_active: true,
@@ -20,7 +21,11 @@ const getComplaints = async () => {
   });
 };
 
-const getComplaintsElements = async (complaintId: number) => {
+const getComplaintsElements = async (
+  complaintId: number,
+  companyId: string,
+) => {
+  const prisma = getPrisma(companyId);
   const elements: any = await prisma.$queryRaw`
       SET NOCOUNT ON
   
@@ -116,7 +121,7 @@ const getComplaintsElements = async (complaintId: number) => {
               acceptedTypes: element.accepted_types,
               choices: choices
                 .filter(
-                  (choice: any) => choice.question_id === element.question_id
+                  (choice: any) => choice.question_id === element.question_id,
                 )
                 .map((choice: any) => choice.choice),
             },
@@ -153,8 +158,10 @@ const saveComplaintAnswer = async (
     question_type_id: number;
     type: string;
   }[],
-  userId: number
+  userId: number,
+  companyId: string,
 ) => {
+  const prisma = getPrisma(companyId);
   try {
     const user = await prisma.web_accounts.findUnique({
       where: {
@@ -165,7 +172,7 @@ const saveComplaintAnswer = async (
     const answersAfterProcessing = [];
     answers.forEach(async (answer) => {
       if (answer.type === "file") {
-        await saveImageReturnUrl(answer.value).then((url) => {
+        await saveImageReturnUrl(answer.value, companyId).then((url) => {
           answersAfterProcessing.push({
             key: answer.key,
             value: url.path,
@@ -173,7 +180,7 @@ const saveComplaintAnswer = async (
           });
         });
       } else if (answer.type === "microphone") {
-        await saveAudioReturnUrl(answer.value).then((url) => {
+        await saveAudioReturnUrl(answer.value, companyId).then((url) => {
           answersAfterProcessing.push({
             key: answer.key,
             value: url.path,
@@ -269,8 +276,8 @@ select @complaint_id as complaint_id;
               row.key,
               row.value,
               row.question_type_id,
-            ])})`
-        )
+            ])})`,
+        ),
       )};
 
 
@@ -362,7 +369,8 @@ select @complaint_id as complaint_id;
 // GETDATE(),     -- date_added - datetime
 // GETDATE()      -- last_edited - datetime
 // );
-const getUserComplaints = async (userId: number) => {
+const getUserComplaints = async (userId: number, companyId: string) => {
+  const prisma = getPrisma(companyId);
   const user = await prisma.web_accounts.findUnique({
     where: {
       id: userId,

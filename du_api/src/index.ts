@@ -63,11 +63,26 @@ app.use(
   }),
 );
 
+app.use(`${PUBLIC_API}/*`, async (c, next) => {
+  const companyId = getCookie(c, "companyId");
+
+  if (!companyId) {
+    c.set("companyId", process.env.DEFAULT_COMPANY);
+  } else {
+    c.set("companyId", companyId);
+  }
+
+  await next();
+});
+
 async function authMiddleware(c, next) {
+  const companyId = String(
+    c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+  );
   const token = getCookie(c, "auth");
 
   if (!token) return c.json({ message: "Not Authorized", result: null }, 401);
-  const userId = await tokenAuth(token);
+  const userId = await tokenAuth(token, companyId);
   if (!userId) return c.json({ message: "Invalid token", result: null }, 401);
   c.req.user_id = userId;
   await next();

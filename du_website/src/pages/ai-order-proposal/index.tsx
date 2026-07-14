@@ -11,6 +11,7 @@ import Image from "next/image";
 
 import { toast } from "react-toastify";
 import { useAccountStore } from "@/store/zustand";
+import { useCompanyAssets } from "@/hooks/useCompanyAssets";
 
 interface SuggestedProduct {
   item_code: string;
@@ -30,6 +31,7 @@ export default function AIOrderProposalPage() {
   const [adding, setAdding] = useState(false);
   const { refreshCart } = useAccountStore();
   const t = useTranslations();
+  const { companyPlaceholder } = useCompanyAssets();
 
   const loadProposal = async () => {
     try {
@@ -250,8 +252,7 @@ export default function AIOrderProposalPage() {
           {/* PRODUCTS */}
           <Row>
             {products.map((item) => {
-              const imgSrc =
-                item.image || process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE;
+              const imgSrc = item.image || companyPlaceholder;
 
               return (
                 <Col

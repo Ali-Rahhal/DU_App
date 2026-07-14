@@ -1,3 +1,4 @@
+import { useCompanyAssets } from "@/hooks/useCompanyAssets";
 import Item from "@/Models/item";
 import { Product } from "@/types/productTypes";
 import { currenncyCodeToSymbol, discount } from "@/utils";
@@ -17,6 +18,7 @@ const ProductItemList = ({
   removeItemHandler?: (item: string) => void;
   size?: "small" | "large";
 }) => {
+  const { companyPlaceholder } = useCompanyAssets();
   return (
     <div
       key={item.item_code}
@@ -34,11 +36,7 @@ const ProductItemList = ({
             style={{
               objectFit: "cover",
             }}
-            src={
-              item?.image
-                ? item?.image
-                : process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE
-            }
+            src={item?.image ? item?.image : companyPlaceholder}
             alt={item.name}
           />
         </Link>

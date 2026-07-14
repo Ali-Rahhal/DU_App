@@ -374,9 +374,12 @@ const getExpiryItemStock = async (
 //////
 ////////Promotions ApiCalls
 //////
-const getPromotions = async (): Promise<AxiosResponse> => {
+const getPromotions = async (cookie?: string): Promise<AxiosResponse> => {
   return await axios.get(publicApi + `/promotions`, {
     withCredentials: true,
+    headers: {
+      Cookie: cookie || "",
+    },
   });
 };
 

@@ -5,6 +5,9 @@ const router = new Hono();
 
 router.post(`/get_products`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const skip = c.req.query("skip");
     const take = c.req.query("take");
 
@@ -23,47 +26,53 @@ router.post(`/get_products`, async (c) => {
 
     const result = await getUserIdFromToken(c)
       .then(async (res) => {
-        return await getProducts({
-          skip: parseInt(skip as string) || 0,
-          take: parseInt(take as string) || 10,
+        return await getProducts(
+          {
+            skip: parseInt(skip as string) || 0,
+            take: parseInt(take as string) || 10,
 
-          category_code:
-            !category_code || (category_code as string[]).includes("all")
-              ? []
-              : category_code,
+            category_code:
+              !category_code || (category_code as string[]).includes("all")
+                ? []
+                : category_code,
 
-          sort_by: sort_by || "date",
-          sort_direction: sort_direction || "DESC",
-          show_only_best_deals,
-          min_price: min_price || null,
-          max_price: max_price || null,
-          user_id: res,
-          search,
-          onPromotionOnly: onPromotionOnly || false,
+            sort_by: sort_by || "date",
+            sort_direction: sort_direction || "DESC",
+            show_only_best_deals,
+            min_price: min_price || null,
+            max_price: max_price || null,
+            user_id: res,
+            search,
+            onPromotionOnly: onPromotionOnly || false,
 
-          containExpiryDealProducts: containExpiryDealProducts || false,
-        });
+            containExpiryDealProducts: containExpiryDealProducts || false,
+          },
+          companyId,
+        );
       })
       .catch(async () => {
-        return await getProducts({
-          skip: parseInt(skip as string) || 0,
-          take: parseInt(take as string) || 10,
+        return await getProducts(
+          {
+            skip: parseInt(skip as string) || 0,
+            take: parseInt(take as string) || 10,
 
-          category_code:
-            !category_code || (category_code as string[]).includes("all")
-              ? []
-              : category_code,
+            category_code:
+              !category_code || (category_code as string[]).includes("all")
+                ? []
+                : category_code,
 
-          sort_by: sort_by || "date",
-          sort_direction: sort_direction || "DESC",
-          show_only_best_deals,
-          min_price: min_price || null,
-          max_price: max_price || null,
-          search,
-          onPromotionOnly: onPromotionOnly || false,
+            sort_by: sort_by || "date",
+            sort_direction: sort_direction || "DESC",
+            show_only_best_deals,
+            min_price: min_price || null,
+            max_price: max_price || null,
+            search,
+            onPromotionOnly: onPromotionOnly || false,
 
-          containExpiryDealProducts: containExpiryDealProducts || false,
-        });
+            containExpiryDealProducts: containExpiryDealProducts || false,
+          },
+          companyId,
+        );
       });
 
     return c.json(
@@ -86,6 +95,9 @@ router.post(`/get_products`, async (c) => {
 
 router.post(`/get_product/:item_code`, async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const item_code = c.req.param("item_code");
     let { isExpiryDealProduct } = await c.req.json();
     isExpiryDealProduct = Boolean(isExpiryDealProduct);
@@ -95,6 +107,7 @@ router.post(`/get_product/:item_code`, async (c) => {
         const result = await getProductInfo(
           item_code,
           res,
+          companyId,
           isExpiryDealProduct,
         );
         return result;
@@ -103,6 +116,7 @@ router.post(`/get_product/:item_code`, async (c) => {
         const result = await getProductInfo(
           item_code,
           null,
+          companyId,
           isExpiryDealProduct,
         );
         return result;

@@ -1,4 +1,3 @@
-import { NextIntlClientProvider } from "next-intl";
 import Announcement from "./Announcement";
 import Footer from "./Footer";
 import Navbar from "./Navbar/Navbar.tsx";
@@ -6,8 +5,10 @@ import Navbar from "./Navbar/Navbar.tsx";
 const Layout = ({ children }) => {
   return (
     <>
-      <Announcement />
-      <Navbar />
+      <div className="top-navigation">
+        <Announcement />
+        <Navbar />
+      </div>
 
       <main className="main">{children}</main>
 

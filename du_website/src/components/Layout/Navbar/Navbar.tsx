@@ -55,6 +55,7 @@ function Navbar() {
   const { isAuth, logout } = useAuthStore();
   const { cart, cartItems, refreshCart, name, firstName, lastName, checkRole } =
     useAccountStore();
+
   useEffect(() => {
     if (!cart) return;
     const currency_codes: string[] = [
@@ -88,6 +89,18 @@ function Navbar() {
   useEffect(() => {
     refreshCart();
   }, []);
+
+  useEffect(() => {
+    if (showMobileMenu) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [showMobileMenu]);
 
   const AIMagicButton = ({ isMobile = false }) => {
     return (
@@ -414,56 +427,78 @@ function Navbar() {
 
       <div className="mobile-header">
         <div className="container-fluid theme-container">
-          <div className="row align-items-center">
-            <div className="col-auto">
-              <ul className="header-left-options">
-                <li
-                  className="link-item open-sidebar"
-                  onClick={() => setShowMobileMenu(true)}
-                >
-                  <i className="ti-menu"></i>
-                </li>
-              </ul>
-            </div>
-            <div className="col text-center">
-              <Link href="/">
-                {(companyHydrated && (
-                  <Image
-                    src={companyLogo}
-                    alt={companyName}
-                    height={40}
-                    width={250}
-                    className="header-logo"
-                  />
-                )) || (
-                  <Spinner
-                    animation="border"
-                    style={{
-                      width: "40px",
-                      height: "40px",
+          <div className="mobile-header-content">
+            <div className="mobile-header-top">
+              <div className="col-auto">
+                <ul className="header-left-options">
+                  <li
+                    className="link-item open-sidebar"
+                    onClick={() => {
+                      setShowMobileMenu(true);
                     }}
-                  />
-                )}
-              </Link>
-            </div>
-            <div className="col-auto">
-              <ul
-                className="header-right-options"
-                style={{ display: "flex", alignItems: "center", gap: 10 }}
-              >
-                {isAuth && <AIMagicButton isMobile />}
+                  >
+                    <i className="ti-menu"></i>
+                  </li>
+                </ul>
+              </div>
 
-                <Link href={"/cart"} className="link-item">
-                  <span className="badge badge-secondary">{cart}</span>
-                  <i className="ti-bag"></i>
+              <div className="mobile-logo">
+                <Link href="/">
+                  {(companyHydrated && (
+                    <Image
+                      src={companyLogo}
+                      alt={companyName}
+                      height={40}
+                      width={250}
+                      className="header-logo"
+                    />
+                  )) || (
+                    <Spinner
+                      animation="border"
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                      }}
+                    />
+                  )}
                 </Link>
-              </ul>
+              </div>
+
+              <div className="mobile-actions">
+                <ul className="header-right-options">
+                  {isAuth && <AIMagicButton isMobile />}
+
+                  {isAuth ? (
+                    <Link href={"/cart"} className="link-item">
+                      <span className="badge badge-secondary">{cart}</span>
+                      <i className="ti-bag"></i>
+                    </Link>
+                  ) : (
+                    <Link
+                      className="link-item"
+                      href="#"
+                      onClick={() => handleModalShow("login")}
+                    >
+                      <i className="ti-bag"></i>
+                    </Link>
+                  )}
+                </ul>
+              </div>
+            </div>
+
+            <div className="mobile-search-bar">
+              <SearchBar showSearch={false} text={"search_products"} />
             </div>
           </div>
           <div
             className={showMobileMenu ? "menu-sidebar show" : "menu-sidebar"}
           >
-            <div className="close" onClick={() => setShowMobileMenu(false)}>
+            <div
+              className="close"
+              onClick={() => {
+                setShowMobileMenu(false);
+              }}
+            >
               <i className="ti-close"></i>
             </div>
 
@@ -481,10 +516,6 @@ function Navbar() {
                 <span>Hi, {name}</span>
               </div>
             )}
-
-            <div className="col mt-3">
-              <SearchBar showSearch={false} text={"search_products"} />
-            </div>
 
             <div
               style={{
@@ -650,7 +681,9 @@ function Navbar() {
         </div>
         <div
           className={showMobileMenu ? "overlay show" : "overlay"}
-          onClick={() => setShowMobileMenu(false)}
+          onClick={() => {
+            setShowMobileMenu(false);
+          }}
         ></div>
       </div>
       <LoginModal

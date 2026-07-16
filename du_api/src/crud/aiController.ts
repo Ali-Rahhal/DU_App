@@ -106,7 +106,7 @@ const getAISuggestedProducts = async (
 
       quantity: Math.floor(Math.random() * 5) + 1,
 
-      stock: await getItemStock(item.item_code),
+      stock: await getItemStock(item.item_code, companyId),
 
       currency_code: item.currency_code,
 

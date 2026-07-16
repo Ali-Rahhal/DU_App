@@ -291,7 +291,10 @@ const Cart = () => {
                       <div className="col-12 col-sm-4 text-center mb-2 mb-sm-0">
                         <button
                           onClick={() => {
-                            removeFromCart(undefined).then((res) => {
+                            (
+                              removeFromCart(undefined) &&
+                              removeFromCart(undefined, true)
+                            ).then((res) => {
                               toast.info("Emptied Cart !");
                               refreshCart();
                             });

@@ -393,8 +393,8 @@ const getProducts = async (
       const images = item.images?.split(",") || [];
 
       const stock = item.isExpiryDeal
-        ? await getExpiryItemStock(item.parent_item_code)
-        : await getItemStock(item.item_code);
+        ? await getExpiryItemStock(item.parent_item_code, companyId)
+        : await getItemStock(item.item_code, companyId);
 
       return {
         ...item,
@@ -600,7 +600,7 @@ const getProductInfo = async (
 
       isExpiryDeal: false,
 
-      stock: await getItemStock(item.item_code),
+      stock: await getItemStock(item.item_code, companyId),
 
       images,
 
@@ -764,7 +764,7 @@ const getProductInfo = async (
 
     barcode: item.barcode,
 
-    stock: await getExpiryItemStock(item.item_code),
+    stock: await getExpiryItemStock(item.item_code, companyId),
 
     currency_code: item.currency_code,
 

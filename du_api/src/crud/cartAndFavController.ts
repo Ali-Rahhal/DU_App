@@ -332,8 +332,8 @@ const getCartItems = async (
       const images = item.images?.split(",") || [];
 
       const stock = item.is_expiry_deal_item
-        ? await getExpiryItemStock(item.item_code)
-        : await getItemStock(item.item_code);
+        ? await getExpiryItemStock(item.item_code, companyId)
+        : await getItemStock(item.item_code, companyId);
 
       return {
         item_code: item.is_expiry_deal_item

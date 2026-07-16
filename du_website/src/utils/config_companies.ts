@@ -54,87 +54,87 @@ export const Companies = {
       expiryDeals: true,
     },
   },
-  UPO: {
-    id: "UPO",
-    name: "Union Pharmaceutique d'Orient",
-    abreviation: "UPO",
-    logo: "/assets/img/UPO/logo.png",
-    placeholder: process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE_DU,
-    favicon: "/assets/img/UPO/favicon.ico",
-    about: "/assets/img/UPO/extra/page_about.jpg",
+  // UPO: {
+  //   id: "UPO",
+  //   name: "Union Pharmaceutique d'Orient",
+  //   abreviation: "UPO",
+  //   logo: "/assets/img/UPO/logo.png",
+  //   placeholder: process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE_DU,
+  //   favicon: "/assets/img/UPO/favicon.ico",
+  //   about: "/assets/img/UPO/extra/page_about.jpg",
 
-    transalations: {
-      description: "",
-      copyright: "",
-    },
+  //   transalations: {
+  //     description: "",
+  //     copyright: "",
+  //   },
 
-    social: {
-      facebook: "/",
-      instagram: "/",
-      linkedin: "/",
-    },
+  //   social: {
+  //     facebook: "/",
+  //     instagram: "/",
+  //     linkedin: "/",
+  //   },
 
-    features: {
-      survey: true,
-      complaints: true,
-      loyalty: false,
-      expiryDeals: true,
-    },
-  },
-  FDC: {
-    id: "FDC",
-    name: "Food & Drug Corporation",
-    abreviation: "FDC",
-    logo: "/assets/img/FDC/logo.png",
-    placeholder: process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE_DU,
-    favicon: "/assets/img/FDC/favicon.ico",
-    about: "/assets/img/FDC/extra/page_about.jpg",
+  //   features: {
+  //     survey: true,
+  //     complaints: true,
+  //     loyalty: false,
+  //     expiryDeals: true,
+  //   },
+  // },
+  // FDC: {
+  //   id: "FDC",
+  //   name: "Food & Drug Corporation",
+  //   abreviation: "FDC",
+  //   logo: "/assets/img/FDC/logo.png",
+  //   placeholder: process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE_DU,
+  //   favicon: "/assets/img/FDC/favicon.ico",
+  //   about: "/assets/img/FDC/extra/page_about.jpg",
 
-    transalations: {
-      description: "",
-      copyright: "",
-    },
+  //   transalations: {
+  //     description: "",
+  //     copyright: "",
+  //   },
 
-    social: {
-      facebook: "/",
-      instagram: "/",
-      linkedin: "/",
-    },
+  //   social: {
+  //     facebook: "/",
+  //     instagram: "/",
+  //     linkedin: "/",
+  //   },
 
-    features: {
-      survey: true,
-      complaints: true,
-      loyalty: false,
-      expiryDeals: true,
-    },
-  },
-  SADCO: {
-    id: "SADCO",
-    name: "Sami Dandan & Co.",
-    abreviation: "SADCO",
-    logo: "/assets/img/SADCO/logo.png",
-    placeholder: process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE_DU,
-    favicon: "/assets/img/SADCO/favicon.ico",
-    about: "/assets/img/SADCO/extra/page_about.jpg",
+  //   features: {
+  //     survey: true,
+  //     complaints: true,
+  //     loyalty: false,
+  //     expiryDeals: true,
+  //   },
+  // },
+  // SADCO: {
+  //   id: "SADCO",
+  //   name: "Sami Dandan & Co.",
+  //   abreviation: "SADCO",
+  //   logo: "/assets/img/SADCO/logo.png",
+  //   placeholder: process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE_DU,
+  //   favicon: "/assets/img/SADCO/favicon.ico",
+  //   about: "/assets/img/SADCO/extra/page_about.jpg",
 
-    transalations: {
-      description: "",
-      copyright: "",
-    },
+  //   transalations: {
+  //     description: "",
+  //     copyright: "",
+  //   },
 
-    social: {
-      facebook: "/",
-      instagram: "/",
-      linkedin: "/",
-    },
+  //   social: {
+  //     facebook: "/",
+  //     instagram: "/",
+  //     linkedin: "/",
+  //   },
 
-    features: {
-      survey: true,
-      complaints: true,
-      loyalty: false,
-      expiryDeals: true,
-    },
-  },
+  //   features: {
+  //     survey: true,
+  //     complaints: true,
+  //     loyalty: false,
+  //     expiryDeals: true,
+  //   },
+  // },
   VI: {
     id: "VI",
     name: "Vitalait",

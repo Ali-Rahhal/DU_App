@@ -24,7 +24,7 @@ router.post(`/get_products`, async (c) => {
       containExpiryDealProducts,
     } = await c.req.json();
 
-    const result = await getUserIdFromToken(c)
+    const result = await getUserIdFromToken(c, companyId)
       .then(async (res) => {
         return await getProducts(
           {
@@ -102,7 +102,7 @@ router.post(`/get_product/:item_code`, async (c) => {
     let { isExpiryDealProduct } = await c.req.json();
     isExpiryDealProduct = Boolean(isExpiryDealProduct);
 
-    const result: any = await getUserIdFromToken(c)
+    const result: any = await getUserIdFromToken(c, companyId)
       .then(async (res) => {
         const result = await getProductInfo(
           item_code,

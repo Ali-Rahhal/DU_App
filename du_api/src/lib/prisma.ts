@@ -31,6 +31,6 @@ function getDatabaseUrl(companyId: string) {
       return process.env.VI_DATABASE_URL!;
 
     default:
-      throw new Error("Invalid company");
+      return process.env.DEFAULT_DATABASE_URL!;
   }
 }

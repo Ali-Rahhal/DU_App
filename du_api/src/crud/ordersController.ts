@@ -128,7 +128,7 @@ const getUserOrder = async (
                   END,
           address = CASE 
                         WHEN vc.Address IS NOT NULL THEN vc.Address
-                        WHEN vc.Zone IS NOT NULL THEN vc.Zone
+                        -- WHEN vc.Zone IS NOT NULL THEN vc.Zone
                         ELSE 'N/A'
                     END,
           brand = th.item_brand_code,
@@ -293,12 +293,12 @@ const getInvoiceDetails = async (
             END,
       region =  CASE 
                     WHEN vc.Region IS NOT NULL THEN vc.Region
-                    WHEN vc.Région IS NOT NULL THEN vc.Région
+                    -- WHEN vc.Région IS NOT NULL THEN vc.Région
                     ELSE 'N/A'
                 END,
       [address] = CASE 
                       WHEN vc.Address IS NOT NULL THEN vc.Address
-                      WHEN vc.Zone IS NOT NULL THEN vc.Zone
+                      -- WHEN vc.Zone IS NOT NULL THEN vc.Zone
                       ELSE 'N/A'
                   END,
       currency =  CASE

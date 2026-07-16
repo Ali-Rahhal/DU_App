@@ -25,7 +25,7 @@ router.get(`/get_product_promotions`, async (c) => {
       c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
     );
     const item_code = c.req.query("item_code");
-    const userId = await getUserIdFromToken(c)
+    const userId = await getUserIdFromToken(c, companyId)
       .then((res) => {
         return res;
       })

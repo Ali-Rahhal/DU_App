@@ -537,27 +537,29 @@ export async function checkSingleStock(
   companyId: string,
   isExpiryDeal: boolean = false,
 ) {
+  console.log(itemCode, quantity, isExpiryDeal);
   const prisma = getPrisma(companyId);
   const cartItem = await prisma.shopping_cart.findFirst({
     where: {
       account_id: user_id,
       item_code: itemCode,
+      is_expiry_deal_item: isExpiryDeal,
     },
     select: {
       quantity: true,
-      item_code: true,
-      is_expiry_deal_item: isExpiryDeal,
     },
   });
 
   if (isExpiryDeal === false) {
     const stock = await getItemStock(itemCode, companyId);
+    console.log("normal stock: ", stock);
     if (stock < (cartItem?.quantity + quantity || quantity)) {
       throw new Error(`Quantity of this item exceeds available stock`);
     }
     return true;
   } else {
     const stock = await getExpiryItemStock(itemCode, companyId);
+    console.log("expiry stock: ", stock);
     if (stock < (cartItem?.quantity + quantity || quantity)) {
       throw new Error(`Quantity of this item exceeds available stock`);
     }

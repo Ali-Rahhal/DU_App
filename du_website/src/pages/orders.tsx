@@ -8,12 +8,14 @@ import { toast } from "react-toastify";
 import dynamic from "next/dynamic";
 import { Modal } from "react-bootstrap";
 import { useTranslations } from "next-intl";
+import { useCompanyAssets } from "@/hooks/useCompanyAssets";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [barcode, setBarcode] = useState("");
   const [openBarcodeScanner, setOpenBarcodeScanner] = useState(false);
   const t = useTranslations();
+  const { companyId } = useCompanyAssets();
 
   const fetchOrders = async () => {
     await getOrders(barcode)
@@ -123,12 +125,16 @@ const Orders = () => {
                 ) : (
                   orders.map((order) => {
                     let tempBrandDescription = "";
-                    if (
-                      order.brand_description.includes("Non Pharma") ||
-                      order.brand_description.includes("Pharma") ||
-                      order.brand_description.includes("Para Pharma")
-                    ) {
-                      tempBrandDescription = t("orders.other");
+                    if (companyId === "VI") {
+                      if (
+                        order.brand_description.includes("Non Pharma") ||
+                        order.brand_description.includes("Pharma") ||
+                        order.brand_description.includes("Para Pharma")
+                      ) {
+                        tempBrandDescription = t("orders.other");
+                      } else {
+                        tempBrandDescription = order.brand_description;
+                      }
                     } else {
                       tempBrandDescription = order.brand_description;
                     }

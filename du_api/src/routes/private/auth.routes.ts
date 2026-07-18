@@ -10,7 +10,6 @@ router.get(`/user`, async (c) => {
       c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
     );
     const userId = await getUserId(c);
-    // console.log(userId);
     const result = "";
     return c.json({ message: "Get user success", result: result }, 200);
   } catch (e) {
@@ -87,7 +86,6 @@ router.post(`/change_password`, async (c) => {
 // router.get(`/user`, async (c) => {
 //   try {
 //     const userId = await getUserId(c);
-//     // console.log(userId);
 //     const result = "";
 //     return c.json({ message: "Get user success", result: result }, 200);
 //   } catch (e) {

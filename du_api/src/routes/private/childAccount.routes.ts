@@ -183,7 +183,6 @@ router.post(`/update_permissions`, async (c) => {
     const parent_id = await getUserId(c);
     const body = await c.req.json();
     const { child_id, permissionsIds } = body;
-    console.log(permissionsIds);
     const result = await updatePermissions(
       {
         web_account_id: child_id,

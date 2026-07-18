@@ -10,7 +10,9 @@ export const useCompanyAssets = () => {
       companyName: state.hydrated ? company.name : "",
       companyAbreviation: state.hydrated ? company.abreviation : "",
       companyLogo: state.hydrated ? company.logo : "",
-      companyPlaceholder: state.hydrated ? company.placeholder : "",
+      companyPlaceholder: state.hydrated
+        ? company.placeholder
+        : "/assets/img/global/placeholder.png",
       companyFavicon: state.hydrated ? company.favicon : "",
       companyAbout: state.hydrated ? company.about : "",
       companyDescription: state.hydrated

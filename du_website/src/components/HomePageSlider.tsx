@@ -52,7 +52,6 @@ const HomePageSlider = ({ banners }) => {
               alt="slider"
               width={1614}
               height={1400}
-              layout="responsive"
             />
           </Link>
         ))}

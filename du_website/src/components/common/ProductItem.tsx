@@ -49,8 +49,6 @@ const ProductItem = ({
   const stock = item.stock;
   const isOutOfStock = stock === 0;
 
-  const [imgSrc, setImgSrc] = useState(item.image || companyPlaceholder);
-
   useEffect(() => {
     setLocalQty(qty);
   }, [qty]);
@@ -195,14 +193,11 @@ const ProductItem = ({
 
   const image = (w = 400, h = 400) => (
     <Image
-      src={imgSrc}
+      src={item.image || companyPlaceholder}
       alt={item.name}
       width={w}
       height={h}
       style={{ objectFit: "cover", width: "100%", height: "100%" }}
-      onError={() => {
-        setImgSrc(companyPlaceholder);
-      }}
     />
   );
 

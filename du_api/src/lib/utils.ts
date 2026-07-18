@@ -277,7 +277,6 @@ export const ensureParentAccount = async (
     throw new Error("Parent account not found");
   }
   if (parent.type === 2) {
-    console.log("parent", parent);
     throw new Error("Account is not a parent account");
   }
 };
@@ -537,7 +536,6 @@ export async function checkSingleStock(
   companyId: string,
   isExpiryDeal: boolean = false,
 ) {
-  console.log(itemCode, quantity, isExpiryDeal);
   const prisma = getPrisma(companyId);
   const cartItem = await prisma.shopping_cart.findFirst({
     where: {
@@ -552,14 +550,12 @@ export async function checkSingleStock(
 
   if (isExpiryDeal === false) {
     const stock = await getItemStock(itemCode, companyId);
-    console.log("normal stock: ", stock);
     if (stock < (cartItem?.quantity + quantity || quantity)) {
       throw new Error(`Quantity of this item exceeds available stock`);
     }
     return true;
   } else {
     const stock = await getExpiryItemStock(itemCode, companyId);
-    console.log("expiry stock: ", stock);
     if (stock < (cartItem?.quantity + quantity || quantity)) {
       throw new Error(`Quantity of this item exceeds available stock`);
     }

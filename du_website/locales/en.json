@@ -520,8 +520,12 @@
     "subtitle": "Manage customer return requests",
     "load_error": "Failed to load return requests",
     "no_requests": "No return requests found",
+    "return_code": "Return Code",
     "customer_label": "Customer",
     "invoice_label": "Invoice",
+    "status": "Status",
+    "date": "Date",
+    "actions": "Actions",
     "reason_label": "Reason",
     "quantity_label": "Quantity Requested",
     "approve_btn": "Approve",
@@ -537,7 +541,9 @@
     "next_page": "Next page",
     "last_page": "Last page",
     "loading": "Loading...",
-    "locale": "en-US"
+    "locale": "en-US",
+    "view_items": "View Items",
+    "hide_items": "Hide Items"
   },
 
   "permission": {

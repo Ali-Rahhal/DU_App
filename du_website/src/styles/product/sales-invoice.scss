@@ -1,0 +1,182 @@
+.sales-invoices-filters {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+
+  gap: 12px;
+
+  padding: 20px 0;
+
+  .sales-invoices-filter-item {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 8px 14px;
+
+    border-radius: 20px;
+
+    background: #f8f9fa;
+
+    cursor: pointer;
+
+    font-size: 0.8rem;
+
+    transition: 0.2s;
+
+    &:hover {
+      transform: translateY(-2px);
+    }
+
+    &.disabled {
+      opacity: 0.45;
+
+      text-decoration: line-through;
+    }
+  }
+
+  .sales-invoices-filter-color {
+    width: 14px;
+    height: 14px;
+
+    border-radius: 4px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sales-invoices-filters {
+    justify-content: flex-start;
+
+    overflow-x: auto;
+
+    flex-wrap: nowrap;
+
+    .sales-invoices-filter-item {
+      flex-shrink: 0;
+    }
+  }
+}
+
+.sales-invoices-mobile-view {
+  .sales-invoices-mobile-card {
+    background: white;
+
+    border-radius: 16px;
+
+    margin-bottom: 15px;
+
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+
+    overflow: hidden;
+  }
+
+  .sales-invoices-mobile-card-body {
+    padding: 18px;
+  }
+
+  .sales-invoices-mobile-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding-bottom: 15px;
+
+    margin-bottom: 15px;
+
+    border-bottom: 1px solid #eee;
+  }
+
+  .sales-invoices-mobile-number {
+    font-weight: 700;
+
+    font-size: 1.05rem;
+  }
+
+  .sales-invoices-mobile-status {
+    font-size: 0.8rem;
+
+    color: #777;
+
+    margin-top: 3px;
+  }
+
+  .sales-invoices-mobile-status-dot {
+    width: 18px;
+
+    height: 18px;
+
+    border-radius: 50%;
+  }
+
+  .sales-invoices-mobile-info {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+  }
+
+  .sales-invoices-mobile-field {
+    display: flex;
+
+    justify-content: space-between;
+
+    span {
+      color: #888;
+
+      font-size: 0.85rem;
+    }
+  }
+
+  .sales-invoices-mobile-footer {
+    display: flex;
+
+    justify-content: space-between;
+
+    margin-top: 18px;
+
+    padding-top: 15px;
+
+    border-top: 1px solid #eee;
+
+    small {
+      display: block;
+
+      color: #888;
+
+      font-size: 0.7rem;
+    }
+
+    strong {
+      font-size: 0.95rem;
+    }
+  }
+
+  .sales-invoices-mobile-pdf {
+    width: 100%;
+
+    margin-top: 15px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    padding: 10px;
+
+    background: #f8f9fa;
+
+    font-weight: 600;
+  }
+}
+
+.sales-invoices-mobile-empty {
+  text-align: center;
+
+  padding: 50px 0;
+
+  color: #888;
+}

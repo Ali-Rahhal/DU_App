@@ -35,7 +35,7 @@ const Returns = () => {
         title={t("returns.title")}
         subTitle={t("returns.subtitle")}
       >
-        <div className="card">
+        <div className="card d-none d-lg-block">
           <div
             className="table-responsive"
             style={{
@@ -133,6 +133,111 @@ const Returns = () => {
               </tbody>
             </table>
           </div>
+        </div>
+        {/* Mobile Cards */}
+        <div className="returns-mobile-view d-block d-lg-none">
+          {loading ? (
+            <div className="card">
+              <div className="card-body text-center py-5">
+                <Spinner />
+              </div>
+            </div>
+          ) : invoices.length === 0 ? (
+            <div className="card">
+              <div className="card-body text-center py-5">
+                <div className="text-muted">
+                  <i className="fa fa-undo fa-3x mb-3"></i>
+                  <p>{t("returns.no_invoices")}</p>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div
+              style={{
+                maxHeight: "70vh",
+                overflowY: "auto",
+              }}
+            >
+              {invoices.map((invoice) => {
+                const remainingDays =
+                  invoice.returnWindowDays - invoice.daysSinceInvoice;
+
+                return (
+                  <div
+                    key={invoice.transaction_header_id}
+                    className="returns-mobile-card"
+                  >
+                    <div className="returns-mobile-card-body">
+                      {/* Header */}
+                      <div className="returns-mobile-header">
+                        <div className="returns-mobile-number">
+                          {invoice.invoice_code}
+                        </div>
+
+                        {remainingDays >= 0 ? (
+                          <span className="badge bg-soft-success">
+                            {remainingDays} {t("returns.days_left")}
+                          </span>
+                        ) : (
+                          <span className="badge bg-soft-danger">
+                            {t("returns.expired")}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Info */}
+                      <div className="returns-mobile-info">
+                        <div className="returns-mobile-field">
+                          <span className="returns-mobile-label">
+                            {t("returns.table.date")}
+                          </span>
+
+                          <span className="returns-mobile-value">
+                            {new Date(invoice.invoice_date).toLocaleDateString(
+                              t("returns.locale"),
+                            )}
+                          </span>
+                        </div>
+
+                        <div className="returns-mobile-field">
+                          <span className="returns-mobile-label">
+                            {t("returns.table.total_amount")}
+                          </span>
+
+                          <span className="returns-mobile-value fw-bold">
+                            {currenncyCodeToSymbol(invoice.currency_code)}{" "}
+                            {parseFloat(invoice.total_amount).toLocaleString()}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Footer */}
+                      <div className="returns-mobile-footer">
+                        {invoice.hasPendingReturnRequest ? (
+                          <Badge bg="warning" className="text-black">
+                            {t("returns.pending_request")}
+                          </Badge>
+                        ) : invoice.canReturn ? (
+                          <Link
+                            href={`/returns/${invoice.transaction_header_id}`}
+                          >
+                            <Button size="sm" className="returns-mobile-button">
+                              <i className="fa fa-undo me-2"></i>
+                              {t("returns.return_btn")}
+                            </Button>
+                          </Link>
+                        ) : (
+                          <Badge bg="danger">
+                            {t("returns.window_expired")}
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </AccountLayout>
     </Layout>

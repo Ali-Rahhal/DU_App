@@ -1,0 +1,74 @@
+.returns-mobile-view {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.returns-mobile-card {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid #ececec;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  margin-bottom: 14px;
+  transition: 0.25s;
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.returns-mobile-card-body {
+  padding: 18px;
+}
+
+.returns-mobile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.returns-mobile-number {
+  font-size: 17px;
+  font-weight: 700;
+  color: #222;
+}
+
+.returns-mobile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.returns-mobile-field {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.returns-mobile-label {
+  font-size: 13px;
+  color: #8a8a8a;
+}
+
+.returns-mobile-value {
+  font-size: 15px;
+  font-weight: 600;
+  text-align: right;
+  color: #333;
+}
+
+.returns-mobile-footer {
+  margin-top: 18px;
+  padding-top: 15px;
+  border-top: 1px solid #efefef;
+
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.returns-mobile-button {
+  border-radius: 10px;
+  padding: 8px 16px;
+}

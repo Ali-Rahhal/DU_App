@@ -97,271 +97,115 @@ const OpenInvoices = () => {
     }
   };
 
+  const getInvoiceType = (invoice: OpenInvoice) => {
+    return parseFloat(invoice.remaining_amount) < 0 ? "CN" : "SI";
+  };
+
+  const getInvoiceColor = (invoice: OpenInvoice) => {
+    const type = getInvoiceType(invoice);
+
+    if (type === "CN") {
+      return "#4dabf7";
+    }
+
+    const dueDate = new Date(invoice.due_date);
+    const currentDate = new Date();
+
+    const diff = dueDate.getTime() - currentDate.getTime();
+
+    const remainingDays = Math.ceil(diff / (1000 * 3600 * 24));
+
+    if (remainingDays < 0) {
+      return "#ff8787";
+    }
+
+    if (remainingDays < 7) {
+      return "#ffd43b";
+    }
+
+    return "#69db7c";
+  };
+
+  const getRemainingDays = (invoice: OpenInvoice) => {
+    const dueDate = new Date(invoice.due_date);
+    const currentDate = new Date();
+
+    const diff = dueDate.getTime() - currentDate.getTime();
+
+    return Math.ceil(diff / (1000 * 3600 * 24));
+  };
+
   return (
     <Layout>
       <AccountLayout
         title={t("open_invoices.title")}
         subTitle={t("open_invoices.subtitle")}
       >
-        <div
-          style={{ height: "500px", overflowY: "scroll", overflowX: "auto" }}
-        >
-          <table className="table open_invoices_table mb-0 ">
-            <thead
-              style={{
-                position: "sticky",
-                top: 0,
-                zIndex: 100,
-                backgroundColor: "white",
-              }}
-            >
-              <tr>
-                <th>{t("open_invoices.table.order_no")}</th>
-                <th>{t("open_invoices.table.type")}</th>
-                <th>{t("open_invoices.table.invoice_date")}</th>
-                <th>{t("open_invoices.table.due_date")}</th>
-                <th>{t("open_invoices.table.currency")}</th>
-                <th>{t("open_invoices.table.order_amount")}</th>
-                <th>{t("open_invoices.table.remaining_amount")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredInvoices.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="text-center py-5">
-                    <div className="text-muted">
-                      <i className="fa fa-invoice fa-3x mb-3"></i>
-                      <p>{t("open_invoices.no_invoices")}</p>
-                    </div>
-                  </td>
-                </tr>
-              ) : (
-                filteredInvoices.map((invoice) => {
-                  const dueDate = new Date(invoice.due_date);
-                  const currentDate = new Date();
-                  const diff = dueDate.getTime() - currentDate.getTime();
-                  const remainingDays = Math.ceil(diff / (1000 * 3600 * 24));
-                  const type =
-                    parseFloat(invoice.remaining_amount) < 0 ? "CN" : "SI";
-                  const color =
-                    type === "CN"
-                      ? "#4dabf7"
-                      : remainingDays < 0
-                        ? "#ff8787"
-                        : remainingDays < 7
-                          ? "#ffd43b"
-                          : "#69db7c";
-
-                  return (
-                    <tr key={invoice.order_no}>
-                      <td
-                        className="py-3"
-                        style={{
-                          fontWeight: "bold",
-                          position: "relative",
-                          paddingLeft: "20px",
-                        }}
-                      >
-                        <div
-                          style={{
-                            borderLeft: `3px solid ${color}`,
-                            margin: 10,
-                            width: "1px",
-                            height: "34px",
-                            position: "absolute",
-                            top: 0,
-                            left: 0,
-                          }}
-                        ></div>
-                        {invoice.order_no}
-                      </td>
-                      <td
-                        className="py-1"
-                        style={{
-                          fontWeight: "bold",
-                        }}
-                      >
-                        {type === "CN"
-                          ? t("open_invoices.credit_note")
-                          : t("open_invoices.sales_invoice")}
-                      </td>
-                      <td
-                        className="py-1"
-                        style={{
-                          fontWeight: "bold",
-                        }}
-                      >
-                        {new Date(invoice.invoice_date).toLocaleDateString()}
-                      </td>
-                      <td
-                        className="py-1"
-                        style={{
-                          fontWeight: "bold",
-                        }}
-                      >
-                        {new Date(invoice.due_date).toLocaleDateString()}
-                      </td>
-                      <td
-                        className="py-1"
-                        style={{
-                          fontWeight: "bold",
-                        }}
-                      >
-                        {invoice.currency}
-                      </td>
-                      <td
-                        className="py-1"
-                        style={{
-                          fontWeight: "bold",
-                          width: "200px",
-                        }}
-                      >
-                        {currenncyCodeToSymbol(invoice.currency)}{" "}
-                        {parseFloat(invoice.order_amount).toLocaleString()}
-                      </td>
-                      <td
-                        className="py-1"
-                        style={{
-                          fontWeight: "bold",
-                          width: "200px",
-                        }}
-                      >
-                        {currenncyCodeToSymbol(invoice.currency)}{" "}
-                        {parseFloat(invoice.remaining_amount).toLocaleString()}
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        <section
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            flexWrap: "wrap",
-            padding: 20,
-            gap: "10px",
-          }}
-        >
+        <section className="open-invoices-filters">
           <div
-            style={{
-              display: "flex",
-              alignContent: "center",
-              alignItems: "flex-start",
-              marginRight: 20,
-              gap: 10,
-              cursor: "pointer",
-              textDecoration: !filters.includes(0) ? "line-through" : "none",
-            }}
+            className={`open-invoices-filter-item ${
+              !filters.includes(0) ? "disabled" : ""
+            }`}
             onClick={() => {
-              setFilters(
-                filters.includes(0)
-                  ? filters.filter((filter) => filter !== 0)
-                  : [...filters, 0],
+              setFilters((prev) =>
+                prev.includes(0) ? prev.filter((f) => f !== 0) : [...prev, 0],
               );
             }}
           >
-            <div
+            <span
+              className="open-invoices-filter-color"
               style={{
-                padding: 8,
-                background: getFilterColor("moreThan7"),
+                backgroundColor: getFilterColor("moreThan7"),
               }}
-            ></div>
-            <p
-              style={{
-                fontSize: 12,
-                cursor: "pointer",
-                margin: 0,
-              }}
-            >
-              {t("open_invoices.filters.due_more_than_7_days")}
-            </p>
+            />
+
+            <span>{t("open_invoices.filters.due_more_than_7_days")}</span>
           </div>
 
           <div
-            style={{
-              display: "flex",
-              alignContent: "center",
-              alignItems: "flex-start",
-              marginRight: 20,
-              gap: 10,
-              textDecoration: !filters.includes(1) ? "line-through" : "none",
-              cursor: "pointer",
-            }}
+            className={`open-invoices-filter-item ${
+              !filters.includes(1) ? "disabled" : ""
+            }`}
             onClick={() => {
-              setFilters(
-                filters.includes(1)
-                  ? filters.filter((filter) => filter !== 1)
-                  : [...filters, 1],
+              setFilters((prev) =>
+                prev.includes(1) ? prev.filter((f) => f !== 1) : [...prev, 1],
               );
             }}
           >
-            <div
+            <span
+              className="open-invoices-filter-color"
               style={{
-                padding: 8,
-                background: getFilterColor("lessThan7"),
+                backgroundColor: getFilterColor("lessThan7"),
               }}
-            ></div>
-            <p
-              style={{
-                fontSize: 12,
-                margin: 0,
-              }}
-            >
-              {t("open_invoices.filters.due_less_than_7_days")}
-            </p>
+            />
+
+            <span>{t("open_invoices.filters.due_less_than_7_days")}</span>
           </div>
 
           <div
-            style={{
-              display: "flex",
-              alignContent: "center",
-              alignItems: "flex-start",
-              marginRight: 20,
-              gap: 10,
-              cursor: "pointer",
-              transition: "all 0.3s",
-              textDecoration: !filters.includes(2) ? "line-through" : "none",
-            }}
+            className={`open-invoices-filter-item ${
+              !filters.includes(2) ? "disabled" : ""
+            }`}
             onClick={() => {
-              setFilters(
-                filters.includes(2)
-                  ? filters.filter((filter) => filter !== 2)
-                  : [...filters, 2],
+              setFilters((prev) =>
+                prev.includes(2) ? prev.filter((f) => f !== 2) : [...prev, 2],
               );
             }}
           >
-            <div
+            <span
+              className="open-invoices-filter-color"
               style={{
-                padding: 8,
-                background: getFilterColor("pastDue"),
+                backgroundColor: getFilterColor("pastDue"),
               }}
-            ></div>
-            <p
-              style={{
-                fontSize: 12,
-                margin: 0,
-              }}
-            >
-              {t("open_invoices.filters.past_due_date")}
-            </p>
+            />
+
+            <span>{t("open_invoices.filters.past_due_date")}</span>
           </div>
 
           <div
-            style={{
-              display: "flex",
-              alignContent: "center",
-              alignItems: "flex-start",
-              marginRight: 20,
-              gap: 10,
-              cursor: "pointer",
-              transition: "all 0.3s",
-              textDecoration: !filters.includes(3) ? "line-through" : "none",
-            }}
+            className={`open-invoices-filter-item ${
+              !filters.includes(3) ? "disabled" : ""
+            }`}
             onClick={() => {
               setFilters(
                 filters.includes(3)
@@ -370,22 +214,201 @@ const OpenInvoices = () => {
               );
             }}
           >
-            <div
+            <span
+              className="open-invoices-filter-color"
               style={{
-                padding: 8,
-                background: getFilterColor("credit"),
+                backgroundColor: getFilterColor("credit"),
               }}
-            ></div>
-            <p
-              style={{
-                fontSize: 12,
-                margin: 0,
-              }}
-            >
-              {t("open_invoices.filters.credit")}
-            </p>
+            />
+
+            <span>{t("open_invoices.filters.credit")}</span>
           </div>
         </section>
+
+        {/* Desktop Table */}
+        <div className="d-none d-lg-block">
+          <div
+            style={{
+              height: "500px",
+              overflowY: "scroll",
+              overflowX: "auto",
+            }}
+          >
+            <table className="table open_invoices_table mb-0">
+              <thead
+                style={{
+                  position: "sticky",
+                  top: 0,
+                  zIndex: 100,
+                  backgroundColor: "white",
+                }}
+              >
+                <tr>
+                  <th>{t("open_invoices.table.order_no")}</th>
+                  <th>{t("open_invoices.table.type")}</th>
+                  <th>{t("open_invoices.table.invoice_date")}</th>
+                  <th>{t("open_invoices.table.due_date")}</th>
+                  <th>{t("open_invoices.table.currency")}</th>
+                  <th>{t("open_invoices.table.order_amount")}</th>
+                  <th>{t("open_invoices.table.remaining_amount")}</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {filteredInvoices.map((invoice) => {
+                  const type = getInvoiceType(invoice);
+                  const color = getInvoiceColor(invoice);
+
+                  return (
+                    <tr key={invoice.order_no}>
+                      <td
+                        className="py-3"
+                        style={{
+                          fontWeight: "bold",
+                          borderLeft: `4px solid ${color}`,
+                        }}
+                      >
+                        {invoice.order_no}
+                      </td>
+
+                      <td className="fw-bold">
+                        {type === "CN"
+                          ? t("open_invoices.credit_note")
+                          : t("open_invoices.sales_invoice")}
+                      </td>
+
+                      <td className="fw-bold">
+                        {new Date(invoice.invoice_date).toLocaleDateString()}
+                      </td>
+
+                      <td className="fw-bold">
+                        {new Date(invoice.due_date).toLocaleDateString()}
+                      </td>
+
+                      <td className="fw-bold">{invoice.currency}</td>
+
+                      <td className="fw-bold">
+                        {currenncyCodeToSymbol(invoice.currency)}{" "}
+                        {parseFloat(invoice.order_amount).toLocaleString()}
+                      </td>
+
+                      <td className="fw-bold">
+                        {currenncyCodeToSymbol(invoice.currency)}{" "}
+                        {parseFloat(invoice.remaining_amount).toLocaleString()}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        {/* Mobile Cards */}
+
+        <div className="d-block d-lg-none open-invoices-mobile-view">
+          {filteredInvoices.length === 0 ? (
+            <div className="open-invoices-mobile-empty">
+              <i className="fa fa-invoice fa-3x mb-3"></i>
+
+              <p>{t("open_invoices.no_invoices")}</p>
+            </div>
+          ) : (
+            filteredInvoices.map((invoice) => {
+              const type = getInvoiceType(invoice);
+              const color = getInvoiceColor(invoice);
+              const remainingDays = getRemainingDays(invoice);
+
+              return (
+                <div
+                  key={invoice.order_no}
+                  className="open-invoices-mobile-card"
+                  style={{
+                    borderLeft: `5px solid ${color}`,
+                  }}
+                >
+                  <div className="open-invoices-mobile-card-body">
+                    <div className="open-invoices-mobile-header">
+                      <div>
+                        <div className="open-invoices-mobile-order">
+                          #{invoice.order_no}
+                        </div>
+
+                        <div className="open-invoices-mobile-type">
+                          {type === "CN"
+                            ? t("open_invoices.credit_note")
+                            : t("open_invoices.sales_invoice")}
+                        </div>
+                      </div>
+
+                      <div
+                        className="open-invoices-mobile-status-dot"
+                        style={{
+                          backgroundColor: color,
+                        }}
+                      />
+                    </div>
+
+                    <div className="open-invoices-mobile-info">
+                      <div className="open-invoices-mobile-field">
+                        <span>{t("open_invoices.table.invoice_date")}</span>
+
+                        <strong>
+                          {new Date(invoice.invoice_date).toLocaleDateString()}
+                        </strong>
+                      </div>
+
+                      <div className="open-invoices-mobile-field">
+                        <span>{t("open_invoices.table.due_date")}</span>
+
+                        <strong>
+                          {new Date(invoice.due_date).toLocaleDateString()}
+                        </strong>
+                      </div>
+
+                      <div className="open-invoices-mobile-field">
+                        <span>{t("open_invoices.table.currency")}</span>
+
+                        <strong>{invoice.currency}</strong>
+                      </div>
+                    </div>
+
+                    <div className="open-invoices-mobile-footer">
+                      <div>
+                        <small>{t("open_invoices.table.order_amount")}</small>
+
+                        <strong>
+                          {currenncyCodeToSymbol(invoice.currency)}{" "}
+                          {parseFloat(invoice.order_amount).toLocaleString()}
+                        </strong>
+                      </div>
+
+                      <div className="text-end">
+                        <small>
+                          {t("open_invoices.table.remaining_amount")}
+                        </small>
+
+                        <strong>
+                          {currenncyCodeToSymbol(invoice.currency)}{" "}
+                          {parseFloat(
+                            invoice.remaining_amount,
+                          ).toLocaleString()}
+                        </strong>
+                      </div>
+                    </div>
+
+                    {type === "SI" && (
+                      <div className="open-invoices-mobile-days">
+                        {remainingDays >= 0
+                          ? `${remainingDays} days remaining`
+                          : `${Math.abs(remainingDays)} days overdue`}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
       </AccountLayout>
     </Layout>
   );

@@ -1,3 +1,215 @@
+.return-admin-table-card {
+  border: 0;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+}
+
+.return-admin-table {
+  th {
+    background: #f8f9fa;
+    font-size: 13px;
+    color: #6c757d;
+    font-weight: 600;
+  }
+
+  td {
+    padding: 14px;
+  }
+}
+
+.return-admin-details {
+  background: #f8f9fa;
+  padding: 20px;
+}
+
+.return-admin-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.return-admin-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  background: white;
+
+  padding: 12px;
+
+  border-radius: 12px;
+
+  min-width: 250px;
+
+  border: 1px solid #eee;
+
+  img {
+    border-radius: 10px;
+    object-fit: contain;
+  }
+}
+
+/* ===============================
+   Return Admin Mobile Cards
+================================ */
+
+.return-admin-mobile-view {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.return-admin-mobile-card {
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.return-admin-mobile-card-body {
+  padding: 18px;
+}
+
+/* Header */
+
+.return-admin-mobile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.return-admin-mobile-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #212529;
+}
+
+.return-admin-mobile-subtitle {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #6c757d;
+}
+
+/* Information */
+
+.return-admin-mobile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.return-admin-mobile-field {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+
+  span {
+    font-size: 13px;
+    color: #868e96;
+  }
+
+  strong {
+    font-size: 14px;
+    text-align: right;
+    color: #343a40;
+    max-width: 60%;
+  }
+}
+
+/* Items */
+
+.return-mobile-actions {
+  margin-top: 15px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.return-mobile-items {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.return-mobile-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
+}
+
+.return-mobile-item-image {
+  width: 65px;
+  height: 65px;
+  position: relative;
+  flex-shrink: 0;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.return-mobile-item-info {
+  flex: 1;
+  min-width: 0;
+
+  .fw-bold {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+/* Actions */
+
+.return-admin-mobile-actions {
+  margin-top: 18px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  button {
+    border-radius: 10px;
+    padding: 10px;
+    font-weight: 600;
+  }
+}
+
+/* Better small phones */
+
+@media (max-width: 400px) {
+  .return-admin-mobile-card-body {
+    padding: 14px;
+  }
+
+  .return-admin-mobile-header {
+    flex-direction: column;
+  }
+
+  .return-admin-mobile-field {
+    flex-direction: column;
+    gap: 4px;
+
+    strong {
+      text-align: left;
+      max-width: 100%;
+    }
+  }
+}
+
 .pagination {
   gap: 6px;
   flex-wrap: wrap;

@@ -22,6 +22,8 @@ const ReturnAdminPage = () => {
   const [totalPages, setTotalPages] = useState(1);
   const t = useTranslations();
   const { companyPlaceholder } = useCompanyAssets();
+  const [expandedRows, setExpandedRows] = useState<number[]>([]);
+  const [expandedItems, setExpandedItems] = useState<number[]>([]);
 
   useEffect(() => {
     const load = async () => {
@@ -93,6 +95,18 @@ const ReturnAdminPage = () => {
     }
   };
 
+  const toggleRow = (id: number) => {
+    setExpandedRows((prev) =>
+      prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id],
+    );
+  };
+
+  const toggleItems = (id: number) => {
+    setExpandedItems((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
+    );
+  };
+
   return (
     <AdminGuard>
       <Layout>
@@ -112,98 +126,288 @@ const ReturnAdminPage = () => {
             </Card>
           ) : (
             <>
-              <Accordion alwaysOpen>
-                {requests.map((request, index) => (
-                  <Accordion.Item
-                    eventKey={index.toString()}
+              <div className="d-none d-lg-block">
+                <Card className="return-admin-table-card">
+                  <div className="table-responsive">
+                    <table className="table align-middle mb-0 return-admin-table">
+                      <thead>
+                        <tr>
+                          <th>{t("return_admin.return_code")}</th>
+                          <th>{t("return_admin.customer_label")}</th>
+                          <th>{t("return_admin.invoice_label")}</th>
+                          <th>{t("return_admin.status")}</th>
+                          <th>{t("return_admin.date")}</th>
+                          <th className="text-center">
+                            {t("return_admin.actions")}
+                          </th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        {requests.map((request) => (
+                          <>
+                            <tr key={request.transaction_header_id}>
+                              <td>
+                                <strong>
+                                  {request.transaction_header_code}
+                                </strong>
+                              </td>
+
+                              <td>{request.customer_name}</td>
+
+                              <td>{request.invoice_code}</td>
+
+                              <td>
+                                {getStatusBadge(request.transaction_status)}
+                              </td>
+
+                              <td>
+                                {new Date(
+                                  request.date_added,
+                                ).toLocaleDateString(t("return_admin.locale"))}
+                              </td>
+
+                              <td>
+                                <div className="d-flex justify-content-center gap-2">
+                                  <Button
+                                    size="sm"
+                                    variant="outline-secondary"
+                                    onClick={() =>
+                                      toggleRow(request.transaction_header_id)
+                                    }
+                                  >
+                                    <i
+                                      className={
+                                        expandedRows.includes(
+                                          request.transaction_header_id,
+                                        )
+                                          ? "fa fa-eye-slash"
+                                          : "fa fa-eye"
+                                      }
+                                    ></i>
+                                  </Button>
+
+                                  {request.transaction_status === 3 && (
+                                    <>
+                                      <Button
+                                        size="sm"
+                                        variant="success"
+                                        disabled={
+                                          processingId ===
+                                          request.transaction_header_id
+                                        }
+                                        onClick={() =>
+                                          handleDecision(
+                                            request.transaction_header_id,
+                                            true,
+                                          )
+                                        }
+                                      >
+                                        ✓
+                                      </Button>
+
+                                      <Button
+                                        size="sm"
+                                        variant="danger"
+                                        disabled={
+                                          processingId ===
+                                          request.transaction_header_id
+                                        }
+                                        onClick={() =>
+                                          handleDecision(
+                                            request.transaction_header_id,
+                                            false,
+                                          )
+                                        }
+                                      >
+                                        ✕
+                                      </Button>
+                                    </>
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+
+                            {/* Details Row */}
+
+                            <tr>
+                              <td colSpan={6} className="p-0 border-0">
+                                {expandedRows.includes(
+                                  request.transaction_header_id,
+                                ) && (
+                                  <div>
+                                    <div className="return-admin-details">
+                                      <div className="mb-3">
+                                        <strong>
+                                          {t("return_admin.reason_label")}:
+                                        </strong>
+
+                                        <div className="text-muted">
+                                          {request.reason || "-"}
+                                        </div>
+                                      </div>
+
+                                      <div className="return-admin-items">
+                                        {request.items?.map((item: any) => (
+                                          <div
+                                            key={item.transaction_body_id}
+                                            className="return-admin-item"
+                                          >
+                                            <Image
+                                              src={
+                                                item.image || companyPlaceholder
+                                              }
+                                              alt={item.item_name}
+                                              width={60}
+                                              height={60}
+                                              unoptimized
+                                            />
+
+                                            <div>
+                                              <div className="fw-bold">
+                                                {item.item_name}
+                                              </div>
+
+                                              <small className="text-muted">
+                                                {item.item_code}
+                                              </small>
+
+                                              <div>
+                                                {t(
+                                                  "return_admin.quantity_label",
+                                                )}
+                                                :
+                                                <strong className="ms-2">
+                                                  {item.quantity}
+                                                </strong>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
+                              </td>
+                            </tr>
+                          </>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </Card>
+              </div>
+
+              <div className="return-admin-mobile-view d-block d-lg-none">
+                {requests.map((request) => (
+                  <div
+                    className="return-admin-mobile-card"
                     key={request.transaction_header_id}
                   >
-                    <Accordion.Header>
-                      <div className="w-100 me-3" style={{ minWidth: 0 }}>
-                        <div className="d-flex flex-wrap gap-2 align-items-center">
-                          <strong>{request.transaction_header_code}</strong>
-                          {getStatusBadge(request.transaction_status)}
-                        </div>
-                        <div className="small text-muted mt-1">
-                          {t("return_admin.customer_label")}:{" "}
-                          {request.customer_name}
-                        </div>
-                        <div className="small text-muted">
-                          {t("return_admin.invoice_label")}:{" "}
-                          {request.invoice_code}
-                        </div>
-                        <div className="small text-muted">
-                          {new Date(request.date_added).toLocaleString(
-                            t("return_admin.locale"),
-                          )}
-                        </div>
-                      </div>
-                    </Accordion.Header>
+                    <div className="return-admin-mobile-card-body">
+                      <div className="return-admin-mobile-header">
+                        <div>
+                          <div className="return-admin-mobile-title">
+                            {request.invoice_code}
+                          </div>
 
-                    <Accordion.Body>
-                      <div className="mb-3">
-                        <strong>{t("return_admin.reason_label")}:</strong>
-                        <div className="text-muted">
-                          {request.reason || "-"}
+                          <div className="return-admin-mobile-subtitle">
+                            {request.customer_name}
+                          </div>
                         </div>
+
+                        {getStatusBadge(request.transaction_status)}
                       </div>
 
-                      <div className="d-flex flex-column gap-3">
-                        {request.items?.map((item: any) => {
-                          const image = item.image || companyPlaceholder;
+                      <div className="return-admin-mobile-info">
+                        <div className="return-admin-mobile-field">
+                          <span>{t("return_admin.date")}</span>
 
-                          return (
-                            <Card key={item.transaction_body_id}>
-                              <Card.Body>
-                                <div className="d-flex gap-3 align-items-center">
-                                  <div
+                          <strong>
+                            {new Date(request.date_added).toLocaleDateString(
+                              t("return_admin.locale"),
+                            )}
+                          </strong>
+                        </div>
+
+                        <div className="return-admin-mobile-field">
+                          <span>{t("return_admin.reason_label")}</span>
+
+                          <strong>{request.reason || "-"}</strong>
+                        </div>
+                      </div>
+
+                      <hr />
+
+                      <div className="return-mobile-actions">
+                        <Button
+                          variant="outline-primary"
+                          size="sm"
+                          onClick={() =>
+                            toggleItems(request.transaction_header_id)
+                          }
+                        >
+                          <i className="fa fa-eye me-2"></i>
+                          {expandedItems.includes(request.transaction_header_id)
+                            ? t("return_admin.hide_items")
+                            : t("return_admin.view_items")}
+                        </Button>
+                      </div>
+
+                      {expandedItems.includes(
+                        request.transaction_header_id,
+                      ) && (
+                        <div className="return-mobile-items mt-3">
+                          {request.items?.map((item: any) => {
+                            const image = item.image || companyPlaceholder;
+
+                            return (
+                              <div
+                                key={item.transaction_body_id}
+                                className="return-mobile-item"
+                              >
+                                <div className="return-mobile-item-image">
+                                  <Image
+                                    src={image}
+                                    alt={item.item_name}
+                                    fill
                                     style={{
-                                      width: 70,
-                                      height: 70,
-                                      position: "relative",
-                                      flexShrink: 0,
+                                      objectFit: "contain",
                                     }}
-                                  >
-                                    <Image
-                                      src={image}
-                                      alt={item.item_name}
-                                      fill
-                                      style={{
-                                        objectFit: "contain",
-                                      }}
-                                      unoptimized
-                                      onError={(e) => {
-                                        e.currentTarget.src =
-                                          companyPlaceholder;
-                                      }}
-                                    />
+                                    unoptimized
+                                    onError={(e) => {
+                                      e.currentTarget.src = companyPlaceholder;
+                                    }}
+                                  />
+                                </div>
+
+                                <div className="return-mobile-item-info">
+                                  <div className="fw-bold">
+                                    {item.item_name}
                                   </div>
 
-                                  <div className="flex-grow-1">
-                                    <div className="fw-bold">
-                                      {item.item_name}
-                                    </div>
-                                    <div className="text-muted small">
-                                      {item.item_code}
-                                    </div>
-                                    <div className="mt-1">
-                                      {t("return_admin.quantity_label")}:
-                                      <strong className="ms-2">
-                                        {item.quantity}
-                                      </strong>
-                                    </div>
+                                  <div className="text-muted small">
+                                    {item.item_code}
+                                  </div>
+
+                                  <div className="mt-1">
+                                    {t("return_admin.quantity_label")}:
+                                    <strong className="ms-2">
+                                      {item.quantity}
+                                    </strong>
                                   </div>
                                 </div>
-                              </Card.Body>
-                            </Card>
-                          );
-                        })}
-                      </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
 
                       {request.transaction_status === 3 && (
-                        <div className="mt-4 d-flex gap-2 flex-wrap">
+                        <div className="return-admin-mobile-actions">
                           <Button
                             variant="success"
+                            className="w-100"
                             disabled={
                               processingId === request.transaction_header_id
                             }
@@ -223,6 +427,7 @@ const ReturnAdminPage = () => {
 
                           <Button
                             variant="danger"
+                            className="w-100"
                             disabled={
                               processingId === request.transaction_header_id
                             }
@@ -237,10 +442,10 @@ const ReturnAdminPage = () => {
                           </Button>
                         </div>
                       )}
-                    </Accordion.Body>
-                  </Accordion.Item>
+                    </div>
+                  </div>
                 ))}
-              </Accordion>
+              </div>
 
               <div className="d-flex justify-content-center align-items-center gap-2 mt-4">
                 <button

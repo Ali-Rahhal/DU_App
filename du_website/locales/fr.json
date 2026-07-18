@@ -519,8 +519,12 @@
     "subtitle": "Gérez les demandes de retour des clients",
     "load_error": "Échec du chargement des demandes de retour",
     "no_requests": "Aucune demande de retour trouvée",
+    "return_code": "Code de retour",
     "customer_label": "Client",
     "invoice_label": "Facture",
+    "status": "Statut",
+    "date": "Date",
+    "actions": "Actions",
     "reason_label": "Motif",
     "quantity_label": "Quantité demandée",
     "approve_btn": "Approuver",
@@ -536,7 +540,9 @@
     "next_page": "Page suivante",
     "last_page": "Dernière page",
     "loading": "Chargement...",
-    "locale": "fr-FR"
+    "locale": "fr-FR",
+    "view_items": "Voir les articles",
+    "hide_items": "Cacher les articles"
   },
 
   "permission": {

@@ -118,264 +118,341 @@ const SalesInvoice = () => {
           title={t("sales_invoice.title")}
           subTitle={t("sales_invoice.subtitle")}
         >
-          <div
-            style={{ height: "500px", overflowY: "scroll", overflowX: "auto" }}
-          >
-            <table className="table open_invoices_table mb-0 ">
-              <thead
-                style={{
-                  position: "sticky",
-                  top: 0,
-                  zIndex: 100,
-                  backgroundColor: "white",
-                }}
-              >
-                <tr>
-                  <th>{t("sales_invoice.table.invoice_no")}</th>
-                  <th>{t("sales_invoice.table.oracle_invoice_no")}</th>
-                  <th>{t("sales_invoice.table.invoice_date")}</th>
-                  <th>{t("sales_invoice.table.currency")}</th>
-                  <th>{t("sales_invoice.table.order_amount")}</th>
-                  <th>{t("sales_invoice.table.remaining_amount")}</th>
-                  <th>{t("sales_invoice.table.actions")}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredInvoices.length === 0 ? (
-                  <tr>
-                    <td colSpan={7} className="text-center py-5">
-                      <div className="text-muted">
-                        <i className="fa fa-file-invoice fa-3x mb-3"></i>
-                        <p>{t("sales_invoice.no_invoices")}</p>
-                      </div>
-                    </td>
-                  </tr>
-                ) : (
-                  filteredInvoices.map((invoice) => {
-                    const color = getPaymentStatusColor(invoice.is_paid);
-
-                    return (
-                      <tr key={invoice.oracle_number}>
-                        <td
-                          className="py-3"
-                          style={{
-                            fontWeight: "bold",
-                            position: "relative",
-                            paddingLeft: "20px",
-                          }}
-                        >
-                          <div
-                            style={{
-                              borderLeft: `3px solid ${color}`,
-                              margin: 10,
-                              width: "1px",
-                              height: "34px",
-                              position: "absolute",
-                              top: 0,
-                              left: 0,
-                            }}
-                          ></div>
-                          {invoice.oracle_number}
-                        </td>
-                        <td
-                          className="py-1"
-                          style={{
-                            fontWeight: "bold",
-                          }}
-                        >
-                          {invoice.invoice_no}
-                        </td>
-                        <td
-                          className="py-1"
-                          style={{
-                            fontWeight: "bold",
-                          }}
-                        >
-                          {new Date(invoice.date_added).toLocaleDateString(
-                            t("sales_invoice.locale"),
-                          )}
-                        </td>
-                        <td
-                          className="py-1"
-                          style={{
-                            fontWeight: "bold",
-                          }}
-                        >
-                          {invoice.currency}
-                        </td>
-                        <td
-                          className="py-1"
-                          style={{
-                            fontWeight: "bold",
-                            width: "200px",
-                          }}
-                        >
-                          {currenncyCodeToSymbol(invoice.currency)}{" "}
-                          {parseFloat(invoice.total_amount).toLocaleString()}
-                        </td>
-                        <td
-                          className="py-1"
-                          style={{
-                            fontWeight: "bold",
-                            width: "200px",
-                          }}
-                        >
-                          {currenncyCodeToSymbol(invoice.currency)}{" "}
-                          {parseFloat(
-                            invoice.remaining_amount,
-                          ).toLocaleString()}
-                        </td>
-                        <td className="py-1">
-                          <i
-                            className="fa fa-file-pdf-o"
-                            onClick={() => {
-                              setLoading(true);
-                              exportInvoice(invoice)
-                                .then(() => {
-                                  toast.success(
-                                    t("sales_invoice.export_success"),
-                                  );
-                                  setLoading(false);
-                                })
-                                .catch((error) => {
-                                  toast.error(
-                                    error?.message ||
-                                      t("sales_invoice.export_error"),
-                                  );
-                                  setLoading(false);
-                                });
-                            }}
-                            style={{
-                              fontSize: 20,
-                              color: "green",
-                              cursor: "pointer",
-                            }}
-                            title={t("sales_invoice.export_pdf")}
-                          ></i>
-                        </td>
-                      </tr>
-                    );
-                  })
-                )}
-              </tbody>
-            </table>
-          </div>
-
-          <section
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              flexWrap: "wrap",
-              padding: 20,
-              gap: "10px",
-            }}
-          >
+          <section className="sales-invoices-filters">
             <div
-              style={{
-                display: "flex",
-                alignContent: "center",
-                alignItems: "flex-start",
-                marginRight: 20,
-                gap: 10,
-                cursor: "pointer",
-                textDecoration: !filters.includes(0) ? "line-through" : "none",
-              }}
+              className={`sales-invoices-filter-item ${
+                !filters.includes(0) ? "disabled" : ""
+              }`}
               onClick={() => {
-                setFilters(
-                  filters.includes(0)
-                    ? filters.filter((filter) => filter !== 0)
-                    : [...filters, 0],
+                setFilters((prev) =>
+                  prev.includes(0) ? prev.filter((f) => f !== 0) : [...prev, 0],
                 );
               }}
             >
-              <div
+              <span
+                className="sales-invoices-filter-color"
                 style={{
-                  padding: 8,
-                  background: getPaymentStatusColor("yes"),
+                  backgroundColor: getPaymentStatusColor("yes"),
                 }}
-              ></div>
-              <p
-                style={{
-                  fontSize: 12,
-                  cursor: "pointer",
-                  margin: 0,
-                }}
-              >
-                {t("sales_invoice.filters.paid")}
-              </p>
+              />
+
+              <span>{t("sales_invoice.filters.paid")}</span>
             </div>
 
             <div
-              style={{
-                display: "flex",
-                alignContent: "center",
-                alignItems: "flex-start",
-                marginRight: 20,
-                gap: 10,
-                cursor: "pointer",
-                transition: "all 0.3s",
-                textDecoration: !filters.includes(1) ? "line-through" : "none",
-              }}
+              className={`sales-invoices-filter-item ${
+                !filters.includes(1) ? "disabled" : ""
+              }`}
               onClick={() => {
-                setFilters(
-                  filters.includes(1)
-                    ? filters.filter((filter) => filter !== 1)
-                    : [...filters, 1],
+                setFilters((prev) =>
+                  prev.includes(1) ? prev.filter((f) => f !== 1) : [...prev, 1],
                 );
               }}
             >
-              <div
+              <span
+                className="sales-invoices-filter-color"
                 style={{
-                  padding: 8,
-                  background: getPaymentStatusColor("partial"),
+                  backgroundColor: getPaymentStatusColor("partial"),
                 }}
-              ></div>
-              <p
-                style={{
-                  fontSize: 12,
-                  margin: 0,
-                }}
-              >
-                {t("sales_invoice.filters.partially_paid")}
-              </p>
+              />
+
+              <span>{t("sales_invoice.filters.partially_paid")}</span>
             </div>
 
             <div
-              style={{
-                display: "flex",
-                alignContent: "center",
-                alignItems: "flex-start",
-                marginRight: 20,
-                gap: 10,
-                cursor: "pointer",
-                transition: "all 0.3s",
-                textDecoration: !filters.includes(2) ? "line-through" : "none",
-              }}
+              className={`sales-invoices-filter-item ${
+                !filters.includes(2) ? "disabled" : ""
+              }`}
               onClick={() => {
-                setFilters(
-                  filters.includes(2)
-                    ? filters.filter((filter) => filter !== 2)
-                    : [...filters, 2],
+                setFilters((prev) =>
+                  prev.includes(2) ? prev.filter((f) => f !== 2) : [...prev, 2],
                 );
               }}
             >
-              <div
+              <span
+                className="sales-invoices-filter-color"
                 style={{
-                  padding: 8,
-                  background: getPaymentStatusColor("no"),
+                  backgroundColor: getPaymentStatusColor("no"),
                 }}
-              ></div>
-              <p
-                style={{
-                  fontSize: 12,
-                  margin: 0,
-                }}
-              >
-                {t("sales_invoice.filters.unpaid")}
-              </p>
+              />
+
+              <span>{t("sales_invoice.filters.unpaid")}</span>
             </div>
           </section>
+          <div className="d-none d-lg-block">
+            <div
+              style={{
+                height: "500px",
+                overflowY: "scroll",
+                overflowX: "auto",
+              }}
+            >
+              <table className="table open_invoices_table mb-0">
+                <thead
+                  style={{
+                    position: "sticky",
+                    top: 0,
+                    zIndex: 100,
+                    backgroundColor: "white",
+                  }}
+                >
+                  <tr>
+                    <th>{t("sales_invoice.table.invoice_no")}</th>
+                    <th>{t("sales_invoice.table.oracle_invoice_no")}</th>
+                    <th>{t("sales_invoice.table.invoice_date")}</th>
+                    <th>{t("sales_invoice.table.currency")}</th>
+                    <th>{t("sales_invoice.table.order_amount")}</th>
+                    <th>{t("sales_invoice.table.remaining_amount")}</th>
+                    <th>{t("sales_invoice.table.actions")}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredInvoices.length === 0 ? (
+                    <tr>
+                      <td colSpan={7} className="text-center py-5">
+                        <div className="text-muted">
+                          <i className="fa fa-file-invoice fa-3x mb-3"></i>
+                          <p>{t("sales_invoice.no_invoices")}</p>
+                        </div>
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredInvoices.map((invoice) => {
+                      const color = getPaymentStatusColor(invoice.is_paid);
+
+                      return (
+                        <tr key={invoice.invoice_no}>
+                          <td
+                            className="py-3"
+                            style={{
+                              fontWeight: "bold",
+                              position: "relative",
+                              paddingLeft: "20px",
+                            }}
+                          >
+                            <div
+                              style={{
+                                borderLeft: `3px solid ${color}`,
+                                margin: 10,
+                                width: "1px",
+                                height: "34px",
+                                position: "absolute",
+                                top: 0,
+                                left: 0,
+                              }}
+                            ></div>
+                            {invoice.oracle_number}
+                          </td>
+                          <td
+                            className="py-1"
+                            style={{
+                              fontWeight: "bold",
+                            }}
+                          >
+                            {invoice.invoice_no}
+                          </td>
+                          <td
+                            className="py-1"
+                            style={{
+                              fontWeight: "bold",
+                            }}
+                          >
+                            {new Date(invoice.date_added).toLocaleDateString(
+                              t("sales_invoice.locale"),
+                            )}
+                          </td>
+                          <td
+                            className="py-1"
+                            style={{
+                              fontWeight: "bold",
+                            }}
+                          >
+                            {invoice.currency}
+                          </td>
+                          <td
+                            className="py-1"
+                            style={{
+                              fontWeight: "bold",
+                              width: "200px",
+                            }}
+                          >
+                            {currenncyCodeToSymbol(invoice.currency)}{" "}
+                            {parseFloat(invoice.total_amount).toLocaleString()}
+                          </td>
+                          <td
+                            className="py-1"
+                            style={{
+                              fontWeight: "bold",
+                              width: "200px",
+                            }}
+                          >
+                            {currenncyCodeToSymbol(invoice.currency)}{" "}
+                            {parseFloat(
+                              invoice.remaining_amount,
+                            ).toLocaleString()}
+                          </td>
+                          <td className="py-1">
+                            <i
+                              className="fa fa-file-pdf-o"
+                              onClick={() => {
+                                setLoading(true);
+                                exportInvoice(invoice)
+                                  .then(() => {
+                                    toast.success(
+                                      t("sales_invoice.export_success"),
+                                    );
+                                    setLoading(false);
+                                  })
+                                  .catch((error) => {
+                                    toast.error(
+                                      error?.message ||
+                                        t("sales_invoice.export_error"),
+                                    );
+                                    setLoading(false);
+                                  });
+                              }}
+                              style={{
+                                fontSize: 20,
+                                color: "green",
+                                cursor: "pointer",
+                              }}
+                              title={t("sales_invoice.export_pdf")}
+                            ></i>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div className="d-block d-lg-none sales-invoices-mobile-view">
+            {filteredInvoices.length === 0 ? (
+              <div className="sales-invoices-mobile-empty">
+                <i className="fa fa-file-invoice fa-3x mb-3"></i>
+
+                <p>{t("sales_invoice.no_invoices")}</p>
+              </div>
+            ) : (
+              filteredInvoices.map((invoice) => {
+                const color = getPaymentStatusColor(invoice.is_paid);
+
+                return (
+                  <div
+                    key={invoice.invoice_no}
+                    className="sales-invoices-mobile-card"
+                    style={{
+                      borderLeft: `5px solid ${color}`,
+                    }}
+                  >
+                    <div className="sales-invoices-mobile-card-body">
+                      {/* Header */}
+
+                      <div className="sales-invoices-mobile-header">
+                        <div>
+                          <div className="sales-invoices-mobile-number">
+                            #{invoice.oracle_number}
+                          </div>
+
+                          <div className="sales-invoices-mobile-status">
+                            {getPaymentStatusText(invoice.is_paid)}
+                          </div>
+                        </div>
+
+                        <div
+                          className="sales-invoices-mobile-status-dot"
+                          style={{
+                            backgroundColor: color,
+                          }}
+                        />
+                      </div>
+
+                      {/* Details */}
+
+                      <div className="sales-invoices-mobile-info">
+                        <div className="sales-invoices-mobile-field">
+                          <span>
+                            {t("sales_invoice.table.oracle_invoice_no")}
+                          </span>
+
+                          <strong>{invoice.invoice_no}</strong>
+                        </div>
+
+                        <div className="sales-invoices-mobile-field">
+                          <span>{t("sales_invoice.table.invoice_date")}</span>
+
+                          <strong>
+                            {new Date(invoice.date_added).toLocaleDateString(
+                              t("sales_invoice.locale"),
+                            )}
+                          </strong>
+                        </div>
+
+                        <div className="sales-invoices-mobile-field">
+                          <span>{t("sales_invoice.table.currency")}</span>
+
+                          <strong>{invoice.currency}</strong>
+                        </div>
+                      </div>
+
+                      {/* Amounts */}
+
+                      <div className="sales-invoices-mobile-footer">
+                        <div>
+                          <small>{t("sales_invoice.table.order_amount")}</small>
+
+                          <strong>
+                            {currenncyCodeToSymbol(invoice.currency)}{" "}
+                            {parseFloat(invoice.total_amount).toLocaleString()}
+                          </strong>
+                        </div>
+
+                        <div className="text-end">
+                          <small>
+                            {t("sales_invoice.table.remaining_amount")}
+                          </small>
+
+                          <strong>
+                            {currenncyCodeToSymbol(invoice.currency)}{" "}
+                            {parseFloat(
+                              invoice.remaining_amount,
+                            ).toLocaleString()}
+                          </strong>
+                        </div>
+                      </div>
+
+                      <button
+                        className="sales-invoices-mobile-pdf"
+                        onClick={() => {
+                          setLoading(true);
+
+                          exportInvoice(invoice)
+                            .then(() => {
+                              toast.success(t("sales_invoice.export_success"));
+
+                              setLoading(false);
+                            })
+                            .catch((error) => {
+                              toast.error(
+                                error?.message ||
+                                  t("sales_invoice.export_error"),
+                              );
+
+                              setLoading(false);
+                            });
+                        }}
+                      >
+                        <i className="fa fa-file-pdf-o me-2"></i>
+
+                        {t("sales_invoice.export_pdf")}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
         </AccountLayout>
       </Layout>
     </>

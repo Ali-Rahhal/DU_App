@@ -45,7 +45,9 @@ function Footer() {
                       />
                     )}
                   </div>
-                  <p>{t(companyDescription)}</p>
+                  <p>
+                    {companyHydrated ? t(companyDescription) : "Loading..."}
+                  </p>
                 </div>
               </div>
               <div className="col-lg-2 col-md-2 col-6">
@@ -127,17 +129,26 @@ function Footer() {
                   </div>
                   <ul>
                     <li>
-                      <Link target="_blank" href={companyFacebook}>
+                      <Link
+                        target="_blank"
+                        href={companyHydrated ? companyFacebook : "#"}
+                      >
                         Facebook
                       </Link>
                     </li>
                     <li>
-                      <Link target="_blank" href={companyInstagram}>
+                      <Link
+                        target="_blank"
+                        href={companyHydrated ? companyInstagram : "#"}
+                      >
                         Instagram
                       </Link>
                     </li>
                     <li>
-                      <Link target="_blank" href={companyLinkedin}>
+                      <Link
+                        target="_blank"
+                        href={companyHydrated ? companyLinkedin : "#"}
+                      >
                         Linkedin
                       </Link>
                     </li>
@@ -149,7 +160,9 @@ function Footer() {
           <div className="lower-footer">
             <div className="row">
               <div className="col-md-6 text-md-left">
-                <p className="mb-4 mb-md-0 text-muted">{t(companyCopyright)}</p>
+                <p className="mb-4 mb-md-0 text-muted">
+                  {companyHydrated ? t(companyCopyright) : "Loading..."}
+                </p>
                 <p className="mb-4 mb-md-0 text-muted">
                   {t("version") + " " + pkg.version}
                 </p>

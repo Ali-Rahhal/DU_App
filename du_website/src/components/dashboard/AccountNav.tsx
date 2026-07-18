@@ -9,8 +9,16 @@ import React, { useEffect, useState } from "react";
 function AccountNav() {
   const t = useTranslations();
   const [showMenu, setShowMenu] = useState(false);
-  const { firstName, lastName, name, code, type, checkPermission, checkRole } =
-    useAccountStore();
+  const {
+    hydrated,
+    firstName,
+    lastName,
+    name,
+    code,
+    type,
+    checkPermission,
+    checkRole,
+  } = useAccountStore();
   const rt = useRouter();
   const [active, setActive] = useState("");
   useEffect(() => {
@@ -51,13 +59,15 @@ function AccountNav() {
                         textTransform: "uppercase",
                       }}
                     >{`${
-                      (firstName ? firstName[0] : "") +
-                      (lastName ? lastName[0] : "")
+                      (hydrated && firstName ? firstName[0] : "") +
+                      (hydrated && lastName ? lastName[0] : "")
                     }`}</div>
                   </div>
                   <div className="col-auto">
-                    <h6 className="d-block font-weight-bold mb-0">{name}</h6>
-                    <small className="text-muted">{code}</small>
+                    <h6 className="d-block font-weight-bold mb-0">
+                      {hydrated && name}
+                    </h6>
+                    <small className="text-muted">{hydrated && code}</small>
                   </div>
                 </div>
               </div>
@@ -72,7 +82,7 @@ function AccountNav() {
                   {t("my_account.title")}
                 </Link>
               </li>
-              {checkPermission(ALL_PERMISSIONS.ChangePassword) ? (
+              {hydrated && checkPermission(ALL_PERMISSIONS.ChangePassword) ? (
                 <li
                   className={
                     "nav-item " +
@@ -86,7 +96,7 @@ function AccountNav() {
                 </li>
               ) : null}
 
-              {checkRole(ROLES.Admin) ? (
+              {hydrated && checkRole(ROLES.Admin) ? (
                 <>
                   <li
                     className={

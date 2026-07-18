@@ -34,7 +34,7 @@ export const Companies = {
     logo: "/assets/img/DU/logo.png",
     placeholder: process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE_DU,
     favicon: "/assets/img/DU/favicon.ico",
-    about: "/assets/img/DU/extra/page_about.jpg",
+    about: "/assets/img/DU/extra/page-about.jpg",
 
     transalations: {
       description: "company.description_du",
@@ -61,7 +61,7 @@ export const Companies = {
   //   logo: "/assets/img/UPO/logo.png",
   //   placeholder: process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE_DU,
   //   favicon: "/assets/img/UPO/favicon.ico",
-  //   about: "/assets/img/UPO/extra/page_about.jpg",
+  //   about: "/assets/img/UPO/extra/page-about.jpg",
 
   //   transalations: {
   //     description: "",
@@ -88,7 +88,7 @@ export const Companies = {
   //   logo: "/assets/img/FDC/logo.png",
   //   placeholder: process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE_DU,
   //   favicon: "/assets/img/FDC/favicon.ico",
-  //   about: "/assets/img/FDC/extra/page_about.jpg",
+  //   about: "/assets/img/FDC/extra/page-about.jpg",
 
   //   transalations: {
   //     description: "",
@@ -115,7 +115,7 @@ export const Companies = {
   //   logo: "/assets/img/SADCO/logo.png",
   //   placeholder: process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE_DU,
   //   favicon: "/assets/img/SADCO/favicon.ico",
-  //   about: "/assets/img/SADCO/extra/page_about.jpg",
+  //   about: "/assets/img/SADCO/extra/page-about.jpg",
 
   //   transalations: {
   //     description: "",
@@ -142,7 +142,7 @@ export const Companies = {
     logo: "/assets/img/VITALAIT/logo.png",
     placeholder: process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE_VI,
     favicon: "/assets/img/VITALAIT/favicon.ico",
-    about: "/assets/img/VITALAIT/extra/page_about.jpg",
+    about: "/assets/img/VITALAIT/extra/page-about.jpg",
 
     transalations: {
       description: "company.description_vitalait",

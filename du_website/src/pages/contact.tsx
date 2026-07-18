@@ -5,7 +5,7 @@ import { useCompanyStore } from "@/store/zustand";
 import React from "react";
 
 const contact = () => {
-  const { companyAbout } = useCompanyAssets();
+  const { companyHydrated, companyAbout } = useCompanyAssets();
 
   return (
     <>
@@ -13,7 +13,7 @@ const contact = () => {
         <PageHeading
           title="Contact Us"
           subtitle="Lorem ipsum dolor sit amet, adipisicing elit."
-          image={companyAbout}
+          image={companyHydrated ? companyAbout : ""}
         />
         <section className="pt-5 pt-md-7">
           <div className="container">

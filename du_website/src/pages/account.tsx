@@ -27,7 +27,7 @@ const MyAccount = () => {
                   </label>
                   <input
                     onChange={(e) => setFname(e.target.value)}
-                    value={fname}
+                    value={fname ?? ""}
                     type="text"
                     id="fname"
                     className="form-control"
@@ -40,7 +40,7 @@ const MyAccount = () => {
                   </label>
                   <input
                     onChange={(e) => setLname(e.target.value)}
-                    value={lname}
+                    value={lname ?? ""}
                     type="text"
                     id="lname"
                     className="form-control"
@@ -51,7 +51,7 @@ const MyAccount = () => {
                   <label className="form-label">{t("my_account.phone")}</label>
                   <input
                     onChange={(e) => setPhoneInput(e.target.value)}
-                    value={phoneInput}
+                    value={phoneInput ?? ""}
                     type="text"
                     id="phone"
                     className="form-control"

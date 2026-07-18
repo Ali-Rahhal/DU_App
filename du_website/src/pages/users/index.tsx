@@ -40,6 +40,7 @@ import {
   UserFormData,
   INITIAL_FORM_DATA,
 } from "@/types/usersTypes";
+import UsersCards from "@/components/users/UsersCards";
 
 const Users = () => {
   const t = useTranslations();
@@ -411,7 +412,7 @@ const Users = () => {
             {loading && <Spinner size="sm" />}
           </Card.Header>
 
-          <div className="table-responsive position-relative">
+          <div className="table-responsive position-relative d-none d-lg-block">
             {pageLoading && (
               <div
                 style={{
@@ -429,6 +430,17 @@ const Users = () => {
             )}
 
             <UsersTable
+              users={users}
+              loading={loading}
+              onEdit={handleOpenEditModal}
+              onPermissions={handleOpenPermissionsModal}
+              onToggle={handleToggleStatus}
+            />
+          </div>
+
+          {/* Mobile */}
+          <div className="d-block d-lg-none">
+            <UsersCards
               users={users}
               loading={loading}
               onEdit={handleOpenEditModal}

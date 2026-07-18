@@ -1,0 +1,106 @@
+.orders-mobile-view {
+  padding: 5px;
+
+  .orders-mobile-card {
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    transition: all 0.25s ease;
+    overflow: hidden;
+
+    &:active {
+      transform: scale(0.98);
+    }
+
+    &:hover {
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .orders-mobile-card-body {
+      padding: 18px;
+    }
+
+    .orders-mobile-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+      border-bottom: 1px solid #f1f1f1;
+
+      .orders-mobile-number {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #212529;
+      }
+
+      .orders-mobile-status {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+    }
+
+    .orders-mobile-info {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+
+      .orders-mobile-field {
+        display: flex;
+        flex-direction: column;
+
+        .orders-mobile-label {
+          font-size: 0.75rem;
+          color: #8a8a8a;
+          margin-bottom: 3px;
+          text-transform: uppercase;
+          letter-spacing: 0.4px;
+        }
+
+        .orders-mobile-value {
+          font-size: 0.9rem;
+          font-weight: 500;
+          color: #343a40;
+        }
+      }
+    }
+
+    .orders-mobile-footer {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid #f1f1f1;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .orders-mobile-total-label {
+        font-size: 0.8rem;
+        color: #8a8a8a;
+      }
+
+      .orders-mobile-total {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #212529;
+      }
+    }
+  }
+}
+
+/* Mobile optimization */
+@media (max-width: 991px) {
+  .orders-mobile-view {
+    .orders-mobile-card {
+      margin-bottom: 14px;
+
+      .orders-mobile-card-body {
+        padding: 16px;
+      }
+    }
+  }
+}

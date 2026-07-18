@@ -38,7 +38,7 @@ function App({ Component, pageProps }) {
   const { refreshUserInfo, refreshCart } = useAccountStore();
   const { isAuth } = useAuthStore();
   const { locale } = router;
-  const { companyName, companyFavicon } = useCompanyAssets();
+  const { companyHydrated, companyName, companyFavicon } = useCompanyAssets();
 
   useEffect(() => {
     if (!isAuth) return;
@@ -51,9 +51,9 @@ function App({ Component, pageProps }) {
   return (
     <>
       <Head>
-        <title>{companyName}</title>
+        <title>{companyHydrated ? companyName : "Loading..."}</title>
         <meta name="description" content="" />
-        <link rel="icon" href={companyFavicon} />
+        <link rel="icon" href={companyHydrated ? companyFavicon : ""} />
 
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />

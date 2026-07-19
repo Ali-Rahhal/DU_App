@@ -1,0 +1,536 @@
+/* HomePageBannerSlider Component */
+.home-banner-section {
+  padding-top: 20px;
+
+  @media (max-width: 768px) {
+    padding-top: 10px;
+  }
+}
+
+.home-banner-wrapper {
+  overflow: hidden;
+  border-radius: 20px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+  background: #fff;
+
+  .slick-slide {
+    overflow: hidden;
+  }
+
+  .slick-dots {
+    bottom: 15px;
+
+    li button:before {
+      color: white;
+      opacity: 0.5;
+      font-size: 10px;
+    }
+
+    li.slick-active button:before {
+      opacity: 1;
+    }
+  }
+
+  .slick-prev,
+  .slick-next {
+    z-index: 2;
+  }
+}
+
+.home-banner-image {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 5;
+  background: #f8f9fa;
+
+  img {
+    transition: transform 0.5s ease;
+  }
+
+  &:hover img {
+    transform: scale(1.03);
+  }
+
+  @media (max-width: 992px) {
+    aspect-ratio: 16 / 7;
+  }
+
+  @media (max-width: 768px) {
+    aspect-ratio: 16 / 8;
+    border-radius: 14px;
+  }
+
+  @media (max-width: 576px) {
+    aspect-ratio: 16 / 9;
+  }
+}
+
+/* HomePageCategorySlider Component */
+
+.homepage-category-section {
+  padding: 45px 0 10px;
+
+  @media (max-width: 768px) {
+    padding: 25px 0 5px;
+  }
+}
+
+.homepage-section-header {
+  margin-bottom: 25px;
+
+  h4 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin: 0;
+    color: #222;
+  }
+
+  @media (max-width: 768px) {
+    margin-bottom: 18px;
+
+    h4 {
+      font-size: 1.25rem;
+    }
+  }
+}
+
+.homepage-category-slider {
+  .slick-list {
+    margin: 0 -10px;
+  }
+
+  .slick-track {
+    display: flex;
+  }
+
+  .slick-slide {
+    height: inherit;
+
+    > div {
+      height: 100%;
+      padding: 10px;
+    }
+  }
+
+  .slick-prev,
+  .slick-next {
+    z-index: 2;
+  }
+}
+
+.homepage-category-slide {
+  height: 100%;
+  transition: transform 0.25s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+  }
+
+  > * {
+    height: 100%;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    background: #fff;
+  }
+}
+
+/* HomePageDealsSlider Component */
+.homepage-section {
+  padding: 2.5rem 0;
+
+  @media (max-width: 768px) {
+    padding: 1.5rem 0;
+  }
+}
+
+.homepage-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.4rem;
+}
+
+.product-heading {
+  margin: 0;
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: #222;
+
+  @media (max-width: 768px) {
+    font-size: 1.15rem;
+  }
+}
+
+.product-heading-btn {
+  border-radius: 999px;
+  padding: 0.45rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* Desktop slick */
+.desktop-product-slider {
+  .slick-list {
+    margin: 0 -10px;
+  }
+
+  .slick-slide {
+    padding: 0 10px;
+  }
+}
+
+/* Mobile native scrolling */
+/* Mobile native scrolling */
+.mobile-product-scroll {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .desktop-product-slider {
+    display: none;
+  }
+
+  .mobile-product-scroll {
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 5px 0 15px;
+
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    align-items: stretch;
+  }
+
+  .mobile-product-card {
+    flex: 0 0 calc(50% - 7px);
+    width: calc(50% - 7px);
+    max-width: calc(50% - 7px);
+
+    scroll-snap-align: start;
+
+    display: flex;
+
+    > * {
+      width: 100%;
+    }
+
+    .product-card {
+      width: 100%;
+      height: 100%;
+      min-height: 360px;
+      display: flex;
+      flex-direction: column;
+    }
+  }
+}
+
+/* Tablet */
+@media (min-width: 577px) and (max-width: 768px) {
+  .mobile-product-card {
+    flex: 0 0 calc(33.333% - 10px);
+    width: calc(33.333% - 10px);
+    max-width: calc(33.333% - 10px);
+  }
+}
+
+/* HomePageOffers Component */
+.homepage-offers {
+  padding: 3rem 0;
+  background: #f8f9fa;
+}
+
+.offers-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 25px;
+}
+
+.offer-card {
+  background: white;
+  border-radius: 18px;
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+
+  min-height: 260px;
+
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+
+  transition: 0.25s;
+
+  &:hover {
+    transform: translateY(-5px);
+  }
+}
+
+.offer-image {
+  position: relative;
+
+  width: 45%;
+  height: 260px;
+
+  flex-shrink: 0;
+
+  img {
+    object-fit: cover;
+  }
+}
+
+.offer-info {
+  padding: 25px;
+
+  flex: 1;
+
+  .offer-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #222;
+  }
+
+  .offer-subtitle {
+    color: #777;
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+  }
+
+  .btn {
+    border-radius: 999px;
+    padding: 0.5rem 1.2rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .offers-grid {
+    gap: 15px;
+  }
+
+  .offer-card {
+    min-height: 220px;
+  }
+
+  .offer-image {
+    height: 220px;
+  }
+
+  .offer-info {
+    padding: 18px;
+
+    .offer-title {
+      font-size: 1.2rem;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .offers-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .offer-card {
+    min-height: 200px;
+  }
+
+  .offer-image {
+    width: 40%;
+    height: 200px;
+  }
+}
+
+@media (max-width: 480px) {
+  .homepage-offers {
+    padding: 1.5rem 0;
+  }
+
+  .offer-card {
+    display: block;
+  }
+
+  .offer-image {
+    width: 100%;
+    height: 180px;
+  }
+
+  .offer-info {
+    padding: 15px;
+  }
+
+  .offer-title {
+    font-size: 1.1rem !important;
+  }
+}
+
+/* HomePageDealsOfTheDay Component */
+.deals-day-section {
+  padding: 2.5rem 0;
+
+  @media (max-width: 768px) {
+    padding: 1.5rem 0;
+  }
+}
+
+.deals-day-grid {
+  display: grid;
+
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+
+  gap: 20px;
+}
+
+.deals-day-item {
+  transition: 0.25s;
+
+  &:hover {
+    transform: translateY(-4px);
+  }
+}
+
+@media (max-width: 1200px) {
+  .deals-day-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 992px) {
+  .deals-day-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    gap: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .deals-day-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    gap: 12px;
+  }
+}
+
+@media (max-width: 576px) {
+  .deals-day-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 10px;
+  }
+}
+
+/* HomePagePopularCategorySlider Component */
+.popular-category-section {
+  background: #f8f9fa;
+  padding: 3rem 0;
+
+  @media (max-width: 768px) {
+    padding: 1.5rem 0;
+  }
+}
+
+/* Desktop slick */
+.desktop-category-slider {
+  .slick-list {
+    margin: 0 -10px;
+  }
+
+  .slick-slide {
+    padding: 0 10px;
+  }
+}
+
+.mobile-category-scroll {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .desktop-category-slider {
+    display: none;
+  }
+
+  .mobile-category-scroll {
+    display: flex;
+
+    gap: 16px;
+
+    overflow-x: auto;
+
+    padding: 10px 0 15px;
+
+    scroll-snap-type: x proximity;
+
+    -webkit-overflow-scrolling: touch;
+
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .mobile-category-card {
+    flex: 0 0 calc(25% - 12px);
+
+    scroll-snap-align: start;
+  }
+}
+
+@media (max-width: 576px) {
+  .mobile-category-card {
+    flex: 0 0 calc(33.333% - 11px);
+  }
+}
+
+/*HomePageSlider Component */
+.homepage-banner-slider {
+  .slick-list {
+    overflow: hidden;
+    margin: 0 -12px;
+    padding: 0 12px;
+  }
+
+  .slick-slide {
+    padding: 0 12px;
+  }
+}
+
+@media (max-width: 576px) {
+  .homepage-banner-slider {
+    .slick-list {
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
+    }
+
+    .slick-slide {
+      padding: 0 6px;
+    }
+  }
+}
+
+.homepage-banner-image {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 7; // taller desktop banner
+  overflow: hidden;
+  border-radius: 16px;
+
+  img {
+    object-fit: cover;
+  }
+
+  @media (max-width: 1024px) {
+    aspect-ratio: 16 / 8;
+  }
+
+  @media (max-width: 576px) {
+    aspect-ratio: 4 / 3; // taller mobile banner
+    border-radius: 12px;
+  }
+}

@@ -71,17 +71,16 @@ const HomePage = ({ products }) => {
         offers={companyHydrated ? homeOffer[companyId] : getDefaultHomeOffer()}
       />
       <HomePageDealsOfTheDay deals={products} />
-      <HomePageSlider
-        banners={
-          companyHydrated ? homeSlider2[companyId] : getDefaultHomeSlider2()
-        }
-      />
-      <HomePageDealsSlider deals={products} />
       <HomePagePopularCategorySlider
         categorys={
           companyHydrated
             ? popularCategorySlider[companyId]
             : getDefaultPopularCategorySlider()
+        }
+      />
+      <HomePageSlider
+        banners={
+          companyHydrated ? homeSlider2[companyId] : getDefaultHomeSlider2()
         }
       />
       <HomePageDealsSlider deals={products} />

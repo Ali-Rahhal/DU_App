@@ -139,14 +139,9 @@ const ProductDetails = ({ product }: { product: Product }) => {
       <section className="section-padding mt-4">
         <div className="container-fluid">
           <div className="row justify-content-between">
-            <div className="col-lg-4">
+            <div className="col-lg-5 col-xl-5">
               {/* <!--=======  product details slider area  =======--> */}
-              <div
-                className="product-details-slider-area"
-                style={{
-                  position: "relative",
-                }}
-              >
+              <div className="product-details-slider-area product-gallery">
                 <ThumbSlider
                   images={product.image ? product.images : [companyPlaceholder]}
                 />
@@ -171,11 +166,11 @@ const ProductDetails = ({ product }: { product: Product }) => {
               </div>
             </div>
 
-            <div className="col-lg-8 mt-4">
+            <div className="col-lg-7 col-xl-7 mt-4 mt-lg-0">
               <div className="row pl-lg-3">
                 <div className="col-lg-7">
                   <div className="single-product-content-description">
-                    <h4 className="product-title">{product?.name}</h4>
+                    <h1 className="product-title">{product?.name}</h1>
                     {/* <div className="rating">
                       <StarRating value={product?.rating?.average_rating} />
                       <span className="review-count ml-3">
@@ -259,8 +254,8 @@ const ProductDetails = ({ product }: { product: Product }) => {
                       </div>
                     </div> */}
 
-                    <div className="product-actions my-4 justify-content-between">
-                      <div className="qty-input btn mt-4 mt-md-0">
+                    <div className="product-purchase-area">
+                      <div className="qty-input">
                         <button
                           type="button"
                           onClick={() => qtyChange(product, "less")}
@@ -279,7 +274,7 @@ const ProductDetails = ({ product }: { product: Product }) => {
                       </div>
 
                       {/* <!-- End Quantity --> */}
-                      <div className="product-buttons ml-0 ml-md-3 mt-4 mt-md-0 text-md-left text-center">
+                      <div className="product-buttons text-md-left text-center">
                         {!isFavorite ? (
                           <button
                             onClick={handleWishlist}
@@ -335,7 +330,7 @@ const ProductDetails = ({ product }: { product: Product }) => {
                       <ProductPromotionList item_code={itemCode} />
                     ) : null}
                   </div>
-                  <div className="bg-light p-3">
+                  <div className="delivery-card">
                     <h6>Delivery Options</h6>
                     <div className="media align-items-center">
                       <span className="mr-2">

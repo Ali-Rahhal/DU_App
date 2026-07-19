@@ -4,59 +4,60 @@ import React from "react";
 import Slider from "react-slick";
 
 const HomePageSlider = ({ banners }) => {
-  let setting = {
+  const setting = {
     dots: false,
     infinite: true,
     speed: 500,
     slidesToShow: 2,
     slidesToScroll: 1,
-    autoplay: true,
+    swipeToSlide: true,
+    touchThreshold: 15,
+    arrows: true,
 
-    autoplaySpeed: 2000,
-    cssEase: "linear",
+    autoplay: true,
+    autoplaySpeed: 3000,
+
     responsive: [
       {
         breakpoint: 1024,
         settings: {
           slidesToShow: 1,
-          slidesToScroll: 1,
-          infinite: true,
-          dots: false,
+          arrows: true,
+          swipeToSlide: true,
         },
       },
-      // {
-      //   breakpoint: 600,
-      //   settings: {
-      //     slidesToShow: 2,
-      //     slidesToScroll: 2,
-      //     initialSlide: 2,
-      //   },
-      // },
+      {
+        breakpoint: 576,
+        settings: {
+          slidesToShow: 1,
+          arrows: false,
+          swipeToSlide: true,
+        },
+      },
     ],
-    className: "slider arrow-light slider-gap",
+
+    className: "slider arrow-light slider-gap homepage-banner-slider",
   };
-  // 1614x1611
+
   return (
-    <>
+    <section className="homepage-section">
       <Slider {...setting}>
         {banners?.map((item, index) => (
-          <Link href={item.url} key={index + item.image}>
-            <Image
-              style={{
-                cursor: "pointer",
-                objectFit: "cover",
-                width: "100%",
-                height: "100%",
-              }}
-              src={item.image}
-              alt="slider"
-              width={1614}
-              height={1400}
-            />
-          </Link>
+          <div key={index + item.image} className="homepage-banner-item">
+            <Link href={item.url || "#"}>
+              <div className="homepage-banner-image">
+                <Image
+                  src={item.image}
+                  alt="banner"
+                  fill
+                  sizes="(max-width:576px) 90vw, 50vw"
+                />
+              </div>
+            </Link>
+          </div>
         ))}
       </Slider>
-    </>
+    </section>
   );
 };
 

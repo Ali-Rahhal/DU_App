@@ -22,7 +22,13 @@ const ThumbSlider = ({ images }) => {
         >
           {images?.map((item, index) => (
             <div className="single-image" key={index}>
-              <Image src={item} alt="slider" height={1050} width={500} />
+              <Image
+                src={item}
+                alt="slider"
+                width={600}
+                height={600}
+                style={{ objectFit: "contain" }}
+              />
             </div>
           ))}
         </Slider>
@@ -36,14 +42,19 @@ const ThumbSlider = ({ images }) => {
           slidesToScroll={1}
           swipeToSlide={true}
           focusOnSelect={true}
-          centerMode={true}
           arrows={false}
           autoplay={false}
           className="slider-nav product-details-small-image-slider-wrapper"
         >
           {images?.map((item, index) => (
             <div className="single-image" key={index}>
-              <Image src={item} alt="slider" height={150} width={50} />
+              <Image
+                src={item}
+                alt="slider"
+                width={100}
+                height={100}
+                style={{ objectFit: "contain" }}
+              />
             </div>
           ))}
         </Slider>

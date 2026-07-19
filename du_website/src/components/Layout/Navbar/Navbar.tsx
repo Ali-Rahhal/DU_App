@@ -653,13 +653,13 @@ function Navbar() {
                   >
                     {t("login")}
                   </Link>
-                  <Link
+                  {/* <Link
                     href="#"
                     onClick={() => handleModalShow("register")}
                     className="btn btn-primary btn-md"
                   >
                     {t("register")}
-                  </Link>
+                  </Link> */}
                 </>
               ) : (
                 <Button

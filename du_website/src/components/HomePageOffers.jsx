@@ -6,43 +6,34 @@ const HomePageOffers = ({ offers }) => {
   const t = useTranslations();
 
   return (
-    <>
-      <div className="pt-4 pt-md-5">
-        <div className="offers-list bg-light py-5 offers-grid-2">
-          <div className="container">
-            <ul>
-              {offers?.map((item, index) => (
-                <li key={index + item.image}>
-                  <div className="offer-image">
-                    <Image
-                      src={item.image}
-                      alt={item.title}
-                      width={500}
-                      height={300}
-                      style={{
-                        width: "100%",
-                        height: "300px",
-                        objectFit: "cover",
-                      }}
-                    />
-                  </div>
-                  <div className="offer-info">
-                    <h2 className="offer-title">{item.title}</h2>
-                    <p className="offer-subtitle">{item.subTitle}</p>
-                    <Link
-                      href={item.url ? item.url : ""}
-                      className="btn btn-primary btn-sm"
-                    >
-                      {t("shop_now")}
-                    </Link>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
+    <section className="homepage-offers">
+      <div className="container">
+        <div className="offers-grid">
+          {offers?.map((item, index) => (
+            <div className="offer-card" key={index + item.image}>
+              <div className="offer-image">
+                <Image
+                  src={item.image}
+                  alt={item.title}
+                  fill
+                  sizes="(max-width:768px) 100vw, 50vw"
+                />
+              </div>
+
+              <div className="offer-info">
+                <h2 className="offer-title">{item.title}</h2>
+
+                <p className="offer-subtitle">{item.subTitle}</p>
+
+                <Link href={item.url || ""} className="btn btn-primary btn-sm">
+                  {t("shop_now")}
+                </Link>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
-    </>
+    </section>
   );
 };
 

@@ -1,20 +1,23 @@
 import React from "react";
 import Slider from "react-slick";
 import CategoryItem from "./common/CategoryItem";
+import { useTranslations } from "next-intl";
 
 const HomePageCategorySlider = ({ categorys }) => {
-  let setting = {
+  const t = useTranslations();
+
+  const settings = {
     dots: false,
     infinite: false,
     speed: 500,
     slidesToShow: 3,
     slidesToScroll: 1,
-    className: "slider arrow-light slider-gap",
+    className: "slider arrow-light homepage-category-slider",
     responsive: [
       {
         breakpoint: 576,
         settings: {
-          slidesToShow: 1,
+          slidesToShow: 1.15,
           arrows: false,
         },
       },
@@ -32,7 +35,7 @@ const HomePageCategorySlider = ({ categorys }) => {
         },
       },
       {
-        breakpoint: 1300,
+        breakpoint: 1400,
         settings: {
           slidesToShow: 3,
         },
@@ -41,17 +44,21 @@ const HomePageCategorySlider = ({ categorys }) => {
   };
 
   return (
-    <>
-      <div className="pt-4 pt-md-5">
-        <div className="container-fluid theme-container">
-          <Slider {...setting}>
-            {categorys?.map((item, index) => (
-              <CategoryItem key={index + item.image} {...item} />
-            ))}
-          </Slider>
+    <section className="homepage-category-section">
+      <div className="container-fluid theme-container">
+        <div className="homepage-section-header">
+          <h4>{t("shop_by_category")}</h4>
         </div>
+
+        <Slider {...settings}>
+          {categorys?.map((item, index) => (
+            <div key={index + item.image} className="homepage-category-slide">
+              <CategoryItem {...item} />
+            </div>
+          ))}
+        </Slider>
       </div>
-    </>
+    </section>
   );
 };
 

@@ -2,73 +2,76 @@ import React from "react";
 import Slider from "react-slick";
 import BrandItem from "./common/BrandItem";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 
 const HomePagePopularCategorySlider = ({ categorys }) => {
   const t = useTranslations();
-  let setting = {
+
+  const setting = {
     dots: false,
     infinite: true,
     speed: 500,
     slidesToShow: 8,
     slidesToScroll: 1,
-    className: "slider arrow-light slider-gap",
+    className: "slider arrow-light popular-category-slider",
+
     responsive: [
       {
-        breakpoint: 576,
+        breakpoint: 1400,
         settings: {
-          slidesToShow: 3,
-          arrows: false,
-        },
-      },
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: 4,
-          arrows: false,
+          slidesToShow: 7,
         },
       },
       {
         breakpoint: 1200,
         settings: {
-          slidesToShow: 5,
+          slidesToShow: 6,
         },
       },
       {
-        breakpoint: 1300,
+        breakpoint: 992,
         settings: {
-          slidesToShow: 6,
+          slidesToShow: 5,
         },
       },
     ],
   };
 
   return (
-    <>
-      <div className="pt-4 pt-md-5">
-        <div className="py-5 bg-light">
-          <div className="container-fluid theme-container">
-            <div className="row mb-2">
-              <div className="col">
-                <h5 className="product-heading">{t("popular_categories")}</h5>
-              </div>
-              <div className="col-auto text-md-right">
-                <a
-                  href="category"
-                  className="btn btn-primary btn-sm product-heading-btn"
-                >
-                  {t("see_all")}
-                </a>
-              </div>
-            </div>
-          </div>
+    <section className="popular-category-section">
+      <div className="container-fluid theme-container">
+        <div className="homepage-section-header">
+          <h4 className="product-heading">{t("popular_categories")}</h4>
+
+          <Link
+            href="/category"
+            className="btn btn-outline-primary product-heading-btn"
+          >
+            {t("see_all")}
+          </Link>
+        </div>
+
+        {/* Desktop */}
+        <div className="desktop-category-slider">
           <Slider {...setting}>
             {categorys?.map((item, index) => (
-              <BrandItem key={index + item.image} {...item} />
+              <div key={index + item.image} className="popular-category-item">
+                <BrandItem {...item} />
+              </div>
             ))}
           </Slider>
         </div>
+
+        {/* Mobile */}
+        <div className="mobile-category-scroll">
+          {categorys?.map((item, index) => (
+            <div key={index + item.image} className="mobile-category-card">
+              <BrandItem {...item} />
+            </div>
+          ))}
+        </div>
       </div>
-    </>
+    </section>
   );
 };
 

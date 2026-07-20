@@ -319,6 +319,17 @@ label.error {
   appearance: textfield;
   -moz-appearance: textfield; /* Firefox */
 }
+
+.product-price {
+  min-height: 3.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+
+  .text-danger {
+    margin-top: 2px;
+  }
+}
 @media (max-width: 768px) {
   .product-card {
     padding: 8px;

@@ -302,14 +302,7 @@ const ProductItem = ({
                   {item.name}
                 </h6>
               </Link>
-              <div
-                style={{
-                  minHeight: "2.5rem",
-                  maxHeight: "2.5rem",
-                }}
-              >
-                {priceDisplay()}
-              </div>
+              <div className="product-price">{priceDisplay()}</div>
             </div>
             <div
               className="product-actions d-flex align-items-center gap-2 mt-3 flex-wrap"

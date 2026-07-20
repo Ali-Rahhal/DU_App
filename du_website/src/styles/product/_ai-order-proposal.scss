@@ -27,6 +27,13 @@
   }
 }
 
+.ai-product-title {
+  display: "-webkit-box";
+  line-height: 1.1;
+  -webkit-line-clamp: 2;
+  overflow: "hidden";
+}
+
 .qty-selector {
   display: flex;
   align-items: center;

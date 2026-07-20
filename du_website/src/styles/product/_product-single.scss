@@ -99,18 +99,20 @@
   .product-title {
     font-size: 30px;
     font-weight: 700;
-    line-height: 1.25;
-
+    line-height: 1.4;
     color: #222;
-
     margin-bottom: 20px;
 
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 4;
     overflow: hidden;
 
     word-break: break-word;
+    white-space: normal;
+
+    /* Reserve space for 3 lines */
+    min-height: calc(1.4em * 1);
   }
 
   .single-grid-product__price {
@@ -307,10 +309,10 @@
 
     .product-title {
       font-size: 22px;
+      line-height: 1.4;
+      -webkit-line-clamp: 3;
 
-      -webkit-line-clamp: 4;
-
-      margin-bottom: 15px;
+      min-height: calc(1.4em * 3);
     }
 
     .single-grid-product__price {

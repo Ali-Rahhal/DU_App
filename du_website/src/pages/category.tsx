@@ -323,7 +323,13 @@ const CategoryPage = ({
               ) : viewMode === "grid" ? (
                 <Row>
                   {productsPag.map((item) => (
-                    <Col lg={4} md={6} xs={6} key={item.item_code}>
+                    <Col
+                      lg={4}
+                      md={6}
+                      xs={6}
+                      key={item.item_code}
+                      className="mt-1"
+                    >
                       <ProductItem item={item} layout="grid" />
                     </Col>
                   ))}

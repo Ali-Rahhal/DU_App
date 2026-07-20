@@ -121,30 +121,24 @@ const CartItem = ({ item, removeItemHandler, updateCartHandler }) => {
         ) : null}
       </div>
       <div
-        className="qty-input btn mt-4 mt-md-0"
-        style={{
-          width: 120,
-        }}
+        className="input-group quantity-selector mt-4 mt-md-0"
+        style={{ maxWidth: "150px" }}
       >
         <button
+          className="btn btn-outline-secondary"
           type="button"
           onClick={() => handleQuantityChange(quantity - 1)}
-          className="less"
           disabled={quantity === 1}
         >
-          -
+          <i className="fa fa-minus"></i>
         </button>
-        {/* <span>{quantity}</span> */}
+
         <input
           type="number"
+          className="form-control text-center"
           value={quantity}
-          // style={{
-          //   width: 50,
-          //   textAlign: "center",
-          //   border: "none",
-
-          // }}
-          className="quantity-input"
+          min={1}
+          max={stock}
           onChange={(e) => {
             let val = parseInt(e.target.value);
 
@@ -158,13 +152,14 @@ const CartItem = ({ item, removeItemHandler, updateCartHandler }) => {
             handleQuantityChange(val);
           }}
         />
+
         <button
+          className="btn btn-outline-secondary"
           type="button"
           onClick={() => handleQuantityChange(quantity + 1)}
-          className="more"
           disabled={quantity >= stock}
         >
-          +
+          <i className="fa fa-plus"></i>
         </button>
       </div>
     </div>

@@ -276,17 +276,7 @@ export default function AIOrderProposalPage() {
                       />
                     </div>
                     <Card.Body className="d-flex flex-column">
-                      <h6
-                        style={{
-                          minHeight: 50,
-                          display: "-webkit-box",
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: "vertical",
-                          overflow: "hidden",
-                        }}
-                      >
-                        {item.name}
-                      </h6>
+                      <h6 className="ai-product-title">{item.name}</h6>
                       <div
                         className="fw-bold text-primary mb-3"
                         style={{ fontSize: "1.1rem" }}

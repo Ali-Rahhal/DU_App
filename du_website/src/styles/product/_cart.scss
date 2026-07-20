@@ -343,3 +343,59 @@
     }
   }
 }
+
+.quantity-selector {
+  max-width: 150px;
+
+  .btn {
+    width: 42px;
+    height: 42px;
+    padding: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-color: #dee2e6;
+    background: #f8f9fa;
+    color: #495057;
+
+    transition: all 0.2s ease;
+
+    &:hover:not(:disabled) {
+      background: $primary;
+      border-color: $primary;
+      color: #fff;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  .form-control {
+    height: 42px;
+    border-left: 0;
+    border-right: 0;
+
+    text-align: center;
+    font-weight: 600;
+    font-size: 16px;
+
+    box-shadow: none;
+
+    &:focus {
+      border-color: #dee2e6;
+      box-shadow: none;
+    }
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    appearance: textfield;
+  }
+}

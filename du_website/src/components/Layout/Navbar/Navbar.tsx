@@ -153,35 +153,6 @@ function Navbar() {
                   }}
                 >
                   <ChangeLangDropdown />
-
-                  <FormSelect
-                    value={companyId}
-                    disabled={isAuth}
-                    onChange={(e) => {
-                      const selectedCompany = e.target.value as CompanyId;
-
-                      setCompany(selectedCompany);
-
-                      document.cookie = `companyId=${selectedCompany}; path=/; max-age=31536000; SameSite=Lax`;
-
-                      window.location.href = "/";
-                    }}
-                    style={{
-                      width: 150,
-                      minWidth: 150,
-                      borderRadius: 10,
-                      fontWeight: 500,
-                      cursor: isAuth ? "not-allowed" : "pointer",
-                    }}
-                  >
-                    {Object.values(Companies)
-                      .filter((c) => c.enabled)
-                      .map((c) => (
-                        <option key={c.id} value={c.id}>
-                          {c.abreviation}
-                        </option>
-                      ))}
-                  </FormSelect>
                 </div>
               </div>
               <div className="col px-4">
@@ -519,34 +490,6 @@ function Navbar() {
               </div>
             )}
 
-            <div
-              style={{
-                padding: "0 1rem",
-                marginTop: "0.75rem",
-              }}
-            >
-              <FormSelect
-                value={companyId}
-                disabled={isAuth}
-                onChange={(e) => {
-                  const selectedCompany = e.target.value as CompanyId;
-
-                  setCompany(selectedCompany);
-
-                  document.cookie = `companyId=${selectedCompany}; path=/; max-age=31536000; SameSite=Lax`;
-
-                  window.location.href = "/";
-                }}
-              >
-                {Object.values(Companies)
-                  .filter((c) => c.enabled)
-                  .map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.abreviation}
-                    </option>
-                  ))}
-              </FormSelect>
-            </div>
             {isAuth && (
               <div className="mobileMenuLinks mb-2 mt-2">
                 <ul>

@@ -1,22 +1,46 @@
 import { useRouter } from "next/router";
-import React from "react";
+import { Dropdown } from "react-bootstrap";
 
 const ChangeLangDropdown = () => {
   const router = useRouter();
+
   const { locale, pathname, asPath, query } = router;
-  const changeLocale = (newLocale) => {
-    router.push({ pathname, query }, asPath, { locale: newLocale });
+
+  const changeLocale = (newLocale: string) => {
+    router.push(
+      {
+        pathname,
+        query,
+      },
+      asPath,
+      {
+        locale: newLocale,
+      },
+    );
   };
+
   return (
-    <select
-      name="countries"
-      className="locale-select"
-      onChange={(e) => changeLocale(e.target.value)}
-      value={locale}
-    >
-      <option value="fr">🇫🇷&emsp;French</option>
-      <option value="en">🇬🇧&emsp;English</option>
-    </select>
+    <Dropdown>
+      <Dropdown.Toggle variant="light" className="language-toggle">
+        {locale === "fr" ? "🇫🇷 French" : "🇬🇧 English"}
+      </Dropdown.Toggle>
+
+      <Dropdown.Menu>
+        <Dropdown.Item
+          active={locale === "fr"}
+          onClick={() => changeLocale("fr")}
+        >
+          🇫🇷 French
+        </Dropdown.Item>
+
+        <Dropdown.Item
+          active={locale === "en"}
+          onClick={() => changeLocale("en")}
+        >
+          🇬🇧 English
+        </Dropdown.Item>
+      </Dropdown.Menu>
+    </Dropdown>
   );
 };
 

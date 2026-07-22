@@ -155,6 +155,11 @@
   "go_back": "Retour",
   "place_holder": "Emplacement réservé",
   "shop_by_category": "Boutique par catégorie",
+  "select_company": "Choisir une compagnie",
+  "select_company_description": "Choisissez la compagnie que vous souhaitez acceder.",
+  "change_company": "Changer de compagnie",
+  "loading_your_account": "Chargement de votre compte...",
+  "loading": "Chargement...",
 
   "my_account": {
     "title": "Détails du Compte",

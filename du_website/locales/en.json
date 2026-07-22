@@ -157,6 +157,11 @@
   "go_back": "Go Back",
   "place_holder": "Place Holder",
   "shop_by_category": "Shop by Category",
+  "select_company": "Select Company",
+  "select_company_description": "Choose the company you want to access.",
+  "change_company": "Change Company",
+  "loading_your_account": "Loading your account...",
+  "loading": "Loading...",
 
   "my_account": {
     "title": "Account Details",

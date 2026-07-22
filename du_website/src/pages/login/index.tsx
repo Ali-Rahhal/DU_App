@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { Spinner, FormSelect } from "react-bootstrap";
+import { Spinner } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
+import { useTranslations } from "next-intl";
 
 import {
   useAccountStore,
@@ -10,7 +11,7 @@ import {
 } from "@/store/zustand";
 
 import { Companies, CompanyId } from "@/utils/config_companies";
-import { useTranslations } from "next-intl";
+import ChangeLangDropdown from "@/components/common/ChangeLangDropdown";
 
 export default function LoginPage() {
   const [code, setCode] = useState("");
@@ -18,26 +19,27 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
 
+  // First screen: company selection
+  const [step, setStep] = useState<"company" | "login">("company");
+
   const { login } = useAuthStore();
   const { refreshCart } = useAccountStore();
-
   const { companyId, setCompany } = useCompanyStore();
 
   const router = useRouter();
   const t = useTranslations();
 
-  // Set default company cookie on load if not set
   useEffect(() => {
     const cookie = document.cookie
       .split("; ")
       .find((row) => row.startsWith("companyId="));
 
     if (!cookie) {
-      const defaultCompany = process.env.NEXT_PUBLIC_DEFAULT_COMPANY as string;
-
-      document.cookie = `companyId=${defaultCompany}; path=/; max-age=31536000; SameSite=Lax`;
+      document.cookie = `companyId=${
+        process.env.NEXT_PUBLIC_DEFAULT_COMPANY
+      }; path=/; max-age=31536000; SameSite=Lax`;
     }
-  });
+  }, []);
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -71,14 +73,12 @@ export default function LoginPage() {
     }
   }
 
-  function handleCompanyChange(e: React.ChangeEvent<HTMLSelectElement>) {
-    const selectedCompany = e.target.value as CompanyId;
+  function selectCompany(company: CompanyId) {
+    setCompany(company);
 
-    setCompany(selectedCompany);
+    document.cookie = `companyId=${company}; path=/; max-age=31536000; SameSite=Lax`;
 
-    document.cookie = `companyId=${selectedCompany}; path=/; max-age=31536000; SameSite=Lax`;
-
-    window.location.reload();
+    setStep("login");
   }
 
   const company = Companies[companyId];
@@ -86,78 +86,112 @@ export default function LoginPage() {
   return (
     <div className="login-page">
       <div className="login-card">
+        <div className="login-language">
+          <ChangeLangDropdown />
+        </div>
         {redirecting && (
           <div className="login-overlay">
             <Spinner animation="border" />
-            <span>Loading your account...</span>
+            <span>{t("loading_your_account")}</span>
           </div>
         )}
-        {/* Logo */}
-        <div className="text-center mb-4">
-          <img src={company.logo} alt={company.name} className="company-logo" />
 
-          <p className="text-muted">{t("login")}</p>
-        </div>
+        {step === "company" ? (
+          <>
+            <div className="text-center mb-5">
+              <h2>{t("select_company")}</h2>
+              <p className="text-muted">{t("select_company_description")}</p>
+            </div>
 
-        {/* Company Switch */}
-        <div className="company-switch mb-4">
-          <label>Company</label>
+            <div className="company-grid">
+              {Object.values(Companies)
+                .filter((c) => c.enabled)
+                .map((c) => (
+                  <button
+                    key={c.id}
+                    className="company-card"
+                    onClick={() => selectCompany(c.id as CompanyId)}
+                  >
+                    <img
+                      src={c.logo}
+                      alt={c.name}
+                      className="company-card-logo"
+                    />
 
-          <FormSelect
-            value={companyId}
-            disabled={loading}
-            onChange={handleCompanyChange}
-            className="company-select"
-          >
-            {Object.values(Companies)
-              .filter((c) => c.enabled)
-              .map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.abreviation}
-                </option>
-              ))}
-          </FormSelect>
-        </div>
+                    <h4>{c.name}</h4>
 
-        <form
-          onSubmit={handleLogin}
-          className={redirecting ? "form-loading" : ""}
-        >
-          <div className="form-group mb-3">
-            <input
-              type="text"
-              disabled={loading || redirecting}
-              required
-              className="form-control"
-              placeholder={t("user_code")}
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-            />
-          </div>
+                    {c.abreviation && (
+                      <small className="text-muted">{c.abreviation}</small>
+                    )}
+                  </button>
+                ))}
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="text-center mb-4">
+              <img
+                src={company.logo}
+                alt={company.name}
+                className="company-logo"
+              />
 
-          <div className="form-group mb-4">
-            <input
-              type="password"
-              disabled={loading || redirecting}
-              required
-              className="form-control"
-              placeholder={t("password")}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
+              <h3 className="mt-3">{company.name}</h3>
 
-          <button className="login-button" disabled={loading || redirecting}>
-            {loading || redirecting ? (
-              <>
-                <Spinner animation="border" size="sm" className="me-2" />
-                Loading...
-              </>
-            ) : (
-              t("login")
-            )}
-          </button>
-        </form>
+              <p className="text-muted">{t("login")}</p>
+
+              <button
+                type="button"
+                className="change-company-btn"
+                disabled={loading || redirecting}
+                onClick={() => setStep("company")}
+              >
+                <i className="bi bi-arrow-left"></i> {t("change_company")}
+              </button>
+            </div>
+
+            <form onSubmit={handleLogin}>
+              <div className="form-group mb-3">
+                <input
+                  type="text"
+                  required
+                  disabled={loading || redirecting}
+                  className="form-control"
+                  placeholder={t("user_code")}
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                />
+              </div>
+
+              <div className="form-group mb-4">
+                <input
+                  type="password"
+                  required
+                  disabled={loading || redirecting}
+                  className="form-control"
+                  placeholder={t("password")}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="login-button"
+                disabled={loading || redirecting}
+              >
+                {loading || redirecting ? (
+                  <>
+                    <Spinner animation="border" size="sm" className="me-2" />
+                    {t("loading")}
+                  </>
+                ) : (
+                  t("login")
+                )}
+              </button>
+            </form>
+          </>
+        )}
       </div>
     </div>
   );

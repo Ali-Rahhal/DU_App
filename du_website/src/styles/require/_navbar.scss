@@ -1,18 +1,70 @@
-.locale-select {
-  width: 100px;
-  background-color: transparent;
-  border: none;
+.login-language {
+  position: absolute;
+
+  top: 20px;
+
+  right: 25px;
+}
+
+.language-toggle {
+  border-radius: 20px !important;
+
+  padding: 7px 15px !important;
+
   font-size: 14px;
+
   font-weight: 600;
-  color: $dark;
-  padding: 0;
-  cursor: pointer;
-  option {
-    font-size: 14px;
-    font-weight: 600;
-    color: $dark;
+
+  background: white !important;
+
+  color: #333 !important;
+
+  border: 1px solid #e5e7eb !important;
+
+  box-shadow: none !important;
+
+  &:hover,
+  &:focus {
+    border-color: #0d6efd !important;
+
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.12) !important;
+  }
+
+  &::after {
+    margin-left: 8px;
   }
 }
+
+.dropdown-menu {
+  border-radius: 14px !important;
+
+  padding: 8px !important;
+
+  border: 1px solid #eee !important;
+
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+.dropdown-item {
+  border-radius: 10px;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  padding: 10px 14px;
+
+  &:hover {
+    background: #f1f5ff;
+
+    color: #0d6efd;
+  }
+
+  &.active {
+    background: #0d6efd;
+  }
+}
+
 .header {
   position: relative;
   background-color: #ffffff;

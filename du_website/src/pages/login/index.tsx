@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Spinner, FormSelect } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
@@ -25,6 +25,19 @@ export default function LoginPage() {
 
   const router = useRouter();
   const t = useTranslations();
+
+  // Set default company cookie on load if not set
+  useEffect(() => {
+    const cookie = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("companyId="));
+
+    if (!cookie) {
+      const defaultCompany = process.env.NEXT_PUBLIC_DEFAULT_COMPANY as string;
+
+      document.cookie = `companyId=${defaultCompany}; path=/; max-age=31536000; SameSite=Lax`;
+    }
+  });
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -96,11 +109,13 @@ export default function LoginPage() {
             onChange={handleCompanyChange}
             className="company-select"
           >
-            {Object.values(Companies).map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.abreviation}
-              </option>
-            ))}
+            {Object.values(Companies)
+              .filter((c) => c.enabled)
+              .map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.abreviation}
+                </option>
+              ))}
           </FormSelect>
         </div>
 

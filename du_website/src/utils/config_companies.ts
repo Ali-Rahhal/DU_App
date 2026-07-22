@@ -1,4 +1,5 @@
 export interface CompanyConfig {
+  enabled: boolean;
   id: string;
   name: string;
   abreviation: string;
@@ -28,6 +29,7 @@ export interface CompanyConfig {
 
 export const Companies = {
   DU: {
+    enabled: true,
     id: "DU",
     name: "Droguerie de L'Union Pharmaceutical Company",
     abreviation: "DU",
@@ -55,6 +57,7 @@ export const Companies = {
     },
   },
   UPO: {
+    enabled: true,
     id: "UPO",
     name: "Union Pharmaceutique d'Orient",
     abreviation: "UPO",
@@ -82,6 +85,7 @@ export const Companies = {
     },
   },
   FDC: {
+    enabled: true,
     id: "FDC",
     name: "Food & Drug Corporation",
     abreviation: "FDC",
@@ -109,6 +113,7 @@ export const Companies = {
     },
   },
   SADCO: {
+    enabled: true,
     id: "SADCO",
     name: "Sami Dandan & Co.",
     abreviation: "SADCO",
@@ -135,33 +140,34 @@ export const Companies = {
       expiryDeals: true,
     },
   },
-  // VI: {
-  //   id: "VI",
-  //   name: "Vitalait",
-  //   abreviation: "Vitalait",
-  //   logo: "/assets/img/VITALAIT/logo.png",
-  //   placeholder: process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE_VI,
-  //   favicon: "/assets/img/VITALAIT/favicon.ico",
-  //   about: "/assets/img/VITALAIT/extra/page-about.jpg",
+  VI: {
+    enabled: false,
+    id: "VI",
+    name: "Vitalait",
+    abreviation: "Vitalait",
+    logo: "/assets/img/VITALAIT/logo.png",
+    placeholder: process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE_VI,
+    favicon: "/assets/img/VITALAIT/favicon.ico",
+    about: "/assets/img/VITALAIT/extra/page-about.jpg",
 
-  //   transalations: {
-  //     description: "company.description_vitalait",
-  //     copyright: "company.copyright_vitalait",
-  //   },
+    transalations: {
+      description: "company.description_vitalait",
+      copyright: "company.copyright_vitalait",
+    },
 
-  //   social: {
-  //     facebook: "/",
-  //     instagram: "/",
-  //     linkedin: "/",
-  //   },
+    social: {
+      facebook: "/",
+      instagram: "/",
+      linkedin: "/",
+    },
 
-  //   features: {
-  //     survey: false,
-  //     complaints: false,
-  //     loyalty: true,
-  //     expiryDeals: true,
-  //   },
-  // },
+    features: {
+      survey: false,
+      complaints: false,
+      loyalty: true,
+      expiryDeals: true,
+    },
+  },
 };
 
 export type CompanyId = keyof typeof Companies;

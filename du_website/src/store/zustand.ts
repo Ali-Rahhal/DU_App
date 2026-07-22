@@ -207,6 +207,16 @@ export const useAuthStore = create<AuthStore>()(
       logout: async () => {
         // Logout user code
         set({ isAuth: false, token: null });
+
+        // reset company
+        if (useCompanyStore.getState().companyDisabled) {
+          useCompanyStore.setState({
+            companyId: process.env.NEXT_PUBLIC_DEFAULT_COMPANY as CompanyId,
+            companyDisabled: false,
+          });
+          document.cookie = `companyId=${process.env.NEXT_PUBLIC_DEFAULT_COMPANY}; path=/; max-age=31536000; SameSite=Lax`;
+        }
+
         try {
           await logout();
         } catch (err) {
@@ -222,6 +232,7 @@ export const useAuthStore = create<AuthStore>()(
 
 type CompanyStore = {
   hydrated: boolean;
+  companyDisabled: boolean;
 
   companyId: CompanyId;
 
@@ -236,6 +247,7 @@ export const useCompanyStore = create<CompanyStore>()(
   persist(
     (set, get) => ({
       hydrated: false,
+      companyDisabled: false,
 
       companyId: process.env.NEXT_PUBLIC_DEFAULT_COMPANY as CompanyId,
 
@@ -254,6 +266,14 @@ export const useCompanyStore = create<CompanyStore>()(
     {
       name: "company",
       onRehydrateStorage: () => (state) => {
+        if (!state) return;
+
+        const company = Companies[state.companyId];
+
+        if (!company || !company.enabled) {
+          state.companyDisabled = true;
+        }
+
         state?.setHydrated(true);
       },
     },

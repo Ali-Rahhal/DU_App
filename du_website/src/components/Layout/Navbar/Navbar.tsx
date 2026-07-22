@@ -174,11 +174,13 @@ function Navbar() {
                       cursor: isAuth ? "not-allowed" : "pointer",
                     }}
                   >
-                    {Object.values(Companies).map((c) => (
-                      <option key={c.id} value={c.id}>
-                        {c.abreviation}
-                      </option>
-                    ))}
+                    {Object.values(Companies)
+                      .filter((c) => c.enabled)
+                      .map((c) => (
+                        <option key={c.id} value={c.id}>
+                          {c.abreviation}
+                        </option>
+                      ))}
                   </FormSelect>
                 </div>
               </div>
@@ -536,11 +538,13 @@ function Navbar() {
                   window.location.href = "/";
                 }}
               >
-                {Object.values(Companies).map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.abreviation}
-                  </option>
-                ))}
+                {Object.values(Companies)
+                  .filter((c) => c.enabled)
+                  .map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.abreviation}
+                    </option>
+                  ))}
               </FormSelect>
             </div>
             {isAuth && (

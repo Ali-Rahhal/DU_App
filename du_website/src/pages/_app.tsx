@@ -36,9 +36,19 @@ const bodyFont = Nunito({
 function App({ Component, pageProps }) {
   const router = useRouter();
   const { refreshUserInfo, refreshCart } = useAccountStore();
-  const { isAuth } = useAuthStore();
+  const { isAuth, logout } = useAuthStore();
   const { locale } = router;
-  const { companyHydrated, companyName, companyFavicon } = useCompanyAssets();
+  const { companyHydrated, companyDisabled, companyName, companyFavicon } =
+    useCompanyAssets();
+
+  useEffect(() => {
+    if (!companyHydrated) return;
+
+    if (companyDisabled) {
+      logout();
+      router.push("/login");
+    }
+  }, [companyHydrated, companyDisabled]);
 
   useEffect(() => {
     if (!isAuth) return;

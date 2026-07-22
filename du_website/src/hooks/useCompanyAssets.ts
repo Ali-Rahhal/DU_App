@@ -6,6 +6,7 @@ export const useCompanyAssets = () => {
 
     return {
       companyHydrated: state.hydrated,
+      companyDisabled: state.companyDisabled,
       companyId: state.hydrated ? company.id : "",
       companyName: state.hydrated ? company.name : "",
       companyAbreviation: state.hydrated ? company.abreviation : "",

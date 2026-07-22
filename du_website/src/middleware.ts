@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
-const unauthRoutes = [];
+const unauthRoutes = ["/login"];
 const authRoutes = [
+  "/",
   "/account",
   "/checkout",
   "/cart",
@@ -23,6 +24,8 @@ const authRoutes = [
   "/ai-order-proposal",
   "/returns",
   "/return-admin",
+  "/products",
+  "/category",
 ];
 export async function middleware(request: NextRequest) {
   const isServer = typeof window === "undefined";
@@ -66,17 +69,28 @@ export async function middleware(request: NextRequest) {
     console.log(err.message);
     return { status: 401 };
   });
+
+  const pathname = request.nextUrl.pathname;
+  // Check if path matches any auth route (exact match or starts with route/)
+  const isAuthRoute = authRoutes.some((route) => {
+    return pathname === route || pathname.startsWith(route + "/");
+  });
   const isAuth = result.status === 200;
+
   if (isAuth) {
-    if (unauthRoutes.includes(request.nextUrl.pathname))
+    if (
+      unauthRoutes.some(
+        (route) => pathname === route || pathname.startsWith(route + "/"),
+      )
+    )
       return NextResponse.redirect(new URL("/", request.url));
     return NextResponse.next({
       request: {
         headers: headers,
       },
     });
-  } else if (authRoutes.includes(request.nextUrl.pathname)) {
-    return NextResponse.redirect(new URL("/", request.url));
+  } else if (isAuthRoute) {
+    return NextResponse.redirect(new URL("/login", request.url));
   }
   return NextResponse.next({
     request: {

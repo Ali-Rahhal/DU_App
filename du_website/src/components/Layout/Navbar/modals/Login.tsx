@@ -110,12 +110,12 @@ function LoginModal({ show, handleClose, handleModalShow }) {
                   <Spinner animation="border" size="sm" />
                 )}
               </button>
-              <div className="form-group text-center small font-weight-bold mt-3">
+              {/* <div className="form-group text-center small font-weight-bold mt-3">
                 <a href="#" onClick={() => handleModalShow("forgot")}>
                   {" "}
                   {t("forgot_password?")}
                 </a>
-              </div>
+              </div> */}
               {/* <hr className="my-4" />
               <div className="form-group text-center small font-weight-bold mb-0">
                 Don’t have an account?{" "}

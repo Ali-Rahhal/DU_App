@@ -207,7 +207,7 @@ function AccountNav() {
                   href="/"
                   onClick={() => {
                     logout().then(() => {
-                      rt.push("/");
+                      rt.push("/login");
                     });
                   }}
                 >

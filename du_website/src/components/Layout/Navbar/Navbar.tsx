@@ -214,7 +214,7 @@ function Navbar() {
                           href="/"
                           onClick={() => {
                             logout().then(() => {
-                              window.location.href = "/";
+                              window.location.href = "/login";
                             });
                           }}
                         >
@@ -398,7 +398,7 @@ function Navbar() {
                               href="/"
                               onClick={() => {
                                 logout().then(() => {
-                                  window.location.href = "/";
+                                  window.location.href = "/login";
                                 });
                               }}
                             >
@@ -669,7 +669,7 @@ function Navbar() {
                   }}
                   onClick={() => {
                     logout().then(() => {
-                      window.location.href = "/";
+                      window.location.href = "/login";
                     });
                   }}
                 >

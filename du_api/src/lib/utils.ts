@@ -193,7 +193,8 @@ export const saveAudioReturnUrl = async (
       break;
 
     default:
-      throw new Error("Invalid company");
+      fileAccessUrl = process.env.DEFAULT_FILE_ACCESS_URL!;
+      break;
   }
   // Construct the URL for accessing the file
   const fileUrl = `${fileAccessUrl}/uploads/audio/${fileName}`;
@@ -250,7 +251,8 @@ export const saveImageReturnUrl = async (
       break;
 
     default:
-      throw new Error("Invalid company");
+      fileAccessUrl = process.env.DEFAULT_FILE_ACCESS_URL!;
+      break;
   }
   // Construct the URL for accessing the file
   const fileUrl = `${fileAccessUrl}/uploads/images/${fileName}`;

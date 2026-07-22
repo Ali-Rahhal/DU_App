@@ -11,9 +11,36 @@ export const homeSlider = {
       url: "category",
     },
   ],
-  UPO: [],
-  FDC: [],
-  SADCO: [],
+  UPO: [
+    {
+      image: "/assets/img/DU/slider/slider-1.jpg",
+      url: "category",
+    },
+    {
+      image: "/assets/img/DU/slider/slider-2.jpeg",
+      url: "category",
+    },
+  ],
+  FDC: [
+    {
+      image: "/assets/img/DU/slider/slider-1.jpg",
+      url: "category",
+    },
+    {
+      image: "/assets/img/DU/slider/slider-2.jpeg",
+      url: "category",
+    },
+  ],
+  SADCO: [
+    {
+      image: "/assets/img/DU/slider/slider-1.jpg",
+      url: "category",
+    },
+    {
+      image: "/assets/img/DU/slider/slider-2.jpeg",
+      url: "category",
+    },
+  ],
   VI: [
     {
       image: "/assets/img/VITALAIT/slider/slider-1.jpg",
@@ -68,9 +95,84 @@ export const homeSlider2 = {
       url: "category",
     },
   ],
-  UPO: [],
-  FDC: [],
-  SADCO: [],
+  UPO: [
+    {
+      image: "/assets/img/DU/slider2/slider-1.jpg",
+      url: "category",
+    },
+    {
+      image: "/assets/img/DU/slider2/slider-2.jpg",
+      url: "category",
+    },
+    {
+      image: "/assets/img/DU/slider2/slider-3.jpg",
+      url: "category",
+    },
+    {
+      image: "/assets/img/DU/slider2/slider-4.jpg",
+      url: "category",
+    },
+    {
+      image: "/assets/img/DU/slider2/slider-5.jpg",
+      url: "category",
+    },
+    {
+      image: "/assets/img/DU/slider2/slider-6.jpg",
+      url: "category",
+    },
+  ],
+  FDC: [
+    {
+      image: "/assets/img/DU/slider2/slider-1.jpg",
+      url: "category",
+    },
+    {
+      image: "/assets/img/DU/slider2/slider-2.jpg",
+      url: "category",
+    },
+    {
+      image: "/assets/img/DU/slider2/slider-3.jpg",
+      url: "category",
+    },
+    {
+      image: "/assets/img/DU/slider2/slider-4.jpg",
+      url: "category",
+    },
+    {
+      image: "/assets/img/DU/slider2/slider-5.jpg",
+      url: "category",
+    },
+    {
+      image: "/assets/img/DU/slider2/slider-6.jpg",
+      url: "category",
+    },
+  ],
+  SADCO: [
+    {
+      image: "/assets/img/DU/slider2/slider-1.jpg",
+      url: "category",
+    },
+    {
+      image: "/assets/img/DU/slider2/slider-2.jpg",
+      url: "category",
+    },
+    {
+      image: "/assets/img/DU/slider2/slider-3.jpg",
+      url: "category",
+    },
+    {
+      image: "/assets/img/DU/slider2/slider-4.jpg",
+      url: "category",
+    },
+    {
+      image: "/assets/img/DU/slider2/slider-5.jpg",
+      url: "category",
+    },
+    {
+      image: "/assets/img/DU/slider2/slider-6.jpg",
+      url: "category",
+    },
+  ],
   VI: [
     {
       image: "/assets/img/VITALAIT/slider2/slider-1.jpg",
@@ -123,9 +225,66 @@ export const categorySlider = {
       cat_code: "NP",
     },
   ],
-  UPO: [],
-  FDC: [],
-  SADCO: [],
+  UPO: [
+    {
+      image: "/assets/img/DU/category/category-1.png",
+      url: "category?cat=P",
+      name: "Pharma",
+      cat_code: "P",
+    },
+    {
+      image: "/assets/img/DU/category/category-2.png",
+      url: "category?cat=PP",
+      name: "ParaPharma",
+      cat_code: "PP",
+    },
+    {
+      image: "/assets/img/DU/category/category-3.png",
+      url: "category?cat=NP",
+      name: "Non Pharma",
+      cat_code: "NP",
+    },
+  ],
+  FDC: [
+    {
+      image: "/assets/img/DU/category/category-1.png",
+      url: "category?cat=P",
+      name: "Pharma",
+      cat_code: "P",
+    },
+    {
+      image: "/assets/img/DU/category/category-2.png",
+      url: "category?cat=PP",
+      name: "ParaPharma",
+      cat_code: "PP",
+    },
+    {
+      image: "/assets/img/DU/category/category-3.png",
+      url: "category?cat=NP",
+      name: "Non Pharma",
+      cat_code: "NP",
+    },
+  ],
+  SADCO: [
+    {
+      image: "/assets/img/DU/category/category-1.png",
+      url: "category?cat=P",
+      name: "Pharma",
+      cat_code: "P",
+    },
+    {
+      image: "/assets/img/DU/category/category-2.png",
+      url: "category?cat=PP",
+      name: "ParaPharma",
+      cat_code: "PP",
+    },
+    {
+      image: "/assets/img/DU/category/category-3.png",
+      url: "category?cat=NP",
+      name: "Non Pharma",
+      cat_code: "NP",
+    },
+  ],
   VI: [
     {
       image: "/assets/img/VITALAIT/category/category-1.png",
@@ -164,9 +323,48 @@ export const homeOffer = {
       subTitle: "Up to 50% off",
     },
   ],
-  UPO: [],
-  FDC: [],
-  SADCO: [],
+  UPO: [
+    {
+      image: "/assets/img/DU/product/product-1.png",
+      url: "category",
+      title: "Advil 200mg 20 Tablets",
+      subTitle: "Up to 50% off",
+    },
+    {
+      image: "/assets/img/DU/product/product-2.png",
+      url: "category",
+      title: "CENTRUN Multivitamin 30 Tablets",
+      subTitle: "Up to 50% off",
+    },
+  ],
+  FDC: [
+    {
+      image: "/assets/img/DU/product/product-1.png",
+      url: "category",
+      title: "Advil 200mg 20 Tablets",
+      subTitle: "Up to 50% off",
+    },
+    {
+      image: "/assets/img/DU/product/product-2.png",
+      url: "category",
+      title: "CENTRUN Multivitamin 30 Tablets",
+      subTitle: "Up to 50% off",
+    },
+  ],
+  SADCO: [
+    {
+      image: "/assets/img/DU/product/product-1.png",
+      url: "category",
+      title: "Advil 200mg 20 Tablets",
+      subTitle: "Up to 50% off",
+    },
+    {
+      image: "/assets/img/DU/product/product-2.png",
+      url: "category",
+      title: "CENTRUN Multivitamin 30 Tablets",
+      subTitle: "Up to 50% off",
+    },
+  ],
   VI: [
     {
       image: "/assets/img/VITALAIT/product/product-1.png",
@@ -238,9 +436,147 @@ export const brandSlider = {
       name: "BrandName",
     },
   ],
-  UPO: [],
-  FDC: [],
-  SADCO: [],
+  UPO: [
+    {
+      image: "/assets/img/DU/brand/brand-1.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/DU/brand/brand-2.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/DU/brand/brand-3.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/DU/brand/brand-4.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/DU/brand/brand-5.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/DU/brand/brand-6.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/DU/brand/brand-7.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/DU/brand/brand-8.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/DU/brand/brand-9.png",
+      url: "category",
+      name: "BrandName",
+    },
+  ],
+  FDC: [
+    {
+      image: "/assets/img/DU/brand/brand-1.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/DU/brand/brand-2.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/DU/brand/brand-3.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/DU/brand/brand-4.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/DU/brand/brand-5.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/DU/brand/brand-6.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/DU/brand/brand-7.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/DU/brand/brand-8.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/DU/brand/brand-9.png",
+      url: "category",
+      name: "BrandName",
+    },
+  ],
+  SADCO: [
+    {
+      image: "/assets/img/DU/brand/brand-1.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/DU/brand/brand-2.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/DU/brand/brand-3.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/DU/brand/brand-4.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/DU/brand/brand-5.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/DU/brand/brand-6.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/DU/brand/brand-7.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/DU/brand/brand-8.png",
+      url: "category",
+      name: "BrandName",
+    },
+    {
+      image: "/assets/img/DU/brand/brand-9.png",
+      url: "category",
+      name: "BrandName",
+    },
+  ],
   VI: [
     {
       image: "/assets/img/VITALAIT/brand/brand-1.png",

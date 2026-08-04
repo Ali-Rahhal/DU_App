@@ -1,0 +1,1539 @@
+/* ==========================================
+   OPEN INVOICE LIST
+========================================== */
+.open-invoice-list {
+  width: 100%;
+
+  .invoice-table-container {
+    background: #ffffff;
+
+    border-radius: 18px;
+
+    overflow: hidden;
+
+    border: 1px solid #edf0f5;
+
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+
+    .invoice-table {
+      margin-bottom: 0;
+
+      thead {
+        background: #f8fafc;
+
+        th {
+          padding: 16px 18px;
+
+          font-size: 13px;
+
+          font-weight: 600;
+
+          color: #64748b;
+
+          text-transform: uppercase;
+
+          letter-spacing: 0.4px;
+
+          border-bottom: 1px solid #edf0f5;
+        }
+      }
+
+      tbody {
+        tr {
+          cursor: pointer;
+
+          transition: all 0.2s ease;
+
+          td {
+            padding: 16px 18px;
+
+            font-size: 14px;
+
+            color: #334155;
+
+            border-bottom: 1px solid #f1f5f9;
+
+            vertical-align: middle;
+          }
+
+          &:hover {
+            background: #f8fafc;
+          }
+
+          &.selected-row {
+            background: rgba(37, 99, 235, 0.08);
+
+            td {
+              color: #1e40af;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /* Checkbox */
+
+  .form-check-input {
+    width: 18px;
+
+    height: 18px;
+
+    cursor: pointer;
+
+    &:checked {
+      background-color: #2563eb;
+
+      border-color: #2563eb;
+    }
+  }
+
+  /* Badges */
+
+  .badge {
+    font-size: 13px;
+
+    font-weight: 600;
+
+    padding: 7px 10px;
+
+    border-radius: 20px;
+  }
+
+  /* Mobile Cards */
+
+  .invoice-card {
+    border: none;
+
+    border-radius: 18px;
+
+    background: #ffffff;
+
+    box-shadow: 0 5px 18px rgba(15, 23, 42, 0.08);
+
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+
+    cursor: pointer;
+
+    &:hover {
+      transform: translateY(-2px);
+
+      box-shadow: 0 8px 25px rgba(15, 23, 42, 0.12);
+    }
+
+    &.selected-card {
+      border: 2px solid #2563eb;
+
+      background: rgba(37, 99, 235, 0.04);
+    }
+
+    .card-body {
+      padding: 18px;
+    }
+  }
+
+  .invoice-card-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    strong {
+      font-size: 17px;
+
+      color: #0f172a;
+    }
+  }
+
+  .invoice-label {
+    display: block;
+
+    color: #94a3b8;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    text-transform: uppercase;
+
+    margin-bottom: 4px;
+
+    letter-spacing: 0.4px;
+  }
+
+  .invoice-card hr {
+    border-color: #e2e8f0;
+
+    margin: 14px 0;
+  }
+}
+.amount-badge {
+  display: inline-flex;
+
+  align-items: center;
+
+  padding: 6px 12px;
+
+  border-radius: 20px;
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  &.credit {
+    background: #dcfce7;
+
+    color: #15803d;
+  }
+
+  &.debit {
+    background: #fee2e2;
+
+    color: #b91c1c;
+  }
+}
+
+.invoice-selector {
+  width: 28px;
+
+  height: 28px;
+
+  border-radius: 50%;
+
+  border: 2px solid #cbd5e1;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background: #fff;
+
+  transition: all 0.2s ease;
+
+  cursor: pointer;
+
+  i {
+    font-size: 14px;
+
+    color: white;
+
+    font-weight: bold;
+  }
+
+  &:hover {
+    border-color: #2563eb;
+
+    transform: scale(1.05);
+  }
+
+  &.selected {
+    background: #2563eb;
+
+    border-color: #2563eb;
+
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+  }
+}
+
+.disabled-row,
+.disabled-card {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.invoice-selector.disabled {
+  background: #f3f4f6;
+  border: 2px solid #d1d5db;
+  color: #9ca3af;
+}
+
+/* ===========================
+    MANUAL PAYMENT MODAL
+  ============================ */
+.manual-payment-modal,
+.manual-payment-preview-modal {
+  // Better Selects
+
+  .form-select {
+    height: 46px;
+    border-radius: 12px;
+    border: 1px solid #d8dee9;
+    background-color: #fff;
+    font-weight: 600;
+    padding-left: 14px;
+    padding-right: 42px;
+    cursor: pointer;
+    transition: 0.2s ease;
+
+    &:hover {
+      border-color: #2563eb;
+    }
+
+    &:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 0.18rem rgba(37, 99, 235, 0.15);
+    }
+
+    option {
+      font-weight: 500;
+    }
+  }
+
+  // Amount Input
+
+  .form-control {
+    height: 46px;
+    border-radius: 12px;
+    border: 1px solid #d8dee9;
+    font-weight: 500;
+
+    &:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 0.18rem rgba(37, 99, 235, 0.15);
+    }
+  }
+
+  // Remove Currency Button
+
+  .btn-danger {
+    width: 46px;
+    height: 46px;
+    padding: 0;
+    border-radius: 12px;
+    background: #fff;
+    color: #dc3545;
+    border: 1px solid #dc3545;
+    transition: 0.2s;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    i {
+      font-size: 14px;
+    }
+
+    &:hover:not(:disabled) {
+      background: #dc3545;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    &:disabled {
+      opacity: 0.45;
+    }
+  }
+
+  // Action Buttons
+
+  .btn-outline-primary,
+  .btn-outline-success {
+    border-radius: 12px;
+    font-weight: 600;
+    padding: 8px 16px;
+    transition: 0.2s;
+
+    &:hover {
+      transform: translateY(-2px);
+    }
+  }
+
+  .modal-footer .btn {
+    min-width: 130px;
+    border-radius: 12px;
+    font-weight: 600;
+  }
+
+  // Preview Summary Cards
+
+  .payment-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 18px;
+
+    .summary-card {
+      background: white;
+      border-radius: 14px;
+      padding: 16px;
+      text-align: center;
+      border: 1px solid #ececec;
+
+      small {
+        display: block;
+        color: #6c757d;
+        margin-bottom: 6px;
+      }
+
+      h4,
+      h5 {
+        margin: 0;
+        font-weight: 700;
+      }
+    }
+  }
+
+  .payment-breakdown {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+
+    .summary-card {
+      background: #f8f9fa;
+      border-radius: 14px;
+      padding: 14px;
+      text-align: center;
+
+      small {
+        display: block;
+        color: #6c757d;
+      }
+
+      h5 {
+        margin-top: 5px;
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  // Mobile
+
+  @media (max-width: 768px) {
+    .modal-body {
+      padding: 14px;
+    }
+
+    /*
+    Payment input rows
+    Keep amount + currency + delete together
+  */
+
+    .d-flex.gap-2.mb-2 {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr 42px;
+      gap: 8px !important;
+      align-items: center;
+
+      .form-control,
+      .form-select {
+        width: 100%;
+        height: 42px;
+        font-size: 0.85rem;
+      }
+
+      .btn-danger {
+        width: 42px;
+        height: 42px;
+        padding: 0;
+      }
+    }
+
+    /*
+    Invoice sections
+  */
+
+    .mb-4 {
+      margin-bottom: 18px !important;
+
+      h6 {
+        font-size: 0.95rem;
+        margin-bottom: 4px;
+      }
+
+      p {
+        font-size: 0.8rem;
+        margin-bottom: 10px;
+      }
+    }
+
+    /*
+    Pay Full / Use Remaining buttons
+  */
+
+    .d-flex.gap-2.mt-2 {
+      display: grid !important;
+      grid-template-columns: 1fr;
+      gap: 8px !important;
+
+      .btn {
+        width: 100%;
+        font-size: 0.85rem;
+      }
+    }
+
+    /*
+    Add currency button
+  */
+
+    .btn-outline-primary {
+      width: 100%;
+      margin-top: 6px;
+      height: 40px;
+    }
+
+    /*
+    Credit notes button
+  */
+
+    .btn-outline-success {
+      width: 100%;
+      height: 42px;
+    }
+
+    /*
+    Footer buttons
+  */
+
+    .modal-footer {
+      flex-direction: column;
+      gap: 8px;
+
+      .btn {
+        width: 100%;
+        min-width: unset;
+      }
+    }
+
+    /*
+    Tables
+  */
+
+    table {
+      font-size: 0.78rem;
+
+      th,
+      td {
+        padding: 0.45rem;
+        white-space: nowrap;
+      }
+    }
+
+    /*
+    Preview summary cards
+    keep existing compact design
+  */
+
+    .payment-summary {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+
+      .summary-card {
+        padding: 10px 5px;
+
+        small {
+          font-size: 0.65rem;
+        }
+
+        h4,
+        h5 {
+          font-size: 0.9rem;
+        }
+      }
+    }
+
+    .payment-breakdown {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+
+      .summary-card {
+        padding: 10px 5px;
+
+        small {
+          font-size: 0.65rem;
+        }
+
+        h5 {
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
+
+  /*
+  Very small phones
+*/
+
+  @media (max-width: 380px) {
+    .d-flex.gap-2.mb-2 {
+      grid-template-columns: 1fr;
+
+      .btn-danger {
+        width: 100%;
+      }
+    }
+  }
+}
+
+/* ===========================
+    AUTOMATIC FIFO PAYMENT MODAL
+  ============================ */
+
+.automatic-payment-modal,
+.automatic-payment-preview-modal {
+  // Better Selects
+
+  .form-select {
+    height: 46px;
+    border-radius: 12px;
+    border: 1px solid #d8dee9;
+    background-color: #fff;
+    font-weight: 600;
+    padding-left: 14px;
+    padding-right: 42px;
+    cursor: pointer;
+    transition: 0.2s ease;
+
+    &:hover {
+      border-color: #2563eb;
+    }
+
+    &:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 0.18rem rgba(37, 99, 235, 0.15);
+    }
+
+    option {
+      font-weight: 500;
+    }
+  }
+
+  // Amount Input
+
+  .form-control {
+    height: 46px;
+    border-radius: 12px;
+    border: 1px solid #d8dee9;
+    font-weight: 500;
+
+    &:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 0.18rem rgba(37, 99, 235, 0.15);
+    }
+  }
+
+  // Remove Currency Button
+
+  .btn-danger {
+    width: 46px;
+    height: 46px;
+    padding: 0;
+
+    border-radius: 12px;
+    background: #fff;
+    color: #dc3545;
+    border: 1px solid #dc3545;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition: 0.2s;
+
+    i {
+      font-size: 14px;
+    }
+
+    &:hover:not(:disabled) {
+      background: #dc3545;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    &:disabled {
+      opacity: 0.45;
+    }
+  }
+
+  // Add Currency + Credit Notes buttons
+
+  .btn-outline-primary,
+  .btn-outline-success {
+    border-radius: 12px;
+    font-weight: 600;
+    padding: 8px 16px;
+    transition: 0.2s;
+
+    &:hover {
+      transform: translateY(-2px);
+    }
+  }
+
+  // Footer buttons
+
+  .modal-footer {
+    .btn {
+      min-width: 130px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+  }
+
+  // Preview Summary Cards
+
+  .payment-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 14px;
+    margin-bottom: 18px;
+
+    .summary-card {
+      background: white;
+      border-radius: 14px;
+
+      padding: 16px;
+
+      text-align: center;
+
+      border: 1px solid #ececec;
+
+      small {
+        display: block;
+        color: #6c757d;
+        margin-bottom: 6px;
+      }
+
+      h4,
+      h5 {
+        margin: 0;
+        font-weight: 700;
+      }
+    }
+  }
+
+  // Credit / Cash breakdown
+
+  .payment-breakdown {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 14px;
+
+    .summary-card {
+      background: #f8f9fa;
+
+      border-radius: 14px;
+
+      padding: 14px;
+
+      text-align: center;
+
+      small {
+        display: block;
+        color: #6c757d;
+      }
+
+      h5 {
+        margin-top: 5px;
+        margin-bottom: 0;
+        font-weight: 700;
+      }
+
+      .badge {
+        border-radius: 20px;
+        padding: 7px 12px;
+        font-weight: 600;
+      }
+    }
+  }
+
+  // Tables
+
+  .table-responsive {
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  table {
+    margin-bottom: 0;
+
+    th {
+      background: #f8f9fa;
+
+      font-size: 13px;
+      font-weight: 600;
+
+      white-space: nowrap;
+    }
+
+    td {
+      vertical-align: middle;
+      font-size: 14px;
+    }
+
+    small {
+      color: #6c757d;
+    }
+  }
+
+  // Mobile
+
+  @media (max-width: 768px) {
+    .modal-body {
+      padding: 14px;
+    }
+
+    /*
+    Payment inputs
+    Keep amount + currency + delete button in one row
+  */
+
+    .d-flex.gap-2.mb-3 {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr 42px;
+      gap: 8px !important;
+      align-items: center;
+
+      .form-control,
+      .form-select {
+        width: 100%;
+        height: 42px;
+        font-size: 0.85rem;
+      }
+
+      .btn-danger {
+        width: 42px;
+        height: 42px;
+        padding: 0;
+      }
+    }
+
+    /*
+    Invoice blocks
+  */
+
+    .mb-4 {
+      margin-bottom: 18px !important;
+
+      h6 {
+        font-size: 0.95rem;
+      }
+
+      p {
+        font-size: 0.8rem;
+        margin-bottom: 10px;
+      }
+    }
+
+    /*
+    Action buttons
+  */
+
+    .modal-body {
+      .btn-outline-primary,
+      .btn-outline-success {
+        width: 100%;
+        height: 42px;
+        font-size: 0.85rem;
+      }
+    }
+
+    /*
+    Footer buttons
+  */
+
+    .modal-footer {
+      flex-direction: column;
+      gap: 8px;
+
+      .btn {
+        width: 100%;
+        min-width: unset;
+      }
+    }
+
+    /*
+    Tables
+  */
+
+    table {
+      font-size: 0.78rem;
+
+      th,
+      td {
+        padding: 0.45rem;
+        white-space: nowrap;
+      }
+    }
+
+    /*
+    Preview summary cards
+  */
+
+    .payment-summary {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+
+      .summary-card {
+        padding: 10px 5px;
+
+        small {
+          font-size: 0.65rem;
+        }
+
+        h4,
+        h5 {
+          font-size: 0.9rem;
+        }
+      }
+    }
+
+    .payment-breakdown {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+
+      .summary-card {
+        padding: 10px 5px;
+
+        small {
+          font-size: 0.65rem;
+        }
+
+        h5 {
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
+
+  /*
+  Very small phones
+*/
+
+  @media (max-width: 380px) {
+    .d-flex.gap-2.mb-3 {
+      grid-template-columns: 1fr;
+
+      .btn-danger {
+        width: 100%;
+      }
+    }
+  }
+}
+
+/* ===========================
+   CREDIT NOTE MODAL
+   PAYMENT METHOD MODAL
+=========================== */
+
+.credit-note-modal,
+.payment-method-modal {
+  .modal-content {
+    border-radius: 18px;
+    border: none;
+    overflow: hidden;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+  }
+
+  .modal-header {
+    padding: 18px 22px;
+    border-bottom: 1px solid #edf0f5;
+
+    .modal-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1e293b;
+    }
+  }
+
+  .modal-body {
+    padding: 22px;
+  }
+
+  /* ===========================
+      CREDIT NOTE SELECTION
+  ============================ */
+
+  &.credit-note-modal {
+    table {
+      border-collapse: separate;
+      border-spacing: 0 10px;
+
+      thead {
+        display: none;
+      }
+
+      tbody {
+        tr {
+          td {
+            padding: 0;
+            border: none;
+          }
+        }
+      }
+    }
+
+    .credit-note-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      padding: 14px 16px;
+
+      background: #fff;
+
+      border: 1px solid #e2e8f0;
+
+      border-radius: 14px;
+
+      cursor: pointer;
+
+      transition: 0.2s ease;
+
+      &:hover {
+        background: #f8fbff;
+
+        border-color: #93c5fd;
+
+        transform: translateY(-1px);
+      }
+
+      &.selected {
+        background: #eff6ff;
+
+        border-color: #2563eb;
+
+        .credit-note-check {
+          background: #2563eb;
+
+          border-color: #2563eb;
+
+          color: white;
+        }
+
+        .credit-number {
+          color: #1d4ed8;
+        }
+      }
+    }
+
+    .credit-note-check {
+      width: 28px;
+
+      height: 28px;
+
+      border-radius: 50%;
+
+      border: 2px solid #cbd5e1;
+
+      display: flex;
+
+      justify-content: center;
+
+      align-items: center;
+
+      flex-shrink: 0;
+
+      transition: 0.2s;
+
+      i {
+        font-size: 13px;
+
+        font-weight: bold;
+      }
+    }
+
+    .credit-note-info {
+      flex: 1;
+
+      display: flex;
+
+      justify-content: space-between;
+
+      align-items: center;
+
+      margin-left: 14px;
+    }
+
+    .credit-number {
+      font-weight: 700;
+
+      color: #334155;
+    }
+
+    .credit-amount {
+      font-weight: 700;
+
+      color: #16a34a;
+    }
+
+    hr {
+      margin: 22px 0;
+
+      opacity: 0.15;
+    }
+
+    h6 {
+      font-weight: 700;
+
+      margin-bottom: 15px;
+    }
+  }
+
+  /* ===========================
+      PAYMENT METHOD MODAL
+  ============================ */
+
+  &.payment-method-modal {
+    table {
+      margin-bottom: 0;
+
+      thead {
+        background: #f8fafc;
+
+        th {
+          color: #64748b;
+
+          font-size: 0.78rem;
+
+          text-transform: uppercase;
+
+          font-weight: 700;
+
+          padding: 12px;
+
+          border-bottom: 1px solid #e5e7eb;
+        }
+      }
+
+      tbody {
+        td {
+          vertical-align: middle;
+
+          padding: 14px 12px;
+
+          font-weight: 600;
+
+          color: #334155;
+        }
+
+        tr {
+          transition: 0.2s;
+
+          &:hover {
+            background: #f8fbff;
+          }
+        }
+      }
+    }
+
+    .form-select {
+      height: 44px;
+
+      min-width: 190px;
+
+      border-radius: 12px;
+
+      border: 1px solid #d8dee9;
+
+      font-weight: 600;
+
+      cursor: pointer;
+
+      &:focus {
+        border-color: #2563eb;
+
+        box-shadow: 0 0 0 0.18rem rgba(37, 99, 235, 0.15);
+      }
+    }
+  }
+
+  /* ===========================
+      INPUTS
+  ============================ */
+
+  .form-control,
+  .form-select {
+    height: 44px;
+
+    border-radius: 12px;
+
+    border: 1px solid #d8dee9;
+
+    transition: 0.2s;
+
+    &:focus {
+      border-color: #2563eb;
+
+      box-shadow: 0 0 0 0.18rem rgba(37, 99, 235, 0.15);
+    }
+  }
+
+  .form-label {
+    font-weight: 600;
+
+    color: #334155;
+  }
+
+  small.text-muted {
+    display: block;
+
+    margin-top: 6px;
+
+    font-size: 0.8rem;
+  }
+
+  /* ===========================
+      FOOTER
+  ============================ */
+
+  .modal-footer {
+    padding: 16px 22px;
+
+    border-top: 1px solid #edf0f5;
+
+    gap: 10px;
+
+    .btn {
+      min-width: 120px;
+
+      height: 42px;
+
+      border-radius: 12px;
+
+      font-weight: 600;
+
+      transition: 0.2s;
+
+      &:hover {
+        transform: translateY(-2px);
+      }
+    }
+
+    .btn-secondary {
+      background: #fff;
+
+      color: #475569;
+
+      border: 1px solid #cbd5e1;
+
+      &:hover {
+        background: #f8fafc;
+      }
+    }
+
+    .btn-success {
+      background: #16a34a;
+
+      border-color: #16a34a;
+
+      &:hover {
+        background: #15803d;
+      }
+    }
+  }
+
+  /* ===========================
+      MOBILE
+  ============================ */
+
+  @media (max-width: 768px) {
+    .modal-body {
+      padding: 15px;
+    }
+
+    .modal-header {
+      padding: 15px 18px;
+
+      .modal-title {
+        font-size: 1rem;
+      }
+    }
+
+    /* Credit Notes */
+
+    &.credit-note-modal {
+      .credit-note-option {
+        padding: 13px;
+      }
+
+      .credit-note-info {
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 4px;
+      }
+
+      .credit-amount {
+        font-size: 0.9rem;
+      }
+    }
+
+    /* Payment Method */
+
+    &.payment-method-modal {
+      table {
+        thead {
+          display: none;
+        }
+
+        tbody {
+          tr {
+            display: block;
+
+            background: #f8fafc;
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 14px;
+
+            padding: 12px;
+
+            margin-bottom: 12px;
+          }
+
+          td {
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            border: none;
+
+            padding: 8px 4px;
+
+            gap: 10px;
+
+            &:before {
+              font-size: 0.75rem;
+
+              font-weight: 700;
+
+              color: #64748b;
+            }
+
+            &:nth-child(1)::before {
+              content: "Currency";
+            }
+
+            &:nth-child(2)::before {
+              content: "Amount";
+            }
+
+            &:nth-child(3)::before {
+              content: "Method";
+            }
+
+            .form-select {
+              width: 60%;
+
+              min-width: 0;
+
+              height: 42px;
+
+              font-size: 0.85rem;
+            }
+          }
+        }
+      }
+    }
+
+    .modal-footer {
+      flex-direction: column;
+
+      .btn {
+        width: 100%;
+      }
+    }
+  }
+}
+
+/* ==========================================
+   MAIN PAGE
+========================================== */
+.collection-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+
+  h2 {
+    margin: 0;
+    white-space: nowrap;
+  }
+}
+
+.collection-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.selected-counter {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  background: linear-gradient(135deg, #eef4ff, #e0ebff);
+  color: #2563eb;
+
+  padding: 10px 18px;
+  border-radius: 14px;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.12);
+
+  i {
+    width: 28px;
+    height: 28px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #2563eb;
+
+    border-radius: 50%;
+    font-size: 14px;
+  }
+
+  @media (max-width: 768px) {
+    padding: 8px 12px;
+    border-radius: 12px;
+    font-size: 13px;
+
+    i {
+      width: 24px;
+      height: 24px;
+      font-size: 12px;
+    }
+  }
+}
+
+.invoice-search {
+  max-width: 600px;
+
+  .form-control {
+    height: 42px;
+    border-radius: 12px 0 0 12px;
+  }
+
+  .btn {
+    border-radius: 0 12px 12px 0;
+    padding-inline: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .collection-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+
+    h2 {
+      font-size: 1.4rem;
+      text-align: center;
+    }
+  }
+
+  .collection-actions {
+    justify-content: center;
+    width: 100%;
+
+    .selected-counter {
+      width: 100%;
+      justify-content: center;
+    }
+
+    button {
+      flex: 1;
+      min-width: 140px;
+    }
+  }
+
+  .invoice-search {
+    max-width: 100%;
+
+    .form-control {
+      height: 40px;
+      font-size: 14px;
+    }
+
+    .btn {
+      padding-inline: 14px;
+      font-size: 14px;
+    }
+  }
+}
+
+.custom-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 2rem;
+
+  .page-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    background: #fff;
+    color: #555;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    i {
+      font-size: 14px;
+    }
+
+    &:hover:not(:disabled) {
+      color: #0d6efd;
+      border-color: #0d6efd;
+      background: #f8f9fa;
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+
+  .page-indicator {
+    min-width: 120px;
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+
+    span {
+      color: #0d6efd;
+      font-weight: 600;
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .custom-pagination {
+    gap: 6px;
+
+    .page-btn {
+      width: 34px;
+      height: 34px;
+
+      i {
+        font-size: 12px;
+      }
+    }
+
+    .page-indicator {
+      min-width: 90px;
+      font-size: 13px;
+    }
+  }
+}

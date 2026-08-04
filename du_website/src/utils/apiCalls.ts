@@ -950,6 +950,66 @@ const approveOrRejectReturnRequest = async ({
   );
 };
 
+//////
+////////Collection ApiCalls
+//////
+const getPendingOpenInvoices = async (
+  take = 20,
+  skip = 0,
+  search = "",
+): Promise<AxiosResponse> => {
+  return await axios.get(`${privateApi}/collection/get_pending_open_invoices`, {
+    params: {
+      take,
+      skip,
+      search,
+    },
+    withCredentials: true,
+  });
+};
+
+const getCreditNotes = async (): Promise<AxiosResponse> => {
+  return await axios.get(`${privateApi}/collection/get_credit_notes`, {
+    withCredentials: true,
+  });
+};
+
+const fifoPreview = async (data: {
+  payments: {
+    amount: number;
+    currency: string;
+  }[];
+  creditNotes: {
+    open_invoice_id: number;
+    amount?: number;
+  }[];
+}): Promise<AxiosResponse> => {
+  return axios.post(`${privateApi}/collection/fifo_preview`, data, {
+    withCredentials: true,
+  });
+};
+
+const manualPreview = async (data: {
+  invoices: {
+    open_invoice_id: number;
+    payments: { amount: number; currency: string }[];
+  }[];
+  creditNotes: {
+    open_invoice_id: number;
+    amount?: number;
+  }[];
+}): Promise<AxiosResponse> => {
+  return await axios.post(`${privateApi}/collection/manual_preview`, data, {
+    withCredentials: true,
+  });
+};
+
+const getCurrencies = async (): Promise<AxiosResponse> => {
+  return await axios.get(`${privateApi}/collection/currencies`, {
+    withCredentials: true,
+  });
+};
+
 export {
   publicApi,
   privateApi,
@@ -1038,4 +1098,10 @@ export {
   createReturnRequest,
   getReturnRequests,
   approveOrRejectReturnRequest,
+  //Collection
+  getPendingOpenInvoices,
+  getCreditNotes,
+  fifoPreview,
+  manualPreview,
+  getCurrencies,
 };

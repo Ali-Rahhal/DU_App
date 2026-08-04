@@ -26,6 +26,7 @@ const authRoutes = [
   "/return-admin",
   "/products",
   "/category",
+  "/collection",
 ];
 export async function middleware(request: NextRequest) {
   const isServer = typeof window === "undefined";

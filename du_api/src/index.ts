@@ -25,6 +25,7 @@ import expiryDealRoutes from "./routes/private/expiryDeal.routes";
 import fidelityRoutes from "./routes/private/fidelity.routes";
 import aiRoutes from "./routes/private/ai.routes";
 import returnRoutes from "./routes/private/returns.routes";
+import collectionRoutes from "./routes/private/collection.routes";
 
 //@ts-ignore
 BigInt.prototype.toJSON = function () {
@@ -112,6 +113,7 @@ app.route(`${PRIVATE_API}/expiryDeal`, expiryDealRoutes);
 app.route(`${PRIVATE_API}/fidelity`, fidelityRoutes);
 app.route(`${PRIVATE_API}/ai`, aiRoutes);
 app.route(`${PRIVATE_API}/returns`, returnRoutes);
+app.route(`${PRIVATE_API}/collection`, collectionRoutes);
 
 // server ./images folder
 // app.use(

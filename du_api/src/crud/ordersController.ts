@@ -1,12 +1,12 @@
 import { Prisma } from "@prisma/client";
 import { getPrisma } from "../lib/prisma";
 
-const placeOrder = async (userID: number, companyId: string) => {
+const placeOrder = async (userId: number, companyId: string) => {
   const prisma = getPrisma(companyId);
   //1=cash, 2=cards ,3=crypto,
   const userDetail = await prisma.web_accounts.findFirst({
     where: {
-      id: userID,
+      id: userId,
       is_active: true,
     },
   });
@@ -19,7 +19,7 @@ const placeOrder = async (userID: number, companyId: string) => {
   DECLARE @output_err_code INT,
         @output_err_msg NVARCHAR(4000),
         @output_transaction_header_id BIGINT;
-        EXEC dbo.GENERATE_WEB_SALES_INVOICE @account_id = ${userID},                                     -- int
+        EXEC dbo.GENERATE_WEB_SALES_INVOICE @account_id = ${userId},                                     -- int
                                     @payment_type = ${1},                                                -- int
                                     @notes = N'',                                                        -- nvarchar(250)
                                     @output_err_code = @output_err_code OUTPUT,                          -- int

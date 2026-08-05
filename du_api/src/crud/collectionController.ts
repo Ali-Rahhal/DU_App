@@ -38,7 +38,7 @@ const getPendingOpenInvoices = async (
     is_active: true,
 
     invoice_type_id: {
-      in: [7, 30],
+      in: [7],
     },
 
     remaining_amount: {

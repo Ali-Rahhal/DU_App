@@ -220,10 +220,10 @@ const getDashboardData = async (user_id: number, companyId: string) => {
     -- Insert sample/demo data (replace with actual calculations in production)
     INSERT INTO #temptable1
     VALUES (
-        ISNULL('TND' + ' ' + FORMAT(8987, 'N2'), 'N/A'),
-        ISNULL('TND' + ' ' + FORMAT(2034, 'N2'), 'N/A'),
-        ISNULL('TND' + ' ' + FORMAT(20484, 'N2'), 'N/A'),
-        ISNULL('TND' + ' ' + FORMAT(15999, 'N2'), 'N/A')
+        ISNULL('$' + ' ' + FORMAT(3064.45, 'N2'), 'N/A'),
+        ISNULL('$' + ' ' + FORMAT(693.57, 'N2'), 'N/A'),
+        ISNULL('$' + ' ' + FORMAT(6984.77, 'N2'), 'N/A'),
+        ISNULL('$' + ' ' + FORMAT(5455.44, 'N2'), 'N/A')
     )
     
     -- Return the statistics
@@ -309,7 +309,7 @@ const getDashboardData = async (user_id: number, companyId: string) => {
     SELECT TOP 5
         invoice_number = choi.transaction_header_code,  -- Invoice being paid
         due_date = FORMAT(ch.date_added, 'dd/MM/yy'),   -- Payment date
-        amount = 'TND ' + FORMAT(4234, 'N2')        -- Placeholder
+        amount = '$ ' + FORMAT(1443.74, 'N2')        -- Placeholder
     FROM dbo.collection_header AS ch                    -- Collection/Payment header
     JOIN dbo.collection_header_open_invoice AS choi     -- Links payment to invoices
         ON choi.collection_header_id = ch.collection_header_id
@@ -349,7 +349,7 @@ const getDashboardData = async (user_id: number, companyId: string) => {
   // `;
   const openInvoice = await prisma.$queryRaw`
     SELECT TOP 1
-        payment_amount = 'TND ' + FORMAT(4234, 'N2')  ,   -- Placeholder
+        payment_amount = '$ ' + FORMAT(1443.74, 'N2')  ,   -- Placeholder
         paid_for = choi.transaction_header_code,          -- Which invoice was paid
         payment_on = FORMAT(ch.date_added, 'dd MMM yyyy'), -- Payment date
         payment_type = CASE                                -- Payment method details

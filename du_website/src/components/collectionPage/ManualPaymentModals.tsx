@@ -89,6 +89,8 @@ interface Props {
   previewData: PreviewResult | null;
 
   onCheckout: () => void;
+
+  currencyMap: any;
 }
 
 const ManualPaymentModals = ({
@@ -107,6 +109,8 @@ const ManualPaymentModals = ({
   previewData,
 
   onCheckout,
+
+  currencyMap,
 }: Props) => {
   const AVAILABLE_CURRENCIES = [
     {
@@ -146,31 +150,6 @@ const ManualPaymentModals = ({
       );
     }
   }, [showManual, selectedInvoices]);
-
-  const [currencyMap, setCurrencyMap] = useState({});
-
-  useEffect(() => {
-    const loadCurrencies = async () => {
-      const res = await getCurrencies();
-
-      setCurrencyMap(
-        Object.fromEntries(
-          res.data.result.map((x) => [
-            x.currency_code,
-            {
-              symbol: x.symbol,
-              ratio: Number(x.ratio),
-              deadAmount: Number(x.deadAmount),
-              description: x.description,
-              isMain: x.is_main,
-              currency_code: x.currency_code,
-            },
-          ]),
-        ),
-      );
-    };
-    loadCurrencies();
-  }, []);
 
   /*
  Credit Notes
@@ -365,6 +344,10 @@ const ManualPaymentModals = ({
     );
   };
 
+  const canPayAllFull =
+    invoicePayments.length > 0 &&
+    invoicePayments.every((invoice) => invoice.payments.length === 1);
+
   const convertCurrency = (
     amount: number,
     fromCurrency: string,
@@ -381,6 +364,39 @@ const ManualPaymentModals = ({
     const usdAmount = amount / fromRatio;
 
     return usdAmount * toRatio;
+  };
+
+  const handlePayAllFull = () => {
+    setInvoicePayments((prev) =>
+      prev.map((item) => {
+        const invoice = selectedInvoices.find(
+          (x) => x.open_invoice_id === item.open_invoice_id,
+        );
+
+        if (!invoice) return item;
+
+        // Only works when a single payment currency exists
+        if (item.payments.length !== 1) return item;
+
+        const payment = item.payments[0];
+
+        const amount = convertCurrency(
+          Number(invoice.remaining_amount),
+          invoice.currency_code,
+          payment.currency,
+        );
+
+        return {
+          ...item,
+          payments: [
+            {
+              ...payment,
+              amount: amount.toFixed(2),
+            },
+          ],
+        };
+      }),
+    );
   };
 
   const handlePayFull = (invoice: Invoice) => {
@@ -551,6 +567,17 @@ const ManualPaymentModals = ({
         </Modal.Header>
 
         <Modal.Body>
+          <div className="d-flex justify-content-end mb-3">
+            <Button
+              variant="success"
+              size="sm"
+              onClick={handlePayAllFull}
+              disabled={!canPayAllFull}
+            >
+              <i className="ti-check-box me-1" />
+              Pay Full For All
+            </Button>
+          </div>
           {selectedInvoices.map((invoice) => {
             const payments = invoicePayments.find(
               (x) => x.open_invoice_id === invoice.open_invoice_id,

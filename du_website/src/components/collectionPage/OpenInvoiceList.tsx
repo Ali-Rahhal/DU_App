@@ -21,6 +21,7 @@ interface Props {
   selectedInvoices: any[];
   onToggleInvoice: (invoice: OpenInvoice) => void;
   loading?: boolean;
+  currencyMap: any;
 }
 
 const formatDate = (date: string) => new Date(date).toLocaleDateString();
@@ -30,6 +31,7 @@ const OpenInvoiceList = ({
   selectedInvoices,
   onToggleInvoice,
   loading = false,
+  currencyMap,
 }: Props) => {
   if (loading) return <div className="text-center py-5">Loading...</div>;
 

@@ -367,6 +367,9 @@ function Navbar() {
                             </Link>
                           </li>
                           <li>
+                            <Link href="/collection">{"Collection"}</Link>
+                          </li>
+                          <li>
                             <Link
                               href="/"
                               onClick={() => {
@@ -560,6 +563,9 @@ function Navbar() {
                     <Link href="/ai-order-proposal">
                       {t("ai_proposal.title")}
                     </Link>
+                  </li>
+                  <li>
+                    <Link href="/collection">{"Collection"}</Link>
                   </li>
                 </ul>
               </div>

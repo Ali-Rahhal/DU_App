@@ -16,6 +16,7 @@ import {
   getPendingOpenInvoices,
   fifoPreview,
   manualPreview,
+  getCurrencies,
 } from "@/utils/apiCalls";
 
 import Layout from "@/components/Layout/Layout";
@@ -54,6 +55,77 @@ export default function CollectionPage() {
   const [previewData, setPreviewData] = useState<any>(null);
 
   const totalPages = Math.ceil(total / PAGE_SIZE);
+
+  const [summaryCurrency, setSummaryCurrency] = useState<"MOH_USD" | "MOH_LBP">(
+    "MOH_LBP",
+  );
+
+  const [currencyMap, setCurrencyMap] = useState({});
+
+  useEffect(() => {
+    const loadCurrencies = async () => {
+      const res = await getCurrencies();
+
+      setCurrencyMap(
+        Object.fromEntries(
+          res.data.result.map((x) => [
+            x.currency_code,
+            {
+              symbol: x.symbol,
+              ratio: Number(x.ratio),
+              deadAmount: Number(x.deadAmount),
+              description: x.description,
+              isMain: x.is_main,
+              currency_code: x.currency_code,
+            },
+          ]),
+        ),
+      );
+    };
+    loadCurrencies();
+  }, []);
+
+  const convertCurrency = (
+    amount: number,
+    fromCurrency: string,
+    toCurrency: string,
+  ) => {
+    if (
+      fromCurrency === toCurrency ||
+      !currencyMap[fromCurrency] ||
+      !currencyMap[toCurrency]
+    )
+      return amount;
+
+    const fromRatio = Number(currencyMap[fromCurrency].ratio);
+    const toRatio = Number(currencyMap[toCurrency].ratio);
+
+    const usd = amount / fromRatio;
+
+    return usd * toRatio;
+  };
+
+  const summary = selectedInvoices.reduce(
+    (acc, invoice) => {
+      acc.invoice += convertCurrency(
+        Number(invoice.remaining_amount),
+        invoice.currency_code,
+        summaryCurrency,
+      );
+
+      acc.vat += convertCurrency(
+        Number(invoice.vat_remaining_amount),
+        invoice.vat_currency_code,
+        summaryCurrency,
+      );
+
+      return acc;
+    },
+    {
+      invoice: 0,
+      vat: 0,
+    },
+  );
 
   const loadInvoices = useCallback(async () => {
     try {
@@ -104,13 +176,53 @@ export default function CollectionPage() {
           <h2>Pending Open Invoices</h2>
 
           <div className="collection-actions">
-            <div className="selected-counter">
-              <i className="ti-check-box" />
+            <div className="selected-summary">
+              <div className="summary-header">
+                <div className="selected-counter">
+                  <i className="ti-check-box" />
 
-              <span>
-                {selectedInvoices.length} invoice
-                {selectedInvoices.length !== 1 && "s"} selected
-              </span>
+                  <span>
+                    {selectedInvoices.length} invoice
+                    {selectedInvoices.length !== 1 && "s"} selected
+                  </span>
+                </div>
+
+                <Form.Select
+                  size="sm"
+                  className="summary-currency"
+                  value={summaryCurrency}
+                  onChange={(e) =>
+                    setSummaryCurrency(e.target.value as "MOH_USD" | "MOH_LBP")
+                  }
+                >
+                  <option value="MOH_LBP">LBP</option>
+                  <option value="MOH_USD">USD</option>
+                </Form.Select>
+              </div>
+
+              <div className="summary-cards">
+                <div className="summary-card">
+                  <small>Invoice Total</small>
+
+                  <h5>
+                    {summary.invoice.toLocaleString(undefined, {
+                      maximumFractionDigits: 2,
+                    })}{" "}
+                    {currencyMap[summaryCurrency]?.symbol}
+                  </h5>
+                </div>
+
+                <div className="summary-card">
+                  <small>VAT Total</small>
+
+                  <h5>
+                    {summary.vat.toLocaleString(undefined, {
+                      maximumFractionDigits: 2,
+                    })}{" "}
+                    {currencyMap[summaryCurrency]?.symbol}
+                  </h5>
+                </div>
+              </div>
             </div>
 
             <Button onClick={() => setShowAutomatic(true)}>
@@ -157,6 +269,7 @@ export default function CollectionPage() {
           selectedInvoices={selectedInvoices}
           onToggleInvoice={toggleInvoice}
           loading={loading}
+          currencyMap={currencyMap}
         />
 
         <div className="custom-pagination">
@@ -248,6 +361,7 @@ export default function CollectionPage() {
           onCheckout={() => {
             // TODO checkout
           }}
+          currencyMap={currencyMap}
         />
       </div>
     </Layout>

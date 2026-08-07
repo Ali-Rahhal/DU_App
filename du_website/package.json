@@ -1,6 +1,6 @@
 {
   "name": "du_website",
-  "version": "05.08.2026-1.1.6",
+  "version": "07.08.2026-1.1.7",
   "private": true,
   "scripts": {
     "dev": "next dev -p 5006",
@@ -31,6 +31,7 @@
     "react-apexcharts": "^1.6.0",
     "react-barcode-scanner": "^2.1.0",
     "react-bootstrap": "^2.5.0",
+    "react-country-flag": "^3.1.0",
     "react-dom": "18.2.0",
     "react-redux": "^8.0.5",
     "react-select": "^5.9.0",

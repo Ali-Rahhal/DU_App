@@ -157,11 +157,12 @@
   "go_back": "Go Back",
   "place_holder": "Place Holder",
   "shop_by_category": "Shop by Category",
-  "select_company": "Select Company",
   "select_company_description": "Choose the company you want to access.",
-  "change_company": "Change Company",
+  "welcome_to": "Welcome to",
+  "dont_have_account": "Don't have an account yet?",
   "loading_your_account": "Loading your account...",
   "loading": "Loading...",
+  "browse_products": "Browse Products",
 
   "my_account": {
     "title": "Account Details",

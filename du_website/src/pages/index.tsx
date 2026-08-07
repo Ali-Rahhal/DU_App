@@ -23,6 +23,8 @@ import Layout from "@/components/Layout/Layout";
 import { getProducts } from "@/utils/apiCalls";
 import HomePageSlider from "@/components/HomePageSlider";
 import { useCompanyAssets } from "@/hooks/useCompanyAssets";
+import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 const getAllProducts = async (onSale, cookie) => {
   return await getProducts(
@@ -52,6 +54,7 @@ export async function getServerSideProps(context: any) {
 
 const HomePage = ({ products }) => {
   const { companyHydrated, companyId } = useCompanyAssets();
+  const t = useTranslations();
   return (
     <Layout>
       <HomePageBannerSlider
@@ -59,6 +62,17 @@ const HomePage = ({ products }) => {
           companyHydrated ? homeSlider[companyId] : getDefaultHomeSlider()
         }
       />
+      <div className="home-action-buttons">
+        <Link href="/category" className="home-action-btn home-action-primary">
+          <i className="bi bi-grid"></i>
+          <span>{t("browse_products")}</span>
+        </Link>
+
+        <Link href="/orders" className="home-action-btn home-action-secondary">
+          <i className="bi bi-bag-check"></i>
+          <span>{t("my_orders")}</span>
+        </Link>
+      </div>
       <HomePageCategorySlider
         categorys={
           companyHydrated
@@ -70,7 +84,7 @@ const HomePage = ({ products }) => {
       <HomePageOffers
         offers={companyHydrated ? homeOffer[companyId] : getDefaultHomeOffer()}
       />
-      <HomePageDealsOfTheDay deals={products} />
+      {/* <HomePageDealsOfTheDay deals={products} /> */}
       <HomePagePopularCategorySlider
         categorys={
           companyHydrated
@@ -83,7 +97,7 @@ const HomePage = ({ products }) => {
           companyHydrated ? homeSlider2[companyId] : getDefaultHomeSlider2()
         }
       />
-      <HomePageDealsSlider deals={products} />
+      {/* <HomePageDealsSlider deals={products} /> */}
     </Layout>
   );
 };

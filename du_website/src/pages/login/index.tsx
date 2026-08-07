@@ -18,8 +18,6 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
-
-  // First screen: company selection
   const [step, setStep] = useState<"company" | "login">("company");
 
   const { login } = useAuthStore();
@@ -43,26 +41,17 @@ export default function LoginPage() {
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
-
     setLoading(true);
 
     try {
-      await login({
-        code,
-        password,
-      });
-
+      await login({ code, password });
       setRedirecting(true);
-
       toast.success("Logged in Successfully", {
         position: "bottom-center",
       });
-
       setCode("");
       setPassword("");
-
       await refreshCart();
-
       router.push("/");
     } catch (error: any) {
       toast.error(error?.response?.data?.message ?? "Login failed", {
@@ -75,9 +64,7 @@ export default function LoginPage() {
 
   function selectCompany(company: CompanyId) {
     setCompany(company);
-
     document.cookie = `companyId=${company}; path=/; max-age=31536000; SameSite=Lax`;
-
     setStep("login");
   }
 
@@ -86,22 +73,25 @@ export default function LoginPage() {
   return (
     <div className="login-page">
       <div className="login-card">
+        {/* Language Selector */}
         <div className="login-language">
           <ChangeLangDropdown />
         </div>
+
+        {/* Loading Overlay */}
         {redirecting && (
           <div className="login-overlay">
-            <Spinner animation="border" />
+            <Spinner animation="border" variant="primary" />
             <span>{t("loading_your_account")}</span>
           </div>
         )}
 
+        {/* Company Selection Step */}
         {step === "company" ? (
           <>
-            <div className="text-center mb-5">
-              <h2>{t("select_company")}</h2>
-              <p className="text-muted">{t("select_company_description")}</p>
-            </div>
+            <p className="text-center text-muted select-company-text">
+              {t("select_company_description")}
+            </p>
 
             <div className="company-grid">
               {Object.values(Companies)
@@ -109,7 +99,7 @@ export default function LoginPage() {
                 .map((c) => (
                   <button
                     key={c.id}
-                    className="company-card"
+                    className={`company-card ${c.id === companyId ? "active" : ""}`}
                     onClick={() => selectCompany(c.id as CompanyId)}
                   >
                     <img
@@ -117,37 +107,31 @@ export default function LoginPage() {
                       alt={c.name}
                       className="company-card-logo"
                     />
-
                     <h4>{c.name}</h4>
-
-                    {c.abreviation && (
-                      <small className="text-muted">{c.abreviation}</small>
-                    )}
                   </button>
                 ))}
             </div>
           </>
         ) : (
+          /* Login Step */
           <>
-            <div className="text-center mb-4">
-              <img
-                src={company.logo}
-                alt={company.name}
-                className="company-logo"
-              />
-
-              <h3 className="mt-3">{company.name}</h3>
-
-              <p className="text-muted">{t("login")}</p>
-
+            <div className="login-header">
               <button
                 type="button"
-                className="change-company-btn"
+                className="login-back-btn"
                 disabled={loading || redirecting}
                 onClick={() => setStep("company")}
               >
-                <i className="bi bi-arrow-left"></i> {t("change_company")}
+                <i className="ti ti-arrow-left"></i>
               </button>
+              <div className="login-header-content">
+                <h1>{t("welcome_to")}</h1>
+                <img
+                  src={company.logo}
+                  alt={company.name}
+                  className="login-company-logo"
+                />
+              </div>
             </div>
 
             <form onSubmit={handleLogin}>
@@ -190,6 +174,22 @@ export default function LoginPage() {
                 )}
               </button>
             </form>
+
+            <div className="register-section">
+              <span className="register-text">{t("dont_have_account")}</span>
+              <button
+                type="button"
+                className="register-btn"
+                onClick={() => {
+                  // Register functionality placeholder
+                  toast.info("Registration coming soon!", {
+                    position: "bottom-center",
+                  });
+                }}
+              >
+                {t("register")}
+              </button>
+            </div>
           </>
         )}
       </div>

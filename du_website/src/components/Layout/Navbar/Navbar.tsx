@@ -305,36 +305,14 @@ function Navbar() {
                           <li>
                             <Link href="/cart">{t("cart")}</Link>
                           </li>
-                          {/* <li>
-                            <Link href="/change-password">Change Password</Link>
-                          </li> */}
                           <li>
                             <Link href="/promotions">{t("promotion")}</Link>
                           </li>
-                          <li>
-                            <Link href="/orders">{t("my_orders")}</Link>
-                          </li>
-                          <li>
-                            <Link href="/wishlist">{t("wishlist.title")}</Link>
-                          </li>{" "}
                           {/* <li>
                             <Link href="/survey">{t("survey")}</Link>
                           </li> */}
                           <li>
                             <Link href="/complaint">{t("complaint")}</Link>
-                          </li>
-                          <li>
-                            <Link href="/open-invoice">
-                              {t("open_invoices.title")}
-                            </Link>
-                          </li>
-                          <li>
-                            <Link href="/sales-invoice">
-                              {t("sales_invoice.title")}
-                            </Link>
-                          </li>
-                          <li>
-                            <Link href="/returns">{t("returns.title")}</Link>
                           </li>
                           {checkRole(ROLES.Admin) ? (
                             <>
@@ -346,11 +324,6 @@ function Navbar() {
                               <li>
                                 <Link href="/expiry-deal">
                                   {t("expiry_deal.title")}
-                                </Link>
-                              </li>
-                              <li>
-                                <Link href="/return-admin">
-                                  {t("return_admin.title")}
                                 </Link>
                               </li>
                             </>
@@ -509,30 +482,13 @@ function Navbar() {
                     <Link href="/promotions">{t("promotions")}</Link>
                   </li>
                   <li>
-                    <Link href="/orders">{t("my_orders")}</Link>
-                  </li>
-                  <li>
                     <Link href="/promotions">{t("promotion")}</Link>
-                  </li>
-                  <li>
-                    <Link href="/wishlist">{t("wishlist.title")}</Link>
                   </li>
                   {/* <li>
                     <Link href="/survey">{t("survey")}</Link>
                   </li> */}
                   <li>
                     <Link href="/complaint">{t("complaint")}</Link>
-                  </li>
-                  <li>
-                    <Link href="/open-invoice">{t("open_invoices.title")}</Link>
-                  </li>
-                  <li>
-                    <Link href="/sales-invoice">
-                      {t("sales_invoice.title")}
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/returns">{t("returns.title")}</Link>
                   </li>
                   {checkRole(ROLES.Admin) ? (
                     <>
@@ -544,11 +500,6 @@ function Navbar() {
                       <li>
                         <Link href="/expiry-deal">
                           {t("expiry_deal.title")}
-                        </Link>
-                      </li>
-                      <li>
-                        <Link href="/return-admin">
-                          {t("return_admin.title")}
                         </Link>
                       </li>
                     </>
@@ -598,28 +549,26 @@ function Navbar() {
               }}
             >
               {!isAuth ? (
-                <>
+                <div className="d-flex align-items-center gap-2">
                   <Link
                     href="#"
                     onClick={() => handleModalShow("login")}
-                    className="btn btn-soft-primary btn-md mr-2"
+                    className="btn btn-soft-primary btn-md px-4 py-2 fw-medium rounded-2"
                   >
                     {t("login")}
                   </Link>
                   {/* <Link
                     href="#"
                     onClick={() => handleModalShow("register")}
-                    className="btn btn-primary btn-md"
+                    className="btn btn-primary btn-md px-4 py-2 fw-medium rounded-2"
                   >
                     {t("register")}
                   </Link> */}
-                </>
+                </div>
               ) : (
                 <Button
-                  variant="link"
-                  style={{
-                    width: "100%",
-                  }}
+                  variant="outline-danger"
+                  className="w-100 py-2 fw-medium rounded-2"
                   onClick={() => {
                     logout().then(() => {
                       window.location.href = "/login";

@@ -115,7 +115,6 @@ function AccountNav() {
                   >
                     <Link className="nav-link" href="/return-admin">
                       <i className="fa fa-undo"></i>
-                      {/* Return Admin */}
                       {t("return_admin.title")}
                     </Link>
                   </li>
@@ -149,7 +148,6 @@ function AccountNav() {
               >
                 <Link className="nav-link" href="/open-invoice">
                   <i className="fa fa-university"></i>
-                  {/* Open Invoices */}
                   {t("open_invoices.title")}
                 </Link>
               </li>
@@ -160,7 +158,6 @@ function AccountNav() {
               >
                 <Link className="nav-link" href="/sales-invoice">
                   <i className="fa fa-money "></i>
-                  {/* Sales Invoices */}
                   {t("sales_invoice.title")}
                 </Link>
               </li>
@@ -171,23 +168,11 @@ function AccountNav() {
               >
                 <Link className="nav-link" href="/returns">
                   <i className="fa fa-exchange "></i>
-                  {/* Returns */}
                   {t("returns.title")}
                 </Link>
               </li>
-              {/* {checkPermission(ALL_PERMISSIONS.COMPLAINT) ? (
-                <li
-                  className={
-                    "nav-item " + (active === "my-complaints" ? " active" : "")
-                  }
-                >
-                  <Link className="nav-link" href="my-complaints">
-                    <i className="fa fa-exclamation-triangle"></i>
 
-                    {t("my_complaints")}
-                  </Link>
-                </li>
-              ) : null} */}
+              {/* Old features */}
               {/* {type !== 2 ? (
                 <li
                   className={
@@ -198,6 +183,19 @@ function AccountNav() {
                     <i className="fa fa-building" aria-hidden="true"></i>
 
                     {t("child_accounts")}
+                  </Link>
+                </li>
+              ) : null} */}
+              {/* {checkPermission(ALL_PERMISSIONS.COMPLAINT) ? (
+                <li
+                  className={
+                    "nav-item " + (active === "my-complaints" ? " active" : "")
+                  }
+                >
+                  <Link className="nav-link" href="my-complaints">
+                    <i className="fa fa-exclamation-triangle"></i>
+
+                    {t("my_complaints")}
                   </Link>
                 </li>
               ) : null} */}

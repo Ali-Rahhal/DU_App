@@ -403,7 +403,6 @@ export const getItemStock = async (
     WHERE
       item_code = ${itemCode}
       AND is_active = 1
-      AND quantity > 0
       AND expiry_date IS NOT NULL
     ORDER BY expiry_date ASC
   `;
@@ -456,7 +455,6 @@ export const getItemStock = async (
     WHERE
       item_code = ${itemCode}
       AND is_active = 1
-      AND quantity > 0
   `;
 
   if (warehouseStock.length > 0) {
@@ -505,7 +503,6 @@ export const getExpiryItemStock = async (
     WHERE
       item_code = ${itemCode}
       AND is_active = 1
-      AND quantity > 0
       AND expiry_date IS NOT NULL
       AND DATEDIFF(
         MONTH,

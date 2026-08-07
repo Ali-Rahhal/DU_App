@@ -104,7 +104,7 @@ const index = () => {
                   <small className="text-muted">{code}</small>
                 </div>
               </div>
-              <div className="row no-gutters align-items-center">
+              {/* <div className="row no-gutters align-items-center">
                 <div className="col-auto">
                   <div
                     style={{
@@ -146,7 +146,7 @@ const index = () => {
                     </button>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
@@ -379,6 +379,110 @@ const index = () => {
             </div>
           </section>
         </div>
+        <div className="grid grid_3">
+          <div className="detail_card">
+            <p
+              style={{
+                fontSize: "1.2rem",
+                fontWeight: "bold",
+                textTransform: "capitalize",
+              }}
+            >
+              {/* Last Collection Details */}
+              {t("last_collection_details")}
+            </p>
+            <div className="card">
+              <div>
+                <h5>{dashboardData?.openInvoice?.payment_amount || "N/A"}</h5>
+                <p>
+                  {/* Paid For  */}
+                  {t("paid_for")}{" "}
+                  {dashboardData?.openInvoice?.paid_for || "N/A"}
+                </p>
+                <div className="type">
+                  <i className="ti-receipt"></i>
+                  <p>
+                    {/* Payment Method */}
+                    {t("payment_method")}
+                  </p>
+                  <p
+                    style={{
+                      color: "#2b8a3e",
+                    }}
+                  >
+                    {dashboardData?.openInvoice?.payment_type || "N/A"}
+                  </p>
+                </div>
+              </div>
+              <div className="date">
+                <h6>
+                  {/* Payment On */}
+                  {t("payment_on")}
+                </h6>
+                <p>{dashboardData?.openInvoice?.payment_on || "N/A"}</p>
+              </div>
+            </div>
+          </div>
+          <div className="detail_card">
+            <p
+              style={{
+                fontSize: "1.2rem",
+                fontWeight: "bold",
+                textTransform: "capitalize",
+              }}
+            >
+              {/* Last Order Details */}
+              {t("last_order_details")}
+            </p>
+            <div className="card card_2">
+              <div>
+                <h5>
+                  {dashboardData?.transaction_header?.order_amount ||
+                    "N/A"}{" "}
+                </h5>
+                <p>
+                  {/* Last Order */}
+                  {t("last_order")}{" "}
+                  {dashboardData?.transaction_header?.order_code || "N/A"}
+                </p>
+                <div className="type">
+                  <i
+                    className="ti-receipt"
+                    style={{
+                      color: "#2b8a3e",
+                    }}
+                  ></i>
+                  <p>
+                    {/* Placed On */}
+                    {t("placed_on")}
+                  </p>
+                  <p
+                    style={{
+                      color: "#2b8a3e",
+                    }}
+                  >
+                    {dashboardData?.transaction_header?.placed_on || "N/A"}
+                  </p>
+                </div>
+              </div>
+              <div className="date">
+                <h6>
+                  {/* Next Planned Visit */}
+                  {t("next_planned_visit")}
+                </h6>
+                <p>
+                  {dashboardData?.transaction_header?.next_planned_visit ||
+                    "N/A"}
+                </p>
+                <h6>
+                  {/* Sales Rep */}
+                  {t("sales_rep")}
+                </h6>
+                <p>{dashboardData?.transaction_header?.sales_rep || "N/A"}</p>
+              </div>
+            </div>
+          </div>
+        </div>
         <div className="grid grid_2">
           <div className="table_cont">
             <div className="table_header">
@@ -590,110 +694,6 @@ const index = () => {
                 ))}
               </tbody>
             </Table>
-          </div>
-        </div>
-        <div className="grid grid_3">
-          <div className="detail_card">
-            <p
-              style={{
-                fontSize: "1.2rem",
-                fontWeight: "bold",
-                textTransform: "capitalize",
-              }}
-            >
-              {/* Last Collection Details */}
-              {t("last_collection_details")}
-            </p>
-            <div className="card">
-              <div>
-                <h5>{dashboardData?.openInvoice?.payment_amount || "N/A"}</h5>
-                <p>
-                  {/* Paid For  */}
-                  {t("paid_for")}{" "}
-                  {dashboardData?.openInvoice?.paid_for || "N/A"}
-                </p>
-                <div className="type">
-                  <i className="ti-receipt"></i>
-                  <p>
-                    {/* Payment Method */}
-                    {t("payment_method")}
-                  </p>
-                  <p
-                    style={{
-                      color: "#2b8a3e",
-                    }}
-                  >
-                    {dashboardData?.openInvoice?.payment_type || "N/A"}
-                  </p>
-                </div>
-              </div>
-              <div className="date">
-                <h6>
-                  {/* Payment On */}
-                  {t("payment_on")}
-                </h6>
-                <p>{dashboardData?.openInvoice?.payment_on || "N/A"}</p>
-              </div>
-            </div>
-          </div>
-          <div className="detail_card">
-            <p
-              style={{
-                fontSize: "1.2rem",
-                fontWeight: "bold",
-                textTransform: "capitalize",
-              }}
-            >
-              {/* Last Order Details */}
-              {t("last_order_details")}
-            </p>
-            <div className="card card_2">
-              <div>
-                <h5>
-                  {dashboardData?.transaction_header?.order_amount ||
-                    "N/A"}{" "}
-                </h5>
-                <p>
-                  {/* Last Order */}
-                  {t("last_order")}{" "}
-                  {dashboardData?.transaction_header?.order_code || "N/A"}
-                </p>
-                <div className="type">
-                  <i
-                    className="ti-receipt"
-                    style={{
-                      color: "#2b8a3e",
-                    }}
-                  ></i>
-                  <p>
-                    {/* Placed On */}
-                    {t("placed_on")}
-                  </p>
-                  <p
-                    style={{
-                      color: "#2b8a3e",
-                    }}
-                  >
-                    {dashboardData?.transaction_header?.placed_on || "N/A"}
-                  </p>
-                </div>
-              </div>
-              <div className="date">
-                <h6>
-                  {/* Next Planned Visit */}
-                  {t("next_planned_visit")}
-                </h6>
-                <p>
-                  {dashboardData?.transaction_header?.next_planned_visit ||
-                    "N/A"}
-                </p>
-                <h6>
-                  {/* Sales Rep */}
-                  {t("sales_rep")}
-                </h6>
-                <p>{dashboardData?.transaction_header?.sales_rep || "N/A"}</p>
-              </div>
-            </div>
           </div>
         </div>
         <section className="grid grid_2">

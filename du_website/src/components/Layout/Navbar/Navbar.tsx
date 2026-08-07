@@ -308,9 +308,9 @@ function Navbar() {
                           <li>
                             <Link href="/promotions">{t("promotion")}</Link>
                           </li>
-                          {/* <li>
+                          <li>
                             <Link href="/survey">{t("survey")}</Link>
-                          </li> */}
+                          </li>
                           <li>
                             <Link href="/complaint">{t("complaint")}</Link>
                           </li>
@@ -479,14 +479,11 @@ function Navbar() {
                     <Link href="/cart">{t("cart")}</Link>
                   </li>
                   <li>
-                    <Link href="/promotions">{t("promotions")}</Link>
-                  </li>
-                  <li>
                     <Link href="/promotions">{t("promotion")}</Link>
                   </li>
-                  {/* <li>
+                  <li>
                     <Link href="/survey">{t("survey")}</Link>
-                  </li> */}
+                  </li>
                   <li>
                     <Link href="/complaint">{t("complaint")}</Link>
                   </li>

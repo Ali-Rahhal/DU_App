@@ -38,7 +38,22 @@ router.post(`/place_order`, async (c) => {
       result: result,
     });
   } catch (e) {
-    return c.json({ message: e.message, result: null }, 400);
+    let message = e.message || "Something went wrong";
+
+    // Extract SQL Server error message
+    const match = message.match(/Message:\s*(.*)/);
+
+    if (match) {
+      message = match[1];
+    }
+
+    return c.json(
+      {
+        message,
+        result: null,
+      },
+      400,
+    );
   }
 });
 

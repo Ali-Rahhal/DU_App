@@ -161,7 +161,7 @@
 //                 fontWeight: "bold",
 //               }}
 //             >
-//               {t("edit_permissions")}
+//               {t("child_accounts.edit_permissions")}
 //             </Modal.Title>
 //             <button
 //               className="close"
@@ -281,8 +281,8 @@
 //             <Modal.Title>
 //               {/* Request a Visit */}
 //               {openAddChildModal.isEdit
-//                 ? t("edit_child_account")
-//                 : t("add_child_account")}
+//                 ? t("child_accounts.edit_child_account")
+//                 : t("child_accounts.add_child_account")}
 //             </Modal.Title>
 //             <button
 //               className="close"
@@ -370,13 +370,13 @@
 //           >
 //             <Modal.Body>
 //               <div className="child_form">
-//                 <label htmlFor="first_name">{t("first_name")}</label>
+//                 <label htmlFor="first_name">{t("child_accounts.first_name")}</label>
 //                 <input
 //                   id="first_name"
-//                   name={t("first_name")}
+//                   name={t("child_accounts.first_name")}
 //                   required
 //                   type="text"
-//                   placeholder={t("first_name")}
+//                   placeholder={t("child_accounts.first_name")}
 //                   className="form-control input-lg rounded"
 //                   value={selectedChild.first_name}
 //                   onChange={(e) => {
@@ -386,13 +386,13 @@
 //                     });
 //                   }}
 //                 />
-//                 <label htmlFor="last_name">{t("last_name")}</label>
+//                 <label htmlFor="last_name">{t("child_accounts.last_name")}</label>
 //                 <input
 //                   id="last_name"
-//                   name={t("last_name")}
+//                   name={t("child_accounts.last_name")}
 //                   required
 //                   type="text"
-//                   placeholder={t("last_name")}
+//                   placeholder={t("child_accounts.last_name")}
 //                   className="form-control input-lg rounded"
 //                   value={selectedChild.last_name}
 //                   autoComplete="off"
@@ -403,12 +403,12 @@
 //                     });
 //                   }}
 //                 />
-//                 <label htmlFor="phone_number">{t("phone_number")}</label>
+//                 <label htmlFor="phone_number">{t("child_accounts.phone_number")}</label>
 //                 <input
 //                   id="phone_number"
-//                   name={t("phone_number")}
+//                   name={t("child_accounts.phone_number")}
 //                   type="text"
-//                   placeholder={t("phone_number")}
+//                   placeholder={t("child_accounts.phone_number")}
 //                   className="form-control input-lg rounded"
 //                   value={selectedChild.phone_number}
 //                   onChange={(e) => {
@@ -418,13 +418,13 @@
 //                     });
 //                   }}
 //                 />
-//                 <label htmlFor="password">{t("password")}</label>
+//                 <label htmlFor="password">{t("child_accounts.password")}</label>
 //                 <input
 //                   id="password"
-//                   name={t("password")}
+//                   name={t("child_accounts.password")}
 //                   required
 //                   type="password"
-//                   placeholder={t("password")}
+//                   placeholder={t("child_accounts.password")}
 //                   className="form-control input-lg rounded"
 //                   value={selectedChild.password}
 //                   autoComplete="new-password"
@@ -436,14 +436,14 @@
 //                   }}
 //                 />
 //                 <label htmlFor="confirm_password">
-//                   {t("confirm_password")}
+//                   {t("child_accounts.confirm_password")}
 //                 </label>
 //                 <input
 //                   id="confirm_password"
-//                   name={t("confirm_password")}
+//                   name={t("child_accounts.confirm_password")}
 //                   required
 //                   type="password"
-//                   placeholder={t("confirm_password")}
+//                   placeholder={t("child_accounts.confirm_password")}
 //                   className="form-control input-lg rounded"
 //                   value={selectedChild.confirm_password}
 //                   onChange={(e) => {
@@ -458,14 +458,14 @@
 //             <Modal.Footer>
 //               <button className="btn btn-primary" type="submit">
 //                 {/* Request Visit */}
-//                 {t("submit")}
+//                 {t("child_accounts.submit")}
 //               </button>
 //             </Modal.Footer>
 //           </form>
 //         </Modal>
 //         <AccountLayout
-//           title={t("child_accounts")}
-//           subTitle={t("you_have_full_control_to_manage_your_own_account")}
+//           title={t("child_accounts.child_accounts")}
+//           subTitle={t("child_accounts.you_have_full_control_to_manage_your_own_account")}
 //         >
 //           <div
 //             style={{
@@ -554,13 +554,13 @@
 //                   }}
 //                 >
 //                   <tr>
-//                     <th>{t("usercode")}</th>
-//                     <th>{t("firstname")}</th>
-//                     <th>{t("lastname")}</th>
-//                     <th>{t("created")}</th>
-//                     <th>{t("status")}</th>
+//                     <th>{t("child_accounts.usercode")}</th>
+//                     <th>{t("child_accounts.firstname")}</th>
+//                     <th>{t("child_accounts.lastname")}</th>
+//                     <th>{t("child_accounts.created")}</th>
+//                     <th>{t("child_accounts.status")}</th>
 
-//                     <th>{t("actions")}</th>
+//                     <th>{t("child_accounts.actions")}</th>
 //                   </tr>
 //                 </thead>
 //                 <tbody>
@@ -593,7 +593,7 @@
 //                               : "bg-soft-success")
 //                           }
 //                         >
-//                           {child.is_blocked ? t("disabled") : t("active")}
+//                           {child.is_blocked ? t("child_accounts.disabled") : t("child_accounts.active")}
 //                         </span>
 //                       </td>
 //                       <td className="py-3">

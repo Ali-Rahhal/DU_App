@@ -76,6 +76,19 @@ const logout = async () => {
   return await axios.post(publicApi + "/logout", {}, { withCredentials: true });
 };
 
+const register = async (data: {
+  client_code: string;
+  moh_number: string;
+  password: string;
+  phone_number: string;
+  email: string;
+  description: string;
+}) => {
+  return await axios.post(publicApi + "/register", data, {
+    withCredentials: true,
+  });
+};
+
 // const register = async ({
 //   email,
 //   password,
@@ -1016,6 +1029,7 @@ export {
   //Auth
   login,
   logout,
+  register,
   forgotPassword,
   validateResetCode,
   changePassword,

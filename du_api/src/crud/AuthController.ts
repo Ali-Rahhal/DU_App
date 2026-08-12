@@ -6,7 +6,6 @@ import { transporter } from "../lib/utils";
 import * as crypto from "crypto";
 import { serialize } from "hono/utils/cookie";
 import { ROLES } from "../lib/constants";
-// import { serialize } from "cookie";
 // const register = async ({
 //   email,
 //   password,
@@ -107,6 +106,141 @@ import { ROLES } from "../lib/constants";
 
 //   return w;
 // };
+
+const register = async (
+  companyId: string,
+  data: {
+    client_code: string;
+    moh_number: string;
+    password: string;
+    phone_number: string;
+    email: string;
+    description: string;
+  },
+) => {
+  const prisma = getPrisma(companyId);
+
+  const {
+    client_code,
+    moh_number,
+    password,
+    phone_number,
+    email,
+    description,
+  } = data;
+
+  var sha256 = createHash("sha256");
+  sha256.update(password, "utf8"); //utf8 here
+  var encryptedPass = sha256.digest("base64");
+
+  if (!client_code) {
+    throw new Error("Client code is required");
+  }
+
+  // Check the client from the view
+  const client = await prisma.$queryRaw<
+    {
+      Code: string;
+      status_id: number | null;
+      Status: string;
+      MOH: string;
+    }[]
+  >`
+    SELECT
+      Code,
+      status_id,
+      Status,
+      MOH
+    FROM dbo.v_clients
+    WHERE Code = ${client_code}
+  `;
+
+  if (!client.length) {
+    throw new Error("Account not found");
+  }
+
+  const clientData = client[0];
+
+  /*
+    Statuses from v_clients:
+
+    1  Active
+    2  Blocked
+    3  Stopped
+    4  Reported
+    5  Accepted
+    6  Rejeted
+    7  Waiting Approval
+    ...
+  */
+
+  // Rejected or N/A
+  if (clientData.status_id === 6 || clientData.Status === "N/A") {
+    if (clientData.MOH !== moh_number) {
+      throw new Error("MOH number does not match");
+    }
+    await prisma.$transaction(async (tx) => {
+      // Check if a pending registration already exists
+      const existingPending = await tx.client_pending.findUnique({
+        where: {
+          client_code,
+        },
+      });
+
+      if (existingPending) {
+        await tx.client_pending.update({
+          where: {
+            client_code,
+          },
+          data: {
+            moh_number: moh_number || null,
+            password: encryptedPass,
+            phone_number: phone_number || null,
+            email: email || null,
+            description: description || null,
+            last_edited: new Date(),
+            is_active: true,
+          },
+        });
+      } else {
+        await tx.client_pending.create({
+          data: {
+            client_code,
+            moh_number: moh_number || null,
+            password: encryptedPass,
+            phone_number: phone_number || null,
+            email: email || null,
+            description: description || null,
+            is_active: true,
+          },
+        });
+      }
+
+      // Move client to Waiting Approval
+      await tx.client.update({
+        where: {
+          client_code,
+        },
+        data: {
+          status_id: 7,
+        },
+      });
+    });
+
+    return {
+      message: "Registration request sent successfully",
+      client_code,
+    };
+  }
+
+  // Already waiting for approval
+  if (clientData.status_id === 7) {
+    throw new Error("Can't send more than 1 registry requests at a time");
+  }
+
+  // Any other status
+  throw new Error("This account is already registered");
+};
 
 const login = async (
   {
@@ -757,7 +891,7 @@ const changePassword = async (
   return result;
 };
 export {
-  // register,
+  register,
   login,
   // sendVerify,
   // verifyEmail,

@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-const unauthRoutes = ["/login"];
+const unauthRoutes = ["/login", "/register"];
 const authRoutes = [
   "/",
   "/account",

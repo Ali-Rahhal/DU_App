@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { login } from "../../crud/AuthController";
+import { login, register } from "../../crud/AuthController";
 import { getUserId } from "../../lib/utils";
 import { serialize } from "hono/utils/cookie";
 const router = new Hono();
@@ -49,43 +49,65 @@ router.post(`/logout`, async (c) => {
   }
 });
 
-// router.post(`/register`, async (c) => {
-//   try {
-//     const body = await c.req.json();
+router.post("/register", async (c) => {
+  try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
 
-//     const email = body["email"];
-//     const password = body["password"];
-//     const first_name = body["first_name"];
-//     const last_name = body["last_name"];
-//     const phone_number = body["phone_number"];
+    const body = await c.req.json();
 
-//     if (!email) {
-//       throw new Error("Email not provided");
-//     }
-//     if (!password) {
-//       throw new Error("Password not provided");
-//     }
-//     if (!first_name) {
-//       throw new Error("First name not provided");
-//     }
-//     if (!last_name) {
-//       throw new Error("Last name not provided");
-//     }
-//     // if (!phone_number) {
-//     //   throw new Error("Phone number not provided");
-//     // }
-//     const result = await register({
-//       email,
-//       password,
-//       first_name,
-//       last_name,
-//       phone_number,
-//     });
-//     return c.json({ message: "Creation success", result: result });
-//   } catch (e) {
-//     return c.json({ message: e.message, result: null }, 400);
-//   }
-// });
+    const {
+      client_code,
+      moh_number,
+      password,
+      phone_number,
+      email,
+      description,
+    } = body;
+
+    if (!client_code) {
+      throw new Error("Client code not provided");
+    }
+    if (!moh_number) {
+      throw new Error("MOH number not provided");
+    }
+    if (!password) {
+      throw new Error("Password not provided");
+    }
+    if (!phone_number) {
+      throw new Error("Phone number not provided");
+    }
+    if (!email) {
+      throw new Error("Email not provided");
+    }
+    if (!description) {
+      throw new Error("Name not provided");
+    }
+
+    const result = await register(companyId, {
+      client_code,
+      moh_number,
+      password,
+      phone_number,
+      email,
+      description,
+    });
+
+    return c.json({
+      message: result.message,
+      result,
+    });
+  } catch (e: any) {
+    return c.json(
+      {
+        message: e?.message ?? "Registration failed",
+        result: null,
+      },
+      400,
+    );
+  }
+});
 
 // router.post(`/send_verify_email`, async (c) => {
 //   try {

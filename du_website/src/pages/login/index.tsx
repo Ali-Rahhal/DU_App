@@ -82,7 +82,7 @@ export default function LoginPage() {
         {redirecting && (
           <div className="login-overlay">
             <Spinner animation="border" variant="primary" />
-            <span>{t("loading_your_account")}</span>
+            <span>{t("login_register.loading_your_account")}</span>
           </div>
         )}
 
@@ -90,7 +90,7 @@ export default function LoginPage() {
         {step === "company" ? (
           <>
             <p className="text-center text-muted select-company-text">
-              {t("select_company_description")}
+              {t("login_register.select_company_description")}
             </p>
 
             <div className="company-grid">
@@ -125,7 +125,7 @@ export default function LoginPage() {
                 <i className="ti ti-arrow-left"></i>
               </button>
               <div className="login-header-content">
-                <h1>{t("welcome_to")}</h1>
+                <h1>{t("login_register.welcome_to")}</h1>
                 <img
                   src={company.logo}
                   alt={company.name}
@@ -141,7 +141,7 @@ export default function LoginPage() {
                   required
                   disabled={loading || redirecting}
                   className="form-control"
-                  placeholder={t("user_code")}
+                  placeholder={t("login_register.user_code")}
                   value={code}
                   onChange={(e) => setCode(e.target.value)}
                 />
@@ -153,7 +153,7 @@ export default function LoginPage() {
                   required
                   disabled={loading || redirecting}
                   className="form-control"
-                  placeholder={t("password")}
+                  placeholder={t("login_register.password")}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
@@ -167,27 +167,24 @@ export default function LoginPage() {
                 {loading || redirecting ? (
                   <>
                     <Spinner animation="border" size="sm" className="me-2" />
-                    {t("loading")}
+                    {t("login_register.loading")}
                   </>
                 ) : (
-                  t("login")
+                  t("login_register.login")
                 )}
               </button>
             </form>
 
             <div className="register-section">
-              <span className="register-text">{t("dont_have_account")}</span>
+              <span className="register-text">
+                {t("login_register.dont_have_account")}
+              </span>
               <button
                 type="button"
                 className="register-btn"
-                onClick={() => {
-                  // Register functionality placeholder
-                  toast.info("Registration coming soon!", {
-                    position: "bottom-center",
-                  });
-                }}
+                onClick={() => router.push("/register")}
               >
-                {t("register")}
+                {t("login_register.register")}
               </button>
             </div>
           </>

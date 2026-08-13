@@ -6,7 +6,7 @@ const NotFound = () => {
 
   useEffect(() => {
     // Redirect to home page after component mounts
-    router.replace("/");
+    router.replace("/login");
   }, [router]);
 
   // Optional: show a message while redirecting

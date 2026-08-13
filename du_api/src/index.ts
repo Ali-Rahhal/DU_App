@@ -51,16 +51,14 @@ app.use(
   cors({
     origin: [
       ////quayo du server:
+      "https://cloud.quayomobility.ca:5443/",
       "http://159.195.23.130:5006",
-      "http://cloud.quayomobility.ca:5006",
       "http://localhost:5006",
       ////quayo vitalait server:
       // "http://159.195.23.130:5008",
-      // "http://cloud.quayomobility.ca:5008",
       // "http://localhost:5008",
       ////quayo du server(simple version):
       // "http://159.195.23.130:5010",
-      // "http://cloud.quayomobility.ca:5010",
       // "http://localhost:5010",
       ////du Server:
       // "https://duquayo-test.d-union.com",

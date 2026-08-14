@@ -13,7 +13,6 @@ import { register } from "@/utils/apiCalls";
 export default function RegisterPage() {
   const [clientCode, setClientCode] = useState("");
   const [mohNumber, setMohNumber] = useState("");
-  const [password, setPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [description, setDescription] = useState("");
@@ -81,16 +80,6 @@ export default function RegisterPage() {
       return;
     }
 
-    if (!password) {
-      toast.error(t("login_register.errors.password_required"));
-      return;
-    }
-
-    if (password.length < 6) {
-      toast.error(t("login_register.errors.password_min_length"));
-      return;
-    }
-
     if (!companyId || !company) {
       toast.error(t("login_register.errors.company_required"));
       return;
@@ -106,7 +95,6 @@ export default function RegisterPage() {
       await register({
         client_code: trimmedClientCode,
         moh_number: trimmedMohNumber,
-        password,
         phone_number: trimmedPhoneNumber,
         email: trimmedEmail,
         description: trimmedDescription,
@@ -222,19 +210,6 @@ export default function RegisterPage() {
               placeholder={t("login_register.email")}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-
-          {/* Password */}
-          <div className="mb-4">
-            <input
-              type="password"
-              required
-              disabled={loading}
-              className="form-control"
-              placeholder={t("login_register.password")}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
 

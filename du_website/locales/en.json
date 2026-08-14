@@ -155,7 +155,6 @@
     "loading_your_account": "Loading your account...",
     "loading": "Loading...",
     "user_code": "User Code",
-    "password": "Password",
     "moh_number": "MOH Number",
     "name": "Name",
     "phone_number": "Phone Number",
@@ -171,8 +170,6 @@
       "phone_invalid": "Please enter a valid phone number",
       "email_required": "Please enter your email",
       "email_invalid": "Please enter a valid email address",
-      "password_required": "Please enter your password",
-      "password_min_length": "Password must be at least 6 characters",
       "company_required": "No company selected",
       "registration_failed": "Registration failed"
     }

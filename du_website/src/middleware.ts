@@ -32,7 +32,9 @@ export async function middleware(request: NextRequest) {
   const isServer = typeof window === "undefined";
   let API_BASE_URL = "";
   if (isServer) {
-    API_BASE_URL = process.env.NEXT_PUBLIC_API_SERVER_URL!;
+    API_BASE_URL =
+      process.env.NEXT_PUBLIC_API_SERVER_URL ||
+      `http://localhost:${process.env.NEXT_PUBLIC_DIRECT_API_PORT}/api`;
   } else {
     const { protocol, hostname } = window.location;
 

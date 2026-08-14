@@ -112,7 +112,6 @@ const register = async (
   data: {
     client_code: string;
     moh_number: string;
-    password: string;
     phone_number: string;
     email: string;
     description: string;
@@ -120,18 +119,7 @@ const register = async (
 ) => {
   const prisma = getPrisma(companyId);
 
-  const {
-    client_code,
-    moh_number,
-    password,
-    phone_number,
-    email,
-    description,
-  } = data;
-
-  var sha256 = createHash("sha256");
-  sha256.update(password, "utf8"); //utf8 here
-  var encryptedPass = sha256.digest("base64");
+  const { client_code, moh_number, phone_number, email, description } = data;
 
   if (!client_code) {
     throw new Error("Client code is required");
@@ -194,7 +182,6 @@ const register = async (
           },
           data: {
             moh_number: moh_number || null,
-            password: encryptedPass,
             phone_number: phone_number || null,
             email: email || null,
             description: description || null,
@@ -207,7 +194,6 @@ const register = async (
           data: {
             client_code,
             moh_number: moh_number || null,
-            password: encryptedPass,
             phone_number: phone_number || null,
             email: email || null,
             description: description || null,

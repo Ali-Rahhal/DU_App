@@ -153,7 +153,6 @@
     "loading_your_account": "Chargement de votre compte...",
     "loading": "Chargement...",
     "user_code": "Code utilisateur",
-    "password": "Mot de passe",
     "moh_number": "Numéro MOH",
     "name": "Nom",
     "phone_number": "Numéro de téléphone",
@@ -169,8 +168,6 @@
       "phone_invalid": "Veuillez saisir un numéro de téléphone valide",
       "email_required": "Veuillez saisir votre adresse e-mail",
       "email_invalid": "Veuillez saisir une adresse e-mail valide",
-      "password_required": "Veuillez saisir votre mot de passe",
-      "password_min_length": "Le mot de passe doit comporter au moins 6 caractères",
       "company_required": "Aucune entreprise sélectionnée",
       "registration_failed": "La connexion a echoué. Veuillez vous inscrire."
     }

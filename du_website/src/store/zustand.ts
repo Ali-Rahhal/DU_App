@@ -225,7 +225,7 @@ export const useAuthStore = create<AuthStore>()(
       },
     }),
     {
-      name: "auth",
+      name: "authCustomerPortalApp",
     },
   ),
 );

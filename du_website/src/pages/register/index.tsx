@@ -100,18 +100,13 @@ export default function RegisterPage() {
         description: trimmedDescription,
       });
 
-      toast.success(t("login_register.registration_success"), {
-        position: "bottom-center",
-      });
+      toast.success(t("login_register.registration_success"));
 
       router.push("/login");
     } catch (error: any) {
       toast.error(
         error?.response?.data?.message ??
           t("login_register.errors.registration_failed"),
-        {
-          position: "top-right",
-        },
       );
     } finally {
       setLoading(false);

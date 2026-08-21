@@ -87,7 +87,7 @@ async function authMiddleware(c, next) {
   const companyId = String(
     c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
   );
-  const token = getCookie(c, "auth");
+  const token = getCookie(c, "authCustomerPortalApp");
 
   if (!token) return c.json({ message: "Not Authorized", result: null }, 401);
   const userId = await tokenAuth(token, companyId);

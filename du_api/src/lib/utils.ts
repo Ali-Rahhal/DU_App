@@ -369,7 +369,7 @@ export async function getUserId(c) {
 }
 export async function getUserIdFromToken(c: Context, companyId: string) {
   // const token = c.req.header("Authorization");
-  const token = getCookie(c, "auth");
+  const token = getCookie(c, "authCustomerPortalApp");
   if (!token) throw new Error("No token provided");
   const userId = await tokenAuth(token, companyId);
   return userId;

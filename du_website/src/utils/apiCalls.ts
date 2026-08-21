@@ -90,6 +90,15 @@ const register = async (data: {
   });
 };
 
+const user = async (cookie?: string) => {
+  return await axios.get(privateApi + "/user", {
+    withCredentials: true,
+    headers: {
+      Cookie: cookie || "",
+    },
+  });
+};
+
 // const register = async ({
 //   email,
 //   password,
@@ -1031,6 +1040,7 @@ export {
   login,
   logout,
   register,
+  user,
   forgotPassword,
   validateResetCode,
   changePassword,

@@ -11,7 +11,6 @@ import ChangeLangDropdown from "@/components/common/ChangeLangDropdown";
 import { register } from "@/utils/apiCalls";
 
 export default function RegisterPage() {
-  const [clientCode, setClientCode] = useState("");
   const [mohNumber, setMohNumber] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
@@ -33,16 +32,10 @@ export default function RegisterPage() {
     // Validation
     // -----------------------------
 
-    const trimmedClientCode = clientCode.trim();
     const trimmedMohNumber = mohNumber.trim();
     const trimmedPhoneNumber = phoneNumber.trim();
     const trimmedEmail = email.trim();
     const trimmedDescription = description.trim();
-
-    if (!trimmedClientCode) {
-      toast.error(t("login_register.errors.client_code_required"));
-      return;
-    }
 
     if (!trimmedMohNumber) {
       toast.error(t("login_register.errors.moh_number_required"));
@@ -93,7 +86,6 @@ export default function RegisterPage() {
 
     try {
       await register({
-        client_code: trimmedClientCode,
         moh_number: trimmedMohNumber,
         phone_number: trimmedPhoneNumber,
         email: trimmedEmail,
@@ -143,19 +135,6 @@ export default function RegisterPage() {
 
         {/* Form */}
         <form onSubmit={handleRegister}>
-          {/* Client Code */}
-          <div className="mb-3">
-            <input
-              type="text"
-              required
-              disabled={loading}
-              className="form-control"
-              placeholder={t("login_register.user_code")}
-              value={clientCode}
-              onChange={(e) => setClientCode(e.target.value)}
-            />
-          </div>
-
           {/* MOH Number */}
           <div className="mb-3">
             <input

@@ -79,7 +79,6 @@ const logout = async () => {
 };
 
 const register = async (data: {
-  client_code: string;
   moh_number: string;
   phone_number: string;
   email: string;

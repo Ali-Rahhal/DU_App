@@ -7514,7 +7514,7 @@ model fidelity_user_reward {
 
 model client_pending {
   client_code      String    @id(map: "PK__client_p__EC5CBC360CC821A2") @db.NVarChar(50)
-  moh_number       String?   @db.NVarChar(50)
+  moh_number       String?   @unique(map: "UQ_client_pending_moh_number") @db.NVarChar(50)
   phone_number     String?   @db.NVarChar(100)
   email            String?   @db.NVarChar(100)
   description      String?   @db.NVarChar(100)
@@ -7522,4 +7522,15 @@ model client_pending {
   date_added       DateTime? @default(now(), map: "DF__client_pe__date___31314302")
   last_edited      DateTime? @default(now(), map: "DF__client_pe__last___3225673B")
   is_active        Boolean   @default(true, map: "DF__client_pe__is_ac__33198B74")
+}
+
+model PasswordSetupToken {
+  id        Int      @id(map: "PK__Password__3213E83F5E655F8A") @default(autoincrement())
+  code      String   @db.NVarChar(100)
+  tokenHash String   @unique(map: "UQ__Password__9015C60E7B00D95C") @db.NVarChar(512)
+  expiresAt DateTime
+  used      Boolean  @default(false, map: "DF__PasswordSe__used__529236CD")
+  createdAt DateTime @default(now(), map: "DF__PasswordS__creat__53865B06")
+
+  @@index([code], map: "IX_PasswordSetupToken_code")
 }

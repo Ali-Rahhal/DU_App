@@ -57,11 +57,8 @@ router.post("/register", async (c) => {
 
     const body = await c.req.json();
 
-    const { client_code, moh_number, phone_number, email, description } = body;
+    const { moh_number, phone_number, email, description } = body;
 
-    if (!client_code) {
-      throw new Error("Client code not provided");
-    }
     if (!moh_number) {
       throw new Error("MOH number not provided");
     }
@@ -76,7 +73,6 @@ router.post("/register", async (c) => {
     }
 
     const result = await register(companyId, {
-      client_code,
       moh_number,
       phone_number,
       email,

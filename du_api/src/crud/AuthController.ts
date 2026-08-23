@@ -110,7 +110,6 @@ import { ROLES } from "../lib/constants";
 const register = async (
   companyId: string,
   data: {
-    client_code: string;
     moh_number: string;
     phone_number: string;
     email: string;
@@ -119,10 +118,10 @@ const register = async (
 ) => {
   const prisma = getPrisma(companyId);
 
-  const { client_code, moh_number, phone_number, email, description } = data;
+  const { moh_number, phone_number, email, description } = data;
 
-  if (!client_code) {
-    throw new Error("Client code is required");
+  if (!moh_number) {
+    throw new Error("MOH number is required");
   }
 
   // Check the client from the view
@@ -140,7 +139,7 @@ const register = async (
       Status,
       MOH
     FROM dbo.v_clients
-    WHERE Code = ${client_code}
+    WHERE MOH = ${moh_number}
   `;
 
   if (!client.length) {
@@ -164,21 +163,18 @@ const register = async (
 
   // Rejected or N/A
   if (clientData.status_id === 6 || clientData.Status === "N/A") {
-    if (clientData.MOH !== moh_number) {
-      throw new Error("MOH number does not match");
-    }
     await prisma.$transaction(async (tx) => {
       // Check if a pending registration already exists
       const existingPending = await tx.client_pending.findUnique({
         where: {
-          client_code,
+          moh_number,
         },
       });
 
       if (existingPending) {
         await tx.client_pending.update({
           where: {
-            client_code,
+            moh_number,
           },
           data: {
             moh_number: moh_number || null,
@@ -192,7 +188,7 @@ const register = async (
       } else {
         await tx.client_pending.create({
           data: {
-            client_code,
+            client_code: clientData.Code,
             moh_number: moh_number || null,
             phone_number: phone_number || null,
             email: email || null,
@@ -205,7 +201,7 @@ const register = async (
       // Move client to Waiting Approval
       await tx.client.update({
         where: {
-          client_code,
+          client_code: clientData.Code,
         },
         data: {
           status_id: 7,
@@ -215,7 +211,7 @@ const register = async (
 
     return {
       message: "Registration request sent successfully",
-      client_code,
+      client_code: clientData.Code,
     };
   }
 

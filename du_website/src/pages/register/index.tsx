@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
@@ -8,7 +8,7 @@ import { useCompanyStore } from "@/store/zustand";
 import { Companies } from "@/utils/config_companies";
 import ChangeLangDropdown from "@/components/common/ChangeLangDropdown";
 
-import { register } from "@/utils/apiCalls";
+import { sendRegistrationCode, verifyRegistrationCode } from "@/utils/apiCalls";
 
 export default function RegisterPage() {
   const [mohNumber, setMohNumber] = useState("");
@@ -18,12 +18,30 @@ export default function RegisterPage() {
 
   const [loading, setLoading] = useState(false);
 
+  const [showVerificationModal, setShowVerificationModal] = useState(false);
+  const [verificationCode, setVerificationCode] = useState("");
+  const [verificationLoading, setVerificationLoading] = useState(false);
+  const [verificationTimeLeft, setVerificationTimeLeft] = useState(600);
+  const [resendingCode, setResendingCode] = useState(false);
+
   const { companyId } = useCompanyStore();
 
   const router = useRouter();
   const t = useTranslations();
 
   const company = Companies[companyId];
+
+  useEffect(() => {
+    if (!showVerificationModal || verificationTimeLeft <= 0) {
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setVerificationTimeLeft((time) => Math.max(0, time - 1));
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [showVerificationModal, verificationTimeLeft]);
 
   async function handleRegister(e: React.FormEvent) {
     e.preventDefault();
@@ -85,16 +103,17 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
-      await register({
+      await sendRegistrationCode({
         moh_number: trimmedMohNumber,
         phone_number: trimmedPhoneNumber,
         email: trimmedEmail,
         description: trimmedDescription,
       });
 
-      toast.success(t("login_register.registration_success"));
+      setShowVerificationModal(true);
+      setVerificationTimeLeft(600);
 
-      router.push("/login");
+      toast.success(t("login_register.verification_code_sent"));
     } catch (error: any) {
       toast.error(
         error?.response?.data?.message ??
@@ -102,6 +121,63 @@ export default function RegisterPage() {
       );
     } finally {
       setLoading(false);
+    }
+  }
+
+  const handleResendCode = async () => {
+    try {
+      setResendingCode(true);
+
+      await sendRegistrationCode({
+        moh_number: mohNumber.trim(),
+        phone_number: phoneNumber.trim(),
+        email: email.trim(),
+        description: description.trim(),
+      });
+
+      setVerificationCode("");
+      setVerificationTimeLeft(600);
+
+      toast.success(t("login_register.code_resent"));
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.message ||
+          t("login_register.errors.resend_code_failed"),
+      );
+    } finally {
+      setResendingCode(false);
+    }
+  };
+
+  async function handleVerifyCode() {
+    if (!verificationCode.trim()) {
+      toast.error(t("login_register.errors.verification_code_required"));
+      return;
+    }
+
+    setVerificationLoading(true);
+
+    try {
+      await verifyRegistrationCode({
+        moh_number: mohNumber.trim(),
+        phone_number: phoneNumber.trim(),
+        email: email.trim(),
+        description: description.trim(),
+        code: verificationCode.trim(),
+      });
+
+      setShowVerificationModal(false);
+
+      toast.success(t("login_register.registration_success"));
+
+      router.push("/login");
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.message ??
+          t("login_register.errors.verification_failed"),
+      );
+    } finally {
+      setVerificationLoading(false);
     }
   }
 
@@ -220,6 +296,85 @@ export default function RegisterPage() {
           </button>
         </div>
       </div>
+      {/* Verification Modal */}
+      {showVerificationModal && (
+        <div className="verification-modal-overlay">
+          <div className="verification-modal">
+            <h2>{t("login_register.verify_email")}</h2>
+
+            <p>{t("login_register.verification_code_description")}</p>
+
+            <input
+              type="text"
+              inputMode="numeric"
+              maxLength={6}
+              className="form-control verification-code-input"
+              placeholder={t("login_register.verification_code")}
+              value={verificationCode}
+              disabled={verificationLoading}
+              onChange={(e) =>
+                setVerificationCode(e.target.value.replace(/\D/g, ""))
+              }
+            />
+
+            {/* Timer */}
+            <p className="verification-timer">
+              {verificationTimeLeft > 0
+                ? `${t("login_register.code_expires_in")} ${Math.floor(
+                    verificationTimeLeft / 60,
+                  )}:${String(verificationTimeLeft % 60).padStart(2, "0")}`
+                : t("login_register.code_expired")}
+            </p>
+
+            {/* Resend */}
+            <button
+              type="button"
+              className="verification-resend-btn"
+              disabled={resendingCode || verificationTimeLeft > 0}
+              onClick={handleResendCode}
+            >
+              {resendingCode
+                ? t("login_register.resending")
+                : t("login_register.resend_code")}
+            </button>
+
+            <div className="verification-modal-actions">
+              <button
+                type="button"
+                className="verification-cancel-btn"
+                disabled={verificationLoading || resendingCode}
+                onClick={() => {
+                  setShowVerificationModal(false);
+                  setVerificationCode("");
+                }}
+              >
+                {t("login_register.cancel")}
+              </button>
+
+              <button
+                type="button"
+                className="register-submit-btn"
+                disabled={
+                  verificationLoading ||
+                  resendingCode ||
+                  verificationTimeLeft === 0 ||
+                  verificationCode.length !== 6
+                }
+                onClick={handleVerifyCode}
+              >
+                {verificationLoading ? (
+                  <>
+                    <Spinner animation="border" size="sm" className="me-2" />
+                    {t("login_register.verifying")}
+                  </>
+                ) : (
+                  t("login_register.verify")
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

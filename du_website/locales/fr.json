@@ -161,6 +161,18 @@
     "login": "Connexion",
     "register": "S'inscrire",
     "registration_success": "Demande de connexion envoyée avec successe",
+    "verify_email": "Vérifiez votre adresse e-mail",
+    "verification_code_description": "Nous avons envoyé un code de vérification à 6 chiffres à votre adresse e-mail. Saisissez le code ci-dessous pour continuer.",
+    "verification_code": "Code de vérification",
+    "code_expires_in": "Le code expire dans",
+    "code_expired": "Le code a expiré",
+    "resend_code": "Renvoyer le code",
+    "resending": "Envoi en cours...",
+    "verify": "Vérifier",
+    "verifying": "Vérification...",
+    "cancel": "Annuler",
+    "verification_code_sent": "Un code de vérification a été envoyé à votre adresse e-mail.",
+    "code_resent": "Un nouveau code de vérification a été envoyé à votre adresse e-mail.",
     "errors": {
       "client_code_required": "Veuillez saisir votre code utilisateur",
       "moh_number_required": "Veuillez saisir votre numéro MOH",
@@ -170,7 +182,8 @@
       "email_required": "Veuillez saisir votre adresse e-mail",
       "email_invalid": "Veuillez saisir une adresse e-mail valide",
       "company_required": "Aucune entreprise sélectionnée",
-      "registration_failed": "La connexion a echoué. Veuillez vous inscrire."
+      "registration_failed": "La connexion a echoué. Veuillez vous inscrire.",
+      "resend_code_failed": "Échec de l'envoi du code de vérification."
     }
   },
   "create_password": {

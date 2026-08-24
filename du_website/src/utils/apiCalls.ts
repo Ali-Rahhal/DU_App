@@ -78,13 +78,25 @@ const logout = async () => {
   return await axios.post(publicApi + "/logout", {}, { withCredentials: true });
 };
 
-const register = async (data: {
+const sendRegistrationCode = async (data: {
   moh_number: string;
   phone_number: string;
   email: string;
   description: string;
 }) => {
-  return await axios.post(publicApi + "/register", data, {
+  return await axios.post(publicApi + "/register/send-code", data, {
+    withCredentials: true,
+  });
+};
+
+const verifyRegistrationCode = async (data: {
+  moh_number: string;
+  phone_number: string;
+  email: string;
+  description: string;
+  code: string;
+}) => {
+  return await axios.post(publicApi + "/register/verify-code", data, {
     withCredentials: true,
   });
 };
@@ -1044,7 +1056,8 @@ export {
   //Auth
   login,
   logout,
-  register,
+  sendRegistrationCode,
+  verifyRegistrationCode,
   createPassword,
   user,
   forgotPassword,

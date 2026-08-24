@@ -1,5 +1,10 @@
 import { Hono } from "hono";
-import { createPassword, login, register } from "../../crud/AuthController";
+import {
+  createPassword,
+  login,
+  sendRegistrationCode,
+  verifyRegistrationCode,
+} from "../../crud/AuthController";
 import { getUserId } from "../../lib/utils";
 import { serialize } from "hono/utils/cookie";
 const router = new Hono();
@@ -49,7 +54,7 @@ router.post(`/logout`, async (c) => {
   }
 });
 
-router.post("/register", async (c) => {
+router.post("/register/send-code", async (c) => {
   try {
     const companyId = String(
       c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
@@ -57,27 +62,7 @@ router.post("/register", async (c) => {
 
     const body = await c.req.json();
 
-    const { moh_number, phone_number, email, description } = body;
-
-    if (!moh_number) {
-      throw new Error("MOH number not provided");
-    }
-    if (!phone_number) {
-      throw new Error("Phone number not provided");
-    }
-    if (!email) {
-      throw new Error("Email not provided");
-    }
-    if (!description) {
-      throw new Error("Name not provided");
-    }
-
-    const result = await register(companyId, {
-      moh_number,
-      phone_number,
-      email,
-      description,
-    });
+    const result = await sendRegistrationCode(companyId, body);
 
     return c.json({
       message: result.message,
@@ -86,7 +71,32 @@ router.post("/register", async (c) => {
   } catch (e: any) {
     return c.json(
       {
-        message: e?.message ?? "Registration failed",
+        message: e?.message ?? "Failed to send verification code",
+        result: null,
+      },
+      400,
+    );
+  }
+});
+
+router.post("/register/verify-code", async (c) => {
+  try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
+
+    const body = await c.req.json();
+
+    const result = await verifyRegistrationCode(companyId, body);
+
+    return c.json({
+      message: result.message,
+      result,
+    });
+  } catch (e: any) {
+    return c.json(
+      {
+        message: e?.message ?? "Verification failed",
         result: null,
       },
       400,

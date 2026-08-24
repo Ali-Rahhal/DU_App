@@ -1,11 +1,12 @@
 import { getPrisma } from "../lib/prisma";
-import { createHash } from "crypto";
+import { createHash, randomInt } from "crypto";
 import { Context } from "hono";
 import * as jwt from "jsonwebtoken";
 import { transporter } from "../lib/utils";
 import * as crypto from "crypto";
 import { serialize } from "hono/utils/cookie";
 import { ROLES } from "../lib/constants";
+import { sendRegistrationVerificationEmail } from "../lib/sendRegistrationVerificationEmail";
 // const register = async ({
 //   email,
 //   password,
@@ -107,7 +108,7 @@ import { ROLES } from "../lib/constants";
 //   return w;
 // };
 
-const register = async (
+const sendRegistrationCode = async (
   companyId: string,
   data: {
     moh_number: string;
@@ -124,7 +125,18 @@ const register = async (
     throw new Error("MOH number is required");
   }
 
-  // Check the client from the view
+  if (!phone_number) {
+    throw new Error("Phone number is required");
+  }
+
+  if (!email) {
+    throw new Error("Email is required");
+  }
+
+  if (!description) {
+    throw new Error("Name is required");
+  }
+
   const client = await prisma.$queryRaw<
     {
       Code: string;
@@ -148,80 +160,185 @@ const register = async (
 
   const clientData = client[0];
 
-  /*
-    Statuses from v_clients:
+  // Only rejected / N/A clients can register.
+  if (clientData.status_id !== 6 && clientData.Status !== "N/A") {
+    if (clientData.status_id === 7) {
+      throw new Error("Can't send more than 1 registry requests at a time");
+    }
 
-    1  Active
-    2  Blocked
-    3  Stopped
-    4  Reported
-    5  Accepted
-    6  Rejeted
-    7  Waiting Approval
-    ...
-  */
+    throw new Error("This account is already registered");
+  }
 
-  // Rejected or N/A
-  if (clientData.status_id === 6 || clientData.Status === "N/A") {
-    await prisma.$transaction(async (tx) => {
-      // Check if a pending registration already exists
-      const existingPending = await tx.client_pending.findUnique({
+  // Generate 6-digit code
+  const code = randomInt(100000, 1000000).toString();
+
+  // Hash code before storing it
+  const codeHash = createHash("sha256").update(code, "utf8").digest("hex");
+
+  // Expire after 10 minutes
+  const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+  // Invalidate previous codes
+  await prisma.emailVerificationCode.updateMany({
+    where: {
+      mohNumber: moh_number,
+      used: false,
+    },
+    data: {
+      used: true,
+    },
+  });
+
+  await prisma.emailVerificationCode.create({
+    data: {
+      mohNumber: moh_number,
+      email,
+      codeHash,
+      expiresAt,
+      used: false,
+    },
+  });
+
+  await sendRegistrationVerificationEmail({
+    email,
+    code,
+  });
+
+  return {
+    message: "Verification code sent successfully",
+  };
+};
+
+const verifyRegistrationCode = async (
+  companyId: string,
+  data: {
+    moh_number: string;
+    phone_number: string;
+    email: string;
+    description: string;
+    code: string;
+  },
+) => {
+  const prisma = getPrisma(companyId);
+
+  const { moh_number, phone_number, email, description, code } = data;
+
+  if (!code) {
+    throw new Error("Verification code is required");
+  }
+
+  const verification = await prisma.emailVerificationCode.findFirst({
+    where: {
+      mohNumber: moh_number,
+      email,
+      used: false,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  if (!verification) {
+    throw new Error("Verification code not found");
+  }
+
+  if (verification.expiresAt < new Date()) {
+    throw new Error("Verification code has expired");
+  }
+
+  const codeHash = createHash("sha256").update(code, "utf8").digest("hex");
+
+  if (codeHash !== verification.codeHash) {
+    throw new Error("Invalid verification code");
+  }
+
+  const client = await prisma.$queryRaw<
+    {
+      Code: string;
+      status_id: number | null;
+      Status: string;
+      MOH: string;
+    }[]
+  >`
+    SELECT
+      Code,
+      status_id,
+      Status,
+      MOH
+    FROM dbo.v_clients
+    WHERE MOH = ${moh_number}
+  `;
+
+  if (!client.length) {
+    throw new Error("Account not found");
+  }
+
+  const clientData = client[0];
+
+  if (clientData.status_id !== 6 && clientData.Status !== "N/A") {
+    throw new Error("This account is no longer eligible for registration");
+  }
+
+  await prisma.$transaction(async (tx) => {
+    const existingPending = await tx.client_pending.findUnique({
+      where: {
+        moh_number,
+      },
+    });
+
+    if (existingPending) {
+      await tx.client_pending.update({
         where: {
           moh_number,
         },
-      });
-
-      if (existingPending) {
-        await tx.client_pending.update({
-          where: {
-            moh_number,
-          },
-          data: {
-            moh_number: moh_number || null,
-            phone_number: phone_number || null,
-            email: email || null,
-            description: description || null,
-            last_edited: new Date(),
-            is_active: true,
-          },
-        });
-      } else {
-        await tx.client_pending.create({
-          data: {
-            client_code: clientData.Code,
-            moh_number: moh_number || null,
-            phone_number: phone_number || null,
-            email: email || null,
-            description: description || null,
-            is_active: true,
-          },
-        });
-      }
-
-      // Move client to Waiting Approval
-      await tx.client.update({
-        where: {
-          client_code: clientData.Code,
-        },
         data: {
-          status_id: 7,
+          moh_number,
+          phone_number,
+          email,
+          description,
+          password_created: false,
+          last_edited: new Date(),
+          is_active: true,
         },
       });
+    } else {
+      await tx.client_pending.create({
+        data: {
+          client_code: clientData.Code,
+          moh_number,
+          phone_number,
+          email,
+          description,
+          is_active: true,
+          password_created: false,
+        },
+      });
+    }
+
+    await tx.client.update({
+      where: {
+        client_code: clientData.Code,
+      },
+      data: {
+        status_id: 7,
+      },
     });
 
-    return {
-      message: "Registration request sent successfully",
-      client_code: clientData.Code,
-    };
-  }
+    // Mark verification code as used
+    await tx.emailVerificationCode.update({
+      where: {
+        id: verification.id,
+      },
+      data: {
+        used: true,
+      },
+    });
+  });
 
-  // Already waiting for approval
-  if (clientData.status_id === 7) {
-    throw new Error("Can't send more than 1 registry requests at a time");
-  }
-
-  // Any other status
-  throw new Error("This account is already registered");
+  return {
+    message: "Registration request sent successfully",
+    client_code: clientData.Code,
+  };
 };
 
 const createPassword = async (
@@ -388,6 +505,19 @@ const login = async (
   companyId: string,
 ) => {
   const prisma = getPrisma(companyId);
+  const client = await prisma.client.findFirst({
+    where: {
+      client_code: code,
+    },
+    select: {
+      status_id: true,
+    },
+  });
+
+  if (client.status_id !== 1) {
+    return c.json({ message: "Client is not active", result: null }, 401);
+  }
+
   const user = await prisma.web_accounts.findFirst({
     where: {
       code: code,
@@ -1025,7 +1155,8 @@ const changePassword = async (
   return result;
 };
 export {
-  register,
+  sendRegistrationCode,
+  verifyRegistrationCode,
   createPassword,
   login,
   // sendVerify,

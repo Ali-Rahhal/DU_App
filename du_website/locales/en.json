@@ -163,6 +163,18 @@
     "login": "Login",
     "register": "Register",
     "registration_success": "Registration request sent successfully",
+    "verify_email": "Verify your email",
+    "verification_code_description": "We've sent a 6-digit verification code to your email address. Enter the code below to continue.",
+    "verification_code": "Verification code",
+    "code_expires_in": "Code expires in",
+    "code_expired": "Code has expired",
+    "resend_code": "Resend code",
+    "resending": "Resending...",
+    "verify": "Verify",
+    "verifying": "Verifying...",
+    "cancel": "Cancel",
+    "verification_code_sent": "A verification code has been sent to your email.",
+    "code_resent": "A new verification code has been sent to your email.",
     "errors": {
       "client_code_required": "Please enter your user code",
       "moh_number_required": "Please enter your MOH number",
@@ -172,7 +184,8 @@
       "email_required": "Please enter your email",
       "email_invalid": "Please enter a valid email address",
       "company_required": "No company selected",
-      "registration_failed": "Registration failed"
+      "registration_failed": "Registration failed",
+      "resend_code_failed": "Failed to resend verification code."
     }
   },
   "create_password": {

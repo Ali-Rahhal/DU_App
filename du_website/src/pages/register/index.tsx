@@ -107,12 +107,12 @@ export default function RegisterPage() {
 
   return (
     <div className="register-page">
-      <div className="register-card">
-        {/* Language */}
-        <div className="register-language">
-          <ChangeLangDropdown />
-        </div>
+      {/* Language */}
+      <div className="register-language">
+        <ChangeLangDropdown />
+      </div>
 
+      <div className="register-card">
         {/* Header */}
         <div className="register-header">
           <button
@@ -123,14 +123,14 @@ export default function RegisterPage() {
           >
             <i className="ti ti-arrow-left"></i>
           </button>
-
-          <h1>{t("login_register.register")}</h1>
-
-          <img
-            src={company?.logo}
-            alt={company?.name}
-            className="register-company-logo"
-          />
+          <div className="register-header-content">
+            <img
+              src={company?.logo}
+              alt={company?.name}
+              className="register-company-logo"
+            />
+            <h1>{t("login_register.register")}</h1>
+          </div>
         </div>
 
         {/* Form */}

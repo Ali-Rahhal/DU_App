@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { user } from "./utils/apiCalls";
-const unauthRoutes = ["/login", "/register"];
+const unauthRoutes = ["/login", "/register", "/create-password"];
 const authRoutes = [
   "/",
   "/account",
@@ -35,7 +35,7 @@ export async function middleware(request: NextRequest) {
   headers.set("x-url", request.nextUrl.pathname);
   const cookie = request.headers.get("cookie");
   const result = await user(cookie).catch((err) => {
-    console.log(err.message);
+    console.log("middleware: ", err.message);
     return { status: 401 };
   });
 

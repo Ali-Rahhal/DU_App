@@ -173,6 +173,23 @@
       "registration_failed": "La connexion a echoué. Veuillez vous inscrire."
     }
   },
+  "create_password": {
+    "title": "Créer un mot de passe",
+    "password": "Mot de passe",
+    "confirm_password": "Confirmer le mot de passe",
+    "create": "Créer le mot de passe",
+    "loading": "Création du mot de passe...",
+    "success": "Votre mot de passe a été créé avec succès. Vous pouvez maintenant vous connecter.",
+    "already_have_account": "Vous avez déjà un compte ?",
+    "errors": {
+      "invalid_link": "Le lien de création du mot de passe est invalide ou manquant.",
+      "password_required": "Le mot de passe est requis.",
+      "password_min_length": "Le mot de passe doit contenir au moins 8 caractères.",
+      "confirm_password_required": "Veuillez confirmer votre mot de passe.",
+      "passwords_do_not_match": "Les mots de passe ne correspondent pas.",
+      "creation_failed": "Échec de la création du mot de passe."
+    }
+  },
   "child_accounts": {
     "first_name": "Prénom",
     "last_name": "Nom de famille",

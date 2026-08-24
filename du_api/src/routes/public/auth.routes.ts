@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { login, register } from "../../crud/AuthController";
+import { createPassword, login, register } from "../../crud/AuthController";
 import { getUserId } from "../../lib/utils";
 import { serialize } from "hono/utils/cookie";
 const router = new Hono();
@@ -87,6 +87,44 @@ router.post("/register", async (c) => {
     return c.json(
       {
         message: e?.message ?? "Registration failed",
+        result: null,
+      },
+      400,
+    );
+  }
+});
+
+router.post("/create-password", async (c) => {
+  try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
+
+    const body = await c.req.json();
+
+    const { token, password } = body;
+
+    if (!token) {
+      throw new Error("Password setup token not provided");
+    }
+
+    if (!password) {
+      throw new Error("Password not provided");
+    }
+
+    const result = await createPassword(companyId, {
+      token,
+      password,
+    });
+
+    return c.json({
+      message: result.message,
+      result,
+    });
+  } catch (e: any) {
+    return c.json(
+      {
+        message: e?.message ?? "Password creation failed",
         result: null,
       },
       400,

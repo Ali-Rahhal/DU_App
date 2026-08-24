@@ -1,4 +1,5 @@
 .register-page {
+  position: relative;
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -28,18 +29,22 @@
 /* Language */
 
 .register-language {
-  position: absolute;
+  position: fixed;
   top: 20px;
   right: 24px;
-  z-index: 5;
+  z-index: 100;
 }
 
 /* Header */
 
 .register-header {
   position: relative;
-  text-align: center;
   margin-bottom: 30px;
+}
+
+.register-header-content {
+  text-align: center;
+  padding: 0 45px;
 }
 
 .register-header h1 {
@@ -204,6 +209,10 @@
   .register-language {
     top: 16px;
     right: 16px;
+  }
+
+  .register-header-content {
+    padding: 0 40px;
   }
 
   .register-company-logo {

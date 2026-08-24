@@ -175,6 +175,23 @@
       "registration_failed": "Registration failed"
     }
   },
+  "create_password": {
+    "title": "Create Password",
+    "password": "Password",
+    "confirm_password": "Confirm Password",
+    "create": "Create Password",
+    "loading": "Creating password...",
+    "success": "Your password has been created successfully. You can now log in.",
+    "already_have_account": "Already have an account?",
+    "errors": {
+      "invalid_link": "This password setup link is invalid or missing.",
+      "password_required": "Password is required.",
+      "password_min_length": "Password must be at least 8 characters long.",
+      "confirm_password_required": "Please confirm your password.",
+      "passwords_do_not_match": "Passwords do not match.",
+      "creation_failed": "Failed to create password."
+    }
+  },
   "child_accounts": {
     "first_name": "First Name",
     "last_name": "Last Name",

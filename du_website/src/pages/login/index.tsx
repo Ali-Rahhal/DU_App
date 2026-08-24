@@ -72,12 +72,12 @@ export default function LoginPage() {
 
   return (
     <div className="login-page">
-      <div className="login-card">
-        {/* Language Selector */}
-        <div className="login-language">
-          <ChangeLangDropdown />
-        </div>
+      {/* Language Selector */}
+      <div className="login-language">
+        <ChangeLangDropdown />
+      </div>
 
+      <div className="login-card">
         {/* Loading Overlay */}
         {redirecting && (
           <div className="login-overlay">

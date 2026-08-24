@@ -224,6 +224,158 @@ const register = async (
   throw new Error("This account is already registered");
 };
 
+const createPassword = async (
+  companyId: string,
+  data: {
+    token: string;
+    password: string;
+  },
+) => {
+  const prisma = getPrisma(companyId);
+
+  const { token, password } = data;
+
+  if (!token) {
+    throw new Error("Password setup token is required");
+  }
+
+  if (!password) {
+    throw new Error("Password is required");
+  }
+
+  const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
+
+  return await prisma.$transaction(async (tx) => {
+    // Check password setup token
+    const passwordSetupToken = await tx.passwordSetupToken.findFirst({
+      where: {
+        tokenHash,
+        used: false,
+        expiresAt: {
+          gt: new Date(),
+        },
+      },
+      select: {
+        id: true,
+        code: true,
+        expiresAt: true,
+        used: true,
+      },
+    });
+
+    if (!passwordSetupToken) {
+      throw new Error("Invalid or expired password setup link");
+    }
+
+    const clientCode = passwordSetupToken.code;
+
+    // Check client status
+    const client = await tx.client.findUnique({
+      where: {
+        client_code: clientCode,
+      },
+      select: {
+        client_code: true,
+        status_id: true,
+      },
+    });
+
+    if (!client) {
+      throw new Error("Client not found");
+    }
+
+    if (client.status_id !== 5) {
+      throw new Error(
+        "Password cannot be created because the client is not accepted",
+      );
+    }
+
+    // Check pending client
+    const pendingClient = await tx.client_pending.findFirst({
+      where: {
+        client_code: clientCode,
+      },
+      select: {
+        client_code: true,
+        password_created: true,
+      },
+    });
+
+    if (!pendingClient) {
+      throw new Error("Pending client information not found");
+    }
+
+    if (pendingClient.password_created) {
+      throw new Error("Password has already been created");
+    }
+
+    // Encrypt password
+    const sha256 = createHash("sha256");
+
+    sha256.update(password, "utf8");
+
+    const encryptedPass = sha256.digest("base64");
+
+    // Update web account password
+    const webAccount = await tx.web_accounts.findFirst({
+      where: {
+        code: clientCode,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!webAccount) {
+      throw new Error("Web account not found");
+    }
+
+    await tx.web_accounts.update({
+      where: {
+        id: webAccount.id,
+      },
+      data: {
+        password: encryptedPass,
+      },
+    });
+
+    // Activate client
+    await tx.client.update({
+      where: {
+        client_code: clientCode,
+      },
+      data: {
+        status_id: 1,
+      },
+    });
+
+    // Mark password as created
+    await tx.client_pending.updateMany({
+      where: {
+        client_code: clientCode,
+      },
+      data: {
+        password_created: true,
+      },
+    });
+
+    // Invalidate token
+    await tx.passwordSetupToken.update({
+      where: {
+        id: passwordSetupToken.id,
+      },
+      data: {
+        used: true,
+      },
+    });
+
+    return {
+      message: "Password created successfully",
+      client_code: clientCode,
+    };
+  });
+};
+
 const login = async (
   {
     code,
@@ -874,6 +1026,7 @@ const changePassword = async (
 };
 export {
   register,
+  createPassword,
   login,
   // sendVerify,
   // verifyEmail,

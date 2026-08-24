@@ -89,6 +89,12 @@ const register = async (data: {
   });
 };
 
+const createPassword = async (data: { token: string; password: string }) => {
+  return await axios.post(publicApi + "/create-password", data, {
+    withCredentials: true,
+  });
+};
+
 const user = async (cookie?: string) => {
   return await axios.get(privateApi + "/user", {
     withCredentials: true,
@@ -1039,6 +1045,7 @@ export {
   login,
   logout,
   register,
+  createPassword,
   user,
   forgotPassword,
   validateResetCode,

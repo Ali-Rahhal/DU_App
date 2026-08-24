@@ -30,10 +30,10 @@ export default function LoginPage() {
   useEffect(() => {
     const cookie = document.cookie
       .split("; ")
-      .find((row) => row.startsWith("companyId="));
+      .find((row) => row.startsWith("companyIdCustomerPortalApp="));
 
     if (!cookie) {
-      document.cookie = `companyId=${
+      document.cookie = `companyIdCustomerPortalApp=${
         process.env.NEXT_PUBLIC_DEFAULT_COMPANY
       }; path=/; max-age=31536000; SameSite=Lax`;
     }
@@ -64,7 +64,7 @@ export default function LoginPage() {
 
   function selectCompany(company: CompanyId) {
     setCompany(company);
-    document.cookie = `companyId=${company}; path=/; max-age=31536000; SameSite=Lax`;
+    document.cookie = `companyIdCustomerPortalApp=${company}; path=/; max-age=31536000; SameSite=Lax`;
     setStep("login");
   }
 

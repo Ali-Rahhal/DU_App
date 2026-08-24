@@ -72,7 +72,7 @@ app.use(
 );
 
 app.use(`${PUBLIC_API}/*`, async (c, next) => {
-  const companyId = getCookie(c, "companyId");
+  const companyId = getCookie(c, "companyIdCustomerPortalApp");
 
   if (!companyId) {
     c.set("companyId", process.env.DEFAULT_COMPANY);

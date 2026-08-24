@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Spinner } from "react-bootstrap";
 import { toast } from "react-toastify";
@@ -10,18 +10,30 @@ import ChangeLangDropdown from "@/components/common/ChangeLangDropdown";
 
 import { createPassword } from "@/utils/apiCalls";
 import { useCompanyStore } from "@/store/zustand";
-import { Companies } from "@/utils/config_companies";
+import { Companies, CompanyId } from "@/utils/config_companies";
 
 export default function CreatePasswordPage() {
   const router = useRouter();
   const t = useTranslations();
-  const { companyId } = useCompanyStore();
+  const { companyId, setCompany } = useCompanyStore();
   const company = Companies[companyId];
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!router.isReady) return;
+
+    const companyid =
+      typeof router.query.companyId === "string"
+        ? router.query.companyId
+        : process.env.NEXT_PUBLIC_DEFAULT_COMPANY;
+
+    setCompany(companyid as CompanyId);
+    document.cookie = `companyIdCustomerPortalApp=${companyid}; path=/; max-age=31536000; SameSite=Lax`;
+  }, [router.isReady, router.query.companyId]);
 
   async function handleCreatePassword(e: React.FormEvent) {
     e.preventDefault();

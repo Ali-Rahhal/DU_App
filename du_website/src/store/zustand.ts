@@ -157,7 +157,7 @@ export const useAccountStore = create<AccountStore>()(
         set({ name, code, phone, address, cart }),
     }),
     {
-      name: "account",
+      name: "accountCustomerPortalApp",
       onRehydrateStorage: () => (state) => {
         state?.setHydrated(true);
       },
@@ -214,7 +214,7 @@ export const useAuthStore = create<AuthStore>()(
             companyId: process.env.NEXT_PUBLIC_DEFAULT_COMPANY as CompanyId,
             companyDisabled: false,
           });
-          document.cookie = `companyId=${process.env.NEXT_PUBLIC_DEFAULT_COMPANY}; path=/; max-age=31536000; SameSite=Lax`;
+          document.cookie = `companyIdCustomerPortalApp=${process.env.NEXT_PUBLIC_DEFAULT_COMPANY}; path=/; max-age=31536000; SameSite=Lax`;
         }
 
         try {
@@ -264,7 +264,7 @@ export const useCompanyStore = create<CompanyStore>()(
       },
     }),
     {
-      name: "company",
+      name: "companyCustomerPortalApp",
       onRehydrateStorage: () => (state) => {
         if (!state) return;
 

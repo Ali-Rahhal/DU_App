@@ -50,13 +50,6 @@ export const sendRegistrationVerificationEmail = async ({
       `,
     });
 
-    console.log("Verification email sent:", {
-      messageId: info.messageId,
-      accepted: info.accepted,
-      rejected: info.rejected,
-      response: info.response,
-    });
-
     return info;
   } catch (error) {
     console.error("Failed to send verification email:", error);

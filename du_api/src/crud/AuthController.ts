@@ -154,19 +154,17 @@ const sendRegistrationCode = async (
     WHERE MOH = ${moh_number}
   `;
 
-  if (!client.length) {
-    throw new Error("Account not found");
-  }
+  if (client.length) {
+    const clientData = client[0];
 
-  const clientData = client[0];
+    // Only rejected / N/A / unknown clients can register.
+    if (clientData.status_id !== 6 && clientData.Status !== "N/A") {
+      if (clientData.status_id === 7 || clientData.status_id === 99) {
+        throw new Error("Can't send more than 1 registry requests at a time");
+      }
 
-  // Only rejected / N/A clients can register.
-  if (clientData.status_id !== 6 && clientData.Status !== "N/A") {
-    if (clientData.status_id === 7) {
-      throw new Error("Can't send more than 1 registry requests at a time");
+      throw new Error("This account is already registered");
     }
-
-    throw new Error("This account is already registered");
   }
 
   // Generate 6-digit code
@@ -227,6 +225,7 @@ const verifyRegistrationCode = async (
     throw new Error("Verification code is required");
   }
 
+  // Check verification code
   const verification = await prisma.emailVerificationCode.findFirst({
     where: {
       mohNumber: moh_number,
@@ -252,6 +251,7 @@ const verifyRegistrationCode = async (
     throw new Error("Invalid verification code");
   }
 
+  // Check if client already exists
   const client = await prisma.$queryRaw<
     {
       Code: string;
@@ -269,27 +269,58 @@ const verifyRegistrationCode = async (
     WHERE MOH = ${moh_number}
   `;
 
+  let clientCode: string;
+  let isNewClient = false;
+
   if (!client.length) {
-    throw new Error("Account not found");
+    // Client does not exist -> create it with status 99
+    const createdClient = await prisma.$queryRaw<
+      {
+        client_code: string;
+        erp_client_code: string;
+        unique_identifier: number;
+        moh_number: string;
+      }[]
+    >`
+      EXEC dbo.CREATE_PENDING_CLIENT
+        @MohNumber = ${moh_number}
+    `;
+
+    if (!createdClient.length) {
+      throw new Error("Failed to create client");
+    }
+
+    clientCode = createdClient[0].client_code;
+    isNewClient = true;
+  } else {
+    // ---------------------------------------------------------
+    // Existing client
+    // ---------------------------------------------------------
+
+    const clientData = client[0];
+
+    if (clientData.status_id !== 6 && clientData.Status !== "N/A") {
+      throw new Error("This account is no longer eligible for registration");
+    }
+
+    clientCode = clientData.Code;
   }
 
-  const clientData = client[0];
-
-  if (clientData.status_id !== 6 && clientData.Status !== "N/A") {
-    throw new Error("This account is no longer eligible for registration");
-  }
+  // ---------------------------------------------------------
+  // Create/update pending registration
+  // ---------------------------------------------------------
 
   await prisma.$transaction(async (tx) => {
     const existingPending = await tx.client_pending.findUnique({
       where: {
-        moh_number,
+        client_code: clientCode,
       },
     });
 
     if (existingPending) {
       await tx.client_pending.update({
         where: {
-          moh_number,
+          client_code: clientCode,
         },
         data: {
           moh_number,
@@ -304,25 +335,29 @@ const verifyRegistrationCode = async (
     } else {
       await tx.client_pending.create({
         data: {
-          client_code: clientData.Code,
+          client_code: clientCode,
           moh_number,
           phone_number,
           email,
           description,
-          is_active: true,
           password_created: false,
+          is_active: true,
         },
       });
     }
 
-    await tx.client.update({
-      where: {
-        client_code: clientData.Code,
-      },
-      data: {
-        status_id: 7,
-      },
-    });
+    // Only existing/rejected clients move to Waiting Approval.
+    // Newly created clients stay at status 99.
+    if (!isNewClient) {
+      await tx.client.update({
+        where: {
+          client_code: clientCode,
+        },
+        data: {
+          status_id: 7,
+        },
+      });
+    }
 
     // Mark verification code as used
     await tx.emailVerificationCode.update({
@@ -337,7 +372,7 @@ const verifyRegistrationCode = async (
 
   return {
     message: "Registration request sent successfully",
-    client_code: clientData.Code,
+    client_code: clientCode,
   };
 };
 
@@ -453,6 +488,7 @@ const createPassword = async (
       },
       data: {
         password: encryptedPass,
+        is_verified: true,
       },
     });
 

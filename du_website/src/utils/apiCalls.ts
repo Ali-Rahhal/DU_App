@@ -107,8 +107,8 @@ const createPassword = async (data: { token: string; password: string }) => {
   });
 };
 
-const user = async (cookie?: string) => {
-  return await axios.get(privateApi + "/user", {
+const validateAuth = async (cookie?: string) => {
+  return await axios.get(privateApi + "/validate", {
     withCredentials: true,
     headers: {
       Cookie: cookie || "",
@@ -1059,7 +1059,7 @@ export {
   sendRegistrationCode,
   verifyRegistrationCode,
   createPassword,
-  user,
+  validateAuth,
   forgotPassword,
   validateResetCode,
   changePassword,

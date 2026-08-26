@@ -101,30 +101,31 @@ export default function CreatePasswordPage() {
   }
 
   return (
-    <div className="register-page">
+    <div className="create-password-page">
       {/* Language */}
-      <div className="register-language">
+      <div className="create-password-language">
         <ChangeLangDropdown />
       </div>
 
-      <div className="register-card create-password-card">
+      <div className="create-password-card">
         {/* Header */}
-        <div className="register-header">
+        <div className="create-password-header">
           <button
             type="button"
-            className="register-back-btn"
+            className="create-password-back-btn"
             disabled={loading}
             onClick={() => router.push("/login")}
           >
             <i className="ti ti-arrow-left"></i>
           </button>
 
-          <div className="register-header-content">
+          <div className="create-password-header-content">
             <img
               src={company?.logo}
               alt={company?.name}
-              className="register-company-logo"
+              className="create-password-company-logo"
             />
+
             <h1>{t("create_password.title")}</h1>
           </div>
         </div>
@@ -162,7 +163,7 @@ export default function CreatePasswordPage() {
           {/* Create Password */}
           <button
             type="submit"
-            className="register-submit-btn"
+            className="create-password-submit-btn"
             disabled={loading}
           >
             {loading ? (
@@ -177,14 +178,14 @@ export default function CreatePasswordPage() {
         </form>
 
         {/* Login */}
-        <div className="login-section">
-          <span className="login-text">
+        <div className="create-password-login-section">
+          <span className="create-password-login-text">
             {t("create_password.already_have_account")}
           </span>
 
           <button
             type="button"
-            className="login-link-btn"
+            className="create-password-login-link-btn"
             disabled={loading}
             onClick={() => router.push("/login")}
           >

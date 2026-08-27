@@ -16,11 +16,12 @@ router.post(`/login`, async (c) => {
     );
     const body = await c.req.json();
 
-    const code = body["code"];
+    const moh_number = body["moh_number"];
     const password = body["password"];
 
-    if (!code || !password) throw new Error("email or password not provided");
-    const result = await login({ code, password }, c, companyId);
+    if (!moh_number || !password)
+      throw new Error("moh_number or password not provided");
+    const result = await login({ moh_number, password }, c, companyId);
     return result;
     // return c.json({ message: "Login success", result: result });
   } catch (e) {

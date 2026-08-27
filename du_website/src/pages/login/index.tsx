@@ -14,7 +14,7 @@ import { Companies, CompanyId } from "@/utils/config_companies";
 import ChangeLangDropdown from "@/components/common/ChangeLangDropdown";
 
 export default function LoginPage() {
-  const [code, setCode] = useState("");
+  const [mohNumber, setMohNumber] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
@@ -44,12 +44,12 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      await login({ code, password });
+      await login({ moh_number: mohNumber, password });
       setRedirecting(true);
       toast.success("Logged in Successfully", {
         position: "bottom-center",
       });
-      setCode("");
+      setMohNumber("");
       setPassword("");
       await refreshCart();
       router.push("/");
@@ -141,9 +141,9 @@ export default function LoginPage() {
                   required
                   disabled={loading || redirecting}
                   className="form-control"
-                  placeholder={t("login_register.user_code")}
-                  value={code}
-                  onChange={(e) => setCode(e.target.value)}
+                  placeholder={t("login_register.moh_number")}
+                  value={mohNumber}
+                  onChange={(e) => setMohNumber(e.target.value)}
                 />
               </div>
 

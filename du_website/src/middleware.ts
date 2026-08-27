@@ -11,13 +11,9 @@ function matchesRoute(pathname: string, route: string) {
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
-  console.log("pathname:", pathname);
-
   const isPublicRoute = publicRoutes.some((route) =>
     matchesRoute(pathname, route),
   );
-
-  console.log("isPublicRoute:", isPublicRoute);
 
   const headers = new Headers(request.headers);
   headers.set("x-url", pathname);
@@ -29,8 +25,6 @@ export async function middleware(request: NextRequest) {
     const result = await validateAuth(cookie);
 
     isAuth = result.status === 200;
-
-    console.log("isAuth:", isAuth);
   } catch {
     isAuth = false;
   }

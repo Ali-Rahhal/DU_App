@@ -170,10 +170,10 @@ type AuthStore = {
   isAuth: boolean;
 
   login: ({
-    code,
+    moh_number,
     password,
   }: {
-    code: string;
+    moh_number: string;
     password: string;
   }) => Promise<any>;
   logout: () => Promise<void>;
@@ -186,8 +186,8 @@ export const useAuthStore = create<AuthStore>()(
       user: null,
       token: null,
       isAuth: false,
-      login: async ({ code, password }) => {
-        const result = await login({ code: code, password }).then((res) => {
+      login: async ({ moh_number, password }) => {
+        const result = await login({ moh_number, password }).then((res) => {
           set({
             isAuth: true,
             token: res.data.result.token,

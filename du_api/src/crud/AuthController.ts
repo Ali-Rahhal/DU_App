@@ -531,10 +531,10 @@ const createPassword = async (
 
 const login = async (
   {
-    code,
+    moh_number,
     password,
   }: {
-    code: string;
+    moh_number: string;
     password: string;
   },
   c: Context,
@@ -543,9 +543,10 @@ const login = async (
   const prisma = getPrisma(companyId);
   const client = await prisma.client.findFirst({
     where: {
-      client_code: code,
+      moh_number: moh_number,
     },
     select: {
+      client_code: true,
       status_id: true,
     },
   });
@@ -554,9 +555,11 @@ const login = async (
     return c.json({ message: "Client is not active", result: null }, 401);
   }
 
+  const code = client.client_code;
+
   const user = await prisma.web_accounts.findFirst({
     where: {
-      code: code,
+      code,
     },
   });
   if (!user) {

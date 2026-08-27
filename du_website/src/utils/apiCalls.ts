@@ -56,16 +56,16 @@ const getCookieArray = (cookie: string) => {
 ////////Auth ApiCalls
 //////
 const login = async ({
-  code,
+  moh_number,
   password,
 }: {
-  code: string;
+  moh_number: string;
   password: string;
 }) => {
   return await axios.post(
     publicApi + "/login",
     {
-      code,
+      moh_number,
       password,
     },
     {

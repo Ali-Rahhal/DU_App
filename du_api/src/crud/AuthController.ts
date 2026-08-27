@@ -115,11 +115,20 @@ const sendRegistrationCode = async (
     phone_number: string;
     email: string;
     description: string;
+    first_name: string;
+    last_name: string;
   },
 ) => {
   const prisma = getPrisma(companyId);
 
-  const { moh_number, phone_number, email, description } = data;
+  const {
+    moh_number,
+    phone_number,
+    email,
+    description,
+    first_name,
+    last_name,
+  } = data;
 
   if (!moh_number) {
     throw new Error("MOH number is required");
@@ -134,7 +143,15 @@ const sendRegistrationCode = async (
   }
 
   if (!description) {
-    throw new Error("Name is required");
+    throw new Error("Pharmacy name is required");
+  }
+
+  if (!first_name) {
+    throw new Error("First name is required");
+  }
+
+  if (!last_name) {
+    throw new Error("Last name is required");
   }
 
   const client = await prisma.$queryRaw<
@@ -214,12 +231,30 @@ const verifyRegistrationCode = async (
     phone_number: string;
     email: string;
     description: string;
+    first_name: string;
+    last_name: string;
     code: string;
+    longitude?: string;
+    latitude?: string;
+    region?: string;
+    address?: string;
   },
 ) => {
   const prisma = getPrisma(companyId);
 
-  const { moh_number, phone_number, email, description, code } = data;
+  const {
+    moh_number,
+    phone_number,
+    email,
+    description,
+    code,
+    first_name,
+    last_name,
+    longitude,
+    latitude,
+    region,
+    address,
+  } = data;
 
   if (!code) {
     throw new Error("Verification code is required");
@@ -327,6 +362,12 @@ const verifyRegistrationCode = async (
           phone_number,
           email,
           description,
+          first_name,
+          last_name,
+          longitude: longitude || null,
+          latitude: latitude || null,
+          region: region || null,
+          address: address || null,
           password_created: false,
           last_edited: new Date(),
           is_active: true,
@@ -340,6 +381,12 @@ const verifyRegistrationCode = async (
           phone_number,
           email,
           description,
+          first_name,
+          last_name,
+          longitude: longitude || null,
+          latitude: latitude || null,
+          region: region || null,
+          address: address || null,
           password_created: false,
           is_active: true,
         },

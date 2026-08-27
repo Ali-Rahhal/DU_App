@@ -1,10 +1,13 @@
 .login-page {
   position: relative;
+
   min-height: 100vh;
+
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px;
+
+  padding: 32px 20px;
 
   background:
     radial-gradient(
@@ -15,114 +18,140 @@
     linear-gradient(135deg, #f8f9fa, #e9ecef);
 }
 
+/* =========================================================
+   Card
+========================================================= */
+
 .login-card {
   position: relative;
+
   width: 480px;
-  max-width: 95%;
-  padding: 45px;
+  max-width: 100%;
+
+  padding: 42px 46px 30px;
+
   background: #fff;
+
   border-radius: 24px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+
+  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.1);
 }
 
-/* Language */
+/* =========================================================
+   Language
+========================================================= */
 
 .login-language {
   position: fixed;
+
   top: 20px;
   right: 24px;
+
   z-index: 100;
 }
 
-/* Loading */
+/* =========================================================
+   Loading Overlay
+========================================================= */
 
 .login-overlay {
   position: absolute;
   inset: 0;
+
   z-index: 20;
 
   display: flex;
   flex-direction: column;
+
   align-items: center;
   justify-content: center;
+
   gap: 15px;
 
   background: rgba(255, 255, 255, 0.92);
+
   border-radius: 24px;
-  font-weight: 600;
+
   color: #333;
+
+  font-size: 14px;
+  font-weight: 600;
 }
 
-/* Company selection */
-
-.select-company-text {
-  margin: 20px 80px 28px;
-  font-size: 15px;
-  text-align: center;
-}
-
-.company-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-}
-
-.company-card {
-  position: relative;
-
-  min-height: 160px;
-  padding: 24px 16px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  background: #fff;
-  border: 2px solid #f0f0f0;
-  border-radius: 16px;
-
-  cursor: pointer;
-  transition: 0.2s;
-
-  &:hover,
-  &.active {
-    border-color: #0d6efd;
-    background: #f8fbff;
-  }
-
-  &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-  }
-
-  h4 {
-    margin: 14px 0 4px;
-    font-size: 18px;
-    font-weight: 600;
-    color: #1a1a2e;
-  }
-}
-
-.company-card-logo {
-  width: 120px;
-  height: 70px;
-  object-fit: contain;
-}
-
-/* Login header */
+/* =========================================================
+   Header
+========================================================= */
 
 .login-header {
   position: relative;
-  text-align: center;
-  margin-bottom: 32px;
+
+  margin-bottom: 28px;
 }
+
+.login-header-content {
+  text-align: center;
+
+  padding: 0 40px;
+}
+
+.login-company-logo {
+  width: auto;
+  height: 56px;
+
+  object-fit: contain;
+
+  margin-bottom: 14px;
+}
+
+.login-header h1 {
+  margin: 0;
+
+  color: #1a1a2e;
+
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.login-subtitle {
+  margin: 8px 0 0;
+
+  color: #6c757d;
+
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   Company Selection Header
+========================================================= */
+
+.login-selection-icon {
+  width: 56px;
+  height: 56px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: 0 auto 16px;
+
+  border-radius: 50%;
+
+  background: #eaf3ff;
+  color: #0d6efd;
+
+  font-size: 25px;
+}
+
+/* =========================================================
+   Back Button
+========================================================= */
 
 .login-back-btn {
   position: absolute;
 
-  top: -10px;
-  left: -10px;
+  left: 0;
+  top: 0;
 
   width: 38px;
   height: 38px;
@@ -131,27 +160,20 @@
   align-items: center;
   justify-content: center;
 
+  border: 1px solid #e9ecef;
   border-radius: 50%;
 
-  border: 1px solid #e9ecef;
   background: #f8f9fa;
-
   color: #0d6efd;
 
   cursor: pointer;
 
   transition: 0.2s;
 
-  i {
-    font-size: 18px;
-  }
-
   &:hover:not(:disabled) {
     background: #0d6efd;
-    color: white;
     border-color: #0d6efd;
-
-    transform: translateX(-2px);
+    color: #fff;
   }
 
   &:disabled {
@@ -160,33 +182,154 @@
   }
 }
 
-.login-header-content h1 {
-  margin: 0 0 16px;
-  font-size: 28px;
-  font-weight: 700;
-  color: #1a1a2e;
+/* =========================================================
+   Company Selection
+========================================================= */
+
+.company-grid {
+  display: grid;
+
+  grid-template-columns: repeat(2, 1fr);
+
+  gap: 14px;
 }
 
-.login-company-logo {
-  width: auto;
+.company-card {
+  position: relative;
+
+  min-height: 155px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 22px 18px;
+
+  border: 1.5px solid #e1e5e9;
+  border-radius: 13px;
+
+  background: #fff;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s,
+    background 0.2s,
+    box-shadow 0.2s,
+    transform 0.2s;
+
+  &:hover:not(:disabled) {
+    border-color: #0d6efd;
+
+    background: #f8fbff;
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.07);
+  }
+
+  &.active {
+    border-color: #0d6efd;
+
+    background: #f8fbff;
+
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.06);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+.company-card-logo {
+  width: 120px;
   height: 65px;
+
   object-fit: contain;
+
+  margin-bottom: 10px;
 }
 
-/* Inputs */
+.company-card-content {
+  text-align: center;
+}
 
-.form-control {
+.company-card-content h4 {
+  margin: 0;
+
+  color: #1a1a2e;
+
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.company-card-arrow {
+  position: absolute;
+
+  right: 12px;
+  top: 12px;
+
+  color: #adb5bd;
+
+  font-size: 15px;
+
+  transition: 0.2s;
+}
+
+.company-card:hover .company-card-arrow,
+.company-card.active .company-card-arrow {
+  color: #0d6efd;
+}
+
+/* =========================================================
+   Login Fields
+========================================================= */
+
+.login-field {
+  margin-bottom: 19px;
+}
+
+.login-label {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: #495057;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  span {
+    color: #adb5bd;
+    font-weight: 400;
+  }
+}
+
+.login-card .form-control {
+  width: 100%;
   height: 50px;
 
-  border: 2px solid #e9ecef;
-  border-radius: 12px !important;
+  border: 1.5px solid #e1e5e9;
+  border-radius: 11px !important;
 
-  padding-left: 18px;
-  font-size: 15px;
+  padding: 0 16px;
+
+  background: #fff;
+  color: #212529;
+
+  font-size: 14px;
+
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 
   &:focus {
     border-color: #0d6efd;
-    box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.1);
+
+    box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.08);
   }
 
   &:disabled {
@@ -198,32 +341,63 @@
   }
 }
 
-/* Login button */
+.login-field-error {
+  display: block;
+  margin-top: 6px;
+  color: #dc3545;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.login-card .form-control.is-invalid-login {
+  border-color: #dc3545 !important;
+  box-shadow: none;
+
+  &:focus {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.08);
+  }
+}
+
+/* =========================================================
+   Login Button
+========================================================= */
 
 .login-button {
   width: 100%;
-  height: 52px;
-  margin-top: 4px;
+  height: 50px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
+  gap: 8px;
+
+  margin-top: 8px;
+
   border: 0;
-  border-radius: 12px;
+  border-radius: 11px;
 
   background: #0d6efd;
   color: #fff;
 
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
+
+  cursor: pointer;
 
   transition: 0.2s;
 
+  i {
+    font-size: 17px;
+  }
+
   &:hover:not(:disabled) {
     background: #0b5ed7;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(13, 110, 253, 0.3);
+
+    transform: translateY(-1px);
+
+    box-shadow: 0 7px 20px rgba(13, 110, 253, 0.25);
   }
 
   &:disabled {
@@ -232,15 +406,19 @@
   }
 }
 
-/* Register */
+/* =========================================================
+   Register
+========================================================= */
 
 .register-section {
   display: flex;
+
   justify-content: center;
   align-items: center;
+
   gap: 8px;
 
-  margin-top: 24px;
+  margin-top: 25px;
   padding-top: 20px;
 
   border-top: 1px solid #f0f0f0;
@@ -248,7 +426,8 @@
 
 .register-text {
   color: #6c757d;
-  font-size: 14px;
+
+  font-size: 13px;
 }
 
 .register-btn {
@@ -260,114 +439,209 @@
   background: transparent;
   color: #0d6efd;
 
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
 
   cursor: pointer;
 
-  &:hover {
+  transition: 0.2s;
+
+  &:hover:not(:disabled) {
     background: rgba(13, 110, 253, 0.08);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 }
 
-/* Mobile */
+/* =========================================================
+   Mobile
+========================================================= */
 
 @media (max-width: 576px) {
   .login-page {
-    align-items: flex-start;
-    padding: 30px 15px;
+    min-height: 100dvh;
+
+    align-items: stretch;
+
+    padding: 0;
+
+    background: #fff;
   }
 
   .login-card {
     width: 100%;
-    padding: 70px 20px 28px;
-    border-radius: 20px;
+    max-width: none;
+
+    min-height: 100dvh;
+
+    padding: 70px 20px 25px;
+
+    border-radius: 0;
+
+    box-shadow: none;
   }
 
   .login-language {
-    top: 16px;
+    top: 15px;
     right: 16px;
   }
 
-  .select-company-text {
-    margin: 0 10px 20px;
+  /* Header */
+
+  .login-header {
+    margin-bottom: 24px;
   }
+
+  .login-header-content {
+    padding: 0 38px;
+  }
+
+  .login-company-logo {
+    height: 48px;
+  }
+
+  .login-header h1 {
+    font-size: 25px;
+  }
+
+  .login-subtitle {
+    font-size: 13px;
+  }
+
+  .login-back-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .login-selection-icon {
+    width: 48px;
+    height: 48px;
+
+    margin-bottom: 13px;
+
+    font-size: 21px;
+  }
+
+  /* Company selection */
 
   .company-grid {
     grid-template-columns: 1fr;
+
     gap: 12px;
   }
 
   .company-card {
-    min-height: 130px;
-    padding: 20px 16px;
+    min-height: 125px;
 
-    h4 {
-      margin-top: 10px;
-      font-size: 16px;
-    }
+    flex-direction: row;
+
+    justify-content: flex-start;
+
+    padding: 18px 45px 18px 20px;
+
+    text-align: left;
   }
 
   .company-card-logo {
-    width: 100px;
-    height: 60px;
+    width: 90px;
+    height: 55px;
+
+    margin: 0 18px 0 0;
   }
 
-  .login-back-btn {
-    top: -12px;
-    left: -8px;
+  .company-card-content {
+    flex: 1;
 
-    width: 34px;
-    height: 34px;
-
-    i {
-      font-size: 16px;
-    }
+    text-align: left;
   }
 
-  .login-header-content h1 {
-    font-size: 22px;
-  }
-
-  .login-company-logo {
-    height: 50px;
-  }
-
-  .form-control {
-    height: 46px;
-    font-size: 14px;
-  }
-
-  .login-button {
-    height: 48px;
+  .company-card-content h4 {
     font-size: 15px;
   }
 
+  .company-card-arrow {
+    right: 16px;
+    top: 50%;
+
+    transform: translateY(-50%);
+  }
+
+  /* Fields */
+
+  .login-field {
+    margin-bottom: 17px;
+  }
+
+  .login-label {
+    font-size: 12px;
+  }
+
+  .login-card .form-control {
+    height: 48px;
+
+    font-size: 14px;
+  }
+
+  /* Button */
+
+  .login-button {
+    height: 50px;
+
+    font-size: 14px;
+  }
+
+  /* Register */
+
   .register-section {
+    margin-top: 22px;
+
     flex-direction: column;
+
     gap: 4px;
+  }
+
+  /* Overlay */
+
+  .login-overlay {
+    border-radius: 0;
   }
 }
 
 @media (max-width: 380px) {
   .login-card {
-    padding: 68px 16px 22px;
+    padding-left: 16px;
+    padding-right: 16px;
   }
 
-  .company-card {
-    min-height: 110px;
-  }
-
-  .company-card-logo {
-    width: 80px;
-    height: 50px;
-  }
-
-  .login-header-content h1 {
-    font-size: 20px;
+  .login-header-content {
+    padding: 0 32px;
   }
 
   .login-company-logo {
     height: 40px;
+  }
+
+  .company-card {
+    min-height: 110px;
+
+    padding-left: 15px;
+  }
+
+  .company-card-logo {
+    width: 75px;
+    height: 50px;
+
+    margin-right: 14px;
+  }
+
+  .company-card-content h4 {
+    font-size: 14px;
+  }
+
+  .login-button {
+    font-size: 13px;
   }
 }

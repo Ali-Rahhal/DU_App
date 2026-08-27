@@ -1,6 +1,6 @@
 {
   "name": "du_website",
-  "version": "25.08.2026-1.1.9",
+  "version": "27.08.2026-1.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev -p 5006",
@@ -22,6 +22,7 @@
     "js-cookie": "^3.0.1",
     "jsbarcode": "^3.11.6",
     "lottie-react": "^2.4.0",
+    "lucide-react": "^1.34.0",
     "next": "^15.0.2",
     "next-intl": "^3.24.0",
     "next-nprogress-bar": "^2.3.12",

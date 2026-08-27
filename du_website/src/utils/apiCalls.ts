@@ -83,6 +83,8 @@ const sendRegistrationCode = async (data: {
   phone_number: string;
   email: string;
   description: string;
+  first_name: string;
+  last_name: string;
 }) => {
   return await axios.post(publicApi + "/register/send-code", data, {
     withCredentials: true,
@@ -94,7 +96,13 @@ const verifyRegistrationCode = async (data: {
   phone_number: string;
   email: string;
   description: string;
+  first_name: string;
+  last_name: string;
   code: string;
+  longitude?: string;
+  latitude?: string;
+  region?: string;
+  address?: string;
 }) => {
   return await axios.post(publicApi + "/register/verify-code", data, {
     withCredentials: true,

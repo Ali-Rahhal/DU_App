@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+
 import { Spinner } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
+import { Store } from "lucide-react";
 
 import {
   useAccountStore,
@@ -16,8 +18,15 @@ import ChangeLangDropdown from "@/components/common/ChangeLangDropdown";
 export default function LoginPage() {
   const [mohNumber, setMohNumber] = useState("");
   const [password, setPassword] = useState("");
+
+  const [errors, setErrors] = useState({
+    mohNumber: "",
+    password: "",
+  });
+
   const [loading, setLoading] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
+
   const [step, setStep] = useState<"company" | "login">("company");
 
   const { login } = useAuthStore();
@@ -25,7 +34,7 @@ export default function LoginPage() {
   const { companyId, setCompany } = useCompanyStore();
 
   const router = useRouter();
-  const t = useTranslations();
+  const t = useTranslations("login_register");
 
   useEffect(() => {
     const cookie = document.cookie
@@ -41,20 +50,51 @@ export default function LoginPage() {
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
+
+    const newErrors = {
+      mohNumber: "",
+      password: "",
+    };
+
+    const trimmedMohNumber = mohNumber.trim();
+
+    if (!trimmedMohNumber) {
+      newErrors.mohNumber = t("errors.moh_number_required");
+    } else if (!/^\d{6}$/.test(trimmedMohNumber)) {
+      newErrors.mohNumber = t("errors.moh_number_invalid");
+    }
+
+    if (!password) {
+      newErrors.password = t("errors.password_required");
+    }
+
+    setErrors(newErrors);
+
+    if (newErrors.mohNumber || newErrors.password) {
+      return;
+    }
+
     setLoading(true);
 
     try {
-      await login({ moh_number: mohNumber, password });
+      await login({
+        moh_number: trimmedMohNumber,
+        password,
+      });
+
       setRedirecting(true);
-      toast.success("Logged in Successfully", {
+
+      toast.success(t("login_success"), {
         position: "bottom-center",
       });
+
       setMohNumber("");
       setPassword("");
+
       await refreshCart();
       router.push("/");
     } catch (error: any) {
-      toast.error(error?.response?.data?.message ?? "Login failed", {
+      toast.error(error?.response?.data?.message ?? t("errors.login_failed"), {
         position: "top-right",
       });
     } finally {
@@ -64,7 +104,9 @@ export default function LoginPage() {
 
   function selectCompany(company: CompanyId) {
     setCompany(company);
+
     document.cookie = `companyIdCustomerPortalApp=${company}; path=/; max-age=31536000; SameSite=Lax`;
+
     setStep("login");
   }
 
@@ -72,7 +114,7 @@ export default function LoginPage() {
 
   return (
     <div className="login-page">
-      {/* Language Selector */}
+      {/* Language */}
       <div className="login-language">
         <ChangeLangDropdown />
       </div>
@@ -82,16 +124,29 @@ export default function LoginPage() {
         {redirecting && (
           <div className="login-overlay">
             <Spinner animation="border" variant="primary" />
-            <span>{t("login_register.loading_your_account")}</span>
+
+            <span>{t("loading_your_account")}</span>
           </div>
         )}
 
-        {/* Company Selection Step */}
+        {/* ==================================================
+            COMPANY SELECTION
+        ================================================== */}
         {step === "company" ? (
           <>
-            <p className="text-center text-muted select-company-text">
-              {t("login_register.select_company_description")}
-            </p>
+            <div className="login-header">
+              <div className="login-header-content">
+                <div className="login-selection-icon">
+                  <Store size={18} />
+                </div>
+
+                <h1>{t("welcome")}</h1>
+
+                <p className="login-subtitle">
+                  {t("select_company_description")}
+                </p>
+              </div>
+            </div>
 
             <div className="company-grid">
               {Object.values(Companies)
@@ -99,7 +154,11 @@ export default function LoginPage() {
                 .map((c) => (
                   <button
                     key={c.id}
-                    className={`company-card ${c.id === companyId ? "active" : ""}`}
+                    type="button"
+                    className={`company-card ${
+                      c.id === companyId ? "active" : ""
+                    }`}
+                    disabled={loading || redirecting}
                     onClick={() => selectCompany(c.id as CompanyId)}
                   >
                     <img
@@ -107,14 +166,21 @@ export default function LoginPage() {
                       alt={c.name}
                       className="company-card-logo"
                     />
-                    <h4>{c.name}</h4>
+
+                    <div className="company-card-content">
+                      <h4>{c.name}</h4>
+                    </div>
+
+                    <i className="ti ti-chevron-right company-card-arrow" />
                   </button>
                 ))}
             </div>
           </>
         ) : (
-          /* Login Step */
           <>
+            {/* ==================================================
+                LOGIN
+            ================================================== */}
             <div className="login-header">
               <button
                 type="button"
@@ -122,43 +188,94 @@ export default function LoginPage() {
                 disabled={loading || redirecting}
                 onClick={() => setStep("company")}
               >
-                <i className="ti ti-arrow-left"></i>
+                <i className="ti ti-arrow-left" />
               </button>
+
               <div className="login-header-content">
-                <h1>{t("login_register.welcome_to")}</h1>
                 <img
                   src={company.logo}
                   alt={company.name}
-                  className="login-company-logo"
+                  className="login-company-logo mb-5"
                 />
+
+                <h1>{t("welcome")}</h1>
+
+                <p className="login-subtitle">
+                  {t("sign_in_to_pharmacy_account")}
+                </p>
               </div>
             </div>
 
             <form onSubmit={handleLogin}>
-              <div className="form-group mb-3">
+              {/* MOH Number */}
+              <div className="login-field">
+                <label className="login-label">
+                  {t("pharmacy_license_number")} <span>*</span>
+                </label>
+
                 <input
                   type="text"
-                  required
+                  inputMode="numeric"
+                  maxLength={6}
                   disabled={loading || redirecting}
-                  className="form-control"
-                  placeholder={t("login_register.moh_number")}
+                  className={`form-control ${
+                    errors.mohNumber ? "is-invalid-login" : ""
+                  }`}
+                  placeholder={t("license_number_placeholder")}
                   value={mohNumber}
-                  onChange={(e) => setMohNumber(e.target.value)}
+                  onChange={(e) => {
+                    setMohNumber(e.target.value.replace(/\D/g, "").slice(0, 6));
+
+                    if (errors.mohNumber) {
+                      setErrors((prev) => ({
+                        ...prev,
+                        mohNumber: "",
+                      }));
+                    }
+                  }}
+                  autoComplete="username"
                 />
+
+                {errors.mohNumber && (
+                  <small className="login-field-error">
+                    {errors.mohNumber}
+                  </small>
+                )}
               </div>
 
-              <div className="form-group mb-4">
+              {/* Password */}
+              <div className="login-field">
+                <label className="login-label">
+                  {t("password")} <span>*</span>
+                </label>
+
                 <input
                   type="password"
-                  required
                   disabled={loading || redirecting}
-                  className="form-control"
-                  placeholder={t("login_register.password")}
+                  className={`form-control ${
+                    errors.password ? "is-invalid-login" : ""
+                  }`}
+                  placeholder={t("password")}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+
+                    if (errors.password) {
+                      setErrors((prev) => ({
+                        ...prev,
+                        password: "",
+                      }));
+                    }
+                  }}
+                  autoComplete="current-password"
                 />
+
+                {errors.password && (
+                  <small className="login-field-error">{errors.password}</small>
+                )}
               </div>
 
+              {/* Login */}
               <button
                 type="submit"
                 className="login-button"
@@ -166,25 +283,31 @@ export default function LoginPage() {
               >
                 {loading || redirecting ? (
                   <>
-                    <Spinner animation="border" size="sm" className="me-2" />
-                    {t("login_register.loading")}
+                    <Spinner animation="border" size="sm" />
+
+                    <span>{t("loading")}</span>
                   </>
                 ) : (
-                  t("login_register.login")
+                  <>
+                    <span>{t("login")}</span>
+
+                    <i className="ti ti-arrow-right" />
+                  </>
                 )}
               </button>
             </form>
 
+            {/* Register */}
             <div className="register-section">
-              <span className="register-text">
-                {t("login_register.dont_have_account")}
-              </span>
+              <span className="register-text">{t("dont_have_account")}</span>
+
               <button
                 type="button"
                 className="register-btn"
+                disabled={loading || redirecting}
                 onClick={() => router.push("/register")}
               >
-                {t("login_register.register")}
+                {t("register")}
               </button>
             </div>
           </>

@@ -259,14 +259,6 @@
   }
 }
 
-.register-field-hint {
-  display: block;
-  margin-top: 6px;
-
-  color: #98a0a8;
-  font-size: 11px;
-}
-
 .register-field-error {
   display: block;
   margin-top: 6px;
@@ -447,131 +439,83 @@
   line-height: 1.5;
 }
 
-/* =========================================================
-   Location
+/* ========================================================= 
+   GPS Location 
 ========================================================= */
 
-.location-section {
-  margin-bottom: 24px;
-
-  padding: 15px;
-
-  border: 1px solid #e4e8ec;
-  border-radius: 13px;
-
-  background: #f8fafc;
-}
-
-.location-content {
+.gps-input-row {
+  min-height: 50px;
   display: flex;
   align-items: center;
-  gap: 12px;
-}
-
-.location-icon {
-  width: 40px;
-  height: 40px;
-
-  flex-shrink: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 10px;
-
-  background: #eaf3ff;
-  color: #0d6efd;
-
-  font-size: 19px;
-}
-
-.location-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.location-title {
-  color: #343a40;
-  font-size: 13px;
-  font-weight: 600;
-
-  span {
-    margin-left: 5px;
-    color: #adb5bd;
-    font-weight: 400;
+  gap: 10px;
+  padding: 5px;
+  border: 1.5px solid #e1e5e9;
+  border-radius: 11px;
+  background: #fff;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+  &:focus-within {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.08);
   }
 }
-
-.location-info p {
-  margin: 3px 0 0;
-
-  color: #7a838c;
-  font-size: 11px;
-  line-height: 1.4;
-}
-
-.location-success {
+.gps-status {
+  flex: 1;
+  min-width: 0;
   display: flex;
   align-items: center;
-  gap: 4px;
-
-  margin-top: 3px;
-
-  color: #198754;
-  font-size: 11px;
-  font-weight: 600;
+  gap: 10px;
+  padding-left: 7px;
+  color: #0d6efd;
+  svg {
+    flex-shrink: 0;
+  }
+  > div {
+    min-width: 0;
+  }
+  strong {
+    display: block;
+    color: #495057;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  small {
+    display: block;
+    margin-top: 2px;
+    color: #98a0a8;
+    font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
-
 .location-btn {
   height: 38px;
-  min-width: 105px;
-
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 5px;
-
-  padding: 0 12px;
-
+  padding: 0 13px;
   border: 1px solid #0d6efd;
-  border-radius: 9px;
-
+  border-radius: 8px;
   background: #fff;
   color: #0d6efd;
-
   font-size: 12px;
   font-weight: 600;
-
   cursor: pointer;
   transition: 0.2s;
-
   &:hover:not(:disabled) {
     background: #0d6efd;
     color: #fff;
   }
-
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
-  }
-}
-
-.coordinates {
-  display: flex;
-  gap: 18px;
-
-  margin-top: 12px;
-  padding-top: 10px;
-
-  border-top: 1px solid #e2e6ea;
-
-  color: #7a838c;
-  font-size: 11px;
-
-  strong {
-    margin-right: 3px;
-    color: #495057;
   }
 }
 
@@ -613,7 +557,8 @@
 }
 
 .register-continue-btn {
-  margin-top: 8px;
+  width: 60%;
+  margin: 8px auto 0;
 
   i {
     font-size: 17px;
@@ -653,46 +598,6 @@
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
-  }
-}
-
-/* =========================================================
-   Login
-========================================================= */
-
-.login-section {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-
-  margin-top: 25px;
-  padding-top: 20px;
-
-  border-top: 1px solid #f0f0f0;
-}
-
-.login-text {
-  color: #6c757d;
-  font-size: 13px;
-}
-
-.login-link-btn {
-  padding: 4px 8px;
-
-  border: 0;
-  border-radius: 6px;
-
-  background: transparent;
-  color: #0d6efd;
-
-  font-size: 13px;
-  font-weight: 600;
-
-  cursor: pointer;
-
-  &:hover {
-    background: rgba(13, 110, 253, 0.08);
   }
 }
 
@@ -1011,25 +916,27 @@
     width: 245px;
   }
 
-  /* Location */
+  /* GPS */
 
-  .location-content {
-    align-items: flex-start;
-    flex-wrap: wrap;
+  .gps-input-row {
+    min-height: auto;
+    align-items: stretch;
+    flex-direction: column;
+    padding: 7px;
   }
-
-  .location-info {
-    flex: 1;
+  .gps-status {
+    min-height: 40px;
+    padding: 0 5px;
+    strong {
+      font-size: 12px;
+    }
+    small {
+      font-size: 10px;
+    }
   }
-
   .location-btn {
     width: 100%;
-    margin-top: 3px;
-  }
-
-  .coordinates {
-    flex-direction: column;
-    gap: 4px;
+    height: 42px;
   }
 
   /* Buttons */
@@ -1038,10 +945,8 @@
     grid-template-columns: 100px 1fr;
   }
 
-  /* Login */
-
-  .login-section {
-    margin-top: 22px;
+  .register-continue-btn {
+    width: 80%;
   }
 }
 

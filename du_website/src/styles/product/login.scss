@@ -364,7 +364,7 @@
 ========================================================= */
 
 .login-button {
-  width: 100%;
+  width: 80%;
   height: 50px;
 
   display: flex;
@@ -373,7 +373,7 @@
 
   gap: 8px;
 
-  margin-top: 8px;
+  margin: 8px auto 0;
 
   border: 0;
   border-radius: 11px;
@@ -407,51 +407,45 @@
 }
 
 /* =========================================================
-   Register
+   Request to Join
 ========================================================= */
 
-.register-section {
+.request-join-button {
+  width: 80%;
+  height: 50px;
   display: flex;
-
-  justify-content: center;
   align-items: center;
-
+  justify-content: center;
   gap: 8px;
-
-  margin-top: 25px;
-  padding-top: 20px;
-
-  border-top: 1px solid #f0f0f0;
-}
-
-.register-text {
-  color: #6c757d;
-
-  font-size: 13px;
-}
-
-.register-btn {
-  padding: 4px 8px;
-
-  border: 0;
-  border-radius: 6px;
-
-  background: transparent;
+  margin: 12px auto 0;
+  border: 1.5px solid #0d6efd;
+  border-radius: 11px;
+  background: #fff;
   color: #0d6efd;
-
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
-
   cursor: pointer;
+  transition:
+    background 0.2s,
+    border-color 0.2s,
+    color 0.2s,
+    transform 0.2s,
+    box-shadow 0.2s;
 
-  transition: 0.2s;
+  i {
+    font-size: 17px;
+  }
 
   &:hover:not(:disabled) {
-    background: rgba(13, 110, 253, 0.08);
+    background: #f8f9fa;
+    border-color: #0b5ed7;
+    color: #0b5ed7;
+    transform: translateY(-1px);
+    box-shadow: 0 7px 20px rgba(13, 110, 253, 0.25);
   }
 
   &:disabled {
-    opacity: 0.6;
+    opacity: 0.7;
     cursor: not-allowed;
   }
 }
@@ -591,16 +585,6 @@
     height: 50px;
 
     font-size: 14px;
-  }
-
-  /* Register */
-
-  .register-section {
-    margin-top: 22px;
-
-    flex-direction: column;
-
-    gap: 4px;
   }
 
   /* Overlay */

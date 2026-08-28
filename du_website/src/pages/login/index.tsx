@@ -60,7 +60,7 @@ export default function LoginPage() {
 
     if (!trimmedMohNumber) {
       newErrors.mohNumber = t("errors.moh_number_required");
-    } else if (!/^\d{6}$/.test(trimmedMohNumber)) {
+    } else if (!/^MOH-\d{4}-\d{6}$/.test(trimmedMohNumber)) {
       newErrors.mohNumber = t("errors.moh_number_invalid");
     }
 
@@ -215,8 +215,7 @@ export default function LoginPage() {
 
                 <input
                   type="text"
-                  inputMode="numeric"
-                  maxLength={6}
+                  maxLength={15}
                   disabled={loading || redirecting}
                   className={`form-control ${
                     errors.mohNumber ? "is-invalid-login" : ""
@@ -224,7 +223,7 @@ export default function LoginPage() {
                   placeholder={t("license_number_placeholder")}
                   value={mohNumber}
                   onChange={(e) => {
-                    setMohNumber(e.target.value.replace(/\D/g, "").slice(0, 6));
+                    setMohNumber(e.target.value.toUpperCase());
 
                     if (errors.mohNumber) {
                       setErrors((prev) => ({
@@ -297,19 +296,16 @@ export default function LoginPage() {
               </button>
             </form>
 
-            {/* Register */}
-            <div className="register-section">
-              <span className="register-text">{t("dont_have_account")}</span>
-
-              <button
-                type="button"
-                className="register-btn"
-                disabled={loading || redirecting}
-                onClick={() => router.push("/register")}
-              >
-                {t("register")}
-              </button>
-            </div>
+            {/* Request to Join */}
+            <button
+              type="button"
+              className="request-join-button"
+              disabled={loading || redirecting}
+              onClick={() => router.push("/register")}
+            >
+              <span>{t("request_to_join")}</span>
+              <i className="ti ti-arrow-right" />
+            </button>
           </>
         )}
       </div>

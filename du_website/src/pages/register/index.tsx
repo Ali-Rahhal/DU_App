@@ -248,7 +248,7 @@ export default function RegisterPage() {
 
     if (!trimmedMohNumber) {
       newErrors.mohNumber = t("errors.moh_number_required");
-    } else if (!/^\d{6}$/.test(trimmedMohNumber)) {
+    } else if (!/^MOH-\d{4}-\d{6}$/.test(trimmedMohNumber)) {
       newErrors.mohNumber = t("errors.moh_number_invalid");
     }
 
@@ -699,7 +699,6 @@ export default function RegisterPage() {
                   </small>
                 )}
               </div>
-
               {/* License Number */}
               <div className="register-field">
                 <label className="register-label">
@@ -708,8 +707,7 @@ export default function RegisterPage() {
 
                 <input
                   type="text"
-                  inputMode="numeric"
-                  maxLength={6}
+                  maxLength={15}
                   className={`form-control ${
                     errors.mohNumber ? "is-invalid-register" : ""
                   }`}
@@ -717,7 +715,7 @@ export default function RegisterPage() {
                   value={mohNumber}
                   disabled={loading}
                   onChange={(e) => {
-                    setMohNumber(e.target.value.replace(/\D/g, "").slice(0, 6));
+                    setMohNumber(e.target.value.toUpperCase());
 
                     if (errors.mohNumber) {
                       setErrors((prev) => ({
@@ -728,17 +726,12 @@ export default function RegisterPage() {
                   }}
                 />
 
-                {errors.mohNumber ? (
+                {errors.mohNumber && (
                   <small className="register-field-error">
                     {errors.mohNumber}
                   </small>
-                ) : (
-                  <small className="register-field-hint">
-                    {t("license_number_hint")}
-                  </small>
                 )}
               </div>
-
               {/* Region */}
               <div className="register-field">
                 <label className="register-label">
@@ -760,7 +753,6 @@ export default function RegisterPage() {
                   ))}
                 </select>
               </div>
-
               {/* Address */}
               <div className="register-field">
                 <label className="register-label">
@@ -776,30 +768,31 @@ export default function RegisterPage() {
                   onChange={(e) => setAddress(e.target.value)}
                 />
               </div>
-
-              {/* GPS */}
-              <div className="location-section">
-                <div className="location-content">
-                  <div className="location-icon">
+              {/* GPS Location */}
+              <div className="register-field">
+                <label className="register-label">
+                  {t("pharmacy_location")} <span>({t("optional")})</span>
+                </label>
+                <div className="gps-input-row">
+                  <div className="gps-status">
                     <Map size={17} />
-                  </div>
-
-                  <div className="location-info">
-                    <div className="location-title">
-                      {t("pharmacy_location")}
-                      <span>({t("optional")})</span>
+                    <div>
+                      {latitude && longitude ? (
+                        <>
+                          <strong>{t("location_captured")}</strong>
+                          <small>
+                            {t("lat")}: {latitude} &nbsp;•&nbsp; {t("lng")}:
+                            {longitude}
+                          </small>
+                        </>
+                      ) : (
+                        <>
+                          <strong>{t("location_description")}</strong>
+                          <small>{t("capture_gps")}</small>
+                        </>
+                      )}
                     </div>
-
-                    {latitude && longitude ? (
-                      <div className="location-success">
-                        <i className="ti ti-circle-check" />
-                        {t("location_captured")}
-                      </div>
-                    ) : (
-                      <p>{t("location_description")}</p>
-                    )}
                   </div>
-
                   <button
                     type="button"
                     className="location-btn"
@@ -823,20 +816,7 @@ export default function RegisterPage() {
                     )}
                   </button>
                 </div>
-
-                {latitude && longitude && (
-                  <div className="coordinates">
-                    <span>
-                      <strong>{t("lat")}</strong> {latitude}
-                    </span>
-
-                    <span>
-                      <strong>{t("lng")}</strong> {longitude}
-                    </span>
-                  </div>
-                )}
               </div>
-
               {/* Actions */}
               <div className="register-step-actions">
                 <button
@@ -870,20 +850,6 @@ export default function RegisterPage() {
             </div>
           )}
         </form>
-
-        {/* Login */}
-        <div className="login-section">
-          <span className="login-text">{t("already_have_account")}</span>
-
-          <button
-            type="button"
-            className="login-link-btn"
-            disabled={loading}
-            onClick={() => router.push("/login")}
-          >
-            {t("login")}
-          </button>
-        </div>
       </div>
 
       {/* ==================================================

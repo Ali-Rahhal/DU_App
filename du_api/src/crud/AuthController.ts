@@ -131,7 +131,13 @@ const sendRegistrationCode = async (
   } = data;
 
   if (!moh_number) {
-    throw new Error("MOH number is required");
+    throw new Error("Pharmacy license number is required");
+  }
+
+  if (!/^MOH-\d{4}-\d{6}$/.test(moh_number.trim())) {
+    throw new Error(
+      "Pharmacy license number must have the format MOH-YYYY-XXXXXX",
+    );
   }
 
   if (!phone_number) {

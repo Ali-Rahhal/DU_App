@@ -14,6 +14,7 @@ import {
 
 import { Companies, CompanyId } from "@/utils/config_companies";
 import ChangeLangDropdown from "@/components/common/ChangeLangDropdown";
+import InstallPWAButton from "@/components/common/InstalPWAButton";
 
 export default function LoginPage() {
   const [mohNumber, setMohNumber] = useState("");
@@ -118,6 +119,7 @@ export default function LoginPage() {
       <div className="login-language">
         <ChangeLangDropdown />
       </div>
+      <InstallPWAButton className="login-pwa-button" />
 
       <div className="login-card">
         {/* Loading Overlay */}

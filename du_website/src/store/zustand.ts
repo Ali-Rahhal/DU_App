@@ -279,3 +279,29 @@ export const useCompanyStore = create<CompanyStore>()(
     },
   ),
 );
+
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{
+    outcome: "accepted" | "dismissed";
+    platform: string;
+  }>;
+}
+
+interface PWAInstallStore {
+  deferredPrompt: BeforeInstallPromptEvent | null;
+  isInstalled: boolean;
+
+  setDeferredPrompt: (event: BeforeInstallPromptEvent | null) => void;
+
+  setIsInstalled: (value: boolean) => void;
+}
+
+export const usePWAInstallStore = create<PWAInstallStore>((set) => ({
+  deferredPrompt: null,
+  isInstalled: false,
+
+  setDeferredPrompt: (event) => set({ deferredPrompt: event }),
+
+  setIsInstalled: (value) => set({ isInstalled: value }),
+}));

@@ -11,6 +11,7 @@ import { Poppins, Nunito } from "next/font/google";
 import dynamic from "next/dynamic";
 import { NextIntlClientProvider } from "next-intl";
 import { useCompanyAssets } from "@/hooks/useCompanyAssets";
+import PWAProvider from "@/components/common/PWAProvider";
 const ProgressBar = dynamic(
   () => import("next-nprogress-bar").then((mod) => mod.PagesProgressBar),
   { ssr: false },
@@ -74,6 +75,7 @@ function App({ Component, pageProps }) {
           messages={messages}
           timeZone="UTC"
         >
+          <PWAProvider />
           <Component {...pageProps} />
           <ToastContainer />
           <ProgressBar

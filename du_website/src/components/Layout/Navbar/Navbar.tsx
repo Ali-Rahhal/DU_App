@@ -23,6 +23,7 @@ import FloatingMenu from "../FloatingMenu";
 import { ROLES } from "@/utils/data";
 import { Companies, CompanyId } from "@/utils/config_companies";
 import { useCompanyAssets } from "@/hooks/useCompanyAssets";
+import InstallPWAButton from "@/components/common/InstalPWAButton";
 function Navbar() {
   //   const { cart } = useSelector((state) => state.cart);
   const t = useTranslations();
@@ -153,6 +154,7 @@ function Navbar() {
                   }}
                 >
                   <ChangeLangDropdown />
+                  <InstallPWAButton className="pwa-button" />
                 </div>
               </div>
               <div className="col px-4">
@@ -532,12 +534,9 @@ function Navbar() {
                 </li>
               </ul>
             </div> */}
-            <div
-              style={{
-                padding: "1rem 1rem 0rem 1rem",
-              }}
-            >
+            <div className="mobile-language-pwa">
               <ChangeLangDropdown />
+              <InstallPWAButton className="pwa-button" />
             </div>
             <div
               className="d-flex align-items-center"

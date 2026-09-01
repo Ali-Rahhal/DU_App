@@ -22,7 +22,10 @@ type AccountStore = {
   code: string;
   firstName: string;
   lastName: string;
+  pharmacy_name: string;
+  moh_number: string;
   phone: string;
+  email: string;
   address: string;
 
   permissions: string[];
@@ -33,8 +36,11 @@ type AccountStore = {
 
   setAccount: (data: {
     name: string;
+    pharmacy_name: string;
     code: string;
+    moh_number: string;
     phone: string;
+    email: string;
     address: string;
     cart: number;
     cartItems: any[];
@@ -59,8 +65,11 @@ export const useAccountStore = create<AccountStore>()(
       name: "",
       firstName: "",
       lastName: "",
+      pharmacy_name: "",
+      moh_number: "",
       code: "",
       phone: "",
+      email: "",
       address: "",
       type: null,
       role: null,
@@ -87,8 +96,11 @@ export const useAccountStore = create<AccountStore>()(
             name: `${res.data.result.first_name} ${res.data.result.last_name || ""}`,
             firstName: res.data.result.first_name,
             lastName: res.data.result.last_name || "",
+            pharmacy_name: res.data.result.pharmacy_name,
+            moh_number: res.data.result.moh_number,
             code: res.data.result.code,
             phone: res.data.result.phone,
+            email: res.data.result.email,
             address: res.data.result.address,
             type: res.data.result.type,
             role: res.data.result.role,
@@ -101,8 +113,11 @@ export const useAccountStore = create<AccountStore>()(
             name: "",
             firstName: "",
             lastName: "",
+            pharmacy_name: "",
             code: "",
+            moh_number: "",
             phone: "",
+            email: "",
             address: "",
             role: null,
             permissions: [],
@@ -153,8 +168,26 @@ export const useAccountStore = create<AccountStore>()(
         }
       },
 
-      setAccount: ({ name, code, phone, address, cart }) =>
-        set({ name, code, phone, address, cart }),
+      setAccount: ({
+        name,
+        pharmacy_name,
+        code,
+        moh_number,
+        phone,
+        email,
+        address,
+        cart,
+      }) =>
+        set({
+          name,
+          pharmacy_name,
+          code,
+          moh_number,
+          phone,
+          email,
+          address,
+          cart,
+        }),
     }),
     {
       name: "accountCustomerPortalApp",

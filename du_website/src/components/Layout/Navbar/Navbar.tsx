@@ -1,42 +1,26 @@
-import { Button, Dropdown, FormSelect } from "react-bootstrap";
-import Navlinks from "./Navlinks";
+import { Button, Dropdown } from "react-bootstrap";
 import SearchBar from "./SearchBar";
 import MiniCart from "./MiniCart";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import Cookies from "js-cookie";
 import { Spinner } from "react-bootstrap";
-// import { useSelector } from "react-redux";
-import LoginModal from "./modals/Login";
-// import RegisterModal from "./modals/Register";
-import ForgotModal from "./modals/Forgot";
-import {
-  useAccountStore,
-  useAuthStore,
-  useCompanyStore,
-} from "@/store/zustand";
+import { useAccountStore, useAuthStore } from "@/store/zustand";
 import { useTranslations } from "next-intl";
 
 import ChangeLangDropdown from "@/components/common/ChangeLangDropdown";
 import FloatingMenu from "../FloatingMenu";
 import { ROLES } from "@/utils/data";
-import { Companies, CompanyId } from "@/utils/config_companies";
 import { useCompanyAssets } from "@/hooks/useCompanyAssets";
 import InstallPWAButton from "@/components/common/InstalPWAButton";
+import { useRouter } from "next/router";
 function Navbar() {
-  //   const { cart } = useSelector((state) => state.cart);
+  const router = useRouter();
   const t = useTranslations();
-  const { companyId, setCompany } = useCompanyStore();
   const { companyHydrated, companyName, companyLogo } = useCompanyAssets();
 
   const [showMobileMenu, setShowMobileMenu] = useState(false);
-  const [showModal, setShowModal] = useState("");
 
-  const handleModalClose = (e) => setShowModal(e);
-  const handleModalShow = (e) => setShowModal(e);
-
-  // const [cartItemsCount, setCartItemsCount] = useState(0);
   const [subtotal, setSubtotal] = useState<
     {
       currency_code: string;
@@ -44,15 +28,6 @@ function Navbar() {
       discountedPrice: number;
     }[]
   >();
-  //   useEffect(() => {
-  //     setCartItemsCount(cart.length);
-  //     let total = 0;
-  //     for (const c of cart) {
-  //       total = total + Number(c.quantity) * Number(c.price);
-  //     }
-  //     setSubtotal(total);
-  //     setCartItems(cart);
-  //   }, [cart]);
   const { isAuth, logout } = useAuthStore();
   const { cart, cartItems, refreshCart, name, firstName, lastName, checkRole } =
     useAccountStore();
@@ -162,41 +137,19 @@ function Navbar() {
               </div>
               <div className="col-auto ms-auto">
                 <ul className="header-right-options">
-                  {!isAuth ? (
-                    <>
-                      {" "}
-                      <li className="link-item">
-                        <Link href="#" onClick={() => handleModalShow("login")}>
-                          {t("login")}
-                        </Link>
-                      </li>
-                      {/* <li className="link-item">
-                        <Link
-                          href="#"
-                          onClick={() => handleModalShow("register")}
-                        >
-                          Register
-                        </Link>
-                      </li> */}
-                    </>
-                  ) : (
-                    <>
-                      {/* <li className="link-item">
-                        <Link href="/account">Account</Link>
-                      </li> */}
-                      <li className="link-item">
-                        <Link
-                          href="/"
-                          onClick={() => {
-                            logout().then(() => {
-                              window.location.href = "/login";
-                            });
-                          }}
-                        >
-                          {t("logout")}
-                        </Link>
-                      </li>
-                    </>
+                  {isAuth && (
+                    <li className="link-item">
+                      <Link
+                        href="/"
+                        onClick={() => {
+                          logout().then(() => {
+                            window.location.href = "/login";
+                          });
+                        }}
+                      >
+                        {t("logout")}
+                      </Link>
+                    </li>
                   )}
 
                   {isAuth && (
@@ -206,7 +159,7 @@ function Navbar() {
                   )}
 
                   <li className="dropdown head-cart-content">
-                    {isAuth ? (
+                    {isAuth && (
                       <Dropdown>
                         <Dropdown.Toggle variant="link" id="cart-menu-dropdown">
                           <div className="list-icon">
@@ -226,55 +179,7 @@ function Navbar() {
                           )}
                         </Dropdown.Menu>
                       </Dropdown>
-                    ) : (
-                      <div>
-                        <Link
-                          href="#"
-                          onClick={() => handleModalShow("login")}
-                          style={{
-                            cursor: "pointer",
-                            display: "flex",
-                            alignItems: "flex-end",
-                            justifyContent: "flex-end",
-                          }}
-                        >
-                          <i
-                            className="ti-bag"
-                            style={{
-                              fontSize: "20px",
-                            }}
-                          ></i>
-                        </Link>
-                      </div>
                     )}
-                    {/* <Dropdown>
-                      <Dropdown.Toggle
-                        variant="link"
-                        id="cart-menu-dropdown"
-                        {...(!isAuth
-                          ? {
-                              onClick: () => {
-                                if (!isAuth) {
-                                  handleModalShow("login");
-                                }
-                              },
-                            }
-                          : {})}
-                      >
-                        <div className="list-icon">
-                          <i className="ti-bag"></i>
-                        </div>
-                        <span className="badge badge-secondary">{cart}</span>
-                      </Dropdown.Toggle>
-
-                      <Dropdown.Menu className="shopping-cart shopping-cart-empty dropdown-menu dropdown-menu-right">
-                        {isAuth ? (
-                          <MiniCart subtotal={subtotal} cartItems={cartItems} />
-                        ) : (
-                          ""
-                        )}
-                      </Dropdown.Menu>
-                    </Dropdown> */}
                   </li>
                   <li>
                     <Dropdown>
@@ -285,7 +190,7 @@ function Navbar() {
                           ? {
                               onClick: () => {
                                 if (!isAuth) {
-                                  handleModalShow("login");
+                                  router.push("/login");
                                 }
                               },
                             }
@@ -360,19 +265,10 @@ function Navbar() {
                       </Dropdown.Menu>
                     </Dropdown>
                   </li>
-                  {/* <li>
-                    <Link
-                      href="upload-prescription"
-                      className="btn btn-primary btn-sm"
-                    >
-                      Upload
-                    </Link>
-                  </li> */}
                 </ul>
               </div>
             </div>
           </div>
-          <Navlinks />
         </div>
       </div>
 
@@ -428,7 +324,7 @@ function Navbar() {
                     <Link
                       className="link-item"
                       href="#"
-                      onClick={() => handleModalShow("login")}
+                      onClick={() => router.push("/login")}
                     >
                       <i className="ti-bag"></i>
                     </Link>
@@ -520,20 +416,6 @@ function Navbar() {
                 </ul>
               </div>
             )}
-            {/* <div className="mobileMenuLinks">
-              <h6>Category</h6>
-              <ul>
-                <li>
-                  <Link href="/category?cat=P">Pharma</Link>
-                </li>
-                <li>
-                  <Link href="/category?cat=PP">ParaPharma</Link>
-                </li>
-                <li>
-                  <Link href="/category?cat=NP">Non Pharma</Link>
-                </li>
-              </ul>
-            </div> */}
             <div className="mobile-language-pwa">
               <ChangeLangDropdown />
               <InstallPWAButton className="pwa-button" />
@@ -544,24 +426,7 @@ function Navbar() {
                 padding: "1rem 1rem 1rem 1rem",
               }}
             >
-              {!isAuth ? (
-                <div className="d-flex align-items-center gap-2">
-                  <Link
-                    href="#"
-                    onClick={() => handleModalShow("login")}
-                    className="btn btn-soft-primary btn-md px-4 py-2 fw-medium rounded-2"
-                  >
-                    {t("login")}
-                  </Link>
-                  {/* <Link
-                    href="#"
-                    onClick={() => handleModalShow("register")}
-                    className="btn btn-primary btn-md px-4 py-2 fw-medium rounded-2"
-                  >
-                    {t("register")}
-                  </Link> */}
-                </div>
-              ) : (
+              {isAuth && (
                 <Button
                   variant="outline-danger"
                   className="w-100 py-2 fw-medium rounded-2"
@@ -584,21 +449,6 @@ function Navbar() {
           }}
         ></div>
       </div>
-      <LoginModal
-        show={showModal === "login"}
-        handleClose={handleModalClose}
-        handleModalShow={handleModalShow}
-      />
-      {/* <RegisterModal
-        show={showModal === "register"}
-        handleClose={handleModalClose}
-        handleModalShow={handleModalShow}
-      /> */}
-      <ForgotModal
-        show={showModal === "forgot"}
-        handleClose={handleModalClose}
-        handleModalShow={handleModalShow}
-      />
       {isAuth && <FloatingMenu />}
     </>
   );

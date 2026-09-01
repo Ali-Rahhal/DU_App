@@ -604,6 +604,10 @@ const login = async (
     },
   });
 
+  if (!client) {
+    return c.json({ message: "Client not found", result: null }, 401);
+  }
+
   if (client.status_id !== 1) {
     return c.json({ message: "Client is not active", result: null }, 401);
   }
@@ -1079,6 +1083,8 @@ const changePasswordReset = async (
 };
 const getUserDetails = async (id: number, companyId: string) => {
   const prisma = getPrisma(companyId);
+
+  // Get user info from web_accounts
   const userInfo = await prisma.web_accounts.findFirst({
     where: {
       id: id,
@@ -1088,7 +1094,6 @@ const getUserDetails = async (id: number, companyId: string) => {
       code: true,
       first_name: true,
       last_name: true,
-      phone: true,
       is_verified: true,
       is_active: true,
       is_blocked: true,
@@ -1097,44 +1102,72 @@ const getUserDetails = async (id: number, companyId: string) => {
       role: true,
     },
   });
+
+  if (!userInfo) {
+    throw new Error("User not found");
+  }
+
   if (userInfo?.is_blocked) throw new Error("Account is Disabled");
+
+  // Get client info from v_clients view
+  const clientInfo = await prisma.$queryRaw`
+    SELECT 
+      Email,
+      MOH,
+      Description,
+      Address,
+      Phone
+    FROM v_clients 
+    WHERE Code = ${userInfo.code}
+  `;
+
+  // Get cart count
   const cartCount = await prisma.shopping_cart.count({
     where: {
       account_id: id,
     },
   });
+
+  // Get wishlist count
   const wishlistCount = await prisma.favorite_items.count({
     where: {
       account_id: id,
     },
   });
-  const address = await prisma.web_account_address.findFirst({
-    where: {
-      account_id: id,
-    },
-  });
+
+  // Get permissions if user is SysUser
   let permissions = [];
   if (userInfo.role === ROLES.SysUser) {
-    permissions = await prisma.user_permission_assignment.findMany({
-      where: {
-        web_account_id: id,
-      },
-      select: {
-        user_permission: {
-          select: {
-            description: true,
-            code: true,
+    const permissionAssignments =
+      await prisma.user_permission_assignment.findMany({
+        where: {
+          web_account_id: id,
+        },
+        select: {
+          user_permission: {
+            select: {
+              description: true,
+              code: true,
+            },
           },
         },
-      },
-    });
+      });
+    permissions = permissionAssignments.map((p) => p.user_permission.code);
   }
+
+  // Parse client info
+  const clientData = Array.isArray(clientInfo) ? clientInfo[0] : clientInfo;
+
   return {
     ...userInfo,
+    email: clientData?.Email || null,
+    moh_number: clientData?.MOH || null,
+    pharmacy_name: clientData?.Description || null,
+    address: clientData?.Address || null,
+    phone: clientData?.Phone || null,
     cart: cartCount,
     wishlist: wishlistCount,
-    address: address ? address.address : "",
-    permissions: permissions.map((p) => p.user_permission.code),
+    permissions: permissions,
   };
 };
 const updateUserDetails = async ({

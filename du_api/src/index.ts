@@ -51,13 +51,13 @@ app.use(
   cors({
     origin: [
       ////quayo du server:
-      "https://portal.quayomobility.com/",
       "http://159.195.23.130:5006",
       "http://localhost:5006",
       ////quayo vitalait server:
       // "http://159.195.23.130:5008",
       // "http://localhost:5008",
       ////quayo du server(simple version):
+      // "https://portal.quayomobility.com/",
       // "http://159.195.23.130:5010",
       // "http://localhost:5010",
       ////du Server:

@@ -2,12 +2,16 @@
 
 import { Download } from "lucide-react";
 import { usePWAInstallStore } from "@/store/zustand";
+import { useTranslations } from "next-intl";
 
 export default function InstallPWAButton({
   className,
+  showIcon = false,
 }: {
   className?: string;
+  showIcon?: boolean;
 }) {
+  const t = useTranslations();
   const { deferredPrompt, isInstalled, setDeferredPrompt } =
     usePWAInstallStore();
 
@@ -43,7 +47,8 @@ export default function InstallPWAButton({
       className={className}
       title="Install App"
     >
-      <Download size={18} />
+      {showIcon && <Download size={18} />}
+      {!showIcon && t("pwa_install")}
     </button>
   );
 }

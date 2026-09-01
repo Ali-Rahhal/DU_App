@@ -119,7 +119,7 @@ export default function LoginPage() {
       <div className="login-language">
         <ChangeLangDropdown />
       </div>
-      <InstallPWAButton className="login-pwa-button" />
+      <InstallPWAButton className="login-pwa-button" showIcon />
 
       <div className="login-card">
         {/* Loading Overlay */}

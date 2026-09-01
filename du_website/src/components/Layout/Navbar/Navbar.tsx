@@ -1,25 +1,73 @@
-import { Button, Dropdown } from "react-bootstrap";
-import SearchBar from "./SearchBar";
-import MiniCart from "./MiniCart";
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { Spinner } from "react-bootstrap";
-import { useAccountStore, useAuthStore } from "@/store/zustand";
+import { useEffect, useMemo, useState } from "react";
+import { Button, Dropdown, Spinner } from "react-bootstrap";
+import {
+  Home,
+  Package,
+  ShoppingCart,
+  Menu,
+  X,
+  User,
+  Languages,
+  Download,
+  LayoutDashboard,
+  UserCircle,
+  Megaphone,
+  ClipboardList,
+  MessageSquareWarning,
+  RefreshCcw,
+  Heart,
+  Sparkles,
+  Receipt,
+  LogOut,
+  ChevronRight,
+  ArrowLeft,
+} from "lucide-react";
+
+import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 
+import SearchBar from "./SearchBar";
+import MiniCart from "./MiniCart";
+
 import ChangeLangDropdown from "@/components/common/ChangeLangDropdown";
-import FloatingMenu from "../FloatingMenu";
-import { ROLES } from "@/utils/data";
-import { useCompanyAssets } from "@/hooks/useCompanyAssets";
 import InstallPWAButton from "@/components/common/InstalPWAButton";
-import { useRouter } from "next/router";
-function Navbar() {
+
+import { useAccountStore, useAuthStore } from "@/store/zustand";
+import { useCompanyAssets } from "@/hooks/useCompanyAssets";
+import { ROLES } from "@/utils/data";
+
+interface NavbarProps {
+  showMobileNavbar?: boolean;
+  showBottomNavbar?: boolean;
+}
+
+function Navbar({
+  showMobileNavbar = true,
+  showBottomNavbar = true,
+}: NavbarProps) {
   const router = useRouter();
   const t = useTranslations();
+
   const { companyHydrated, companyName, companyLogo } = useCompanyAssets();
 
-  const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const {
+    cart,
+    cartItems,
+    refreshCart,
+    name,
+    firstName,
+    lastName,
+    checkRole,
+    pharmacy_name,
+  } = useAccountStore();
+
+  const { isAuth, logout } = useAuthStore();
+
+  const [showSidebar, setShowSidebar] = useState(false);
 
   const [subtotal, setSubtotal] = useState<
     {
@@ -27,23 +75,22 @@ function Navbar() {
       price: number;
       discountedPrice: number;
     }[]
-  >();
-  const { isAuth, logout } = useAuthStore();
-  const { cart, cartItems, refreshCart, name, firstName, lastName, checkRole } =
-    useAccountStore();
+  >([]);
 
+  /*
+   * Calculate cart subtotal by currency.
+   */
   useEffect(() => {
-    if (!cart) return;
-    const currency_codes: string[] = [
+    if (!cart) {
+      setSubtotal([]);
+      return;
+    }
+
+    const currencyCodes = [
       ...new Set(cartItems.map((item) => item.currency_code)),
-    ] as string[];
-    const tempSubtotal: {
-      currency_code: string;
-      price: number;
-      discountedPrice: number;
-    }[] = [];
-    //get total for each currency
-    for (const currency_code of currency_codes) {
+    ];
+
+    const tempSubtotal = currencyCodes.map((currency_code) => {
       const total = cartItems
         .filter((item) => item.currency_code === currency_code)
         .reduce((acc, item) => {
@@ -53,21 +100,26 @@ function Navbar() {
               Number(item.discountedPrice ? item.discountedPrice : item.price)
           );
         }, 0);
-      tempSubtotal.push({
-        currency_code: currency_code,
+
+      return {
+        currency_code,
         price: total,
         discountedPrice: 0,
-      });
-    }
+      };
+    });
+
     setSubtotal(tempSubtotal);
-  }, [cartItems]);
+  }, [cart, cartItems]);
 
   useEffect(() => {
     refreshCart();
   }, []);
 
+  /*
+   * Prevent the page from scrolling while the sidebar is open.
+   */
   useEffect(() => {
-    if (showMobileMenu) {
+    if (showSidebar) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
@@ -76,381 +128,449 @@ function Navbar() {
     return () => {
       document.body.style.overflow = "";
     };
-  }, [showMobileMenu]);
+  }, [showSidebar]);
 
-  const AIMagicButton = ({ isMobile = false }) => {
+  const initials = useMemo(() => {
+    return ((firstName?.[0] || "") + (lastName?.[0] || "")).toUpperCase();
+  }, [firstName, lastName]);
+
+  const closeSidebar = () => {
+    setShowSidebar(false);
+  };
+
+  const handleLogout = async () => {
+    closeSidebar();
+
+    await logout();
+
+    window.location.href = "/login";
+  };
+
+  const AIMagicButton = ({ isMobile = false }: { isMobile?: boolean }) => {
     return (
-      <Link href="/ai-order-proposal" className="ai-magic-btn">
-        {!isMobile && <span className="ai-magic-btn__icon">🤖</span>}
-        <span className="ai-magic-btn__text">AI</span>
+      <Link
+        href="/ai-order-proposal"
+        className={`ai-magic-btn ${isMobile ? "ai-magic-btn-mobile" : ""}`}
+      >
+        <Sparkles size={isMobile ? 19 : 18} />
+
+        {!isMobile && <span className="ai-magic-btn__text">AI</span>}
       </Link>
     );
   };
 
   return (
     <>
-      <div className="header">
-        <div className="container-fluid theme-container">
-          <div className="top-header">
-            <div className="row align-items-center">
-              <div
-                className="col-auto"
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  gap: "2rem",
-                }}
-              >
-                <Link href="/">
-                  {(companyHydrated && (
-                    <Image
-                      src={companyLogo}
-                      alt={companyName}
-                      height={40}
-                      width={250}
-                      className="header-logo"
-                    />
-                  )) || (
-                    <Spinner
-                      animation="border"
-                      style={{
-                        width: "40px",
-                        height: "40px",
-                      }}
-                    />
-                  )}
-                </Link>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.75rem",
-                  }}
-                >
-                  <ChangeLangDropdown />
-                  <InstallPWAButton className="pwa-button" />
-                </div>
-              </div>
-              <div className="col px-4">
-                <SearchBar showSearch />
-              </div>
-              <div className="col-auto ms-auto">
-                <ul className="header-right-options">
-                  {isAuth && (
-                    <li className="link-item">
-                      <Link
-                        href="/"
-                        onClick={() => {
-                          logout().then(() => {
-                            window.location.href = "/login";
-                          });
-                        }}
-                      >
-                        {t("logout")}
-                      </Link>
-                    </li>
-                  )}
+      {/* ========================================================= */}
+      {/* DESKTOP NAVBAR                                            */}
+      {/* ========================================================= */}
 
-                  {isAuth && (
-                    <li style={{ display: "flex", alignItems: "center" }}>
-                      <AIMagicButton />
-                    </li>
-                  )}
-
-                  <li className="dropdown head-cart-content">
-                    {isAuth && (
-                      <Dropdown>
-                        <Dropdown.Toggle variant="link" id="cart-menu-dropdown">
-                          <div className="list-icon">
-                            <i className="ti-bag"></i>
-                          </div>
-                          <span className="badge badge-secondary">{cart}</span>
-                        </Dropdown.Toggle>
-
-                        <Dropdown.Menu className="shopping-cart shopping-cart-empty dropdown-menu dropdown-menu-right">
-                          {isAuth ? (
-                            <MiniCart
-                              subtotal={subtotal}
-                              cartItems={cartItems}
-                            />
-                          ) : (
-                            ""
-                          )}
-                        </Dropdown.Menu>
-                      </Dropdown>
-                    )}
-                  </li>
-                  <li>
-                    <Dropdown>
-                      <Dropdown.Toggle
-                        variant="link"
-                        id="user-menu-dropdown"
-                        {...(!isAuth
-                          ? {
-                              onClick: () => {
-                                if (!isAuth) {
-                                  router.push("/login");
-                                }
-                              },
-                            }
-                          : {})}
-                      >
-                        <div className="list-icon">
-                          <i className="ti-user"></i>
-                        </div>
-                      </Dropdown.Toggle>
-
-                      <Dropdown.Menu className="user-links">
-                        <ul>
-                          <li>
-                            <Link href="/dashboard">{t("dashboard")}</Link>
-                          </li>
-                          <li>
-                            <Link href="/account">{t("account")}</Link>
-                          </li>
-                          <li>
-                            <Link href="/cart">{t("cart")}</Link>
-                          </li>
-                          <li>
-                            <Link href="/promotions">{t("promotion")}</Link>
-                          </li>
-                          <li>
-                            <Link href="/survey">{t("survey")}</Link>
-                          </li>
-                          <li>
-                            <Link href="/complaint">{t("complaint")}</Link>
-                          </li>
-                          {checkRole(ROLES.Admin) ? (
-                            <>
-                              <li>
-                                <Link href="/item-alternatives">
-                                  {t("item_alternatives.title")}
-                                </Link>
-                              </li>
-                              <li>
-                                <Link href="/expiry-deal">
-                                  {t("expiry_deal.title")}
-                                </Link>
-                              </li>
-                            </>
-                          ) : null}
-                          <li>
-                            <Link href="/restock">{t("restock.title")}</Link>
-                          </li>
-                          <li>
-                            <Link href="/fidelity">{t("fidelity.link")}</Link>
-                          </li>
-                          <li>
-                            <Link href="/ai-order-proposal">
-                              {t("ai_proposal.title")}
-                            </Link>
-                          </li>
-                          <li>
-                            <Link href="/collection">{"Collection"}</Link>
-                          </li>
-                          <li>
-                            <Link
-                              href="/"
-                              onClick={() => {
-                                logout().then(() => {
-                                  window.location.href = "/login";
-                                });
-                              }}
-                            >
-                              {t("logout")}
-                            </Link>
-                          </li>
-                        </ul>
-                      </Dropdown.Menu>
-                    </Dropdown>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="mobile-header">
-        <div className="container-fluid theme-container">
-          <div className="mobile-header-content">
-            <div className="mobile-header-top">
-              <div className="col-auto">
-                <ul className="header-left-options">
-                  <li
-                    className="link-item open-sidebar"
-                    onClick={() => {
-                      setShowMobileMenu(true);
-                    }}
-                  >
-                    <i className="ti-menu"></i>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="mobile-logo">
-                <Link href="/">
-                  {(companyHydrated && (
-                    <Image
-                      src={companyLogo}
-                      alt={companyName}
-                      height={40}
-                      width={250}
-                      className="header-logo"
-                    />
-                  )) || (
-                    <Spinner
-                      animation="border"
-                      style={{
-                        width: "40px",
-                        height: "40px",
-                      }}
-                    />
-                  )}
-                </Link>
-              </div>
-
-              <div className="mobile-actions">
-                <ul className="header-right-options">
-                  {isAuth && <AIMagicButton isMobile />}
-
-                  {isAuth ? (
-                    <Link href={"/cart"} className="link-item">
-                      <span className="badge badge-secondary">{cart}</span>
-                      <i className="ti-bag"></i>
-                    </Link>
-                  ) : (
-                    <Link
-                      className="link-item"
-                      href="#"
-                      onClick={() => router.push("/login")}
-                    >
-                      <i className="ti-bag"></i>
-                    </Link>
-                  )}
-                </ul>
-              </div>
-            </div>
-
-            <div className="mobile-search-bar">
-              <SearchBar showSearch={false} text={"search_products"} />
-            </div>
-          </div>
-          <div
-            className={showMobileMenu ? "menu-sidebar show" : "menu-sidebar"}
-          >
-            <div
-              className="close"
-              onClick={() => {
-                setShowMobileMenu(false);
-              }}
+      <header className="desktop-navbar">
+        <div className="desktop-navbar-inner">
+          {/* Left */}
+          <div className="desktop-navbar-left">
+            <button
+              type="button"
+              className="navbar-icon-button"
+              onClick={() => setShowSidebar(true)}
+              aria-label="Open menu"
             >
-              <i className="ti-close"></i>
-            </div>
+              <Menu size={23} />
+            </button>
 
-            {isAuth && (
-              <div className="welcome d-flex align-items-center">
-                <div
-                  className="avater btn-soft-primary"
+            <Link href="/" className="navbar-logo-container">
+              {companyHydrated ? (
+                <Image
+                  src={companyLogo}
+                  alt={companyName}
+                  width={220}
+                  height={42}
+                  className="navbar-logo"
+                />
+              ) : (
+                <Spinner
+                  animation="border"
                   style={{
-                    textTransform: "uppercase",
+                    width: "30px",
+                    height: "30px",
                   }}
-                >{`${
-                  (firstName ? firstName[0] : "") +
-                  (lastName ? lastName[0] : "")
-                }`}</div>
-                <span>Hi, {name}</span>
-              </div>
-            )}
-
-            {isAuth && (
-              <div className="mobileMenuLinks mb-2 mt-2">
-                <ul>
-                  <li>
-                    <Link href="/dashboard">{t("dashboard")}</Link>
-                  </li>
-                  <li>
-                    <Link href="/account">{t("account")}</Link>
-                  </li>
-                  <li>
-                    <Link href="/cart">{t("cart")}</Link>
-                  </li>
-                  <li>
-                    <Link href="/promotions">{t("promotion")}</Link>
-                  </li>
-                  <li>
-                    <Link href="/survey">{t("survey")}</Link>
-                  </li>
-                  <li>
-                    <Link href="/complaint">{t("complaint")}</Link>
-                  </li>
-                  {checkRole(ROLES.Admin) ? (
-                    <>
-                      <li>
-                        <Link href="/item-alternatives">
-                          {t("item_alternatives.title")}
-                        </Link>
-                      </li>
-                      <li>
-                        <Link href="/expiry-deal">
-                          {t("expiry_deal.title")}
-                        </Link>
-                      </li>
-                    </>
-                  ) : null}
-                  <li>
-                    <Link href="/restock">{t("restock.title")}</Link>
-                  </li>
-                  <li>
-                    <Link href="/fidelity">{t("fidelity.link")}</Link>
-                  </li>
-                  <li>
-                    <Link href="/ai-order-proposal">
-                      {t("ai_proposal.title")}
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/collection">{"Collection"}</Link>
-                  </li>
-                </ul>
-              </div>
-            )}
-            <div className="mobile-language-pwa">
-              <ChangeLangDropdown />
-              <InstallPWAButton className="pwa-button" />
-            </div>
-            <div
-              className="d-flex align-items-center"
-              style={{
-                padding: "1rem 1rem 1rem 1rem",
-              }}
-            >
-              {isAuth && (
-                <Button
-                  variant="outline-danger"
-                  className="w-100 py-2 fw-medium rounded-2"
-                  onClick={() => {
-                    logout().then(() => {
-                      window.location.href = "/login";
-                    });
-                  }}
-                >
-                  {t("logout")}
-                </Button>
+                />
               )}
-            </div>
+            </Link>
+          </div>
+
+          {/* Center */}
+          <div className="desktop-navbar-search">
+            <SearchBar showSearch />
+          </div>
+
+          {/* Right */}
+          <div className="desktop-navbar-right">
+            {isAuth && <AIMagicButton />}
+
+            {isAuth && (
+              <Dropdown>
+                <Dropdown.Toggle
+                  variant="link"
+                  id="desktop-cart-dropdown"
+                  className="cart-navbar-button"
+                >
+                  <ShoppingCart size={22} />
+
+                  <span className="cart-badge">{cart}</span>
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu className="shopping-cart shopping-cart-empty dropdown-menu-right">
+                  <MiniCart subtotal={subtotal} cartItems={cartItems} />
+                </Dropdown.Menu>
+              </Dropdown>
+            )}
           </div>
         </div>
-        <div
-          className={showMobileMenu ? "overlay show" : "overlay"}
-          onClick={() => {
-            setShowMobileMenu(false);
-          }}
-        ></div>
-      </div>
-      {isAuth && <FloatingMenu />}
+      </header>
+      {showMobileNavbar ? (
+        <>
+          {/* ========================================================= */}
+          {/* MOBILE NAVBAR                                             */}
+          {/* ========================================================= */}
+
+          <header className="mobile-navbar">
+            {/* Row 1 - Logo */}
+            <div className="mobile-navbar-logo-row">
+              <Link href="/" className="mobile-navbar-logo-container">
+                {companyHydrated ? (
+                  <Image
+                    src={companyLogo}
+                    alt={companyName}
+                    width={210}
+                    height={42}
+                    className="mobile-navbar-logo"
+                  />
+                ) : (
+                  <Spinner
+                    animation="border"
+                    style={{
+                      width: "30px",
+                      height: "30px",
+                    }}
+                  />
+                )}
+              </Link>
+            </div>
+
+            {/* Row 2 - Profile + pharmacy + actions */}
+            <div className="mobile-navbar-profile-row">
+              <Link
+                href={isAuth ? "/account" : "/login"}
+                className="mobile-profile"
+              >
+                <div className="mobile-profile-avatar">
+                  {isAuth && initials ? initials : <User size={20} />}
+                </div>
+
+                <div className="mobile-profile-info">
+                  <span className="mobile-profile-greeting">
+                    {isAuth ? "Hi," : ""}
+                  </span>
+
+                  <span className="mobile-profile-name">
+                    {isAuth ? pharmacy_name || name || "Account" : "Login"}
+                  </span>
+                </div>
+              </Link>
+
+              <div className="mobile-navbar-actions">
+                {isAuth && <AIMagicButton isMobile />}
+
+                <Link
+                  href={isAuth ? "/cart" : "/login"}
+                  className="mobile-action-button"
+                >
+                  <ShoppingCart size={20} />
+
+                  {isAuth && <span className="mobile-cart-badge">{cart}</span>}
+                </Link>
+              </div>
+            </div>
+
+            {/* Row 3 - Search */}
+            <div className="mobile-navbar-search">
+              <SearchBar showSearch={false} text="search_products" />
+            </div>
+          </header>
+        </>
+      ) : (
+        /* ========================================================= */
+        /* MOBILE BACK HEADER                                        */
+        /* ========================================================= */
+
+        <header className="mobile-back-navbar">
+          <button
+            type="button"
+            className="mobile-back-button"
+            onClick={() => router.back()}
+            aria-label="Go back"
+          >
+            <ArrowLeft size={22} />
+
+            <span>Back</span>
+          </button>
+
+          <Link href="/" className="mobile-back-logo-container">
+            {companyHydrated ? (
+              <Image
+                src={companyLogo}
+                alt={companyName}
+                width={170}
+                height={36}
+                className="mobile-back-logo"
+              />
+            ) : (
+              <Spinner
+                animation="border"
+                style={{
+                  width: "26px",
+                  height: "26px",
+                }}
+              />
+            )}
+          </Link>
+        </header>
+      )}
+
+      {/* ========================================================= */}
+      {/* SHARED SIDEBAR                                           */}
+      {/* ========================================================= */}
+
+      <aside className={`app-sidebar ${showSidebar ? "app-sidebar-open" : ""}`}>
+        <div className="app-sidebar-header">
+          <Link
+            href="/"
+            className="sidebar-logo-container"
+            onClick={closeSidebar}
+          >
+            {companyHydrated ? (
+              <Image
+                src={companyLogo}
+                alt={companyName}
+                width={190}
+                height={38}
+                className="sidebar-logo"
+              />
+            ) : (
+              <Spinner
+                animation="border"
+                style={{
+                  width: "30px",
+                  height: "30px",
+                }}
+              />
+            )}
+          </Link>
+
+          <button
+            type="button"
+            className="sidebar-close-button"
+            onClick={closeSidebar}
+            aria-label="Close menu"
+          >
+            <X size={22} />
+          </button>
+        </div>
+
+        {isAuth && (
+          <div className="sidebar-user">
+            <div className="sidebar-avatar">
+              {initials || <User size={20} />}
+            </div>
+
+            <div className="sidebar-user-info">
+              <span className="sidebar-user-name">{pharmacy_name || name}</span>
+
+              <span className="sidebar-user-account">{t("account")}</span>
+            </div>
+          </div>
+        )}
+
+        <nav className="sidebar-navigation">
+          {isAuth && (
+            <>
+              <SidebarLink
+                href="/dashboard"
+                icon={<LayoutDashboard size={19} />}
+                label={t("dashboard")}
+                onClick={closeSidebar}
+              />
+
+              <SidebarLink
+                href="/account"
+                icon={<UserCircle size={19} />}
+                label={t("account")}
+                onClick={closeSidebar}
+              />
+
+              <SidebarLink
+                href="/cart"
+                icon={<ShoppingCart size={19} />}
+                label={t("cart")}
+                onClick={closeSidebar}
+              />
+
+              <SidebarLink
+                href="/promotions"
+                icon={<Megaphone size={19} />}
+                label={t("promotion")}
+                onClick={closeSidebar}
+              />
+
+              <SidebarLink
+                href="/survey"
+                icon={<ClipboardList size={19} />}
+                label={t("survey")}
+                onClick={closeSidebar}
+              />
+
+              <SidebarLink
+                href="/complaint"
+                icon={<MessageSquareWarning size={19} />}
+                label={t("complaint")}
+                onClick={closeSidebar}
+              />
+
+              {checkRole(ROLES.Admin) && (
+                <>
+                  <SidebarLink
+                    href="/item-alternatives"
+                    icon={<Package size={19} />}
+                    label={t("item_alternatives.title")}
+                    onClick={closeSidebar}
+                  />
+
+                  <SidebarLink
+                    href="/expiry-deal"
+                    icon={<Receipt size={19} />}
+                    label={t("expiry_deal.title")}
+                    onClick={closeSidebar}
+                  />
+                </>
+              )}
+
+              <SidebarLink
+                href="/restock"
+                icon={<RefreshCcw size={19} />}
+                label={t("restock.title")}
+                onClick={closeSidebar}
+              />
+
+              <SidebarLink
+                href="/fidelity"
+                icon={<Heart size={19} />}
+                label={t("fidelity.link")}
+                onClick={closeSidebar}
+              />
+
+              <SidebarLink
+                href="/ai-order-proposal"
+                icon={<Sparkles size={19} />}
+                label={t("ai_proposal.title")}
+                onClick={closeSidebar}
+              />
+
+              <SidebarLink
+                href="/collection"
+                icon={<Receipt size={19} />}
+                label="Collection"
+                onClick={closeSidebar}
+              />
+            </>
+          )}
+        </nav>
+
+        <div className="sidebar-footer">
+          <div className="sidebar-settings-row">
+            <Languages size={18} />
+            <ChangeLangDropdown />
+          </div>
+
+          <div className="sidebar-settings-row">
+            <Download size={18} />
+            <InstallPWAButton className="pwa-button" />
+          </div>
+
+          {isAuth && (
+            <div className="sidebar-settings-row">
+              <LogOut size={18} />
+              <Button
+                variant="outline-danger"
+                className="sidebar-logout-button"
+                onClick={handleLogout}
+              >
+                <span>{t("logout")}</span>
+              </Button>
+            </div>
+          )}
+        </div>
+      </aside>
+
+      {/* Sidebar overlay */}
+      <div
+        className={`app-sidebar-overlay ${
+          showSidebar ? "app-sidebar-overlay-visible" : ""
+        }`}
+        onClick={closeSidebar}
+      />
+
+      {/* ========================================================= */}
+      {/* MOBILE BOTTOM NAVIGATION                                  */}
+      {/* ========================================================= */}
+
+      {showBottomNavbar && (
+        <nav className="mobile-bottom-navbar">
+          <Link href="/" className="mobile-bottom-nav-item">
+            <Home size={21} />
+            <span>Home</span>
+          </Link>
+
+          <Link href="/category" className="mobile-bottom-nav-item">
+            <Package size={21} />
+            <span>Products</span>
+          </Link>
+
+          <Link href="/orders" className="mobile-bottom-nav-item">
+            <ShoppingCart size={21} />
+            <span>Orders</span>
+          </Link>
+
+          <button
+            type="button"
+            className="mobile-bottom-nav-item"
+            onClick={() => setShowSidebar(true)}
+          >
+            <Menu size={21} />
+            <span>Menu</span>
+          </button>
+        </nav>
+      )}
     </>
+  );
+}
+
+interface SidebarLinkProps {
+  href: string;
+  icon: React.ReactNode;
+  label: string;
+  onClick: () => void;
+}
+
+function SidebarLink({ href, icon, label, onClick }: SidebarLinkProps) {
+  return (
+    <Link href={href} className="sidebar-link" onClick={onClick}>
+      <span className="sidebar-link-icon">{icon}</span>
+
+      <span className="sidebar-link-label">{label}</span>
+
+      <ChevronRight size={16} className="sidebar-link-arrow" />
+    </Link>
   );
 }
 

@@ -77,15 +77,17 @@ const Filters = ({
       <div className="mb-3">
         <h6>{t("search")}</h6>
 
-        <div className="d-flex gap-2">
-          <div style={{ flex: 1 }}>
+        <div className="d-flex flex-column gap-2">
+          <div>
             <SearchBar showSearch={false} />
           </div>
 
           {s && (
-            <Button size="sm" variant="outline-secondary" onClick={clearSearch}>
-              Clear
-            </Button>
+            <div className="d-flex justify-content-end mt-1">
+              <Button size="sm" variant="outline-primary" onClick={clearSearch}>
+                Clear
+              </Button>
+            </div>
           )}
         </div>
       </div>
@@ -244,7 +246,7 @@ const CategoryPage = ({
 
           <div className="d-md-none mb-3">
             <Button
-              className="w-100"
+              className="w-25"
               variant="outline-primary"
               onClick={() => setShowFilters(!showFilters)}
             >

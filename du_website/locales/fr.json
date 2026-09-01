@@ -145,6 +145,8 @@
 
   "browse_products": "Parcourir les produits",
 
+  "pwa_install": "Installer l'application",
+
   "login_register": {
     "select_company_description": "Choisissez la compagnie que vous souhaitez accéder.",
     "welcome": "Bienvenue",

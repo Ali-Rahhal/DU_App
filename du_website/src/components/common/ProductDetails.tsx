@@ -409,7 +409,7 @@ const ProductDetails = ({ product }: { product: Product }) => {
           </div>
         </div>
         {/* <!--=======  product description review   =======--> */}
-        <div className="product-full-description">
+        <div className="product-full-description mt-1">
           <div className="container">
             <div className="row">
               <div className="col-12">

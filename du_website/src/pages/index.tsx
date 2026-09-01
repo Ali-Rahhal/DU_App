@@ -56,23 +56,12 @@ const HomePage = ({ products }) => {
   const { companyHydrated, companyId } = useCompanyAssets();
   const t = useTranslations();
   return (
-    <Layout>
+    <Layout showMobileNavbar={true}>
       <HomePageBannerSlider
         banners={
           companyHydrated ? homeSlider[companyId] : getDefaultHomeSlider()
         }
       />
-      <div className="home-action-buttons">
-        <Link href="/category" className="home-action-btn home-action-primary">
-          <i className="bi bi-grid"></i>
-          <span>{t("browse_products")}</span>
-        </Link>
-
-        <Link href="/orders" className="home-action-btn home-action-secondary">
-          <i className="bi bi-bag-check"></i>
-          <span>{t("my_orders")}</span>
-        </Link>
-      </div>
       <HomePageCategorySlider
         categorys={
           companyHydrated

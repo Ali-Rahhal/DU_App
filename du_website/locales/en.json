@@ -147,6 +147,8 @@
 
   "browse_products": "Browse Products",
 
+  "pwa_install": "Install the App",
+
   "login_register": {
     "select_company_description": "Choose the company you want to access.",
     "welcome": "Welcome",

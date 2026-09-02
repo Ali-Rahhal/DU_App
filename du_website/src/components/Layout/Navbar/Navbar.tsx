@@ -8,6 +8,7 @@ import {
   Home,
   Package,
   ShoppingCart,
+  ShoppingBasket,
   Menu,
   X,
   User,
@@ -38,6 +39,7 @@ import InstallPWAButton from "@/components/common/InstalPWAButton";
 
 import { useAccountStore, useAuthStore } from "@/store/zustand";
 import { useCompanyAssets } from "@/hooks/useCompanyAssets";
+
 import { ROLES } from "@/utils/data";
 
 interface NavbarProps {
@@ -58,11 +60,11 @@ function Navbar({
     cart,
     cartItems,
     refreshCart,
+    pharmacy_name,
     name,
     firstName,
     lastName,
     checkRole,
-    pharmacy_name,
   } = useAccountStore();
 
   const { isAuth, logout } = useAuthStore();
@@ -154,7 +156,9 @@ function Navbar({
       >
         <Sparkles size={isMobile ? 19 : 18} />
 
-        {!isMobile && <span className="ai-magic-btn__text">AI</span>}
+        {!isMobile && (
+          <span className="ai-magic-btn__text">{t("navbar.ai")}</span>
+        )}
       </Link>
     );
   };
@@ -206,6 +210,25 @@ function Navbar({
 
           {/* Right */}
           <div className="desktop-navbar-right">
+            {isAuth && (
+              <>
+                <Link href="/" className="desktop-navbar-nav-button">
+                  <Home size={19} />
+                  <span>{t("navbar.home")}</span>
+                </Link>
+
+                <Link href="/category" className="desktop-navbar-nav-button">
+                  <Package size={19} />
+                  <span>{t("navbar.products")}</span>
+                </Link>
+
+                <Link href="/orders" className="desktop-navbar-nav-button">
+                  <ShoppingBasket size={19} />
+                  <span>{t("navbar.orders")}</span>
+                </Link>
+              </>
+            )}
+
             {isAuth && <AIMagicButton />}
 
             {isAuth && (
@@ -270,11 +293,13 @@ function Navbar({
 
                 <div className="mobile-profile-info">
                   <span className="mobile-profile-greeting">
-                    {isAuth ? "Hi," : ""}
+                    {isAuth ? t("navbar.hi") : ""}
                   </span>
 
                   <span className="mobile-profile-name">
-                    {isAuth ? pharmacy_name || name || "Account" : "Login"}
+                    {isAuth
+                      ? pharmacy_name || name || t("navbar.account")
+                      : t("navbar.login")}
                   </span>
                 </div>
               </Link>
@@ -313,7 +338,7 @@ function Navbar({
           >
             <ArrowLeft size={22} />
 
-            <span>Back</span>
+            <span>{t("navbar.back")}</span>
           </button>
 
           <Link href="/" className="mobile-back-logo-container">
@@ -387,7 +412,9 @@ function Navbar({
             <div className="sidebar-user-info">
               <span className="sidebar-user-name">{pharmacy_name || name}</span>
 
-              <span className="sidebar-user-account">{t("account")}</span>
+              <span className="sidebar-user-account">
+                {t("navbar.account")}
+              </span>
             </div>
           </div>
         )}
@@ -398,42 +425,42 @@ function Navbar({
               <SidebarLink
                 href="/dashboard"
                 icon={<LayoutDashboard size={19} />}
-                label={t("dashboard")}
+                label={t("navbar.dashboard")}
                 onClick={closeSidebar}
               />
 
               <SidebarLink
                 href="/account"
                 icon={<UserCircle size={19} />}
-                label={t("account")}
+                label={t("navbar.account")}
                 onClick={closeSidebar}
               />
 
               <SidebarLink
                 href="/cart"
                 icon={<ShoppingCart size={19} />}
-                label={t("cart")}
+                label={t("navbar.cart")}
                 onClick={closeSidebar}
               />
 
               <SidebarLink
                 href="/promotions"
                 icon={<Megaphone size={19} />}
-                label={t("promotion")}
+                label={t("navbar.promotion")}
                 onClick={closeSidebar}
               />
 
               <SidebarLink
                 href="/survey"
                 icon={<ClipboardList size={19} />}
-                label={t("survey")}
+                label={t("navbar.survey")}
                 onClick={closeSidebar}
               />
 
               <SidebarLink
                 href="/complaint"
                 icon={<MessageSquareWarning size={19} />}
-                label={t("complaint")}
+                label={t("complaint_page.title")}
                 onClick={closeSidebar}
               />
 
@@ -505,7 +532,7 @@ function Navbar({
                 className="sidebar-logout-button"
                 onClick={handleLogout}
               >
-                <span>{t("logout")}</span>
+                <span>{t("navbar.logout")}</span>
               </Button>
             </div>
           )}
@@ -528,17 +555,17 @@ function Navbar({
         <nav className="mobile-bottom-navbar">
           <Link href="/" className="mobile-bottom-nav-item">
             <Home size={21} />
-            <span>Home</span>
+            <span>{t("navbar.home")}</span>
           </Link>
 
           <Link href="/category" className="mobile-bottom-nav-item">
             <Package size={21} />
-            <span>Products</span>
+            <span>{t("navbar.products")}</span>
           </Link>
 
           <Link href="/orders" className="mobile-bottom-nav-item">
-            <ShoppingCart size={21} />
-            <span>Orders</span>
+            <ShoppingBasket size={21} />
+            <span>{t("navbar.orders")}</span>
           </Link>
 
           <button
@@ -547,7 +574,7 @@ function Navbar({
             onClick={() => setShowSidebar(true)}
           >
             <Menu size={21} />
-            <span>Menu</span>
+            <span>{t("navbar.menu")}</span>
           </button>
         </nav>
       )}

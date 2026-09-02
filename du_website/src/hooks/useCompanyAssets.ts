@@ -18,10 +18,10 @@ export const useCompanyAssets = () => {
       companyAbout: state.hydrated ? company.about : "",
       companyDescription: state.hydrated
         ? company.transalations.description
-        : "place_holder",
+        : "company.place_holder",
       companyCopyright: state.hydrated
         ? company.transalations.copyright
-        : "place_holder",
+        : "company.place_holder",
       companyFacebook: state.hydrated ? company.social.facebook : "#",
       companyLinkedin: state.hydrated ? company.social.linkedin : "#",
       companyInstagram: state.hydrated ? company.social.instagram : "#",

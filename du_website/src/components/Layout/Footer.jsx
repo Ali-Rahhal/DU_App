@@ -53,14 +53,14 @@ function Footer() {
               <div className="col-lg-2 col-md-2 col-6">
                 <div className="widget">
                   <div className="widget-title">
-                    <h3>{t("useful links")}</h3>
+                    <h3>{t("footer.useful_links")}</h3>
                   </div>
                   <ul>
                     <li>
-                      <Link href="/">{t("home")}</Link>
+                      <Link href="/">{t("footer.home")}</Link>
                     </li>
                     <li>
-                      <Link href="/category">{t("all products")}</Link>
+                      <Link href="/category">{t("footer.all_products")}</Link>
                     </li>
                     {/* <li>
                       <Link href="/category?cat=P">Pharma</Link>
@@ -77,17 +77,17 @@ function Footer() {
               <div className="col-lg-2 col-md-2 col-6">
                 <div className="widget">
                   <div className="widget-title">
-                    <h3>{t("account")}</h3>
+                    <h3>{t("footer.account")}</h3>
                   </div>
                   <ul>
                     <li>
-                      <Link href="/account">{t("account info")}</Link>
+                      <Link href="/account">{t("footer.account_info")}</Link>
                     </li>
                     <li>
-                      <Link href="/cart">{t("cart")}</Link>
+                      <Link href="/cart">{t("footer.cart")}</Link>
                     </li>
                     <li>
-                      <Link href="/orders">{t("my_orders")}</Link>
+                      <Link href="/orders">{t("footer.my_orders")}</Link>
                     </li>
                     <li>
                       <Link href="/open-invoice">
@@ -96,7 +96,7 @@ function Footer() {
                     </li>
 
                     <li>
-                      <Link href="contact">{t("contact_us")}</Link>
+                      <Link href="contact">{t("footer.contact_us")}</Link>
                     </li>
                   </ul>
                 </div>
@@ -104,20 +104,22 @@ function Footer() {
               <div className="col-lg-2 col-md-2 col-6">
                 <div className="widget">
                   <div className="widget-title">
-                    <h3>{t("policy")}</h3>
+                    <h3>{t("footer.policy")}</h3>
                   </div>
                   <ul>
                     <li>
-                      <Link href="policy">{t("privacy_policy")}</Link>
+                      <Link href="policy">{t("footer.privacy_policy")}</Link>
                     </li>
                     <li>
-                      <Link href="policy">{t("terms_and_conditions")}</Link>
+                      <Link href="policy">
+                        {t("footer.terms_and_conditions")}
+                      </Link>
                     </li>
                     <li>
-                      <Link href="policy">{t("refund_policy")}</Link>
+                      <Link href="policy">{t("footer.refund_policy")}</Link>
                     </li>
                     <li>
-                      <Link href="policy">{t("ip_policy")}</Link>
+                      <Link href="policy">{t("footer.ip_policy")}</Link>
                     </li>
                   </ul>
                 </div>
@@ -125,7 +127,7 @@ function Footer() {
               <div className="col-lg-2 col-md-2 col-6">
                 <div className="widget">
                   <div className="widget-title">
-                    <h3>{t("social")}</h3>
+                    <h3>{t("footer.social")}</h3>
                   </div>
                   <ul>
                     <li>
@@ -164,7 +166,7 @@ function Footer() {
                   {companyHydrated ? t(companyCopyright) : "Loading..."}
                 </p>
                 <p className="mb-4 mb-md-0 text-muted">
-                  {t("version") + " " + pkg.version}
+                  {t("footer.version") + " " + pkg.version}
                 </p>
                 <ChangeLangDropdown />
               </div>

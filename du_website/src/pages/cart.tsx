@@ -112,11 +112,11 @@ const CartItem = ({ item, removeItemHandler, updateCartHandler }) => {
       <div className="c-item-stock mt-4 mt-md-0">
         {stock === 0 ? (
           <small style={{ color: "red", fontWeight: "bold" }}>
-            {t("item_unavailable")}
+            {t("products.item_unavailable")}
           </small>
         ) : stock < 10 ? (
           <small style={{ color: "red", fontWeight: "bold" }}>
-            {t("limited_stock")}
+            {t("products.limited_stock")}
           </small>
         ) : null}
       </div>
@@ -279,7 +279,7 @@ const Cart = () => {
                     <div className="row align-items-center g-2">
                       <div className="col-12 col-sm-4 text-center text-sm-left mb-2 mb-sm-0">
                         <h4>
-                          {t("shopping_cart")}
+                          {t("cart.shopping_cart")}
                           <span>( {cart} Item/s )</span>
                         </h4>
                       </div>
@@ -297,7 +297,7 @@ const Cart = () => {
                           className="btn btn-light btn-medium button-sm w-100 w-sm-auto"
                         >
                           <i className="ti-trash"></i>
-                          {t("empty_cart")}
+                          {t("cart.empty_cart")}
                         </button>
                       </div>
                       <div className="col-12 col-sm-4 text-center">
@@ -305,7 +305,7 @@ const Cart = () => {
                           href="/"
                           className="btn btn-primary btn-rounded w-100 w-sm-auto"
                         >
-                          {t("continue_shopping")} &nbsp;{" "}
+                          {t("cart.continue_shopping")} &nbsp;{" "}
                           <i className="ti-arrow-right"></i>
                         </Link>
                       </div>
@@ -342,7 +342,7 @@ const Cart = () => {
                               <h4>{item.name}</h4>
 
                               <span className="badge badge-success text-uppercase">
-                                {t("promotion")}
+                                {t("navbar.promotion")}
                               </span>
                             </Link>
                           </div>
@@ -383,7 +383,7 @@ const Cart = () => {
                         textAlign: "center",
                       }}
                     >
-                      {t("cart_totals")}
+                      {t("cart.cart_totals")}
                     </h5>
                   </div>
                   <div className="cart_total_box">
@@ -395,7 +395,7 @@ const Cart = () => {
                       }}
                     >
                       <div className="cart_total_title">
-                        <h6>{t("count")}</h6>
+                        <h6>{t("cart.count")}</h6>
                       </div>
                       <div className="cart_total_amount">
                         <span
@@ -407,7 +407,7 @@ const Cart = () => {
                             (acc, item) => acc + item.quantity,
                             0,
                           )}{" "}
-                          {t("items")}
+                          {t("cart.items")}
                         </span>
                       </div>
                     </div>
@@ -420,7 +420,7 @@ const Cart = () => {
                       }}
                     >
                       <div className="cart_total_title">
-                        <h6>{t("total")}</h6>
+                        <h6>{t("cart.total")}</h6>
                       </div>
                       <div className="cart_total_amount">
                         {subtotal
@@ -485,7 +485,7 @@ const Cart = () => {
                           });
                       }}
                     >
-                      {t("checkout")} <i className="ti-arrow-right"></i>
+                      {t("cart.checkout")} <i className="ti-arrow-right"></i>
                     </button>
                     {/* <div
                       style={{
@@ -516,9 +516,9 @@ const Cart = () => {
           ) : !loading ? (
             <div className="py-5">
               <div className="cart_item py-5 border text-center rounded">
-                <h4 className="text-muted mb-4">{t("cart_empty_msg")}</h4>
+                <h4 className="text-muted mb-4">{t("cart.cart_empty_msg")}</h4>
                 <Link href="/" className="btn btn-primary btn-rounded">
-                  {t("continue_shopping")} &nbsp;{" "}
+                  {t("cart.continue_shopping")} &nbsp;{" "}
                   <i className="ti-arrow-right"></i>
                 </Link>
               </div>

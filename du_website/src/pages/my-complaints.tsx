@@ -70,9 +70,9 @@ const MyComplaints = () => {
   return (
     <Layout>
       <AccountLayout
-        title={t("my_complaints")}
+        title={t("complaint_page.my_complaints.my_complaints")}
         // subTitle="You have full control to manage your own Account."
-        subTitle={t("view_your_complaints")}
+        subTitle={t("complaint_page.my_complaints.view_your_complaints")}
       >
         {/* <div
           style={{
@@ -126,16 +126,18 @@ const MyComplaints = () => {
                   <th className="py-3">Code</th>
                   <th className="py-3">
                     {/* Type */}
-                    {t("type")}
+                    {t("complaint_page.my_complaints.type")}
                   </th>
-                  <th className="py-3">{t("status")}</th>
+                  <th className="py-3">
+                    {t("complaint_page.my_complaints.status")}
+                  </th>
                   <th className="py-3">
                     {/* Open Date */}
-                    {t("open_date")}
+                    {t("complaint_page.my_complaints.open_date")}
                   </th>
                   <th className="py-3">
                     {/* Close Date */}
-                    {t("close_date")}
+                    {t("complaint_page.my_complaints.close_date")}
                   </th>
                 </tr>
               </thead>
@@ -176,11 +178,11 @@ const MyComplaints = () => {
                         }
                       >
                         {complaint.status === 0
-                          ? t("pending")
+                          ? t("complaint_page.my_complaints.pending")
                           : complaint.status === 1
-                            ? t("in_progress")
+                            ? t("complaint_page.my_complaints.in_progress")
                             : complaint.status === 2
-                              ? t("resolved")
+                              ? t("complaint_page.my_complaints.resolved")
                               : complaint.status === 3
                                 ? "Overdue"
                                 : "Closed"}
@@ -207,7 +209,7 @@ const MyComplaints = () => {
                               year: "numeric",
                             },
                           )
-                        : t("not_closed")}
+                        : t("complaint_page.my_complaints.not_closed")}
                     </td>
                   </tr>
                 ))}

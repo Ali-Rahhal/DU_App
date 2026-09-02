@@ -80,7 +80,7 @@ const MiniCart = ({
                 }}
               >
                 <div className="cart_total_title">
-                  <h6>{t("total")}</h6>
+                  <h6>{t("cart.total")}</h6>
                 </div>
                 <div className="cart_total_amount">
                   {/* USD FIRST */}
@@ -124,13 +124,13 @@ const MiniCart = ({
 
           <li className="w-100 d-block">
             <Link href="/cart" className="btn btn-primary w-100 d-block">
-              {t("proceed_to_cart")}
+              {t("cart.minicart.proceed_to_cart")}
             </Link>
           </li>
         </ul>
       ) : (
         <ul className="shopping-cart-items">
-          <li>{t("you_have_no_items_in_your_shopping_cart")}</li>
+          <li>{t("cart.minicart.you_have_no_items_in_your_shopping_cart")}</li>
         </ul>
       )}
     </>

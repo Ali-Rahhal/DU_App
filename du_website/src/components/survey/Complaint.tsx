@@ -289,7 +289,7 @@ function Complaint() {
         ></Spinner>
         <h3 style={{ marginLeft: "10px" }}>
           {/* Loading Complaint Form... */}
-          {t("submitting")}...
+          {t("complaint_page.submitting")}...
         </h3>
       </div>
     );
@@ -374,7 +374,7 @@ function Complaint() {
                 })}
               </select>
               <button className="btn btn-primary btn-rounded btn-full btn-large">
-                {t("next")}
+                {t("complaint_page.next")}
               </button>
             </form>
           </div>
@@ -389,7 +389,7 @@ function Complaint() {
           <div className="top-bar">
             <button className="text-btn" onClick={() => cancelSurvey()}>
               {/* Cancel */}
-              {t("cancel")}
+              {t("complaint_page.cancel")}
             </button>
             <div></div>
           </div>

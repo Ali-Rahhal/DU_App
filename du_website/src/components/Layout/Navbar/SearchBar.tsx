@@ -85,7 +85,7 @@ const SearchBar = ({ showSearch = true, text = "search" }: SearchBarProps) => {
 
         setSearchProduct(res.data.result.products || []);
       } catch (error) {
-        console.error("Error searching products:", error);
+        console.error(t("navbar.searchbar.error_searching"), error);
         setSearchProduct([]);
       } finally {
         setLoading(false);
@@ -163,14 +163,18 @@ const SearchBar = ({ showSearch = true, text = "search" }: SearchBarProps) => {
       {showSearch && hasFocus && (
         <div className="search-content">
           <div className="search-content-header">
-            <span>{search.trim() ? "Search results" : "Search products"}</span>
+            <span>
+              {search.trim()
+                ? t("navbar.searchbar.search_results")
+                : t("navbar.searchbar.search_products")}
+            </span>
           </div>
 
           <div className="search-product">
             {loading ? (
               <div className="search-state">
                 <span className="search-spinner" />
-                <span>Searching...</span>
+                <span>{t("navbar.searchbar.searching")}</span>
               </div>
             ) : search.trim() && searchProduct.length > 0 ? (
               searchProduct.map((item) => (
@@ -179,17 +183,19 @@ const SearchBar = ({ showSearch = true, text = "search" }: SearchBarProps) => {
                 </div>
               ))
             ) : search.trim() ? (
-              <div className="search-state">No products found.</div>
+              <div className="search-state">
+                {t("navbar.searchbar.no_products")}
+              </div>
             ) : (
               <div className="search-state">
-                Start typing to search for products.
+                {t("navbar.searchbar.placeholder")}
               </div>
             )}
           </div>
 
           {search.trim() && searchProduct.length > 0 && (
             <button type="submit" className="search-view-all">
-              View all results
+              {t("navbar.searchbar.view_all")}
             </button>
           )}
         </div>

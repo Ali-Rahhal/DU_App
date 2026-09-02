@@ -173,7 +173,7 @@ const ProductItem = ({
             {discountedPrice.toLocaleString()}
           </div>
           {!isOutOfStock && stock <= 10 && (
-            <small className="text-danger">{t("limited_stock")}</small>
+            <small className="text-danger">{t("products.limited_stock")}</small>
           )}
         </>
       ) : (
@@ -182,12 +182,12 @@ const ProductItem = ({
             {currenncyCodeToSymbol(item.currency_code)} {price.toLocaleString()}
           </div>
           {!isOutOfStock && stock <= 10 && (
-            <small className="text-danger">{t("limited_stock")}</small>
+            <small className="text-danger">{t("products.limited_stock")}</small>
           )}
         </>
       )
     ) : (
-      <span className="text-danger">{t("item_unavailable")}</span>
+      <span className="text-danger">{t("products.item_unavailable")}</span>
     );
   };
 
@@ -253,7 +253,7 @@ const ProductItem = ({
               borderRadius: "4px",
               zIndex: 10,
             }}
-            title={t("on_promotion")}
+            title={t("products.on_promotion")}
           >
             <i className="fa fa-star"></i>
           </span>
@@ -470,7 +470,7 @@ const ProductItem = ({
                         </div>
                         {!isOutOfStock && stock <= 10 && (
                           <small className="text-danger">
-                            {t("limited_stock")}
+                            {t("products.limited_stock")}
                           </small>
                         )}
                       </>
@@ -482,13 +482,15 @@ const ProductItem = ({
                         </div>
                         {!isOutOfStock && stock <= 10 && (
                           <small className="text-danger">
-                            {t("limited_stock")}
+                            {t("products.limited_stock")}
                           </small>
                         )}{" "}
                       </>
                     )
                   ) : (
-                    <span className="text-danger">{t("item_unavailable")}</span>
+                    <span className="text-danger">
+                      {t("products.item_unavailable")}
+                    </span>
                   )}
                 </div>
               </div>

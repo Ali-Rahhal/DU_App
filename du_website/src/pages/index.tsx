@@ -23,8 +23,6 @@ import Layout from "@/components/Layout/Layout";
 import { getProducts } from "@/utils/apiCalls";
 import HomePageSlider from "@/components/HomePageSlider";
 import { useCompanyAssets } from "@/hooks/useCompanyAssets";
-import Link from "next/link";
-import { useTranslations } from "next-intl";
 
 const getAllProducts = async (onSale, cookie) => {
   return await getProducts(
@@ -54,7 +52,6 @@ export async function getServerSideProps(context: any) {
 
 const HomePage = ({ products }) => {
   const { companyHydrated, companyId } = useCompanyAssets();
-  const t = useTranslations();
   return (
     <Layout showMobileNavbar={true}>
       <HomePageBannerSlider

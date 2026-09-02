@@ -210,7 +210,7 @@ function AccountNav() {
                   }}
                 >
                   <i className="fa fa-sign-out"></i>
-                  {t("logout")}
+                  {t("navbar.logout")}
                 </Link>
               </li>
             </ul>

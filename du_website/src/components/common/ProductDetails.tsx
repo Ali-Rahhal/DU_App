@@ -159,7 +159,9 @@ const ProductDetails = ({ product }: { product: Product }) => {
                         textTransform: "uppercase",
                       }}
                     >
-                      {product.cat_code === "PP" ? "*" : t("on_promotion")}
+                      {product.cat_code === "PP"
+                        ? "*"
+                        : t("products.on_promotion")}
                     </span>
                   ) : null}
                 </div>
@@ -207,22 +209,25 @@ const ProductDetails = ({ product }: { product: Product }) => {
                         <strong>SKU :</strong> {itemCode}
                       </span>
                       <span className="d-block text-muted mb-2">
-                        <strong>{t("category")} :</strong> {product?.category}
+                        <strong>{t("products.category")} :</strong>{" "}
+                        {product?.category}
                       </span>
 
                       <span className="d-block text-muted mb-2">
-                        <strong>{t("availability")} : </strong>
+                        <strong>{t("products.availability")} : </strong>
                         <span className={stock > 10 ? "" : "text-danger"}>
                           {stock > 10
-                            ? t("in_stock")
+                            ? t("products.in_stock")
                             : stock == 0
-                              ? t("item_unavailable")
-                              : `${t("limited_stock")}`}
+                              ? t("products.item_unavailable")
+                              : `${t("products.limited_stock")}`}
                         </span>
                       </span>
                       {stock == 0 && (
                         <strong className="d-block text-danger mb-2">
-                          {t("you_can_find_alternative_products_below")}
+                          {t(
+                            "products.you_can_find_alternative_products_below",
+                          )}
                         </strong>
                       )}
                     </div>
@@ -283,7 +288,7 @@ const ProductDetails = ({ product }: { product: Product }) => {
                             disabled={product.isExpiryDeal}
                           >
                             <i className="fa fa-heart"></i>{" "}
-                            {t("add_to_wishlist")}
+                            {t("products.add_to_wishlist")}
                           </button>
                         ) : (
                           <button
@@ -293,7 +298,7 @@ const ProductDetails = ({ product }: { product: Product }) => {
                             disabled={product.isExpiryDeal}
                           >
                             <i className="fa fa-heart"></i>
-                            {t("remove_from_wishlist")}
+                            {t("products.remove_from_wishlist")}
                           </button>
                         )}
 
@@ -306,7 +311,7 @@ const ProductDetails = ({ product }: { product: Product }) => {
                           disabled={stock == 0}
                         >
                           <i className="fa fa-shopping-cart"></i>
-                          {t("add_to_cart")}
+                          {t("products.add_to_cart")}
                         </button>
                       </div>
                     </div>

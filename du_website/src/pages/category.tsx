@@ -73,7 +73,7 @@ const Filters = ({
   };
 
   return (
-    <div className="p-3 border rounded bg-light mb-3">
+    <div className="p-2 border rounded bg-light mb-3">
       <div className="mb-3">
         <h6>{t("search")}</h6>
 

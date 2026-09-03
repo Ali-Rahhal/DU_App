@@ -1,13 +1,30 @@
+.orders-table-row {
+  cursor: pointer;
+
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background: rgba($primary, 0.025);
+  }
+}
+
+.orders-table-order-number {
+  color: $primary;
+  font-weight: 600;
+}
+
 .orders-mobile-view {
   padding: 5px;
 
   .orders-mobile-card {
+    position: relative;
     background: #ffffff;
     border-radius: 16px;
     border: 1px solid rgba(0, 0, 0, 0.06);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
     transition: all 0.25s ease;
     overflow: hidden;
+    cursor: pointer;
 
     &:active {
       transform: scale(0.98);

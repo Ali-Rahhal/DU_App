@@ -180,7 +180,7 @@ router.post(`/add_to_favorite`, async (c) => {
     const itemCode = body["item_code"];
     const result = await addItemToFavorite(userId, itemCode, companyId);
     return c.json({
-      message: "Added item to favorite",
+      message: "Added item to favorites",
       result: result,
     });
   } catch (e) {
@@ -206,7 +206,7 @@ router.post(`/remove_from_favorite`, async (c) => {
     const itemCode = body["item_code"];
     const result = await removeItemFromFavorite(userId, itemCode, companyId);
     return c.json({
-      message: "Removed item to favorite",
+      message: "Removed item from favorites",
       result: result,
     });
   } catch (e) {

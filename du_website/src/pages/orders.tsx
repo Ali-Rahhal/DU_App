@@ -2,7 +2,7 @@ import AccountLayout from "@/components/dashboard/AccountLayout";
 import Layout from "@/components/Layout/Layout";
 import { currenncyCodeToSymbol } from "@/utils";
 import { getOrders } from "@/utils/apiCalls";
-import Link from "next/link";
+import OrderDetailsModal from "@/components/ordersPage/OrderDetailsModal";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useTranslations } from "next-intl";
@@ -11,6 +11,9 @@ import { useCompanyAssets } from "@/hooks/useCompanyAssets";
 const Orders = () => {
   const [orders, setOrders] = useState<any[]>([]);
   const [barcode, setBarcode] = useState("");
+
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+  const [showOrderDetails, setShowOrderDetails] = useState(false);
 
   const t = useTranslations();
   const { companyHydrated, companyId } = useCompanyAssets();
@@ -25,9 +28,15 @@ const Orders = () => {
       });
   };
 
-  useEffect(() => {
-    fetchOrders();
-  }, []);
+  const handleOrderClick = (orderId: string) => {
+    setSelectedOrderId(orderId);
+    setShowOrderDetails(true);
+  };
+
+  const handleCloseOrderDetails = () => {
+    setShowOrderDetails(false);
+    setSelectedOrderId(null);
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -168,14 +177,15 @@ const Orders = () => {
                   </tr>
                 ) : (
                   orders.map((order) => (
-                    <tr key={order.id}>
+                    <tr
+                      key={order.id}
+                      className="orders-table-row"
+                      onClick={() => handleOrderClick(order.id)}
+                    >
                       <td className="py-3">
-                        <Link
-                          className="nav-link-style fw-medium fs-sm"
-                          href={`/orders-details?id=${order.id}`}
-                        >
+                        <span className="orders-table-order-number">
                           {order.orderNb}
-                        </Link>
+                        </span>
                       </td>
 
                       <td className="py-3">{getBrandDescription(order)}</td>
@@ -213,66 +223,74 @@ const Orders = () => {
             </div>
           ) : (
             orders.map((order) => (
-              <Link
+              <div
                 key={order.id}
-                href={`/orders-details?id=${order.id}`}
-                className="text-decoration-none"
+                className="orders-mobile-card"
+                onClick={() => handleOrderClick(order.id)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    handleOrderClick(order.id);
+                  }
+                }}
               >
-                <div className="orders-mobile-card">
-                  <div className="orders-mobile-card-body">
-                    {/* Header */}
-                    <div className="orders-mobile-header">
-                      <div className="orders-mobile-number">
-                        #{order.orderNb}
-                      </div>
+                <div className="orders-mobile-card-body">
+                  {/* Header */}
+                  <div className="orders-mobile-header">
+                    <div className="orders-mobile-number">#{order.orderNb}</div>
 
-                      <span
-                        className={`badge orders-mobile-status ${getStatusBadgeClass(order.status)}`}
-                      >
-                        {getTranslatedStatus(order)}
+                    <span
+                      className={`badge orders-mobile-status ${getStatusBadgeClass(order.status)}`}
+                    >
+                      {getTranslatedStatus(order)}
+                    </span>
+                  </div>
+
+                  {/* Information */}
+                  <div className="orders-mobile-info">
+                    <div className="orders-mobile-field">
+                      <span className="orders-mobile-label">
+                        {t("orders.table.category")}
+                      </span>
+
+                      <span className="orders-mobile-value">
+                        {getBrandDescription(order)}
                       </span>
                     </div>
 
-                    {/* Information */}
-                    <div className="orders-mobile-info">
-                      <div className="orders-mobile-field">
-                        <span className="orders-mobile-label">
-                          {t("orders.table.category")}
-                        </span>
-
-                        <span className="orders-mobile-value">
-                          {getBrandDescription(order)}
-                        </span>
-                      </div>
-
-                      <div className="orders-mobile-field">
-                        <span className="orders-mobile-label">
-                          {t("orders.table.date_purchased")}
-                        </span>
-
-                        <span className="orders-mobile-value">
-                          {renderDate(order.creationDate)}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Footer */}
-                    <div className="orders-mobile-footer">
-                      <span className="orders-mobile-total-label">
-                        {t("orders.table.total")}
+                    <div className="orders-mobile-field">
+                      <span className="orders-mobile-label">
+                        {t("orders.table.date_purchased")}
                       </span>
 
-                      <span className="orders-mobile-total">
-                        {currenncyCodeToSymbol(order.currency_code)}{" "}
-                        {parseFloat(order.total_amount).toLocaleString()}
+                      <span className="orders-mobile-value">
+                        {renderDate(order.creationDate)}
                       </span>
                     </div>
                   </div>
+
+                  {/* Footer */}
+                  <div className="orders-mobile-footer">
+                    <span className="orders-mobile-total-label">
+                      {t("orders.table.total")}
+                    </span>
+
+                    <span className="orders-mobile-total">
+                      {currenncyCodeToSymbol(order.currency_code)}{" "}
+                      {parseFloat(order.total_amount).toLocaleString()}
+                    </span>
+                  </div>
                 </div>
-              </Link>
+              </div>
             ))
           )}
         </div>
+        <OrderDetailsModal
+          orderId={selectedOrderId}
+          show={showOrderDetails}
+          onHide={handleCloseOrderDetails}
+        />
       </AccountLayout>
     </Layout>
   );

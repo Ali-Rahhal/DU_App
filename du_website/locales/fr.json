@@ -191,6 +191,8 @@
     "continue_shopping": "Continuer vos achats",
     "cart_empty_msg": "Votre panier est vide",
     "promotion": "Promotion",
+    "remove": "Retirer",
+    "pricing_notice": "Les prix et les quantités sont susceptibles de varier selon les disponibilités. Le montant final sera confirmé lors du traitement de votre commande.",
     "minicart": {
       "proceed_to_cart": "Passer au panier",
       "you_have_no_items_in_your_shopping_cart": "Vous n'avez aucun article dans votre panier"

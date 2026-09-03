@@ -4,6 +4,7 @@ import { currenncyCodeToSymbol } from "@/utils";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
+import React from "react";
 const MiniCart = ({
   cartItems,
   subtotal,
@@ -21,7 +22,10 @@ const MiniCart = ({
     <>
       {cartItems && cartItems.length > 0 ? (
         <ul className="shopping-cart-items">
-          <div className="cart_items">
+          <div
+            className="cart_items"
+            style={{ maxHeight: "400px", overflowY: "auto" }}
+          >
             {cartItems.map((item) => (
               <li key={item.item_code} className="mini_cart_item">
                 <div className="left-section">
@@ -56,44 +60,41 @@ const MiniCart = ({
               </li>
             ))}
           </div>
-          <li className="w-100 d-block mb-3 text-center">
-            {/* <h6>
-              Subtotal:{" "}
-              {currenncyCodeToSymbol(cartItems[0].currency_code) +
-                " " +
-                subtotal.toLocaleString()}
-            </h6> */}
+          <li className="mini-cart-total">
             <div
               style={{
                 display: "flex",
-                justifyContent: "flex-end",
-                flexDirection: "column",
-                margin: "10px 0 0 0",
-                width: "100%",
+                justifyContent: "space-between",
+                alignItems: "center",
               }}
             >
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <div className="cart_total_title">
-                  <h6>{t("cart.total")}</h6>
-                </div>
-                <div className="cart_total_amount">
-                  {/* USD FIRST */}
-                  {subtotal
-                    ?.sort((a, b) =>
-                      a.currency_code === "USD"
-                        ? -1
-                        : b.currency_code === "USD"
-                          ? 1
-                          : 0,
-                    )
-                    .map((sub, index) => (
-                      <>
+              <div className="cart_total_title">
+                <h6>{t("cart.total")}</h6>
+              </div>
+
+              <div className="cart_total_amount">
+                {subtotal
+                  ?.sort((a, b) =>
+                    a.currency_code === "USD"
+                      ? -1
+                      : b.currency_code === "USD"
+                        ? 1
+                        : 0,
+                  )
+                  .map((sub, index) => (
+                    <React.Fragment key={sub.currency_code}>
+                      <span
+                        style={{
+                          display: "block",
+                          textAlign: "right",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {currenncyCodeToSymbol(sub.currency_code) + " "}
+                        {sub.price.toLocaleString()}
+                      </span>
+
+                      {index >= 0 && index < subtotal.length - 1 && (
                         <span
                           style={{
                             display: "block",
@@ -101,28 +102,16 @@ const MiniCart = ({
                             fontWeight: "bold",
                           }}
                         >
-                          {currenncyCodeToSymbol(sub.currency_code) + " "}
-                          {sub.price.toLocaleString()}
+                          +
                         </span>
-                        {index >= 0 && index < subtotal.length - 1 && (
-                          <span
-                            style={{
-                              display: "block",
-                              textAlign: "right",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            +
-                          </span>
-                        )}
-                      </>
-                    ))}
-                </div>
+                      )}
+                    </React.Fragment>
+                  ))}
               </div>
             </div>
           </li>
 
-          <li className="w-100 d-block">
+          <li className="mini-cart-checkout">
             <Link href="/cart" className="btn btn-primary w-100 d-block">
               {t("cart.minicart.proceed_to_cart")}
             </Link>

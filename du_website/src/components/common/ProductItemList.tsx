@@ -1,10 +1,13 @@
 import { useCompanyAssets } from "@/hooks/useCompanyAssets";
-import Item from "@/Models/item";
+
 import { Product } from "@/types/productTypes";
+
 import { currenncyCodeToSymbol, discount } from "@/utils";
+import { useTranslations } from "next-intl";
 
 import Image from "next/image";
 import Link from "next/link";
+
 import React from "react";
 
 const ProductItemList = ({
@@ -18,72 +21,83 @@ const ProductItemList = ({
   removeItemHandler?: (item: string) => void;
   size?: "small" | "large";
 }) => {
+  const t = useTranslations();
   const { companyPlaceholder } = useCompanyAssets();
+
   return (
     <div
-      key={item.item_code}
-      className={`cart_item ${size === "small" && "small"} px-0`}
+      className={`product-item-list ${
+        size === "small" ? "product-item-list--small" : ""
+      }`}
     >
-      <div
-        className="cart_item_image"
-        style={{
-          position: "relative",
-        }}
-      >
+      {/* Product Image */}
+      <div className="product-item-list__image">
         <Link href={"/products/" + item.item_code}>
           <Image
             fill
-            style={{
-              objectFit: "cover",
-            }}
-            src={item?.image ? item?.image : companyPlaceholder}
+            src={item?.image ? item.image : companyPlaceholder}
             alt={item.name}
+            style={{
+              objectFit: "contain",
+            }}
           />
         </Link>
       </div>
-      <div className="c-item-body">
-        <div className="cart_item_title mb-2">
+
+      {/* Product Information */}
+      <div className="product-item-list__content">
+        <div className="product-item-list__title">
           <Link href={"/products/" + item.item_code}>
             <h4>{item.name}</h4>
           </Link>
-          {/* {item?.weight && (
-        <p className="small mb-0 text-muted">
-          {item?.weight}
-        </p>
-      )} */}
+
+          {/*
+          {item?.weight && (
+            <p className="product-item-list__description">
+              {item?.weight}
+            </p>
+          )}
+          */}
         </div>
-        <div className="cart_item_price">
-          <div className="product-price">
+
+        <div className="product-item-list__footer">
+          {/* Price */}
+          <div className="product-item-list__price">
             <span>
               <strong>
                 {currenncyCodeToSymbol(item.currency_code) + " "}
                 {item.discountedPrice
                   ? parseFloat(item.discountedPrice).toLocaleString()
-                  : parseFloat(item.price).toLocaleString()}{" "}
+                  : parseFloat(item.price).toLocaleString()}
               </strong>
+
               {item?.price && (
                 <del>
                   {currenncyCodeToSymbol(item.currency_code) + " "}
                   {parseFloat(item.price).toLocaleString()}
                 </del>
               )}
+
               {item.discountedPrice && (
-                <small className="product-discountPercentage">
+                <small className="product-item-list__discount">
                   ({discount(item.discountedPrice, item.price)}% OFF)
                 </small>
               )}
             </span>
           </div>
-          {withRemove ? (
-            <div className="cart_product_remove">
+
+          {/* Remove */}
+          {withRemove && (
+            <div className="product-item-list__remove">
               <button
                 type="button"
-                onClick={() => removeItemHandler(item.item_code)}
+                onClick={() => removeItemHandler?.(item.item_code)}
               >
-                <i className="ti-trash"></i> Remove
+                <i className="ti-trash"></i>
+                {t("cart.remove")}
               </button>
             </div>
-          ) : null}
+          )}
         </div>
       </div>
     </div>

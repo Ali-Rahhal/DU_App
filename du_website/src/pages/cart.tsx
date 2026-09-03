@@ -3,12 +3,6 @@ import Layout from "@/components/Layout/Layout";
 import { useCompanyAssets } from "@/hooks/useCompanyAssets";
 
 import { useAccountStore, useAuthStore } from "@/store/zustand";
-// import {
-//   clearCart,
-//   deleteFormCart,
-//   increaseQuantity,
-//   decreaseQuantity,
-// } from "@/store/state/cartSlice";
 import { currenncyCodeToSymbol, discount } from "@/utils";
 import {
   getShoppingCartPromotions,
@@ -18,7 +12,6 @@ import {
 } from "@/utils/apiCalls";
 import { ALL_PERMISSIONS } from "@/utils/data";
 import { useTranslations } from "next-intl";
-// import { findProductIndex, server } from '@/utils';
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -26,8 +19,6 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap";
 import { toast } from "react-toastify";
-
-// import { toast } from 'react-toastify';
 
 const CartItem = ({ item, removeItemHandler, updateCartHandler }) => {
   const t = useTranslations();
@@ -57,110 +48,111 @@ const CartItem = ({ item, removeItemHandler, updateCartHandler }) => {
     item.image || companyPlaceholder,
   );
   return (
-    <div key={item.item_code} className="cart_item">
-      <div className="cart_item_image">
-        <Link href={"/products/" + item.item_code}>
-          <Image
-            fill
-            src={imgSrcMain}
-            alt={item.name}
-            onError={() => {
-              setImgSrcMain(companyPlaceholder);
-            }}
-          />
-        </Link>
-      </div>
-      <div className="c-item-body mt-4 mt-md-0">
-        <div className="cart_item_title mb-2">
+    <div key={item.item_code} className="cart-item-card">
+      <div className="cart-item-main">
+        <div className="cart_item_image">
           <Link href={"/products/" + item.item_code}>
-            <h4>{item.name}</h4>
+            <Image
+              fill
+              src={imgSrcMain}
+              alt={item.name}
+              onError={() => {
+                setImgSrcMain(companyPlaceholder);
+              }}
+            />
           </Link>
         </div>
-        <div className="cart_item_price">
-          <div className="product-price">
-            <span>
-              <strong>
+
+        <div className="cart-item-info">
+          <div className="cart_item_title">
+            <Link href={"/products/" + item.item_code}>
+              <h4>{item.name}</h4>
+            </Link>
+          </div>
+
+          <div className="cart-item-price">
+            <strong>
+              {currenncyCodeToSymbol(item.currency_code) + " "}
+              {item.discountedPrice
+                ? parseFloat(item.discountedPrice).toLocaleString()
+                : parseFloat(item.price).toLocaleString()}
+            </strong>
+
+            {item.discountedPrice && (
+              <del>
                 {currenncyCodeToSymbol(item.currency_code) + " "}
-                {item.discountedPrice
-                  ? parseFloat(item.discountedPrice).toLocaleString()
-                  : parseFloat(item.price).toLocaleString()}{" "}
-              </strong>
-              {item?.discountedPrice && (
-                <del>
-                  {currenncyCodeToSymbol(item.currency_code) + " "}
-                  {parseFloat(item.price).toLocaleString()}
-                </del>
-              )}
-              {item.discountedPrice && (
-                <small className="product-discountPercentage">
-                  ({discount(item.discountedPrice, item.price)}% OFF)
-                </small>
-              )}
-            </span>
-            {/* )} */}
+                {parseFloat(item.price).toLocaleString()}
+              </del>
+            )}
+
+            {item.discountedPrice && (
+              <span className="cart-discount">
+                {discount(item.discountedPrice, item.price)}% OFF
+              </span>
+            )}
           </div>
-          <div className="cart_product_remove">
-            <button
-              type="button"
-              onClick={() => removeItemHandler(itemCode, item.isExpiryDeal)}
-            >
-              <i className="ti-trash"></i> Remove
-            </button>
-          </div>
+
+          <button
+            type="button"
+            className="cart-remove-button"
+            onClick={() => removeItemHandler(itemCode, item.isExpiryDeal)}
+          >
+            <i className="ti-trash"></i>
+            {t("cart.remove")}
+          </button>
         </div>
-      </div>
-      <div className="c-item-stock mt-4 mt-md-0">
-        {stock === 0 ? (
-          <small style={{ color: "red", fontWeight: "bold" }}>
-            {t("products.item_unavailable")}
-          </small>
-        ) : stock < 10 ? (
-          <small style={{ color: "red", fontWeight: "bold" }}>
-            {t("products.limited_stock")}
-          </small>
-        ) : null}
-      </div>
-      <div
-        className="input-group quantity-selector mt-4 mt-md-0"
-        style={{ maxWidth: "150px" }}
-      >
-        <button
-          className="btn btn-outline-secondary"
-          type="button"
-          onClick={() => handleQuantityChange(quantity - 1)}
-          disabled={quantity === 1}
-        >
-          <i className="fa fa-minus"></i>
-        </button>
 
-        <input
-          type="number"
-          className="form-control text-center"
-          value={quantity}
-          min={1}
-          max={stock}
-          onChange={(e) => {
-            let val = parseInt(e.target.value);
+        <div className="cart-item-stock">
+          {stock === 0 ? (
+            <span className="stock-status unavailable">
+              {t("products.item_unavailable")}
+            </span>
+          ) : stock < 10 ? (
+            <span className="stock-status limited">
+              {t("products.limited_stock")}
+            </span>
+          ) : null}
+        </div>
 
-            if (!val || val < 1) return;
+        <div className="cart-quantity">
+          <button
+            className="quantity-button"
+            type="button"
+            onClick={() => handleQuantityChange(quantity - 1)}
+            disabled={quantity === 1}
+          >
+            <i className="fa fa-minus"></i>
+          </button>
 
-            if (val > stock) {
-              val = stock;
-              toast.warning(`Insufficient stock for ${item.name}`);
-            }
+          <input
+            type="number"
+            className="quantity-input"
+            value={quantity}
+            min={1}
+            max={stock}
+            onChange={(e) => {
+              let val = parseInt(e.target.value);
 
-            handleQuantityChange(val);
-          }}
-        />
+              if (!val || val < 1) return;
 
-        <button
-          className="btn btn-outline-secondary"
-          type="button"
-          onClick={() => handleQuantityChange(quantity + 1)}
-          disabled={quantity >= stock}
-        >
-          <i className="fa fa-plus"></i>
-        </button>
+              if (val > stock) {
+                val = stock;
+                toast.warning(`Insufficient stock for ${item.name}`);
+              }
+
+              handleQuantityChange(val);
+            }}
+          />
+
+          <button
+            className="quantity-button"
+            type="button"
+            onClick={() => handleQuantityChange(quantity + 1)}
+            disabled={quantity >= stock}
+          >
+            <i className="fa fa-plus"></i>
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -271,6 +263,13 @@ const Cart = () => {
     <Layout>
       <section className="section-padding mt-5 mb-5">
         <div className="container">
+          <section className="cart-notice" aria-label="Cart pricing notice">
+            <div className="cart-notice-icon">
+              <i className="ti-info-alt"></i>
+            </div>
+
+            <p>{t("cart.pricing_notice")}</p>
+          </section>
           {cartItems.length > 0 ? (
             <div className="row justify-content-between">
               <div className="col-md-9">
@@ -347,7 +346,7 @@ const Cart = () => {
                             </Link>
                           </div>
                           <div className="cart_item_price">
-                            <div className="product-price">
+                            <div className="cart_product-price">
                               <span
                                 style={{
                                   color: "green",
@@ -487,30 +486,8 @@ const Cart = () => {
                     >
                       {t("cart.checkout")} <i className="ti-arrow-right"></i>
                     </button>
-                    {/* <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        marginBottom: "10px",
-                      }}
-                    >
-                      <div className="cart_total_title">
-                        <h6>Total</h6>
-                      </div>
-                      <div className="cart_total_amount">
-                        <span>
-                          {currenncyCodeToSymbol(cartItems[0]?.currency_code) +
-                            " "}
-                          {subtotal.toLocaleString()}
-                        </span>
-                      </div>
-                    </div> */}
                   </div>
                 </>
-                {/* <CartSummary
-                  cart={finalCartItems}
-                  currency={currenncyCodeToSymbol(finalCartItems[0]?.currency_code)}
-                /> */}
               </div>
             </div>
           ) : !loading ? (

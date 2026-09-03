@@ -191,6 +191,8 @@
     "continue_shopping": "Continue Shopping",
     "cart_empty_msg": "Your cart is empty",
     "promotion": "Promotion",
+    "remove": "Remove",
+    "pricing_notice": "Prices and quantities are subject to change based on availability. Final amounts will be confirmed upon order processing.",
     "minicart": {
       "proceed_to_cart": "Proceed to Cart",
       "you_have_no_items_in_your_shopping_cart": "You have no items in your shopping cart."

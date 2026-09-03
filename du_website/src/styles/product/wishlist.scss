@@ -1,0 +1,218 @@
+/* =========================================================
+   Wishlist
+   ========================================================= */
+
+.wishlist-page {
+  width: 100%;
+}
+
+/* Main container */
+
+.wishlist-container {
+  width: 100%;
+  background: #fff;
+  border: 1px solid $border-color;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Header */
+
+.wishlist-header {
+  padding: 18px 22px;
+  border-bottom: 1px solid $border-color;
+  background: #fff;
+}
+
+.wishlist-header-content {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.wishlist-header-icon {
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+  background: rgba($primary, 0.08);
+  color: $primary;
+
+  i {
+    font-size: 17px;
+  }
+}
+
+.wishlist-header-content {
+  h4 {
+    margin: 0 0 2px;
+    color: $dark;
+    font-size: 17px;
+    font-weight: 700;
+  }
+
+  span {
+    color: rgba($dark, 0.5);
+    font-size: 13px;
+  }
+}
+
+/* Wishlist items */
+
+.wishlist-items {
+  width: 100%;
+}
+
+.wishlist-item-wrapper {
+  width: 100%;
+  border-bottom: 1px solid $border-color;
+
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  /*
+   * ProductItemList keeps its own internal layout.
+   * These rules simply make it fit nicely inside
+   * the wishlist container.
+   */
+  > * {
+    margin: 0;
+  }
+}
+
+/* Empty state */
+
+.wishlist-empty {
+  min-height: 320px;
+  padding: 50px 25px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  background: #fff;
+  border: 1px solid $border-color;
+  border-radius: 12px;
+}
+
+.wishlist-empty-icon {
+  width: 70px;
+  height: 70px;
+  margin-bottom: 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  background: rgba($primary, 0.08);
+  color: $primary;
+
+  i {
+    font-size: 28px;
+  }
+}
+
+.wishlist-empty {
+  h4 {
+    margin: 0 0 8px;
+    color: $dark;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  p {
+    margin: 0 0 22px;
+    color: rgba($dark, 0.5);
+    font-size: 14px;
+  }
+}
+
+.wishlist-shopping-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Loading */
+
+.wishlist-loading {
+  min-height: 350px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =========================================================
+   Mobile
+   ========================================================= */
+
+@media only screen and (max-width: 767px) {
+  .wishlist-container {
+    border-radius: 10px;
+  }
+
+  .wishlist-header {
+    padding: 15px 16px;
+  }
+
+  .wishlist-header-icon {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+
+    i {
+      font-size: 15px;
+    }
+  }
+
+  .wishlist-header-content {
+    h4 {
+      font-size: 15px;
+    }
+
+    span {
+      font-size: 12px;
+    }
+  }
+
+  .wishlist-empty {
+    min-height: 280px;
+    padding: 40px 20px;
+  }
+
+  .wishlist-empty-icon {
+    width: 60px;
+    height: 60px;
+
+    i {
+      font-size: 24px;
+    }
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .wishlist-header {
+    padding: 14px;
+  }
+
+  .wishlist-empty {
+    h4 {
+      font-size: 16px;
+    }
+
+    p {
+      font-size: 13px;
+    }
+  }
+}

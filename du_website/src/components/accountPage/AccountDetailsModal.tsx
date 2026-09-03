@@ -4,7 +4,7 @@ import { useAccountStore } from "@/store/zustand";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
-const MyAccount = () => {
+const AccountDetailsModal = () => {
   const { firstName, lastName, phone } = useAccountStore();
   const [phoneInput, setPhoneInput] = useState(phone);
   const [fname, setFname] = useState(firstName);

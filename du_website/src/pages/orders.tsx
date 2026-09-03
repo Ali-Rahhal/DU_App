@@ -1,17 +1,24 @@
-import AccountLayout from "@/components/dashboard/AccountLayout";
 import Layout from "@/components/Layout/Layout";
 import { currenncyCodeToSymbol } from "@/utils";
 import { getOrders } from "@/utils/apiCalls";
 import OrderDetailsModal from "@/components/ordersPage/OrderDetailsModal";
+
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useTranslations } from "next-intl";
 import { useCompanyAssets } from "@/hooks/useCompanyAssets";
 
+import {
+  Search,
+  ShoppingBag,
+  CalendarDays,
+  Tag,
+  ChevronRight,
+} from "lucide-react";
+
 const Orders = () => {
   const [orders, setOrders] = useState<any[]>([]);
   const [barcode, setBarcode] = useState("");
-
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [showOrderDetails, setShowOrderDetails] = useState(false);
 
@@ -49,16 +56,16 @@ const Orders = () => {
   const getStatusBadgeClass = (status: number) => {
     switch (status) {
       case 3:
-        return "bg-soft-warning";
+        return "orders-status-warning";
 
       case 4:
-        return "bg-soft-info";
+        return "orders-status-info";
 
       case 8:
-        return "bg-soft-success";
+        return "orders-status-success";
 
       default:
-        return "bg-soft-danger";
+        return "orders-status-danger";
     }
   };
 
@@ -106,192 +113,255 @@ const Orders = () => {
 
   return (
     <Layout>
-      <AccountLayout title={t("orders.title")} subTitle={t("orders.subtitle")}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            marginBottom: "20px",
-            alignItems: "flex-end",
-            gap: "10px",
-          }}
-        >
-          <div style={{ width: "100%" }}>
-            <label htmlFor="barcode" className="form-label">
-              {t("orders.reference_no")}
-            </label>
+      <div className="orders-page">
+        {/* =====================================================
+            PAGE HEADER
+            ===================================================== */}
+
+        <section className="orders-page-header">
+          <div className="orders-page-header-content">
+            <div className="orders-page-header-icon">
+              <ShoppingBag size={24} />
+            </div>
+
+            <div className="orders-page-heading">
+              <h1 className="orders-page-title">{t("orders.title")}</h1>
+
+              <p className="orders-page-subtitle">{t("orders.subtitle")}</p>
+            </div>
+          </div>
+        </section>
+
+        {/* =====================================================
+            SEARCH
+            ===================================================== */}
+
+        <section className="orders-search-card">
+          <div className="orders-search-header">
+            <div className="orders-search-icon">
+              <Search size={19} />
+            </div>
+
+            <div>
+              <h2 className="orders-search-title">
+                {t("orders.reference_no")}
+              </h2>
+
+              <p className="orders-search-description">
+                {t("orders.reference_placeholder")}
+              </p>
+            </div>
+          </div>
+
+          <div className="orders-search-field">
+            <Search size={18} className="orders-search-field-icon" />
 
             <input
+              id="barcode"
               name="barcode"
               type="text"
-              placeholder={t("orders.reference_placeholder")}
-              className="form-control input-lg rounded"
-              style={{
-                height: "40px",
-              }}
               value={barcode}
               onChange={(e) => setBarcode(e.target.value)}
+              placeholder={t("orders.reference_placeholder")}
+              className="orders-search-input"
             />
-          </div>
-        </div>
 
-        {/* Desktop Table */}
-        <div className="card d-none d-lg-block">
-          <div
-            className="table-responsive"
-            style={{
-              maxHeight: "500px",
-              overflowY: "auto",
-            }}
-          >
-            <table className="table mb-0">
-              <thead
-                style={{
-                  position: "sticky",
-                  top: "0",
-                  backgroundColor: "white",
-                }}
+            {barcode && (
+              <button
+                type="button"
+                className="orders-search-clear"
+                onClick={() => setBarcode("")}
+                aria-label="Clear search"
               >
-                <tr>
-                  <th>{t("orders.table.order_number")}</th>
+                ×
+              </button>
+            )}
+          </div>
+        </section>
 
-                  <th>{t("orders.table.category")}</th>
+        {/* =====================================================
+            ORDERS TABLE
+            ===================================================== */}
 
-                  <th>{t("orders.table.date_purchased")}</th>
-
-                  <th>{t("orders.table.status")}</th>
-
-                  <th>{t("orders.table.total")}</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {orders.length === 0 ? (
+        <section className="orders-results-section">
+          {/* Desktop */}
+          <div className="orders-table-container d-none d-lg-block">
+            <div className="orders-table-wrapper">
+              <table className="orders-table">
+                <thead className="orders-table-head">
                   <tr>
-                    <td colSpan={5} className="text-center py-5">
-                      <div className="text-muted">
-                        <i className="fa fa-shopping-bag fa-3x mb-3"></i>
-                        <p>{t("orders.no_orders")}</p>
-                      </div>
-                    </td>
+                    <th>{t("orders.table.order_number")}</th>
+
+                    <th>{t("orders.table.category")}</th>
+
+                    <th>{t("orders.table.date_purchased")}</th>
+
+                    <th>{t("orders.table.status")}</th>
+
+                    <th>{t("orders.table.total")}</th>
+
+                    <th className="orders-table-action-column" />
                   </tr>
-                ) : (
-                  orders.map((order) => (
-                    <tr
-                      key={order.id}
-                      className="orders-table-row"
-                      onClick={() => handleOrderClick(order.id)}
-                    >
-                      <td className="py-3">
-                        <span className="orders-table-order-number">
-                          {order.orderNb}
-                        </span>
-                      </td>
+                </thead>
 
-                      <td className="py-3">{getBrandDescription(order)}</td>
+                <tbody>
+                  {orders.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="orders-table-empty">
+                        <div className="orders-empty-state">
+                          <div className="orders-empty-icon">
+                            <ShoppingBag size={30} />
+                          </div>
 
-                      <td className="py-3">{renderDate(order.creationDate)}</td>
-
-                      <td className="py-3">
-                        <span
-                          className={`badge m-0 ${getStatusBadgeClass(order.status)}`}
-                        >
-                          {getTranslatedStatus(order)}
-                        </span>
-                      </td>
-
-                      <td className="py-3">
-                        {currenncyCodeToSymbol(order.currency_code)}{" "}
-                        {parseFloat(order.total_amount).toLocaleString()}
+                          <h3 className="orders-empty-title">
+                            {t("orders.no_orders")}
+                          </h3>
+                        </div>
                       </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-        {/* Mobile Cards */}
-        <div className="orders-mobile-view d-block d-lg-none">
-          {orders.length === 0 ? (
-            <div className="orders-mobile-empty-card">
-              <div className="text-muted text-center py-5">
-                <i className="fa fa-shopping-bag fa-3x mb-3"></i>
+                  ) : (
+                    orders.map((order) => (
+                      <tr
+                        key={order.id}
+                        className="orders-table-row"
+                        onClick={() => handleOrderClick(order.id)}
+                      >
+                        <td>
+                          <span className="orders-order-number">
+                            #{order.orderNb}
+                          </span>
+                        </td>
 
-                <p>{t("orders.no_orders")}</p>
-              </div>
+                        <td>
+                          <div className="orders-category">
+                            <Tag size={16} />
+                            <span>{getBrandDescription(order)}</span>
+                          </div>
+                        </td>
+
+                        <td>
+                          <div className="orders-date">
+                            <CalendarDays size={16} />
+                            <span>{renderDate(order.creationDate)}</span>
+                          </div>
+                        </td>
+
+                        <td>
+                          <span
+                            className={`orders-status-badge ${getStatusBadgeClass(
+                              order.status,
+                            )}`}
+                          >
+                            {getTranslatedStatus(order)}
+                          </span>
+                        </td>
+
+                        <td>
+                          <span className="orders-total">
+                            {currenncyCodeToSymbol(order.currency_code)}{" "}
+                            {parseFloat(order.total_amount).toLocaleString()}
+                          </span>
+                        </td>
+
+                        <td className="orders-table-action-column">
+                          <ChevronRight
+                            size={18}
+                            className="orders-row-arrow"
+                          />
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
             </div>
-          ) : (
-            orders.map((order) => (
-              <div
-                key={order.id}
-                className="orders-mobile-card"
-                onClick={() => handleOrderClick(order.id)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    handleOrderClick(order.id);
-                  }
-                }}
-              >
-                <div className="orders-mobile-card-body">
-                  {/* Header */}
-                  <div className="orders-mobile-header">
-                    <div className="orders-mobile-number">#{order.orderNb}</div>
+          </div>
+
+          {/* =================================================
+              MOBILE
+              ================================================= */}
+
+          <div className="orders-mobile-list d-block d-lg-none">
+            {orders.length === 0 ? (
+              <div className="orders-mobile-empty">
+                <div className="orders-empty-icon">
+                  <ShoppingBag size={30} />
+                </div>
+
+                <h3 className="orders-empty-title">{t("orders.no_orders")}</h3>
+              </div>
+            ) : (
+              orders.map((order) => (
+                <button
+                  key={order.id}
+                  type="button"
+                  className="orders-mobile-card"
+                  onClick={() => handleOrderClick(order.id)}
+                >
+                  <div className="orders-mobile-card-header">
+                    <span className="orders-mobile-number">
+                      #{order.orderNb}
+                    </span>
 
                     <span
-                      className={`badge orders-mobile-status ${getStatusBadgeClass(order.status)}`}
+                      className={`orders-status-badge ${getStatusBadgeClass(
+                        order.status,
+                      )}`}
                     >
                       {getTranslatedStatus(order)}
                     </span>
                   </div>
 
-                  {/* Information */}
-                  <div className="orders-mobile-info">
-                    <div className="orders-mobile-field">
-                      <span className="orders-mobile-label">
-                        {t("orders.table.category")}
-                      </span>
+                  <div className="orders-mobile-details">
+                    <div className="orders-mobile-detail">
+                      <div className="orders-mobile-detail-label">
+                        <Tag size={14} />
+                        <span>{t("orders.table.category")}</span>
+                      </div>
 
-                      <span className="orders-mobile-value">
+                      <span className="orders-mobile-detail-value">
                         {getBrandDescription(order)}
                       </span>
                     </div>
 
-                    <div className="orders-mobile-field">
-                      <span className="orders-mobile-label">
-                        {t("orders.table.date_purchased")}
-                      </span>
+                    <div className="orders-mobile-detail">
+                      <div className="orders-mobile-detail-label">
+                        <CalendarDays size={14} />
+                        <span>{t("orders.table.date_purchased")}</span>
+                      </div>
 
-                      <span className="orders-mobile-value">
+                      <span className="orders-mobile-detail-value">
                         {renderDate(order.creationDate)}
                       </span>
                     </div>
                   </div>
 
-                  {/* Footer */}
                   <div className="orders-mobile-footer">
-                    <span className="orders-mobile-total-label">
-                      {t("orders.table.total")}
-                    </span>
+                    <div>
+                      <span className="orders-mobile-total-label">
+                        {t("orders.table.total")}
+                      </span>
 
-                    <span className="orders-mobile-total">
-                      {currenncyCodeToSymbol(order.currency_code)}{" "}
-                      {parseFloat(order.total_amount).toLocaleString()}
-                    </span>
+                      <span className="orders-mobile-total">
+                        {currenncyCodeToSymbol(order.currency_code)}{" "}
+                        {parseFloat(order.total_amount).toLocaleString()}
+                      </span>
+                    </div>
+
+                    <ChevronRight size={20} className="orders-mobile-arrow" />
                   </div>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
+                </button>
+              ))
+            )}
+          </div>
+        </section>
+
         <OrderDetailsModal
           orderId={selectedOrderId}
           show={showOrderDetails}
           onHide={handleCloseOrderDetails}
         />
-      </AccountLayout>
+      </div>
     </Layout>
   );
 };

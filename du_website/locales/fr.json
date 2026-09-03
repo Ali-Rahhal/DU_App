@@ -180,6 +180,12 @@
     "social": "Social",
     "version": "Version"
   },
+  "account": {
+    "client_code": "Code client",
+    "moh_number": "Numéro MOH",
+    "email": "Email",
+    "phone": "Téléphone"
+  },
   "cart": {
     "shopping_cart": "Panier d'achat",
     "empty_cart": "Panier vide",

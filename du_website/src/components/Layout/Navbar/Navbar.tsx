@@ -568,6 +568,11 @@ function Navbar({
             <span>{t("navbar.orders")}</span>
           </Link>
 
+          <Link href="/account" className="mobile-bottom-nav-item">
+            <UserCircle size={21} />
+            <span>{t("navbar.account")}</span>
+          </Link>
+
           <button
             type="button"
             className="mobile-bottom-nav-item"

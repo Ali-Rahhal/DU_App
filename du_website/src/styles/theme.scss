@@ -59,12 +59,8 @@
 -------------------------------------------------------*/
 @import "product/product";
 @import "product/product-single";
-@import "product/product-category";
 @import "product/cart";
 @import "product/account";
-@import "product/address";
-@import "product/thank";
-@import "product/fidelity";
 @import "product/ai-order-proposal";
 @import "product/return-admin";
 @import "product/orders";
@@ -81,3 +77,5 @@
 @import "product/product-item-list";
 @import "product/order-details-modal";
 @import "product/dashboard";
+@import "product/account-details-modal";
+@import "product/change-password-modal";

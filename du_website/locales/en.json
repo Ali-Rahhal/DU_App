@@ -184,7 +184,9 @@
     "client_code": "Client Code",
     "moh_number": "MOH Number",
     "email": "Email",
-    "phone": "Phone"
+    "phone": "Phone",
+    "pharmacy_name": "Pharmacy Name",
+    "cancel": "Cancel"
   },
   "cart": {
     "shopping_cart": "Shopping Cart",

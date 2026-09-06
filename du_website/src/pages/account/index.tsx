@@ -2,6 +2,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
+import AccountDetailsModal from "@/components/accountPage/AccountDetailsModal";
+import ChangePasswordModal from "@/components/accountPage/ChangePasswordModal";
 
 import {
   User,
@@ -27,9 +29,10 @@ import Layout from "@/components/Layout/Layout";
 
 interface AccountNavItem {
   key: string;
-  href: string;
   label: string;
   icon: React.ElementType;
+  href?: string;
+  onClick?: () => void;
   permission?: string;
   role?: string;
 }
@@ -39,14 +42,15 @@ const AccountPage = () => {
   const router = useRouter();
   const [logoutLoading, setLogoutLoading] = useState(false);
 
+  const [showAccountDetails, setShowAccountDetails] = useState(false);
+  const [showChangePassword, setShowChangePassword] = useState(false);
+
   const {
     hydrated,
     name,
     pharmacy_name,
     code,
     moh_number,
-    phone,
-    email,
     checkPermission,
     checkRole,
   } = useAccountStore();
@@ -64,17 +68,17 @@ const AccountPage = () => {
 
   const navItems: AccountNavItem[] = [
     {
-      key: "account",
-      href: "/account",
+      key: "account-details",
       label: t("my_account.title"),
       icon: User,
+      onClick: () => setShowAccountDetails(true),
     },
     {
       key: "change-password",
-      href: "/change-password",
       label: t("change_password.title"),
       icon: Lock,
       permission: ALL_PERMISSIONS.ChangePassword,
+      onClick: () => setShowChangePassword(true),
     },
     {
       key: "users",
@@ -228,36 +232,6 @@ const AccountPage = () => {
                   </div>
                 </div>
               )}
-
-              {phone && (
-                <div className="account-detail-item">
-                  <div className="account-detail-icon">
-                    <Phone size={18} />
-                  </div>
-
-                  <div className="account-detail-content">
-                    <span className="account-detail-label">
-                      {t("account.phone")}
-                    </span>
-                    <span className="account-detail-value">{phone}</span>
-                  </div>
-                </div>
-              )}
-
-              {email && (
-                <div className="account-detail-item">
-                  <div className="account-detail-icon">
-                    <Mail size={18} />
-                  </div>
-
-                  <div className="account-detail-content">
-                    <span className="account-detail-label">
-                      {t("account.email")}
-                    </span>
-                    <span className="account-detail-value">{email}</span>
-                  </div>
-                </div>
-              )}
             </div>
           </section>
 
@@ -267,22 +241,43 @@ const AccountPage = () => {
               {visibleItems.map((item) => {
                 const Icon = item.icon;
 
+                if (item.onClick) {
+                  return (
+                    <button
+                      key={item.key}
+                      type="button"
+                      className="account-navigation-link account-navigation-button"
+                      onClick={item.onClick}
+                    >
+                      <div className="account-navigation-link-content">
+                        <div className="account-navigation-icon">
+                          <Icon size={20} />
+                        </div>
+                        <span className="account-navigation-label">
+                          {item.label}
+                        </span>
+                      </div>
+                      <ChevronRight
+                        size={18}
+                        className="account-navigation-arrow"
+                      />
+                    </button>
+                  );
+                }
                 return (
                   <Link
                     key={item.key}
-                    href={item.href}
+                    href={item.href!}
                     className="account-navigation-link"
                   >
                     <div className="account-navigation-link-content">
                       <div className="account-navigation-icon">
                         <Icon size={20} />
                       </div>
-
                       <span className="account-navigation-label">
                         {item.label}
                       </span>
                     </div>
-
                     <ChevronRight
                       size={18}
                       className="account-navigation-arrow"
@@ -313,6 +308,15 @@ const AccountPage = () => {
           </section>
         </div>
       </div>
+      <AccountDetailsModal
+        show={showAccountDetails}
+        onHide={() => setShowAccountDetails(false)}
+      />
+
+      <ChangePasswordModal
+        show={showChangePassword}
+        onHide={() => setShowChangePassword(false)}
+      />
     </Layout>
   );
 };

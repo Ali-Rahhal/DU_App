@@ -461,6 +461,7 @@
     },
 
     "filters": {
+      "title": "Filters",
       "due_more_than_7_days": "Due in more than 7 days",
       "due_less_than_7_days": "Due in less than 7 days",
       "past_due_date": "Past Due Date",

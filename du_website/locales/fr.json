@@ -461,6 +461,7 @@
     },
 
     "filters": {
+      "title": "Filtres",
       "due_more_than_7_days": "Échéance dans plus de 7 jours",
       "due_less_than_7_days": "Échéance dans moins de 7 jours",
       "past_due_date": "Date d'échéance dépassée",

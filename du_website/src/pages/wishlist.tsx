@@ -1,5 +1,4 @@
 import ProductItemList from "@/components/common/ProductItemList";
-import AccountLayout from "@/components/dashboard/AccountLayout";
 import Layout from "@/components/Layout/Layout";
 
 import { useAuthStore, useAccountStore } from "@/store/zustand";
@@ -10,84 +9,108 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { Spinner } from "react-bootstrap";
 import { toast } from "react-toastify";
-
 import { ALL_PERMISSIONS } from "@/utils/data";
 import { useRouter } from "next/router";
+
+import { Heart, ArrowRight } from "lucide-react";
+
 import { Product } from "@/types/productTypes";
 
 const Wishlist = () => {
   // Authorization Check
-  const rt = useRouter();
+  const router = useRouter();
   const { role, checkPermission } = useAccountStore();
   const hasShownToast = useRef(false);
+
   const t = useTranslations();
-
-  useEffect(() => {
-    if (!checkPermission(ALL_PERMISSIONS.Wishlist) && !hasShownToast.current) {
-      toast.error(t("wishlist.no_permission"));
-      hasShownToast.current = true;
-      rt.push("/");
-    }
-  }, [role, t]);
-
-  if (!checkPermission(ALL_PERMISSIONS.Wishlist)) return null;
-
   const { isAuth } = useAuthStore();
 
   const [items, setItems] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const fetchFavoriteItems = () => {
-    setLoading(true);
+  useEffect(() => {
+    if (!checkPermission(ALL_PERMISSIONS.Wishlist) && !hasShownToast.current) {
+      toast.error(t("wishlist.no_permission"));
+      hasShownToast.current = true;
+      router.push("/");
+    }
+  }, [role, t, router, checkPermission]);
 
-    getFavoriteItems({
-      skip: 0,
-      take: 20,
-    })
-      .then((res) => {
-        setLoading(false);
-        setItems(res.data.result.products);
-      })
-      .catch((err) => {
-        setLoading(false);
-        toast.error(t("wishlist.fetch_error"));
+  const fetchFavoriteItems = async () => {
+    try {
+      setLoading(true);
+
+      const res = await getFavoriteItems({
+        skip: 0,
+        take: 20,
       });
+
+      setItems(res.data.result.products || []);
+    } catch (error) {
+      toast.error(t("wishlist.fetch_error"));
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const removeItemHandler = (item) => {
-    removeFromFavorite(item)
-      .then((res) => {
-        toast.success(t("wishlist.removed_success"));
-        fetchFavoriteItems();
-      })
-      .catch((err) => {
-        toast.error(err.response?.data?.message || t("wishlist.remove_error"));
-      });
+  const removeItemHandler = async (item) => {
+    try {
+      await removeFromFavorite(item);
+
+      toast.success(t("wishlist.removed_success"));
+
+      await fetchFavoriteItems();
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || t("wishlist.remove_error"));
+    }
   };
 
   useEffect(() => {
-    if (!isAuth) return;
+    if (!isAuth || !checkPermission(ALL_PERMISSIONS.Wishlist)) return;
 
     fetchFavoriteItems();
-  }, [isAuth]);
+  }, [isAuth, role]);
+
+  if (!checkPermission(ALL_PERMISSIONS.Wishlist)) {
+    return null;
+  }
 
   return (
     <Layout>
-      <AccountLayout
-        title={t("wishlist.title")}
-        subTitle={t("wishlist.subtitle")}
-      >
-        <div className="wishlist-page">
-          {items && items.length > 0 ? (
+      <div className="wishlist-page">
+        {/* Page Header */}
+        <section className="wishlist-page-header">
+          <div className="wishlist-page-header-content">
+            <div className="wishlist-page-header-icon">
+              <Heart size={24} />
+            </div>
+
+            <div className="wishlist-page-heading">
+              <h1 className="wishlist-page-title">{t("wishlist.title")}</h1>
+
+              <p className="wishlist-page-subtitle">{t("wishlist.subtitle")}</p>
+            </div>
+          </div>
+        </section>
+
+        {/* Wishlist Content */}
+        <section className="wishlist-results-section">
+          {loading ? (
+            <div className="wishlist-loading">
+              <Spinner animation="border" variant="primary" />
+            </div>
+          ) : items.length > 0 ? (
             <div className="wishlist-container">
-              <div className="wishlist-header">
-                <div className="wishlist-header-content">
-                  <div className="wishlist-header-icon">
-                    <i className="ti-heart"></i>
+              {/* Wishlist Summary */}
+              <div className="wishlist-summary">
+                <div className="wishlist-summary-content">
+                  <div className="wishlist-summary-icon">
+                    <Heart size={18} />
                   </div>
 
-                  <div>
-                    <h4>{t("wishlist.title")}</h4>
+                  <div className="wishlist-summary-text">
+                    <h2>{t("wishlist.title")}</h2>
+
                     <span>
                       {items.length} {items.length === 1 ? "item" : "items"}
                     </span>
@@ -95,6 +118,7 @@ const Wishlist = () => {
                 </div>
               </div>
 
+              {/* Wishlist Items */}
               <div className="wishlist-items">
                 {items.map((item: Product) => (
                   <div className="wishlist-item-wrapper" key={item.item_code}>
@@ -108,31 +132,24 @@ const Wishlist = () => {
                 ))}
               </div>
             </div>
-          ) : !loading ? (
+          ) : (
             <div className="wishlist-empty">
               <div className="wishlist-empty-icon">
-                <i className="ti-heart"></i>
+                <Heart size={28} />
               </div>
 
-              <h4>{t("wishlist.empty_message")}</h4>
+              <h2>{t("wishlist.empty_message")}</h2>
 
               <p>{t("wishlist.subtitle")}</p>
 
-              <Link
-                href="/"
-                className="btn btn-primary btn-rounded wishlist-shopping-btn"
-              >
-                {t("wishlist.continue_shopping")}
-                <i className="ti-arrow-right ml-2"></i>
+              <Link href="/" className="btn btn-primary wishlist-shopping-btn">
+                <span>{t("wishlist.continue_shopping")}</span>
+                <ArrowRight size={16} />
               </Link>
             </div>
-          ) : (
-            <div className="wishlist-loading">
-              <Spinner animation="grow" variant="primary" />
-            </div>
           )}
-        </div>
-      </AccountLayout>
+        </section>
+      </div>
     </Layout>
   );
 };

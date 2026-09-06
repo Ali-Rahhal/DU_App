@@ -1,10 +1,7 @@
-import Item from "@/Models/item";
-import {
-  useAuthStore,
-  useAccountStore,
-  useCompanyStore,
-} from "@/store/zustand";
+import { useAuthStore, useAccountStore } from "@/store/zustand";
+
 import { currenncyCodeToSymbol } from "@/utils";
+
 import {
   addToFavorite,
   removeFromFavorite,
@@ -12,12 +9,14 @@ import {
   removeFromCart,
   updateCartItem,
 } from "@/utils/apiCalls";
+
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { Button, Modal } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
+
 import ProductPromotionList from "./ProductPromotionList";
 import { ALL_PERMISSIONS } from "@/utils/data";
 import { Product } from "@/types/productTypes";
@@ -31,22 +30,32 @@ const ProductItem = ({
   layout?: "grid" | "list";
 }) => {
   const t = useTranslations();
+
   const { companyPlaceholder } = useCompanyAssets();
+
   const { isAuth } = useAuthStore();
+
   const { cartItems, refreshCart, checkPermission } = useAccountStore();
+
   const [fav, setFav] = useState(item.isFavorite ?? false);
   const [openPromotionPopup, setOpenPromotionPopup] = useState(false);
 
   const itemCode = item.isExpiryDeal ? item.parent_item_code : item.item_code;
+
   const price = parseFloat(item.price);
+
   const discountedPrice = item.discountedPrice
     ? parseFloat(item.discountedPrice)
     : null;
+
   const cartItem = cartItems?.find((c) => c.item_code === item.item_code);
+
   const qty = cartItem?.quantity || 0;
+
   const [localQty, setLocalQty] = useState(qty);
 
   const stock = item.stock;
+
   const isOutOfStock = stock === 0;
 
   useEffect(() => {
@@ -55,10 +64,14 @@ const ProductItem = ({
 
   const toggleFavorite = async () => {
     if (!isAuth) return toast.info("Please login first");
-    if (!checkPermission(ALL_PERMISSIONS.Wishlist))
+
+    if (!checkPermission(ALL_PERMISSIONS.Wishlist)) {
       return toast.error("You don't have permission to use wishlist");
+    }
+
     try {
       fav ? await removeFromFavorite(itemCode) : await addToFavorite(itemCode);
+
       setFav(!fav);
     } catch (error: any) {
       toast.error(
@@ -84,6 +97,7 @@ const ProductItem = ({
             item.isExpiryDeal,
           )
         : await updateCartItem(itemCode, qty + 1, item.isExpiryDeal);
+
       await refreshCart();
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Failed to add to cart");
@@ -95,9 +109,11 @@ const ProductItem = ({
 
     try {
       const newQty = qty - 1;
+
       newQty <= 0
         ? await removeFromCart(itemCode, item.isExpiryDeal)
         : await updateCartItem(itemCode, newQty, item.isExpiryDeal);
+
       await refreshCart();
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Failed to update cart");
@@ -106,6 +122,7 @@ const ProductItem = ({
 
   const handleQtyChange = async (value: number) => {
     if (!isAuth) return toast.info("Please login first");
+
     if (isNaN(value) || value < 0) return;
 
     if (value > stock) {
@@ -117,6 +134,7 @@ const ProductItem = ({
       value === 0
         ? await removeFromCart(itemCode, item.isExpiryDeal)
         : await updateCartItem(itemCode, value, item.isExpiryDeal);
+
       await refreshCart();
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Failed to update cart");
@@ -128,13 +146,16 @@ const ProductItem = ({
   const qtyInput = (size = "default") => (
     <input
       type="number"
-      className="qty-cart-input mx-1"
+      className={`qty-cart-input ${
+        size === "mobile" ? "qty-cart-input-mobile" : ""
+      }`}
       disabled={!isAuth || isOutOfStock}
       min={0}
       max={stock}
       value={localQty}
       onChange={(e) => {
         const val = parseInt(e.target.value);
+
         !isNaN(val)
           ? setLocalQty(val)
           : e.target.value === "" && setLocalQty(0);
@@ -142,19 +163,6 @@ const ProductItem = ({
       onBlur={() => handleQtyChange(localQty)}
       onKeyDown={(e) => e.key === "Enter" && handleQtyChange(localQty)}
       onWheel={(e) => (e.target as HTMLInputElement).blur()}
-      style={
-        size === "mobile"
-          ? { width: 60, height: 36, fontSize: 16, textAlign: "center" }
-          : {
-              width: 45,
-              minWidth: 40,
-              maxWidth: 60,
-              textAlign: "center",
-              border: "1px solid #ccc",
-              borderRadius: 6,
-              padding: "2px 4px",
-            }
-      }
     />
   );
 
@@ -162,32 +170,41 @@ const ProductItem = ({
     return stock > 0 ? (
       discountedPrice ? (
         <>
-          <small className="text-muted d-block">
+          <div className="product-item-price-original">
             <del>
               {currenncyCodeToSymbol(item.currency_code)}{" "}
               {price.toLocaleString()}
             </del>
-          </small>
-          <div className="fw-bold">
+          </div>
+
+          <div className="product-item-price-current">
             {currenncyCodeToSymbol(item.currency_code)}{" "}
             {discountedPrice.toLocaleString()}
           </div>
+
           {!isOutOfStock && stock <= 10 && (
-            <small className="text-danger">{t("products.limited_stock")}</small>
+            <small className="product-item-limited-stock">
+              {t("products.limited_stock")}
+            </small>
           )}
         </>
       ) : (
         <>
-          <div className="fw-bold">
+          <div className="product-item-price-current">
             {currenncyCodeToSymbol(item.currency_code)} {price.toLocaleString()}
           </div>
+
           {!isOutOfStock && stock <= 10 && (
-            <small className="text-danger">{t("products.limited_stock")}</small>
+            <small className="product-item-limited-stock">
+              {t("products.limited_stock")}
+            </small>
           )}
         </>
       )
     ) : (
-      <span className="text-danger">{t("products.item_unavailable")}</span>
+      <span className="product-item-unavailable">
+        {t("products.item_unavailable")}
+      </span>
     );
   };
 
@@ -197,8 +214,34 @@ const ProductItem = ({
       alt={item.name}
       width={w}
       height={h}
-      style={{ objectFit: "cover", width: "100%", height: "100%" }}
+      className="product-item-image"
     />
+  );
+
+  const productBadges = () => (
+    <div className="product-item-badges">
+      {item.hasPromotion == true && (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setOpenPromotionPopup(true);
+          }}
+          className="product-item-badge product-item-badge-promotion"
+          title={t("products.on_promotion")}
+          aria-label={t("products.on_promotion")}
+        >
+          <i className="fa fa-star" />
+        </button>
+      )}
+
+      {item.isExpiryDeal == true && (
+        <span className="product-item-badge product-item-badge-expiry">
+          <i className="fa fa-calendar" />
+        </span>
+      )}
+    </div>
   );
 
   return (
@@ -209,125 +252,70 @@ const ProductItem = ({
         centered
         size="lg"
       >
-        <Modal.Body className="p-3">
-          <div
+        <Modal.Body className="product-item-promotion-modal">
+          <button
+            type="button"
+            className="product-item-promotion-close"
             onClick={() => setOpenPromotionPopup(false)}
-            style={{
-              cursor: "pointer",
-              textAlign: "right",
-              fontSize: "28px",
-              color: "#f59f00",
-              position: "absolute",
-              top: "10px",
-              right: "15px",
-              zIndex: 1000,
-            }}
+            aria-label="Close"
           >
-            &times;
-          </div>
+            ×
+          </button>
+
           <ProductPromotionList item_code={item.item_code} />
         </Modal.Body>
       </Modal>
 
-      <div
-        className={
-          isGrid
-            ? "product-card d-flex flex-column position-relative"
-            : "product-list-item p-3 border rounded mb-3 position-relative"
-        }
-      >
-        {item.hasPromotion == true && (
-          <span
-            onClick={() => setOpenPromotionPopup(true)}
-            className={`badge promotion-badge ${!isGrid ? "d-none d-md-inline" : ""}`}
-            style={{
-              cursor: "pointer",
-              position: "absolute",
-              top: "10px",
-              left: "10px",
-              backgroundColor: "#f59f00",
-              color: "#fff",
-              fontWeight: 600,
-              padding: "0.25rem 0.5rem",
-              fontSize: "0.75rem",
-              borderRadius: "4px",
-              zIndex: 10,
-            }}
-            title={t("products.on_promotion")}
-          >
-            <i className="fa fa-star"></i>
-          </span>
-        )}
-        {item.isExpiryDeal === true && (
-          <span
-            className={`badge expiry-badge ${!isGrid ? "d-none d-md-inline" : ""}`}
-            style={{
-              position: "absolute",
-              top: item.hasPromotion ? "42px" : "10px",
-              left: "10px",
-              backgroundColor: "#28a745",
-              color: "#fff",
-              fontWeight: 600,
-              padding: "0.25rem 0.5rem",
-              fontSize: "0.75rem",
-              borderRadius: "4px",
-              zIndex: 10,
-            }}
-            title="Expiry Deal"
-          >
-            Expiry Deal
-          </span>
-        )}
-
+      <div className={isGrid ? "product-item-card" : "product-item-list-item"}>
         {isGrid ? (
           <>
             {/* Grid view */}
-            <Link href={`/products/${item.item_code}`}>
-              <div className="product-img-wrapper">{image()}</div>
-            </Link>
-            <div className="product-info flex-grow-1 d-flex flex-column">
-              <Link href={`/products/${item.item_code}`}>
-                <h6
-                  className="product-title mb-1"
-                  style={{
-                    display: "-webkit-box",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    lineHeight: "1.5rem",
-                    height: "3rem",
-                  }}
-                >
-                  {item.name}
-                </h6>
-              </Link>
-              <div className="product-price">{priceDisplay()}</div>
-            </div>
-            <div
-              className="product-actions d-flex align-items-center gap-2 mt-3 flex-wrap"
-              style={{ minWidth: 0 }}
+            <Link
+              href={`/products/${item.item_code}`}
+              className="product-item-image-link"
             >
+              <div
+                className={`product-item-img-wrapper ${
+                  isOutOfStock ? "product-item-img-out-of-stock" : ""
+                }`}
+              >
+                {image()}
+                {productBadges()}
+              </div>
+            </Link>
+
+            <div className="product-item-info">
+              <Link
+                href={`/products/${item.item_code}`}
+                className="product-item-title-link"
+              >
+                <h6 className="product-item-title">{item.name}</h6>
+              </Link>
+
+              <div className="product-item-price">{priceDisplay()}</div>
+            </div>
+
+            <div className="product-item-actions">
               <Button
                 variant={fav ? "danger" : "outline-danger"}
                 size="sm"
+                className="product-item-favorite-button"
                 onClick={toggleFavorite}
                 disabled={item.isExpiryDeal}
+                aria-label="Favorite"
               >
                 ♥
               </Button>
 
-              <div
-                className="d-flex align-items-center gap-2 flex-wrap"
-                style={{ minWidth: 0 }}
-              >
+              <div className="product-item-quantity-controls">
                 <Button
                   size="sm"
                   variant="outline-secondary"
+                  className="product-item-quantity-button"
                   disabled={qty === 0 || isOutOfStock}
                   onClick={removeOneFromCart}
                 >
-                  -
+                  −
                 </Button>
 
                 {qtyInput()}
@@ -335,6 +323,7 @@ const ProductItem = ({
                 <Button
                   size="sm"
                   variant="primary"
+                  className="product-item-quantity-button"
                   onClick={addOneToCart}
                   disabled={isOutOfStock || qty >= stock}
                 >
@@ -345,40 +334,59 @@ const ProductItem = ({
           </>
         ) : (
           <>
-            {/* List desktop view */}
-            <div className="d-none d-md-flex gap-3 align-items-center">
-              <Link href={`/products/${item.item_code}`}>
-                <div style={{ width: 120, height: 120 }}>{image(120, 120)}</div>
-              </Link>
-              <div className="flex-grow-1 ml-2">
-                <Link href={`/products/${item.item_code}`}>
-                  <h6 className="mb-1">{item.name}</h6>
+            {/* Desktop list view */}
+            <div className="product-item-list-desktop">
+              <div className="product-item-list-image">
+                <Link
+                  href={`/products/${item.item_code}`}
+                  className="product-item-list-image-link"
+                >
+                  {image(120, 120)}
                 </Link>
-                {priceDisplay()}
+
+                {productBadges()}
               </div>
-              <div className="d-flex flex-column align-items-end gap-2">
+
+              <div className="product-item-list-details">
+                <Link
+                  href={`/products/${item.item_code}`}
+                  className="product-item-title-link"
+                >
+                  <h6 className="product-item-list-title">{item.name}</h6>
+                </Link>
+
+                <div className="product-item-list-price">{priceDisplay()}</div>
+              </div>
+
+              <div className="product-item-list-actions">
                 <Button
-                  className="mb-1"
                   variant={fav ? "danger" : "outline-danger"}
                   size="sm"
+                  className="product-item-favorite-button"
                   onClick={toggleFavorite}
                   disabled={item.isExpiryDeal}
+                  aria-label="Favorite"
                 >
                   ♥
                 </Button>
-                <div className="d-flex align-items-center gap-2">
+
+                <div className="product-item-quantity-controls">
                   <Button
                     size="sm"
                     variant="outline-secondary"
+                    className="product-item-quantity-button"
                     disabled={qty === 0 || isOutOfStock}
                     onClick={removeOneFromCart}
                   >
-                    -
+                    −
                   </Button>
+
                   {qtyInput()}
+
                   <Button
                     size="sm"
                     variant="primary"
+                    className="product-item-quantity-button"
                     onClick={addOneToCart}
                     disabled={isOutOfStock || qty >= stock}
                   >
@@ -388,131 +396,62 @@ const ProductItem = ({
               </div>
             </div>
 
-            {/* List mobile view */}
-            <div className="d-flex d-md-none flex-column">
-              <Link href={`/products/${item.item_code}`}>
-                <h6 className="mb-2">{item.name}</h6>
+            {/* Mobile list view */}
+            <div className="product-item-list-mobile">
+              <Link
+                href={`/products/${item.item_code}`}
+                className="product-item-list-mobile-title-link"
+              >
+                <h6 className="product-item-list-mobile-title">{item.name}</h6>
               </Link>
-              <div className="d-flex gap-3 mb-3 align-items-center">
+
+              <div className="product-item-list-mobile-main">
                 <div
-                  style={{
-                    width: 120,
-                    height: 120,
-                    borderRadius: 10,
-                    overflow: "hidden",
-                    flexShrink: 0,
-                    position: "relative",
-                  }}
+                  className={`product-item-list-mobile-image ${
+                    isOutOfStock ? "product-item-img-out-of-stock" : ""
+                  }`}
                 >
-                  <Link href={`/products/${item.item_code}`}>
+                  <Link
+                    href={`/products/${item.item_code}`}
+                    className="product-item-list-image-link"
+                  >
                     {image(120, 120)}
                   </Link>
-                  {item.hasPromotion == true && (
-                    <span
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setOpenPromotionPopup(true);
-                      }}
-                      className="badge promotion-badge"
-                      style={{
-                        position: "absolute",
-                        top: 6,
-                        left: 6,
-                        backgroundColor: "#f59f00",
-                        color: "#fff",
-                        fontWeight: 600,
-                        padding: "2px 6px",
-                        fontSize: "0.65rem",
-                        borderRadius: "4px",
-                        zIndex: 10,
-                        cursor: "pointer",
-                      }}
-                    >
-                      <i className="fa fa-star"></i>
-                    </span>
-                  )}
-                  {item.isExpiryDeal === true && (
-                    <span
-                      className="badge expiry-badge"
-                      style={{
-                        position: "absolute",
-                        top: item.hasPromotion ? 34 : 6,
-                        left: 6,
-                        backgroundColor: "#28a745",
-                        color: "#fff",
-                        fontWeight: 600,
-                        padding: "2px 6px",
-                        fontSize: "0.65rem",
-                        borderRadius: "4px",
-                        zIndex: 10,
-                      }}
-                    >
-                      Expiry Deal
-                    </span>
-                  )}
+
+                  {productBadges()}
                 </div>
-                <div
-                  className="ml-2 d-flex flex-column justify-content-center"
-                  style={{ fontSize: 16 }}
-                >
-                  {stock > 0 ? (
-                    discountedPrice ? (
-                      <>
-                        <small className="text-muted" style={{ fontSize: 13 }}>
-                          <del>
-                            {currenncyCodeToSymbol(item.currency_code)}{" "}
-                            {price.toLocaleString()}
-                          </del>
-                        </small>
-                        <div className="fw-bold" style={{ fontSize: 18 }}>
-                          {currenncyCodeToSymbol(item.currency_code)}{" "}
-                          {discountedPrice.toLocaleString()}
-                        </div>
-                        {!isOutOfStock && stock <= 10 && (
-                          <small className="text-danger">
-                            {t("products.limited_stock")}
-                          </small>
-                        )}
-                      </>
-                    ) : (
-                      <>
-                        <div className="fw-bold" style={{ fontSize: 18 }}>
-                          {currenncyCodeToSymbol(item.currency_code)}{" "}
-                          {price.toLocaleString()}
-                        </div>
-                        {!isOutOfStock && stock <= 10 && (
-                          <small className="text-danger">
-                            {t("products.limited_stock")}
-                          </small>
-                        )}{" "}
-                      </>
-                    )
-                  ) : (
-                    <span className="text-danger">
-                      {t("products.item_unavailable")}
-                    </span>
-                  )}
+
+                <div className="product-item-list-mobile-price">
+                  {priceDisplay()}
                 </div>
               </div>
-              <div className="d-flex justify-content-between align-items-center">
+
+              <div className="product-item-list-mobile-actions">
                 <Button
                   variant={fav ? "danger" : "outline-danger"}
+                  className="product-item-favorite-button product-item-favorite-button-mobile"
                   onClick={toggleFavorite}
                   disabled={item.isExpiryDeal}
+                  aria-label="Favorite"
                 >
                   ♥
                 </Button>
-                <div className="d-flex align-items-center gap-2">
+
+                <div className="product-item-quantity-controls">
                   <Button
                     variant="outline-secondary"
+                    className="product-item-quantity-button product-item-quantity-button-mobile"
                     disabled={qty === 0 || isOutOfStock}
                     onClick={removeOneFromCart}
                   >
-                    -
+                    −
                   </Button>
+
                   {qtyInput("mobile")}
+
                   <Button
                     variant="primary"
+                    className="product-item-quantity-button product-item-quantity-button-mobile"
                     onClick={addOneToCart}
                     disabled={isOutOfStock || qty >= stock}
                   >

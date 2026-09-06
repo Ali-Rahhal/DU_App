@@ -58,7 +58,7 @@
     3. Product
 -------------------------------------------------------*/
 @import "product/product";
-@import "product/product-single";
+@import "product/product-details";
 @import "product/cart";
 @import "product/account";
 @import "product/ai-order-proposal";
@@ -79,4 +79,6 @@
 @import "product/dashboard";
 @import "product/account-details-modal";
 @import "product/change-password-modal";
-@import "product/return-request-modal.scss";
+@import "product/return-request-modal";
+@import "product/product-item";
+@import "product/thumbslider";

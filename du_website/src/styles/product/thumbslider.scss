@@ -1,0 +1,214 @@
+/* =========================================================
+   Product Gallery
+========================================================= */
+
+.thumb-slider {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+/* =========================================================
+   Main Image
+========================================================= */
+
+.thumb-slider-main {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.thumb-slider-main-image {
+  object-fit: contain;
+  padding: 18px;
+}
+
+/* =========================================================
+   Navigation Arrows
+========================================================= */
+
+.thumb-slider-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 34px;
+  height: 34px;
+  padding: 0;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.95);
+  color: #374151;
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  cursor: pointer;
+  transform: translateY(-50%);
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.thumb-slider-arrow:hover {
+  border-color: $primary;
+  background: $primary;
+  color: #fff;
+}
+
+.thumb-slider-arrow-prev {
+  left: 12px;
+}
+
+.thumb-slider-arrow-next {
+  right: 12px;
+}
+
+.thumb-slider-arrow:hover {
+  transform: translateY(-50%) scale(1.04);
+}
+
+/* =========================================================
+   Image Counter
+========================================================= */
+
+.thumb-slider-counter {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 2;
+
+  padding: 4px 8px;
+
+  border-radius: 6px;
+  background: rgba(31, 41, 55, 0.75);
+  color: #fff;
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* =========================================================
+   Thumbnails
+========================================================= */
+
+.thumb-slider-thumbnails {
+  flex-shrink: 0;
+  width: 100%;
+  margin-top: 12px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.thumb-slider-thumbnails-track {
+  display: flex;
+  gap: 8px;
+  width: max-content;
+  min-width: 100%;
+}
+
+/* Thumbnail */
+
+.thumb-slider-thumb {
+  position: relative;
+  flex: 0 0 68px;
+
+  width: 68px;
+  height: 62px;
+  padding: 0;
+
+  overflow: hidden;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+
+  background: #fff;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.thumb-slider-thumb:hover {
+  border-color: #b9c6dc;
+  transform: translateY(-1px);
+}
+
+.thumb-slider-thumb-active {
+  border: 2px solid $primary;
+  box-shadow: 0 0 0 2px rgba($primary, 0.1);
+}
+
+.thumb-slider-thumb-image {
+  object-fit: contain;
+  padding: 5px;
+}
+
+/* =========================================================
+   Mobile
+========================================================= */
+
+@media (max-width: 767px) {
+  .thumb-slider {
+    height: auto;
+  }
+
+  .thumb-slider-main {
+    height: 220px;
+    flex: none;
+  }
+
+  .thumb-slider-main-image {
+    padding: 12px;
+  }
+
+  .thumb-slider-arrow {
+    width: 30px;
+    height: 30px;
+  }
+
+  .thumb-slider-arrow-prev {
+    left: 8px;
+  }
+
+  .thumb-slider-arrow-next {
+    right: 8px;
+  }
+
+  .thumb-slider-counter {
+    right: 8px;
+    bottom: 8px;
+  }
+
+  .thumb-slider-thumbnails {
+    margin-top: 9px;
+  }
+
+  .thumb-slider-thumbnails-track {
+    gap: 6px;
+  }
+
+  .thumb-slider-thumb {
+    flex-basis: 58px;
+    width: 58px;
+    height: 52px;
+    border-radius: 7px;
+  }
+}

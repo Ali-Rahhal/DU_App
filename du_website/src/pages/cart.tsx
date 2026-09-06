@@ -310,9 +310,9 @@ const Cart = () => {
                       </div>
                     </div>
                   </div>
-                  {cartItems.map((item, index) => (
+                  {cartItems.map((item) => (
                     <CartItem
-                      key={index}
+                      key={`${item.item_code}-${item.isExpiryDeal ? "expiry" : "normal"}`}
                       item={item}
                       removeItemHandler={removeItemHandler}
                       updateCartHandler={updateCartHandler}
@@ -320,52 +320,51 @@ const Cart = () => {
                   ))}
                   {promotions?.addedItems?.map((item) => {
                     const imgSrcPromo = item.image || companyPlaceholder;
-                    return (
-                      <div key={item.item_code} className="cart_item">
-                        <div className="cart_item_image">
-                          <Link href={"/products/" + item.item_code}>
-                            <Image
-                              fill
-                              src={imgSrcPromo}
-                              alt={item.name}
-                              unoptimized
-                              onError={(e) => {
-                                e.currentTarget.src = companyPlaceholder;
-                              }}
-                            />
-                          </Link>
-                        </div>
-                        <div className="c-item-body mt-4 mt-md-0">
-                          <div className="cart_item_title mb-2">
-                            <Link href={"/products/" + item.item_code}>
-                              <h4>{item.name}</h4>
 
-                              <span className="badge badge-success text-uppercase">
-                                {t("navbar.promotion")}
-                              </span>
+                    return (
+                      <div
+                        key={item.item_code}
+                        className="cart-item-card cart-promotion-item"
+                      >
+                        <div className="cart-item-main">
+                          {/* Product Image */}
+                          <div className="cart_item_image">
+                            <Link href={"/products/" + item.item_code}>
+                              <Image
+                                fill
+                                src={imgSrcPromo}
+                                alt={item.name}
+                                unoptimized
+                                onError={(e) => {
+                                  e.currentTarget.src = companyPlaceholder;
+                                }}
+                              />
                             </Link>
                           </div>
-                          <div className="cart_item_price">
-                            <div className="cart_product-price">
-                              <span
-                                style={{
-                                  color: "green",
-                                  fontWeight: "bold",
-                                  textTransform: "uppercase",
-                                }}
-                              >
-                                <strong>{t("free")}</strong>
+
+                          {/* Product Information */}
+                          <div className="cart-item-info">
+                            <div className="cart_item_title">
+                              <Link href={"/products/" + item.item_code}>
+                                <h4>{item.name}</h4>
+                              </Link>
+
+                              <span className="cart-promotion-badge">
+                                {t("navbar.promotion")}
                               </span>
                             </div>
+
+                            <div className="cart-item-price">
+                              <strong className="cart-free-price">
+                                {t("free")}
+                              </strong>
+                            </div>
                           </div>
-                        </div>
-                        <div
-                          className=" btn mt-4 mt-md-0"
-                          style={{
-                            width: 120,
-                          }}
-                        >
-                          <span>{item.quantity}</span>
+
+                          {/* Promotion Quantity */}
+                          <div className="cart-promotion-quantity">
+                            <span>{item.quantity}</span>
+                          </div>
                         </div>
                       </div>
                     );

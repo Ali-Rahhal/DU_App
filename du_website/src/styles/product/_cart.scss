@@ -115,6 +115,99 @@
   gap: 22px;
 }
 
+/* =========================================================
+   PROMOTIONAL / FREE CART ITEM
+   ========================================================= */
+
+.cart-promotion-item {
+  background: rgba($primary, 0.025);
+
+  &:hover {
+    background: rgba($primary, 0.05);
+  }
+
+  .cart-item-main {
+    grid-template-columns: 100px minmax(0, 1fr) 130px;
+  }
+
+  .cart_item_image {
+    background: #fff;
+  }
+
+  .cart-item-info {
+    min-width: 0;
+  }
+
+  .cart_item_title {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 7px;
+    margin-bottom: 8px;
+  }
+}
+
+/* Promotion Badge */
+
+.cart-promotion-badge {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+
+  padding: 4px 8px;
+
+  border-radius: 5px;
+
+  background: rgba($success, 0.1);
+  color: $success;
+
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+/* Free Price */
+
+.cart-free-price {
+  display: inline-flex;
+  align-items: center;
+
+  color: $success !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+}
+
+/* Promotion Quantity */
+
+.cart-promotion-quantity {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 120px;
+  min-height: 42px;
+
+  border: 1px solid rgba($success, 0.2);
+  border-radius: 8px;
+
+  background: rgba($success, 0.06);
+
+  color: $dark;
+  font-size: 14px;
+  font-weight: 700;
+
+  &::before {
+    content: "Qty";
+    margin-right: 7px;
+
+    color: rgba($dark, 0.5);
+    font-size: 11px;
+    font-weight: 600;
+  }
+}
+
 /* ---------------------------------------------------------
    Product Image
    --------------------------------------------------------- */
@@ -610,6 +703,17 @@
     height: 80px;
   }
 
+  .cart-promotion-item {
+    .cart-item-main {
+      grid-template-columns: 80px minmax(0, 1fr);
+    }
+
+    .cart-promotion-quantity {
+      grid-column: 2;
+      width: 140px;
+    }
+  }
+
   .cart-item-stock {
     grid-column: 2;
     margin-top: -5px;
@@ -684,6 +788,27 @@
     width: 72px;
     height: 72px;
     border-radius: 8px;
+  }
+
+  .cart-promotion-item {
+    .cart-item-main {
+      grid-template-columns: 72px minmax(0, 1fr);
+    }
+
+    .cart-promotion-quantity {
+      grid-column: 1 / -1;
+      width: 100%;
+      max-width: 180px;
+      min-height: 40px;
+    }
+
+    .cart-promotion-badge {
+      font-size: 8px;
+    }
+
+    .cart-free-price {
+      font-size: 13px !important;
+    }
   }
 
   .cart_item_title {

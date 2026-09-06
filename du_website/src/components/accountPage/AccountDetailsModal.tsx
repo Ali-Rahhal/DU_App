@@ -69,7 +69,7 @@ const AccountDetailsModal = ({ show, onHide }: AccountDetailsModalProps) => {
           type="button"
           className="account-modal-close"
           onClick={onHide}
-          aria-label={t("common.close")}
+          aria-label={t("account.close")}
         >
           <X size={18} />
         </button>

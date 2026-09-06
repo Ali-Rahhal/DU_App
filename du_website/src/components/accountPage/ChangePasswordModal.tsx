@@ -105,7 +105,7 @@ const ChangePasswordModal = ({ show, onHide }: ChangePasswordModalProps) => {
           type="button"
           className="change-password-modal-close"
           onClick={onHide}
-          aria-label={t("common.close")}
+          aria-label={t("account.close")}
         >
           <X size={18} />
         </button>

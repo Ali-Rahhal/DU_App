@@ -186,6 +186,7 @@
     "email": "Email",
     "phone": "Phone",
     "pharmacy_name": "Pharmacy Name",
+    "close": "Close",
     "cancel": "Cancel"
   },
   "cart": {
@@ -638,7 +639,12 @@
       "select_item_error": "Select at least one item",
       "reason_error": "Please provide a reason",
       "success_message": "Return request submitted",
-      "error_message": "Failed to submit return request"
+      "error_message": "Failed to submit return request",
+      "items_fetch_error": "Failed to load the purchased items.",
+      "loading_items": "Loading items...",
+      "no_items": "No items are available for return.",
+      "close": "Close",
+      "cancel": "Cancel"
     }
   },
   "return_admin": {

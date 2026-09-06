@@ -1,22 +1,110 @@
+.return-admin-page {
+  width: 100%;
+  padding: 25px 0 45px;
+}
+
+/* =========================================================
+   PAGE HEADER
+   ========================================================= */
+
+.return-admin-page-header {
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 25px 28px;
+
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.04);
+}
+
+.return-admin-page-header-content {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.return-admin-page-header-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 48px;
+  height: 48px;
+
+  flex-shrink: 0;
+
+  border-radius: 11px;
+
+  background: rgba($primary, 0.09);
+  color: $primary;
+}
+
+.return-admin-page-heading {
+  min-width: 0;
+}
+
+.return-admin-page-title {
+  margin: 0;
+
+  color: #1f2937;
+
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.return-admin-page-subtitle {
+  margin: 5px 0 0;
+
+  color: #6b7280;
+
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
 .return-admin-table-card {
   border: 0;
   border-radius: 14px;
   overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.035);
 }
 
 .return-admin-table {
   th {
-    background: #f8f9fa;
-    font-size: 13px;
-    color: #6c757d;
-    font-weight: 600;
+    background: #f8fafc;
+
+    padding: 15px 18px;
+
+    border-bottom: 1px solid #e5e7eb;
+
+    color: #6b7280;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    letter-spacing: 0.35px;
+    text-transform: uppercase;
+
+    white-space: nowrap;
   }
 
   td {
-    padding: 14px;
+    padding: 14px 18px;
+
+    border-bottom: 1px solid #f0f1f3;
   }
 }
+
+/* =========================================================
+   DETAILS
+   ========================================================= */
 
 .return-admin-details {
   background: #f8f9fa;
@@ -34,15 +122,14 @@
   align-items: center;
   gap: 12px;
 
-  background: white;
+  min-width: 250px;
 
   padding: 12px;
 
-  border-radius: 12px;
-
-  min-width: 250px;
+  background: #ffffff;
 
   border: 1px solid #eee;
+  border-radius: 12px;
 
   img {
     border-radius: 10px;
@@ -50,9 +137,9 @@
   }
 }
 
-/* ===============================
-   Return Admin Mobile Cards
-================================ */
+/* =========================================================
+   MOBILE CARDS
+   ========================================================= */
 
 .return-admin-mobile-view {
   display: flex;
@@ -61,11 +148,15 @@
 }
 
 .return-admin-mobile-card {
-  background: #fff;
-  border-radius: 16px;
+  background: #ffffff;
+
   border: 1px solid #e9ecef;
+  border-radius: 16px;
+
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+
   overflow: hidden;
+
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease;
@@ -79,29 +170,30 @@
   padding: 18px;
 }
 
-/* Header */
-
 .return-admin-mobile-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+
   gap: 12px;
+
   margin-bottom: 18px;
 }
 
 .return-admin-mobile-title {
+  color: #212529;
+
   font-size: 17px;
   font-weight: 700;
-  color: #212529;
 }
 
 .return-admin-mobile-subtitle {
   margin-top: 4px;
-  font-size: 13px;
-  color: #6c757d;
-}
 
-/* Information */
+  color: #6c757d;
+
+  font-size: 13px;
+}
 
 .return-admin-mobile-info {
   display: flex;
@@ -112,25 +204,31 @@
 .return-admin-mobile-field {
   display: flex;
   justify-content: space-between;
+
   gap: 15px;
 
   span {
-    font-size: 13px;
     color: #868e96;
+    font-size: 13px;
   }
 
   strong {
+    max-width: 60%;
+
+    color: #343a40;
+
     font-size: 14px;
     text-align: right;
-    color: #343a40;
-    max-width: 60%;
   }
 }
 
-/* Items */
+/* =========================================================
+   MOBILE ITEMS
+   ========================================================= */
 
 .return-mobile-actions {
   margin-top: 15px;
+
   display: flex;
   justify-content: flex-end;
 }
@@ -144,20 +242,29 @@
 .return-mobile-item {
   display: flex;
   align-items: center;
+
   gap: 15px;
+
   padding: 12px;
+
   background: #f8f9fa;
-  border-radius: 12px;
+
   border: 1px solid #e9ecef;
+  border-radius: 12px;
 }
 
 .return-mobile-item-image {
+  position: relative;
+
   width: 65px;
   height: 65px;
-  position: relative;
+
   flex-shrink: 0;
-  background: white;
+
+  background: #ffffff;
+
   border-radius: 10px;
+
   overflow: hidden;
 }
 
@@ -167,28 +274,69 @@
 
   .fw-bold {
     overflow: hidden;
+
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 }
 
-/* Actions */
+/* =========================================================
+   MOBILE ACTIONS
+   ========================================================= */
 
 .return-admin-mobile-actions {
-  margin-top: 18px;
-
   display: flex;
   flex-direction: column;
+
   gap: 10px;
 
+  margin-top: 18px;
+
   button {
-    border-radius: 10px;
     padding: 10px;
+
+    border-radius: 10px;
+
     font-weight: 600;
   }
 }
 
-/* Better small phones */
+/* =========================================================
+   SMALL SCREENS
+   ========================================================= */
+
+@media (max-width: 576px) {
+  .return-admin-page {
+    padding: 18px 10px 30px;
+  }
+
+  .return-admin-page-header {
+    margin-bottom: 14px;
+
+    padding: 20px;
+
+    border-radius: 12px;
+  }
+
+  .return-admin-page-header-content {
+    gap: 12px;
+  }
+
+  .return-admin-page-header-icon {
+    width: 42px;
+    height: 42px;
+  }
+
+  .return-admin-page-title {
+    font-size: 21px;
+  }
+
+  .return-admin-page-subtitle {
+    margin-top: 4px;
+
+    font-size: 13px;
+  }
+}
 
 @media (max-width: 400px) {
   .return-admin-mobile-card-body {
@@ -201,11 +349,13 @@
 
   .return-admin-mobile-field {
     flex-direction: column;
+
     gap: 4px;
 
     strong {
-      text-align: left;
       max-width: 100%;
+
+      text-align: left;
     }
   }
 }

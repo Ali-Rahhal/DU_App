@@ -186,6 +186,7 @@
     "email": "Email",
     "phone": "Téléphone",
     "pharmacy_name": "Nom de la pharmacie",
+    "close": "Fermer",
     "cancel": "Annuler"
   },
   "cart": {
@@ -638,7 +639,12 @@
       "select_item_error": "Sélectionnez au moins un article",
       "reason_error": "Veuillez fournir un motif",
       "success_message": "Demande de retour soumise",
-      "error_message": "Échec de la soumission de la demande de retour"
+      "error_message": "Échec de la soumission de la demande de retour",
+      "items_fetch_error": "Échec du chargement des articles achetés.",
+      "loading_items": "Chargement des articles...",
+      "no_items": "Aucun article disponible pour retour.",
+      "close": "Fermer",
+      "cancel": "Annuler"
     }
   },
   "return_admin": {

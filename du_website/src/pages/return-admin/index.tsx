@@ -1,5 +1,4 @@
 import Layout from "@/components/Layout/Layout";
-import AccountLayout from "@/components/dashboard/AccountLayout";
 import {
   getReturnRequests,
   approveOrRejectReturnRequest,
@@ -7,11 +6,13 @@ import {
 
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { Accordion, Badge, Button, Card, Spinner } from "react-bootstrap";
+import { Badge, Button, Card, Spinner } from "react-bootstrap";
 import AdminGuard from "@/components/guards/AdminGuard";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useCompanyAssets } from "@/hooks/useCompanyAssets";
+
+import { RotateCcw } from "lucide-react";
 
 const ReturnAdminPage = () => {
   const [requests, setRequests] = useState<any[]>([]);
@@ -20,8 +21,10 @@ const ReturnAdminPage = () => {
   const [processingId, setProcessingId] = useState<number | null>(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+
   const t = useTranslations();
   const { companyPlaceholder } = useCompanyAssets();
+
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
   const [expandedItems, setExpandedItems] = useState<number[]>([]);
 
@@ -29,6 +32,7 @@ const ReturnAdminPage = () => {
     const load = async () => {
       try {
         const res = await getReturnRequests(1, 20);
+
         setRequests(res.data.result.requests || []);
         setTotalPages(res.data.result.totalPages || 1);
       } catch (e) {
@@ -44,7 +48,9 @@ const ReturnAdminPage = () => {
   const loadPage = async () => {
     try {
       setPageLoading(true);
+
       const res = await getReturnRequests(page, 20);
+
       setRequests(res.data.result.requests || []);
       setTotalPages(res.data.result.totalPages || 1);
     } finally {
@@ -54,6 +60,7 @@ const ReturnAdminPage = () => {
 
   useEffect(() => {
     if (page === 1) return;
+
     loadPage();
   }, [page]);
 
@@ -63,15 +70,18 @@ const ReturnAdminPage = () => {
   ) => {
     try {
       setProcessingId(transactionHeaderId);
+
       await approveOrRejectReturnRequest({
         transaction_header_id: transactionHeaderId,
         approved,
       });
+
       toast.success(
         approved
           ? t("return_admin.approve_success")
           : t("return_admin.reject_success"),
       );
+
       await loadPage();
     } catch (e: any) {
       toast.error(
@@ -85,11 +95,22 @@ const ReturnAdminPage = () => {
   const getStatusBadge = (status: number) => {
     switch (status) {
       case 3:
-        return <Badge bg="warning">{t("return_admin.status_pending")}</Badge>;
+        return (
+          <Badge bg="warning" text="white">
+            {t("return_admin.status_pending")}
+          </Badge>
+        );
+
       case 4:
         return <Badge bg="success">{t("return_admin.status_approved")}</Badge>;
+
       case 9:
-        return <Badge bg="danger">{t("return_admin.status_rejected")}</Badge>;
+        return (
+          <Badge bg="danger" text="light">
+            {t("return_admin.status_rejected")}
+          </Badge>
+        );
+
       default:
         return <Badge bg="secondary">{status}</Badge>;
     }
@@ -110,10 +131,33 @@ const ReturnAdminPage = () => {
   return (
     <AdminGuard>
       <Layout>
-        <AccountLayout
-          title={t("return_admin.title")}
-          subTitle={t("return_admin.subtitle")}
-        >
+        <div className="return-admin-page">
+          {/* =====================================================
+              PAGE HEADER
+              ===================================================== */}
+
+          <section className="return-admin-page-header">
+            <div className="return-admin-page-header-content">
+              <div className="return-admin-page-header-icon">
+                <RotateCcw size={24} />
+              </div>
+
+              <div className="return-admin-page-heading">
+                <h1 className="return-admin-page-title">
+                  {t("return_admin.title")}
+                </h1>
+
+                <p className="return-admin-page-subtitle">
+                  {t("return_admin.subtitle")}
+                </p>
+              </div>
+            </div>
+          </section>
+
+          {/* =====================================================
+              CONTENT
+              ===================================================== */}
+
           {loading ? (
             <div className="text-center py-5">
               <Spinner />
@@ -126,6 +170,10 @@ const ReturnAdminPage = () => {
             </Card>
           ) : (
             <>
+              {/* =================================================
+                  DESKTOP
+                  ================================================= */}
+
               <div className="d-none d-lg-block">
                 <Card className="return-admin-table-card">
                   <div className="table-responsive">
@@ -133,10 +181,15 @@ const ReturnAdminPage = () => {
                       <thead>
                         <tr>
                           <th>{t("return_admin.return_code")}</th>
+
                           <th>{t("return_admin.customer_label")}</th>
+
                           <th>{t("return_admin.invoice_label")}</th>
+
                           <th>{t("return_admin.status")}</th>
+
                           <th>{t("return_admin.date")}</th>
+
                           <th className="text-center">
                             {t("return_admin.actions")}
                           </th>
@@ -184,7 +237,7 @@ const ReturnAdminPage = () => {
                                           ? "fa fa-eye-slash"
                                           : "fa fa-eye"
                                       }
-                                    ></i>
+                                    />
                                   </Button>
 
                                   {request.transaction_status === 3 && (
@@ -228,63 +281,57 @@ const ReturnAdminPage = () => {
                               </td>
                             </tr>
 
-                            {/* Details Row */}
-
                             <tr>
                               <td colSpan={6} className="p-0 border-0">
                                 {expandedRows.includes(
                                   request.transaction_header_id,
                                 ) && (
-                                  <div>
-                                    <div className="return-admin-details">
-                                      <div className="mb-3">
-                                        <strong>
-                                          {t("return_admin.reason_label")}:
-                                        </strong>
+                                  <div className="return-admin-details">
+                                    <div className="mb-3">
+                                      <strong>
+                                        {t("return_admin.reason_label")}:
+                                      </strong>
 
-                                        <div className="text-muted">
-                                          {request.reason || "-"}
-                                        </div>
+                                      <div className="text-muted">
+                                        {request.reason || "-"}
                                       </div>
+                                    </div>
 
-                                      <div className="return-admin-items">
-                                        {request.items?.map((item: any) => (
-                                          <div
-                                            key={item.transaction_body_id}
-                                            className="return-admin-item"
-                                          >
-                                            <Image
-                                              src={
-                                                item.image || companyPlaceholder
-                                              }
-                                              alt={item.item_name}
-                                              width={60}
-                                              height={60}
-                                              unoptimized
-                                            />
+                                    <div className="return-admin-items">
+                                      {request.items?.map((item: any) => (
+                                        <div
+                                          key={item.transaction_body_id}
+                                          className="return-admin-item"
+                                        >
+                                          <Image
+                                            src={
+                                              item.image || companyPlaceholder
+                                            }
+                                            alt={item.item_name}
+                                            width={60}
+                                            height={60}
+                                            unoptimized
+                                          />
+
+                                          <div>
+                                            <div className="fw-bold">
+                                              {item.item_name}
+                                            </div>
+
+                                            <small className="text-muted">
+                                              {item.item_code}
+                                            </small>
 
                                             <div>
-                                              <div className="fw-bold">
-                                                {item.item_name}
-                                              </div>
+                                              {t("return_admin.quantity_label")}
 
-                                              <small className="text-muted">
-                                                {item.item_code}
-                                              </small>
-
-                                              <div>
-                                                {t(
-                                                  "return_admin.quantity_label",
-                                                )}
-                                                :
-                                                <strong className="ms-2">
-                                                  {item.quantity}
-                                                </strong>
-                                              </div>
+                                              <strong className="ms-2">
+                                                {item.quantity}
+                                              </strong>
                                             </div>
                                           </div>
-                                        ))}
-                                      </div>
+                                        </div>
+                                      ))}
                                     </div>
                                   </div>
                                 )}
@@ -297,6 +344,10 @@ const ReturnAdminPage = () => {
                   </div>
                 </Card>
               </div>
+
+              {/* =================================================
+                  MOBILE
+                  ================================================= */}
 
               <div className="return-admin-mobile-view d-block d-lg-none">
                 {requests.map((request) => (
@@ -347,7 +398,8 @@ const ReturnAdminPage = () => {
                             toggleItems(request.transaction_header_id)
                           }
                         >
-                          <i className="fa fa-eye me-2"></i>
+                          <i className="fa fa-eye me-2" />
+
                           {expandedItems.includes(request.transaction_header_id)
                             ? t("return_admin.hide_items")
                             : t("return_admin.view_items")}
@@ -391,7 +443,7 @@ const ReturnAdminPage = () => {
                                   </div>
 
                                   <div className="mt-1">
-                                    {t("return_admin.quantity_label")}:
+                                    {t("return_admin.quantity_label")}{" "}
                                     <strong className="ms-2">
                                       {item.quantity}
                                     </strong>
@@ -447,37 +499,54 @@ const ReturnAdminPage = () => {
                 ))}
               </div>
 
+              {/* =================================================
+                  PAGINATION
+                  ================================================= */}
+
               <div className="d-flex justify-content-center align-items-center gap-2 mt-4">
                 <button
                   className="btn btn-outline-primary"
                   disabled={page === 1 || pageLoading}
                   onClick={() => setPage(1)}
-                  style={{ minWidth: "40px", height: "40px" }}
+                  style={{
+                    minWidth: "40px",
+                    height: "40px",
+                  }}
                   title={t("return_admin.first_page")}
                 >
-                  <i className="ti-angle-double-left"></i>
+                  <i className="ti-angle-double-left" />
                 </button>
 
                 <button
                   className="btn btn-outline-primary"
                   disabled={page === 1 || pageLoading}
                   onClick={() => setPage(page - 1)}
-                  style={{ minWidth: "40px", height: "40px" }}
+                  style={{
+                    minWidth: "40px",
+                    height: "40px",
+                  }}
                   title={t("return_admin.previous_page")}
                 >
-                  <i className="ti-angle-left"></i>
+                  <i className="ti-angle-left" />
                 </button>
 
                 {Array.from({ length: Math.min(5, totalPages) }, (_, idx) => {
                   const start = Math.max(1, Math.min(page - 2, totalPages - 4));
+
                   const p = start + idx;
+
                   return p <= totalPages ? (
                     <button
                       key={p}
-                      className={`btn ${p === page ? "btn-primary" : "btn-outline-primary"}`}
+                      className={`btn ${
+                        p === page ? "btn-primary" : "btn-outline-primary"
+                      }`}
                       disabled={pageLoading}
                       onClick={() => setPage(p)}
-                      style={{ minWidth: "40px", height: "40px" }}
+                      style={{
+                        minWidth: "40px",
+                        height: "40px",
+                      }}
                     >
                       {p}
                     </button>
@@ -488,26 +557,33 @@ const ReturnAdminPage = () => {
                   className="btn btn-outline-primary"
                   disabled={page === totalPages || pageLoading}
                   onClick={() => setPage(page + 1)}
-                  style={{ minWidth: "40px", height: "40px" }}
+                  style={{
+                    minWidth: "40px",
+                    height: "40px",
+                  }}
                   title={t("return_admin.next_page")}
                 >
-                  <i className="ti-angle-right"></i>
+                  <i className="ti-angle-right" />
                 </button>
 
                 <button
                   className="btn btn-outline-primary"
                   disabled={page === totalPages || pageLoading}
                   onClick={() => setPage(totalPages)}
-                  style={{ minWidth: "40px", height: "40px" }}
+                  style={{
+                    minWidth: "40px",
+                    height: "40px",
+                  }}
                   title={t("return_admin.last_page")}
                 >
-                  <i className="ti-angle-double-right"></i>
+                  <i className="ti-angle-double-right" />
                 </button>
               </div>
 
               {pageLoading && (
                 <div className="d-flex justify-content-center align-items-center gap-2 mt-3">
                   <Spinner animation="border" size="sm" />
+
                   <small className="text-muted">
                     {t("return_admin.loading")}
                   </small>
@@ -515,7 +591,7 @@ const ReturnAdminPage = () => {
               )}
             </>
           )}
-        </AccountLayout>
+        </div>
       </Layout>
     </AdminGuard>
   );

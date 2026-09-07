@@ -167,7 +167,7 @@ const Returns = () => {
 
                         <td>
                           {invoice.hasPendingReturnRequest ? (
-                            <Badge bg="warning" className="text-black">
+                            <Badge bg="warning" text="white">
                               {t("returns.pending_request")}
                             </Badge>
                           ) : invoice.canReturn ? (
@@ -183,7 +183,7 @@ const Returns = () => {
                               {t("returns.return_btn")}
                             </Button>
                           ) : (
-                            <Badge bg="danger">
+                            <Badge bg="danger" text="white">
                               {t("returns.window_expired")}
                             </Badge>
                           )}

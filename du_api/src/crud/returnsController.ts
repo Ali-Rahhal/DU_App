@@ -282,7 +282,7 @@ const createReturnRequest = async (
           AND th.is_active = 1
           AND th.parent_transaction_header_id =
               ${invoiceTransactionHeaderId}
-          AND th.transaction_status <> 4
+          AND th.transaction_status = 4
           AND tb.item_code = ${item.item_code}
       `;
 

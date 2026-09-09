@@ -13,7 +13,7 @@ const Layout = ({
   showBottomNavbar = true,
 }: LayoutProps) => {
   return (
-    <>
+    <div className="main-layout">
       <Navbar
         showMobileNavbar={showMobileNavbar}
         showBottomNavbar={showBottomNavbar}
@@ -22,7 +22,7 @@ const Layout = ({
       <main className="main">{children}</main>
 
       <Footer />
-    </>
+    </div>
   );
 };
 

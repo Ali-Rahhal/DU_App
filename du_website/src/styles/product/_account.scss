@@ -7,7 +7,6 @@
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 20px;
 }
 
 /* =========================================================
@@ -354,10 +353,6 @@
 @media (max-width: 576px) {
   .account-page {
     padding: 20px 0 35px;
-  }
-
-  .account-page-container {
-    padding: 0 14px;
   }
 
   .account-client-card {

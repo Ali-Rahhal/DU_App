@@ -26,6 +26,9 @@ import fidelityRoutes from "./routes/private/fidelity.routes";
 import aiRoutes from "./routes/private/ai.routes";
 import returnRoutes from "./routes/private/returns.routes";
 import collectionRoutes from "./routes/private/collection.routes";
+import licenseRoutes from "./routes/public/license.routes";
+
+import { licenseMiddleware } from "./middleware/licenseMiddleware";
 
 //@ts-ignore
 BigInt.prototype.toJSON = function () {
@@ -71,6 +74,8 @@ app.use(
   }),
 );
 
+app.route(`${PUBLIC_API}/license`, licenseRoutes);
+
 app.use(`${PUBLIC_API}/*`, async (c, next) => {
   const companyId = getCookie(c, "companyIdCustomerPortalApp");
 
@@ -98,6 +103,8 @@ async function authMiddleware(c, next) {
 
 app.use("*", compress());
 app.use(`${PRIVATE_API}/*`, authMiddleware);
+
+app.use("*", licenseMiddleware);
 
 app.route(`${PUBLIC_API}`, authPublicRoutes);
 app.route(`${PUBLIC_API}`, productRoutes);

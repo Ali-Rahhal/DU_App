@@ -15,8 +15,12 @@ import {
 import { Companies, CompanyId } from "@/utils/config_companies";
 import ChangeLangDropdown from "@/components/common/ChangeLangDropdown";
 import InstallPWAButton from "@/components/common/InstalPWAButton";
+import { getLicensedCompanies } from "@/utils/apiCalls";
 
 export default function LoginPage() {
+  const [licensedCompanies, setLicensedCompanies] = useState<CompanyId[]>([]);
+  const [loadingCompanies, setLoadingCompanies] = useState(true);
+
   const [mohNumber, setMohNumber] = useState("");
   const [password, setPassword] = useState("");
 
@@ -36,6 +40,42 @@ export default function LoginPage() {
 
   const router = useRouter();
   const t = useTranslations("login_register");
+
+  useEffect(() => {
+    async function loadLicensedCompanies() {
+      try {
+        const response = await getLicensedCompanies();
+        const data: { companies: CompanyId[] } = response.data;
+
+        setLicensedCompanies(data.companies ?? []);
+      } catch (error) {
+        console.error("Failed to load licensed companies:", error);
+
+        // Optional: show no companies rather than exposing
+        // companies when the license server can't be reached.
+        setLicensedCompanies([]);
+      } finally {
+        setLoadingCompanies(false);
+      }
+    }
+
+    loadLicensedCompanies();
+  }, []);
+  useEffect(() => {
+    if (loadingCompanies || licensedCompanies.length === 0) {
+      return;
+    }
+
+    if (!licensedCompanies.includes(companyId)) {
+      const firstAvailableCompany = licensedCompanies[0];
+
+      setCompany(firstAvailableCompany);
+
+      document.cookie = `companyIdCustomerPortalApp=${firstAvailableCompany}; path=/; max-age=31536000; SameSite=Lax`;
+
+      setStep("company");
+    }
+  }, [loadingCompanies, licensedCompanies, companyId, setCompany]);
 
   useEffect(() => {
     const cookie = document.cookie
@@ -151,31 +191,41 @@ export default function LoginPage() {
             </div>
 
             <div className="company-grid">
-              {Object.values(Companies)
-                .filter((c) => c.enabled)
-                .map((c) => (
-                  <button
-                    key={c.id}
-                    type="button"
-                    className={`company-card ${
-                      c.id === companyId ? "active" : ""
-                    }`}
-                    disabled={loading || redirecting}
-                    onClick={() => selectCompany(c.id as CompanyId)}
-                  >
-                    <img
-                      src={c.logo}
-                      alt={c.name}
-                      className="company-card-logo"
-                    />
+              {loadingCompanies ? (
+                <div className="text-center w-100 py-4">
+                  <Spinner animation="border" variant="primary" />
+                </div>
+              ) : (
+                Object.values(Companies)
+                  .filter(
+                    (c) =>
+                      c.enabled &&
+                      licensedCompanies.includes(c.id as CompanyId),
+                  )
+                  .map((c) => (
+                    <button
+                      key={c.id}
+                      type="button"
+                      className={`company-card ${
+                        c.id === companyId ? "active" : ""
+                      }`}
+                      disabled={loading || redirecting}
+                      onClick={() => selectCompany(c.id as CompanyId)}
+                    >
+                      <img
+                        src={c.logo}
+                        alt={c.name}
+                        className="company-card-logo"
+                      />
 
-                    <div className="company-card-content">
-                      <h4>{c.name}</h4>
-                    </div>
+                      <div className="company-card-content">
+                        <h4>{c.name}</h4>
+                      </div>
 
-                    <i className="ti ti-chevron-right company-card-arrow" />
-                  </button>
-                ))}
+                      <i className="ti ti-chevron-right company-card-arrow" />
+                    </button>
+                  ))
+              )}
             </div>
           </>
         ) : (

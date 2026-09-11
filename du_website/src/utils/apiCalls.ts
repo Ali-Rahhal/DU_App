@@ -1058,6 +1058,13 @@ const getCurrencies = async (): Promise<AxiosResponse> => {
   });
 };
 
+//////
+////////ACTIVATION ApiCalls
+//////
+const getLicensedCompanies = async (): Promise<AxiosResponse> => {
+  return await axios.get(`${publicApi}/license/companies`);
+};
+
 export {
   publicApi,
   privateApi,
@@ -1156,4 +1163,6 @@ export {
   fifoPreview,
   manualPreview,
   getCurrencies,
+  //Activation
+  getLicensedCompanies,
 };

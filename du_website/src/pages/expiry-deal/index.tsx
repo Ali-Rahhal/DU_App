@@ -1,23 +1,35 @@
-import Autocomplete from "@/components/common/Autocomplete";
-import Layout from "@/components/Layout/Layout";
-import { getProducts, getExpiryDeal, updateExpiryDeal } from "@/utils/apiCalls";
 import { useState } from "react";
-import { Button, Form } from "react-bootstrap";
+
+import { Button, Form, Spinner } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { useTranslations } from "next-intl";
+import {
+  CalendarClock,
+  Percent,
+  PackageSearch,
+  Save,
+  Info,
+} from "lucide-react";
+
+import Autocomplete from "@/components/common/Autocomplete";
+import Layout from "@/components/Layout/Layout";
 import AdminGuard from "@/components/guards/AdminGuard";
+
+import { getProducts, getExpiryDeal, updateExpiryDeal } from "@/utils/apiCalls";
 
 const ExpiryDeal = () => {
   const t = useTranslations();
+
   const [selectedItem, setSelectedItem] = useState<any>(null);
-  const [expiryMonths, setExpiryMonths] = useState(0);
-  const [discount, setDiscount] = useState(0);
+  const [expiryMonths, setExpiryMonths] = useState<any>(0);
+  const [discount, setDiscount] = useState<any>(0);
   const [loading, setLoading] = useState(false);
 
   // =========================
   // Load item data
   // =========================
-  const loadItemData = async (item) => {
+
+  const loadItemData = async (item: any) => {
     try {
       setSelectedItem(item);
       setExpiryMonths(0);
@@ -27,6 +39,7 @@ const ExpiryDeal = () => {
 
       if (res.data.result) {
         setExpiryMonths(res.data.result.expiry_threshold_months || 0);
+
         setDiscount(res.data.result.discount_percentage || 0);
       }
     } catch (e: any) {
@@ -39,6 +52,7 @@ const ExpiryDeal = () => {
   // =========================
   // Save
   // =========================
+
   const saveDeal = async () => {
     if (!selectedItem) return;
 
@@ -68,81 +82,234 @@ const ExpiryDeal = () => {
   return (
     <AdminGuard>
       <Layout>
-        <div className="container mt-5" style={{ minHeight: "60vh" }}>
-          <div className="mb-4">
-            <h2 style={{ fontWeight: "bold" }}>{t("expiry_deal.title")}</h2>
-            <p className="text-muted">{t("expiry_deal.description")}</p>
-          </div>
+        <div className="expiry-deal-page">
+          {/* =====================================================
+              Header
+          ===================================================== */}
 
-          <div className="row">
-            {/* LEFT */}
-            <div className="col-12 col-md-4 mb-4">
-              <h5>{t("expiry_deal.items")}</h5>
-              <Autocomplete
-                fetchFn={(params) =>
-                  getProducts({
-                    search: params.search,
-                    skip: params.skip,
-                    take: params.take,
-                  })
-                }
-                value={selectedItem}
-                onChange={(item) => loadItemData(item)}
-                placeholder={t("expiry_deal.search_items")}
-              />
+          <section className="expiry-deal-page-header">
+            <div className="expiry-deal-page-header-content">
+              <div className="expiry-deal-page-header-icon">
+                <CalendarClock size={24} />
+              </div>
+
+              <div className="expiry-deal-page-heading">
+                <h1 className="expiry-deal-page-title">
+                  {t("expiry_deal.title")}
+                </h1>
+
+                <p className="expiry-deal-page-subtitle">
+                  {t("expiry_deal.description")}
+                </p>
+              </div>
             </div>
+          </section>
 
-            {/* RIGHT */}
-            <div className="col-12 col-md-8">
-              {!selectedItem ? (
-                <div className="text-muted">
-                  {t("expiry_deal.search_description")}
+          {/* =====================================================
+              Content
+          ===================================================== */}
+
+          <div className="expiry-deal-content">
+            {/* ===================================================
+                Item Selection
+            =================================================== */}
+
+            <section className="expiry-deal-selection-card">
+              <div className="expiry-deal-card-header">
+                <div className="expiry-deal-card-icon">
+                  <PackageSearch size={19} />
                 </div>
-              ) : (
-                <div className="mb-4">
-                  <h5>{t("expiry_deal.expiry_rule")}</h5>
 
-                  <div className="text-muted mb-3" style={{ fontSize: 13 }}>
-                    {t("expiry_deal.expiry_rule_description")}
-                    <strong>{expiryMonths || 0}</strong>{" "}
-                    {t("expiry_deal.months")} →{" "}
-                    <strong>{discount || 0}%</strong>{" "}
-                    {t("expiry_deal.discount")}
+                <div>
+                  <h2 className="expiry-deal-card-title">
+                    {t("expiry_deal.items")}
+                  </h2>
+
+                  <p className="expiry-deal-card-subtitle">
+                    {t("expiry_deal.search_description")}
+                  </p>
+                </div>
+              </div>
+
+              <div className="expiry-deal-search">
+                <Autocomplete
+                  fetchFn={(params) =>
+                    getProducts({
+                      search: params.search,
+                      skip: params.skip,
+                      take: params.take,
+                    })
+                  }
+                  value={selectedItem}
+                  onChange={(item) => loadItemData(item)}
+                  placeholder={t("expiry_deal.search_items")}
+                />
+              </div>
+
+              {selectedItem && (
+                <div className="expiry-deal-selected-item">
+                  <div className="expiry-deal-selected-item-icon">
+                    <PackageSearch size={17} />
                   </div>
 
-                  <Form.Group className="mb-3">
-                    <Form.Label>{t("expiry_deal.expiry_threshold")}</Form.Label>
-                    <Form.Control
-                      type="number"
-                      min="0"
-                      value={expiryMonths}
-                      onChange={(e) =>
-                        setExpiryMonths(Math.max(0, Number(e.target.value)))
-                      }
-                    />
-                  </Form.Group>
+                  <div className="expiry-deal-selected-item-info">
+                    <span className="expiry-deal-selected-item-label">
+                      Selected item
+                    </span>
 
-                  <Form.Group className="mb-3">
-                    <Form.Label>{t("expiry_deal.discount_title")}</Form.Label>
-                    <Form.Control
-                      type="number"
-                      min="0"
-                      max="100"
-                      value={discount}
-                      onChange={(e) =>
-                        setDiscount(
-                          Math.min(100, Math.max(0, Number(e.target.value))),
-                        )
-                      }
-                    />
-                  </Form.Group>
+                    <strong>
+                      {selectedItem.name ||
+                        selectedItem.item_name ||
+                        selectedItem.item_code}
+                    </strong>
 
-                  <Button onClick={saveDeal} disabled={loading}>
-                    {loading ? t("expiry_deal.saving") : t("expiry_deal.save")}
-                  </Button>
+                    <span>{selectedItem.item_code}</span>
+                  </div>
                 </div>
               )}
-            </div>
+            </section>
+
+            {/* ===================================================
+                Settings
+            =================================================== */}
+
+            <section className="expiry-deal-settings-card">
+              {!selectedItem ? (
+                <div className="expiry-deal-empty">
+                  <div className="expiry-deal-empty-icon">
+                    <CalendarClock size={27} />
+                  </div>
+
+                  <h2>{t("expiry_deal.expiry_rule")}</h2>
+
+                  <p>{t("expiry_deal.search_description")}</p>
+                </div>
+              ) : (
+                <>
+                  <div className="expiry-deal-settings-header">
+                    <div>
+                      <h2 className="expiry-deal-card-title">
+                        {t("expiry_deal.expiry_rule")}
+                      </h2>
+
+                      <p className="expiry-deal-card-subtitle">
+                        {t("expiry_deal.expiry_rule_description")}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Summary */}
+                  <div className="expiry-deal-summary">
+                    <div className="expiry-deal-summary-item">
+                      <div className="expiry-deal-summary-icon expiry-deal-summary-icon-months">
+                        <CalendarClock size={17} />
+                      </div>
+
+                      <div>
+                        <span>Threshold</span>
+                        <strong>
+                          {expiryMonths || 0} {t("expiry_deal.months")}
+                        </strong>
+                      </div>
+                    </div>
+
+                    <div className="expiry-deal-summary-item">
+                      <div className="expiry-deal-summary-icon expiry-deal-summary-icon-discount">
+                        <Percent size={17} />
+                      </div>
+
+                      <div>
+                        <span>{t("expiry_deal.discount")}</span>
+
+                        <strong>{discount || 0}%</strong>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Form */}
+                  <div className="expiry-deal-form">
+                    <Form.Group className="expiry-deal-form-group">
+                      <Form.Label>
+                        {t("expiry_deal.expiry_threshold")}
+                      </Form.Label>
+
+                      <div className="expiry-deal-input-wrapper">
+                        <Form.Control
+                          type="number"
+                          min="0"
+                          value={expiryMonths}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            if (val === "") {
+                              setExpiryMonths("");
+                            } else {
+                              setExpiryMonths(Math.max(0, Number(val)));
+                            }
+                          }}
+                          onBlur={() => {
+                            if (expiryMonths === "") setExpiryMonths(0);
+                          }}
+                        />
+
+                        <span>{t("expiry_deal.months")}</span>
+                      </div>
+                    </Form.Group>
+
+                    <Form.Group className="expiry-deal-form-group">
+                      <Form.Label>{t("expiry_deal.discount_title")}</Form.Label>
+
+                      <div className="expiry-deal-input-wrapper">
+                        <Form.Control
+                          type="number"
+                          min="0"
+                          max="100"
+                          value={discount}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            if (val === "") {
+                              setDiscount("");
+                            } else {
+                              setDiscount(
+                                Math.min(
+                                  100,
+                                  Math.max(0, Number(e.target.value)),
+                                ),
+                              );
+                            }
+                          }}
+                          onBlur={() => {
+                            if (discount === "") setDiscount(0);
+                          }}
+                        />
+
+                        <span>%</span>
+                      </div>
+                    </Form.Group>
+                  </div>
+
+                  {/* Save */}
+                  <div className="expiry-deal-actions">
+                    <Button
+                      className="expiry-deal-save-button"
+                      onClick={saveDeal}
+                      disabled={loading}
+                    >
+                      {loading ? (
+                        <>
+                          <Spinner animation="border" size="sm" />
+                          {t("expiry_deal.saving")}
+                        </>
+                      ) : (
+                        <>
+                          <Save size={16} />
+                          {t("expiry_deal.save")}
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </>
+              )}
+            </section>
           </div>
         </div>
       </Layout>

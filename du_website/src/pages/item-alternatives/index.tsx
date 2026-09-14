@@ -1,28 +1,48 @@
+import { useState } from "react";
+
+import { Button, Spinner } from "react-bootstrap";
+import { toast } from "react-toastify";
+import { useTranslations } from "next-intl";
+import {
+  ArrowDownUp,
+  PackageSearch,
+  Save,
+  SlidersHorizontal,
+} from "lucide-react";
+
 import Autocomplete from "@/components/common/Autocomplete";
 import Layout from "@/components/Layout/Layout";
 import SortableAlternatives from "@/components/item-alternatives/SortableAlternatives";
+import AdminGuard from "@/components/guards/AdminGuard";
+
 import {
   getProduct,
   getProducts,
   getItemAlternatives,
   updateItemAlternatives,
 } from "@/utils/apiCalls";
-import { useState } from "react";
-import { Button } from "react-bootstrap";
-import { toast } from "react-toastify";
-import { useTranslations } from "next-intl";
-import AdminGuard from "@/components/guards/AdminGuard";
+
 import { useCompanyAssets } from "@/hooks/useCompanyAssets";
 
 const ItemAlternatives = () => {
   const t = useTranslations();
   const { companyPlaceholder } = useCompanyAssets();
+
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [selectedAlternatives, setSelectedAlternatives] = useState<any[]>([]);
+  const [loadingItem, setLoadingItem] = useState(false);
+  const [saving, setSaving] = useState(false);
 
-  const loadItemData = async (item) => {
+  // =========================
+  // Load item data
+  // =========================
+
+  const loadItemData = async (item: any) => {
     try {
+      setLoadingItem(true);
       setSelectedItem(item);
+      setSelectedAlternatives([]);
+
       const altRes = await getItemAlternatives(item.item_code);
 
       const altResFull: {
@@ -31,8 +51,9 @@ const ItemAlternatives = () => {
         name: string;
         image: string;
       }[] = await Promise.all(
-        altRes.data.result.map(async (alt) => {
+        altRes.data.result.map(async (alt: any) => {
           const altItem = await getProduct(alt.alternative_item_code);
+
           const data = altItem.data.result;
 
           return {
@@ -44,39 +65,94 @@ const ItemAlternatives = () => {
       );
 
       setSelectedAlternatives(altResFull);
-    } catch (e) {
-      toast.error(e.response.data.message);
+    } catch (e: any) {
+      toast.error(
+        e?.response?.data?.message || e?.message || "An error occurred",
+      );
+    } finally {
+      setLoadingItem(false);
     }
   };
 
+  // =========================
+  // Save alternatives
+  // =========================
+
   const saveAlternatives = async () => {
+    if (!selectedItem) return;
+
     try {
+      setSaving(true);
+
       const alternativesToSend = selectedAlternatives.map((alt) => ({
         alternative_item_code: alt.alternative_item_code,
         priority: alt.priority,
       }));
+
       await updateItemAlternatives(selectedItem.item_code, alternativesToSend);
+
       toast.success("Alternatives updated");
-    } catch (e) {
-      toast.error(e.response.data.message);
+    } catch (e: any) {
+      toast.error(
+        e?.response?.data?.message || e?.message || "An error occurred",
+      );
+    } finally {
+      setSaving(false);
     }
   };
 
   return (
     <AdminGuard>
       <Layout>
-        <div className="container mt-5" style={{ minHeight: "60vh" }}>
-          {/* Header */}
-          <div className="mb-4">
-            <h2 style={{ fontWeight: "bold" }}>
-              {t("item_alternatives.title")}
-            </h2>
-            <p className="text-muted">{t("item_alternatives.description")}</p>
-          </div>
+        <div className="item-alternatives-page">
+          {/* =====================================================
+              Header
+          ===================================================== */}
 
-          <div className="row">
-            <div className="col-12 col-md-4 mb-4">
-              <h5>{t("item_alternatives.items")}</h5>
+          <section className="item-alternatives-page-header">
+            <div className="item-alternatives-page-header-content">
+              <div className="item-alternatives-page-header-icon">
+                <ArrowDownUp size={24} />
+              </div>
+
+              <div className="item-alternatives-page-heading">
+                <h1 className="item-alternatives-page-title">
+                  {t("item_alternatives.title")}
+                </h1>
+
+                <p className="item-alternatives-page-subtitle">
+                  {t("item_alternatives.description")}
+                </p>
+              </div>
+            </div>
+          </section>
+
+          {/* =====================================================
+              Content
+          ===================================================== */}
+
+          <div className="item-alternatives-content">
+            {/* ===================================================
+                Product Selection
+            =================================================== */}
+
+            <section className="item-alternatives-selection-card">
+              <div className="item-alternatives-card-header">
+                <div className="item-alternatives-card-icon">
+                  <PackageSearch size={19} />
+                </div>
+
+                <div>
+                  <h2 className="item-alternatives-card-title">
+                    {t("item_alternatives.items")}
+                  </h2>
+
+                  <p className="item-alternatives-card-subtitle">
+                    {t("item_alternatives.search_description")}
+                  </p>
+                </div>
+              </div>
+
               <Autocomplete
                 fetchFn={(params) =>
                   getProducts({
@@ -89,22 +165,63 @@ const ItemAlternatives = () => {
                 onChange={(item) => loadItemData(item)}
                 placeholder={t("item_alternatives.search_items")}
               />
-            </div>
 
-            <div className="col-12 col-md-8">
+              {selectedItem && (
+                <div className="item-alternatives-selected-item">
+                  <div className="item-alternatives-selected-image">
+                    <img
+                      src={selectedItem.image || companyPlaceholder}
+                      alt={selectedItem.name}
+                    />
+                  </div>
+
+                  <div className="item-alternatives-selected-info">
+                    <span className="item-alternatives-selected-label">
+                      Selected item
+                    </span>
+
+                    <strong>{selectedItem.name}</strong>
+
+                    <span>{selectedItem.item_code}</span>
+                  </div>
+                </div>
+              )}
+            </section>
+
+            {/* ===================================================
+                Alternatives
+            =================================================== */}
+
+            <section className="item-alternatives-management-card">
               {!selectedItem ? (
-                <div className="text-muted">
-                  {t("item_alternatives.search_description")}
+                <div className="item-alternatives-empty">
+                  <div className="item-alternatives-empty-icon">
+                    <SlidersHorizontal size={27} />
+                  </div>
+
+                  <h2>{t("item_alternatives.alternatives")}</h2>
+
+                  <p>{t("item_alternatives.search_description")}</p>
                 </div>
               ) : (
                 <>
-                  {/* Alternatives */}
-                  <div className="mb-4">
-                    <h5>{t("item_alternatives.alternatives")}</h5>
-                    <div className="text-muted mb-2" style={{ fontSize: 13 }}>
-                      {t("item_alternatives.alternatives_description")}
+                  <div className="item-alternatives-management-header">
+                    <div>
+                      <h2 className="item-alternatives-card-title">
+                        {t("item_alternatives.alternatives")}
+                      </h2>
+
+                      <p className="item-alternatives-card-subtitle">
+                        {t("item_alternatives.alternatives_description")}
+                      </p>
                     </div>
 
+                    <div className="item-alternatives-count">
+                      {selectedAlternatives.length}
+                    </div>
+                  </div>
+
+                  <div className="item-alternatives-search">
                     <Autocomplete
                       multiple
                       fetchFn={(params) =>
@@ -120,8 +237,8 @@ const ItemAlternatives = () => {
                         image: a.image,
                       }))}
                       onChange={(vals) =>
-                        setSelectedAlternatives((prev) => {
-                          return vals.map((v, i) => {
+                        setSelectedAlternatives((prev) =>
+                          vals.map((v, i) => {
                             const existing = prev.find(
                               (p) => p.alternative_item_code === v.item_code,
                             );
@@ -135,26 +252,55 @@ const ItemAlternatives = () => {
                                 companyPlaceholder,
                               priority: i + 1,
                             };
-                          });
-                        })
+                          }),
+                        )
                       }
                       placeholder={t("item_alternatives.search_alternatives")}
                       exclude={selectedItem ? [selectedItem.item_code] : []}
                     />
+                  </div>
 
-                    {/* Drag & Drop */}
+                  {loadingItem ? (
+                    <div className="item-alternatives-loading">
+                      <Spinner animation="border" size="sm" />
+
+                      <span>Loading alternatives...</span>
+                    </div>
+                  ) : (
                     <SortableAlternatives
                       alternatives={selectedAlternatives}
                       setAlternatives={setSelectedAlternatives}
                     />
+                  )}
 
-                    <Button className="mt-2" onClick={saveAlternatives}>
-                      {t("item_alternatives.save")}
+                  <div className="item-alternatives-actions">
+                    <div className="item-alternatives-priority-hint">
+                      <ArrowDownUp size={14} />
+
+                      <span>Drag items to change their priority.</span>
+                    </div>
+
+                    <Button
+                      className="item-alternatives-save-button"
+                      onClick={saveAlternatives}
+                      disabled={saving || loadingItem}
+                    >
+                      {saving ? (
+                        <>
+                          <Spinner animation="border" size="sm" />
+                          Saving...
+                        </>
+                      ) : (
+                        <>
+                          <Save size={16} />
+                          {t("item_alternatives.save")}
+                        </>
+                      )}
                     </Button>
                   </div>
                 </>
               )}
-            </div>
+            </section>
           </div>
         </div>
       </Layout>

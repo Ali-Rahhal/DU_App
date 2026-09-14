@@ -53,6 +53,7 @@
 @import "shortcode/avaters";
 @import "shortcode/services";
 @import "shortcode/preview";
+@import "shortcode/sortable-alternatives";
 
 /*-------------------------------------------------------
     3. Product
@@ -82,3 +83,6 @@
 @import "product/return-request-modal";
 @import "product/product-item";
 @import "product/thumbslider";
+@import "product/expiry-deal";
+@import "product/item-alternatives";
+@import "product/restock";

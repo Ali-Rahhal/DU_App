@@ -1,0 +1,437 @@
+.restock-page {
+  width: 100%;
+  padding: 25px 0 45px;
+}
+
+/* =========================
+   Header
+========================= */
+
+.restock-page-header {
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 25px 28px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.04);
+}
+
+.restock-page-header-content {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.restock-page-header-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: 11px;
+  background: rgba($primary, 0.09);
+  color: $primary;
+}
+
+.restock-page-heading {
+  min-width: 0;
+}
+
+.restock-page-title {
+  margin: 0;
+  color: #1f2937;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.restock-page-subtitle {
+  margin: 5px 0 0;
+  color: #6b7280;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* =========================
+   Main content
+========================= */
+
+.restock-content {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.8fr) minmax(0, 1.7fr);
+  gap: 20px;
+  align-items: start;
+}
+
+/* =========================
+   Cards
+========================= */
+
+.restock-selection-card,
+.restock-config-card {
+  min-width: 0;
+  padding: 22px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.035);
+}
+
+.restock-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.restock-card-header-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 9px;
+  background: rgba($primary, 0.08);
+  color: $primary;
+}
+
+.restock-card-title {
+  margin: 0;
+  color: #1f2937;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.restock-card-subtitle {
+  margin: 4px 0 0;
+  color: #6b7280;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* =========================
+   Search
+========================= */
+
+.restock-search {
+  width: 100%;
+}
+
+/* =========================
+   Selected item
+========================= */
+
+.restock-selected-item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-top: 18px;
+  padding: 12px;
+  border: 1px solid rgba($primary, 0.12);
+  border-radius: 9px;
+  background: rgba($primary, 0.035);
+}
+
+.restock-selected-item-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: rgba($primary, 0.09);
+  color: $primary;
+}
+
+.restock-selected-item-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.restock-selected-item-info strong {
+  overflow: hidden;
+  color: #1f2937;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.restock-selected-item-info > span:last-child {
+  margin-top: 2px;
+  color: #6b7280;
+  font-size: 11px;
+}
+
+.restock-selected-item-label {
+  margin-bottom: 2px;
+  color: $primary;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* =========================
+   Config header
+========================= */
+
+.restock-config-header {
+  margin-bottom: 20px;
+}
+
+.restock-config-title {
+  margin: 0;
+  color: #1f2937;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.restock-config-subtitle {
+  max-width: 650px;
+  margin: 5px 0 0;
+  color: #6b7280;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* =========================
+   Empty state
+========================= */
+
+.restock-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 230px;
+  padding: 30px;
+  border: 1px dashed #d9dee7;
+  border-radius: 11px;
+  background: #fafbfc;
+  text-align: center;
+}
+
+.restock-empty-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  margin-bottom: 12px;
+  border-radius: 50%;
+  background: #f1f4f8;
+  color: #9ca3af;
+}
+
+.restock-empty h3 {
+  margin: 0;
+  color: #374151;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.restock-empty p {
+  max-width: 340px;
+  margin: 5px 0 0;
+  color: #9ca3af;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* =========================
+   Loading
+========================= */
+
+.restock-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 230px;
+  color: #6b7280;
+  font-size: 12px;
+}
+
+/* =========================
+   Form
+========================= */
+
+.restock-form {
+  width: 100%;
+}
+
+.restock-form-section {
+  padding: 2px 0;
+}
+
+.restock-form-section-header {
+  margin-bottom: 15px;
+}
+
+.restock-form-section-header h3 {
+  margin: 0;
+  color: #374151;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.restock-field {
+  margin-bottom: 12px;
+}
+
+.restock-field .form-control {
+  min-height: 42px;
+  border-color: #dfe3e8;
+  border-radius: 8px;
+  color: #1f2937;
+  font-size: 13px;
+  box-shadow: none;
+}
+
+.restock-field .form-control:focus {
+  border-color: $primary;
+  box-shadow: 0 0 0 3px rgba($primary, 0.08);
+}
+
+.restock-divider {
+  height: 1px;
+  margin: 20px 0;
+  background: #edf0f3;
+}
+
+/* =========================
+   Buttons
+========================= */
+
+.restock-save-button,
+.restock-now-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 8px 15px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.restock-save-button svg,
+.restock-now-button svg {
+  flex-shrink: 0;
+}
+
+.restock-save-button .spinner-border,
+.restock-now-button .spinner-border {
+  width: 14px;
+  height: 14px;
+  border-width: 2px;
+}
+
+/* =========================
+   Tablet
+========================= */
+
+@media (max-width: 900px) {
+  .restock-content {
+    grid-template-columns: 1fr;
+  }
+
+  .restock-selection-card,
+  .restock-config-card {
+    width: 100%;
+  }
+}
+
+/* =========================
+   Mobile
+========================= */
+
+@media (max-width: 576px) {
+  .restock-page {
+    padding: 18px 0 30px;
+  }
+
+  .restock-page-header {
+    margin-bottom: 14px;
+    padding: 20px;
+    border-radius: 12px;
+  }
+
+  .restock-page-header-content {
+    gap: 12px;
+  }
+
+  .restock-page-header-icon {
+    width: 42px;
+    height: 42px;
+  }
+
+  .restock-page-title {
+    font-size: 21px;
+  }
+
+  .restock-page-subtitle {
+    margin-top: 4px;
+    font-size: 13px;
+  }
+
+  .restock-content {
+    gap: 14px;
+  }
+
+  .restock-selection-card,
+  .restock-config-card {
+    padding: 18px;
+    border-radius: 12px;
+  }
+
+  .restock-card-header {
+    margin-bottom: 18px;
+  }
+
+  .restock-card-title {
+    font-size: 16px;
+  }
+
+  .restock-card-subtitle {
+    font-size: 11px;
+  }
+
+  .restock-selected-item {
+    margin-top: 14px;
+  }
+
+  .restock-config-header {
+    margin-bottom: 16px;
+  }
+
+  .restock-config-title {
+    font-size: 16px;
+  }
+
+  .restock-empty,
+  .restock-loading {
+    min-height: 190px;
+  }
+
+  .restock-empty {
+    padding: 24px 18px;
+  }
+
+  .restock-divider {
+    margin: 18px 0;
+  }
+
+  .restock-save-button,
+  .restock-now-button {
+    width: 100%;
+  }
+}

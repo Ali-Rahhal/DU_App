@@ -12,10 +12,7 @@ import dynamic from "next/dynamic";
 import { NextIntlClientProvider } from "next-intl";
 import { useCompanyAssets } from "@/hooks/useCompanyAssets";
 import PWAProvider from "@/components/common/PWAProvider";
-const ProgressBar = dynamic(
-  () => import("next-nprogress-bar").then((mod) => mod.PagesProgressBar),
-  { ssr: false },
-);
+import NextNProgress from "nextjs-progressbar";
 const ToastContainer = dynamic(
   () => import("react-toastify").then((mod) => mod.ToastContainer),
   { ssr: false },
@@ -76,14 +73,9 @@ function App({ Component, pageProps }) {
           timeZone="UTC"
         >
           <PWAProvider />
+          <NextNProgress color="#5B8DEF" height={4} showOnShallow={true} />
           <Component {...pageProps} />
           <ToastContainer />
-          <ProgressBar
-            height="4px"
-            color="#0f4dbc"
-            options={{ showSpinner: false }}
-            shallowRouting
-          />
         </NextIntlClientProvider>
       </div>
     </>

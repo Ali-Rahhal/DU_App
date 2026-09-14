@@ -1,0 +1,507 @@
+/* =========================================================
+   EXPIRY DEAL PAGE
+========================================================= */
+
+.expiry-deal-page {
+  width: 100%;
+  padding: 25px 0 45px;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.expiry-deal-page-header {
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 25px 28px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.04);
+}
+
+.expiry-deal-page-header-content {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.expiry-deal-page-header-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: 11px;
+  background: rgba($primary, 0.09);
+  color: $primary;
+}
+
+.expiry-deal-page-heading {
+  min-width: 0;
+}
+
+.expiry-deal-page-title {
+  margin: 0;
+  color: #1f2937;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.expiry-deal-page-subtitle {
+  margin: 5px 0 0;
+  color: #6b7280;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   CONTENT
+========================================================= */
+
+.expiry-deal-content {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.85fr) minmax(0, 1.5fr);
+  gap: 20px;
+  align-items: stretch;
+}
+
+/* =========================================================
+   CARDS
+========================================================= */
+
+.expiry-deal-selection-card,
+.expiry-deal-settings-card {
+  min-width: 0;
+  padding: 24px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.04);
+}
+
+.expiry-deal-selection-card {
+  min-height: 330px;
+}
+
+.expiry-deal-settings-card {
+  min-height: 330px;
+}
+
+/* =========================================================
+   CARD HEADER
+========================================================= */
+
+.expiry-deal-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.expiry-deal-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 9px;
+  background: rgba($primary, 0.08);
+  color: $primary;
+}
+
+.expiry-deal-card-title {
+  margin: 0;
+  color: #1f2937;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.expiry-deal-card-subtitle {
+  margin: 4px 0 0;
+  color: #6b7280;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+.expiry-deal-search {
+  width: 100%;
+}
+
+/* =========================================================
+   SELECTED ITEM
+========================================================= */
+
+.expiry-deal-selected-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  padding: 12px;
+  border: 1px solid rgba($primary, 0.12);
+  border-radius: 9px;
+  background: rgba($primary, 0.035);
+}
+
+.expiry-deal-selected-item-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 7px;
+  background: rgba($primary, 0.1);
+  color: $primary;
+}
+
+.expiry-deal-selected-item-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+
+  strong {
+    overflow: hidden;
+    color: #1f2937;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.4;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  span {
+    color: #9ca3af;
+    font-size: 10px;
+    line-height: 1.4;
+  }
+
+  .expiry-deal-selected-item-label {
+    margin-bottom: 1px;
+    color: $primary;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+}
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.expiry-deal-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 280px;
+  padding: 25px;
+  text-align: center;
+}
+
+.expiry-deal-empty-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 14px;
+  border-radius: 14px;
+  background: #f3f4f6;
+  color: #9ca3af;
+}
+
+.expiry-deal-empty h2 {
+  margin: 0;
+  color: #374151;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.expiry-deal-empty p {
+  max-width: 320px;
+  margin: 7px 0 0;
+  color: #9ca3af;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+.expiry-deal-settings-header {
+  margin-bottom: 18px;
+}
+
+/* =========================================================
+   SUMMARY
+========================================================= */
+
+.expiry-deal-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.expiry-deal-summary-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 11px 12px;
+  border: 1px solid #edf0f4;
+  border-radius: 9px;
+  background: #fafbfc;
+
+  > div:last-child {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+
+    span {
+      color: #9ca3af;
+      font-size: 9px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    strong {
+      margin-top: 1px;
+      color: #374151;
+      font-size: 14px;
+      font-weight: 700;
+    }
+  }
+}
+
+.expiry-deal-summary-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 31px;
+  height: 31px;
+  flex-shrink: 0;
+  border-radius: 7px;
+}
+
+.expiry-deal-summary-icon-months {
+  background: rgba($primary, 0.08);
+  color: $primary;
+}
+
+.expiry-deal-summary-icon-discount {
+  background: rgba($success, 0.09);
+  color: $success;
+}
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.expiry-deal-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.expiry-deal-form-group {
+  margin-bottom: 0;
+}
+
+.expiry-deal-form-group .form-label {
+  margin-bottom: 6px;
+  color: #374151;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.expiry-deal-input-wrapper {
+  position: relative;
+
+  .form-control {
+    height: 42px;
+    padding-right: 55px;
+    border-color: #e1e5ea;
+    border-radius: 8px;
+    color: #1f2937;
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: none;
+
+    &:focus {
+      border-color: rgba($primary, 0.5);
+      box-shadow: 0 0 0 3px rgba($primary, 0.08);
+    }
+  }
+
+  > span {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    color: #9ca3af;
+    font-size: 10px;
+    font-weight: 600;
+    pointer-events: none;
+    transform: translateY(-50%);
+  }
+}
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.expiry-deal-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+  padding-top: 17px;
+  border-top: 1px solid #edf0f4;
+}
+
+.expiry-deal-save-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 105px;
+  height: 38px;
+  padding: 0 15px;
+  border: 0;
+  border-radius: 7px;
+  background: $primary;
+  font-size: 11px;
+  font-weight: 600;
+  box-shadow: none;
+
+  &:hover,
+  &:focus,
+  &:active {
+    background: darken($primary, 6%) !important;
+    box-shadow: none !important;
+  }
+
+  &:disabled {
+    opacity: 0.65;
+  }
+
+  .spinner-border {
+    width: 13px;
+    height: 13px;
+    border-width: 2px;
+  }
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 991px) {
+  .expiry-deal-content {
+    grid-template-columns: 1fr;
+  }
+
+  .expiry-deal-selection-card {
+    min-height: auto;
+  }
+
+  .expiry-deal-settings-card {
+    min-height: 0;
+  }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 576px) {
+  .expiry-deal-page {
+    padding: 18px 0 30px;
+  }
+
+  .expiry-deal-page-header {
+    margin-bottom: 14px;
+    padding: 20px;
+    border-radius: 12px;
+  }
+
+  .expiry-deal-page-header-content {
+    gap: 12px;
+  }
+
+  .expiry-deal-page-header-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+  }
+
+  .expiry-deal-page-title {
+    font-size: 21px;
+  }
+
+  .expiry-deal-page-subtitle {
+    margin-top: 4px;
+    font-size: 13px;
+  }
+
+  .expiry-deal-content {
+    gap: 12px;
+  }
+
+  .expiry-deal-selection-card,
+  .expiry-deal-settings-card {
+    padding: 18px;
+    border-radius: 12px;
+  }
+
+  .expiry-deal-card-header {
+    gap: 10px;
+    margin-bottom: 17px;
+  }
+
+  .expiry-deal-card-icon {
+    width: 34px;
+    height: 34px;
+  }
+
+  .expiry-deal-card-title {
+    font-size: 15px;
+  }
+
+  .expiry-deal-card-subtitle {
+    font-size: 11px;
+  }
+
+  .expiry-deal-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .expiry-deal-form {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .expiry-deal-actions {
+    margin-top: 16px;
+    padding-top: 14px;
+  }
+
+  .expiry-deal-save-button {
+    width: 100%;
+  }
+
+  .expiry-deal-empty {
+    min-height: 210px;
+  }
+}

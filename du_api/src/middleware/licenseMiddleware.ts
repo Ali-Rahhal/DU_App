@@ -11,6 +11,15 @@ const isCompanyId = (value: string): value is CompanyId => {
 };
 
 export const licenseMiddleware = async (c: Context, next: Next) => {
+  const path = c.req.path;
+  if (
+    path.includes("login") ||
+    path.includes("logout") ||
+    path.includes("validate")
+  ) {
+    return next();
+  }
+
   const companyIdValue = String(
     c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
   ).toUpperCase();
@@ -19,6 +28,7 @@ export const licenseMiddleware = async (c: Context, next: Next) => {
     return c.json(
       {
         message: `Unsupported company: ${companyIdValue || "undefined"}`,
+        code: "LICENSE_EXPIRED",
         result: null,
       },
       400,
@@ -31,6 +41,7 @@ export const licenseMiddleware = async (c: Context, next: Next) => {
     return c.json(
       {
         message: license.message ?? "License expired",
+        code: "LICENSE_EXPIRED",
         result: null,
       },
       license.message === "License expired" ? 401 : 403,

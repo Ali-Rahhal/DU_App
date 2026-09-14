@@ -1,3 +1,4 @@
+import { useAuthStore } from "@/store/zustand";
 import axios, { AxiosResponse } from "axios";
 
 const isServer = typeof window === "undefined";
@@ -27,15 +28,23 @@ if (isServer) {
 const publicApi = API_BASE_URL;
 const privateApi = `${API_BASE_URL}/auth`;
 
-// const isServer = typeof window === "undefined";
-// const API_BASE_URL = isServer
-//   ? process.env.NEXT_PUBLIC_API_SERVER_URL
-//   : process.env.NEXT_PUBLIC_API_BROWSER_URL;
-// const publicApi = API_BASE_URL;
-// const privateApi = API_BASE_URL + "/auth";
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (
+      (error.response?.status === 400 ||
+        error.response?.status === 401 ||
+        error.response?.status === 403) &&
+      error.response?.data?.code === "LICENSE_EXPIRED"
+    ) {
+      useAuthStore.getState().logout();
 
-// const publicApi = process.env.NEXT_PUBLIC_API_URL;
-// const privateApi = process.env.NEXT_PUBLIC_API_URL + "/auth";
+      window.location.href = "/login";
+    }
+
+    return Promise.reject(error);
+  },
+);
 
 const getCookieArray = (cookie: string) => {
   if (!cookie) return [];

@@ -80,13 +80,6 @@ const AccountPage = () => {
       permission: ALL_PERMISSIONS.ChangePassword,
       onClick: () => setShowChangePassword(true),
     },
-    // {
-    //   key: "users",
-    //   href: "/users",
-    //   label: t("users.title"),
-    //   icon: Users,
-    //   role: ROLES.Admin,
-    // },
     {
       key: "return-admin",
       href: "/return-admin",

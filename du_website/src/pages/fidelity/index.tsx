@@ -6,12 +6,24 @@ import {
   getMilestoneRewards,
   redeemGift,
 } from "@/utils/apiCalls";
-import { Button, Spinner, ProgressBar, Card } from "react-bootstrap";
+import { Button, Card, ProgressBar, Spinner } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { useTranslations } from "next-intl";
 import { useCompanyAssets } from "@/hooks/useCompanyAssets";
-
-/* ================= TYPES ================= */
+import {
+  ArrowDownLeft,
+  ArrowUpRight,
+  Check,
+  Gift,
+  History,
+  LockKeyhole,
+  LucideIcon,
+  RefreshCw,
+  Star,
+  Target,
+  Trophy,
+  Wallet,
+} from "lucide-react";
 
 type Ledger = {
   fidelity_points_ledger_id: string;
@@ -19,16 +31,6 @@ type Ledger = {
   points_redeemed: number;
   description: string;
   created_at: string;
-};
-
-type UserReward = {
-  fidelity_user_reward_id: string;
-  reward_name: string;
-  reward_type: string;
-  required_points: number;
-  discount_percentage?: number;
-  fixed_discount_amount?: number;
-  granted_at: string;
 };
 
 type MilestoneReward = {
@@ -48,12 +50,14 @@ type Gift = {
 
 const PAGE_SIZE = 6;
 
-/* ================= PAGE ================= */
-
 const FidelityPage = () => {
-  const [loading, setLoading] = useState(true);
   const t = useTranslations();
   const { companyPlaceholder } = useCompanyAssets();
+
+  const [loading, setLoading] = useState(true);
+  const [loadingMoreGifts, setLoadingMoreGifts] = useState(false);
+  const [redeeming, setRedeeming] = useState<string | null>(null);
+
   const [points, setPoints] = useState({
     totalEarned: 0,
     totalRedeemed: 0,
@@ -61,598 +65,704 @@ const FidelityPage = () => {
   });
 
   const [ledger, setLedger] = useState<Ledger[]>([]);
-
-  const [userRewards, setUserRewards] = useState<UserReward[]>([]);
   const [milestoneRewards, setMilestoneRewards] = useState<MilestoneReward[]>(
     [],
   );
-
   const [gifts, setGifts] = useState<Gift[]>([]);
   const [giftSkip, setGiftSkip] = useState(0);
   const [hasMoreGifts, setHasMoreGifts] = useState(true);
 
-  const [redeeming, setRedeeming] = useState<string | null>(null);
-
-  /* ================= LOAD POINTS ================= */
-
   const loadPoints = async () => {
-    const res = await getFidelityPoints();
+    const { data } = await getFidelityPoints();
+    const result = data.result;
 
     setPoints({
-      totalEarned: res.data.result.totalEarned,
-      totalRedeemed: res.data.result.totalRedeemed,
-      availablePoints: res.data.result.availablePoints,
+      totalEarned: result.totalEarned,
+      totalRedeemed: result.totalRedeemed,
+      availablePoints: result.availablePoints,
     });
-
-    setLedger(res.data.result.ledger || []);
-    setUserRewards(res.data.result.rewards || []);
+    setLedger(result.ledger || []);
   };
-
-  /* ================= LOAD MILESTONES ================= */
 
   const loadMilestones = async () => {
-    const res = await getMilestoneRewards();
-    setMilestoneRewards(res.data.result || []);
+    const { data } = await getMilestoneRewards();
+    setMilestoneRewards(data.result || []);
   };
-
-  /* ================= LOAD GIFTS (PAGINATION) ================= */
 
   const loadGifts = async (reset = false) => {
     const skip = reset ? 0 : giftSkip;
 
-    const res = await getFidelityGifts(skip, PAGE_SIZE);
+    if (!reset) setLoadingMoreGifts(true);
 
-    const newItems = res.data.result.items;
-
-    setGifts((prev) => (reset ? newItems : [...prev, ...newItems]));
-    setGiftSkip(skip + PAGE_SIZE);
-    setHasMoreGifts(res.data.result.hasMore);
-  };
-
-  /* ================= INIT ================= */
-
-  const loadData = async () => {
     try {
-      setLoading(true);
-      await Promise.all([loadPoints(), loadMilestones(), loadGifts(true)]);
-    } catch (err: any) {
-      toast.error(err?.response?.data?.message || "Failed to load data");
+      const { data } = await getFidelityGifts(skip, PAGE_SIZE);
+      const items = data.result.items || [];
+
+      setGifts((prev) => (reset ? items : [...prev, ...items]));
+      setGiftSkip(skip + items.length);
+      setHasMoreGifts(Boolean(data.result.hasMore));
     } finally {
-      setLoading(false);
+      setLoadingMoreGifts(false);
     }
   };
 
   useEffect(() => {
-    loadData();
+    const load = async () => {
+      try {
+        await Promise.all([loadPoints(), loadMilestones(), loadGifts(true)]);
+      } catch (err: any) {
+        toast.error(
+          err?.response?.data?.message || t("fidelity.failed_to_load_data"),
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    load();
   }, []);
 
-  /* ================= NEXT REWARD ================= */
+  const rewardRoadmap = useMemo(
+    () =>
+      [...milestoneRewards]
+        .sort((a, b) => a.required_points - b.required_points)
+        .map((reward) => ({
+          ...reward,
+          unlocked: reward.required_points <= points.totalEarned,
+        })),
+    [milestoneRewards, points.totalEarned],
+  );
 
-  const nextReward = useMemo(() => {
-    if (!milestoneRewards.length) return null;
+  const nextReward = rewardRoadmap.find((reward) => !reward.unlocked) || null;
 
-    const sorted = [...milestoneRewards].sort(
-      (a, b) => a.required_points - b.required_points,
-    );
+  const progress = nextReward
+    ? Math.min(100, (points.totalEarned / nextReward.required_points) * 100)
+    : 100;
 
-    return sorted.find((r) => r.required_points > points.totalEarned) || null;
-  }, [milestoneRewards, points.totalEarned]);
+  const pointsNeeded = nextReward
+    ? Math.max(0, nextReward.required_points - points.totalEarned)
+    : 0;
 
-  /* ================= ROADMAP ================= */
-
-  const rewardRoadmap = useMemo(() => {
-    return milestoneRewards
-      .slice()
-      .sort((a, b) => a.required_points - b.required_points)
-      .map((r) => ({
-        ...r,
-        unlocked: r.required_points <= points.totalEarned,
-      }));
-  }, [milestoneRewards, points.totalEarned]);
-
-  /* ================= PROGRESS ================= */
-
-  const progress = useMemo(() => {
-    if (!nextReward) return 100;
-
-    return Math.min(
-      100,
-      (points.totalEarned / nextReward.required_points) * 100,
-    );
-  }, [nextReward, points.totalEarned]);
-
-  /* ================= REDEEM ================= */
+  const unlockedMilestones = rewardRoadmap.filter(
+    (reward) => reward.unlocked,
+  ).length;
 
   const handleRedeem = async (giftId: string) => {
     try {
       setRedeeming(giftId);
       await redeemGift(giftId);
-      toast.success("Gift redeemed successfully");
 
+      toast.success(t("fidelity.gift_redeemed_successfully"));
       await Promise.all([loadPoints(), loadGifts(true)]);
     } catch (err: any) {
-      toast.error(err?.response?.data?.message || "Redeem failed");
+      toast.error(err?.response?.data?.message || t("fidelity.redeem_failed"));
     } finally {
       setRedeeming(null);
     }
   };
 
-  /* ================= LOADING ================= */
+  const rewardDescription = (rewardType: string) => {
+    if (rewardType === "percentage_discount")
+      return t("fidelity.percentage_discount_reward");
+
+    if (rewardType === "fixed_discount")
+      return t("fidelity.fixed_discount_reward");
+
+    return t("fidelity.loyalty_milestone_reward");
+  };
+
+  const formatDate = (date: string) => new Date(date).toLocaleString();
 
   if (loading) {
     return (
-      <div
-        className="d-flex justify-content-center align-items-center"
-        style={{ height: "60vh" }}
-      >
-        <Spinner />
-      </div>
+      <Layout>
+        <div className="fidelity-loading">
+          <Spinner animation="border" />
+        </div>
+      </Layout>
     );
   }
 
   return (
     <Layout>
-      <div className="container py-4">
-        {/* HEADER */}
-        <div className="mb-4">
-          <h2>{t("fidelity.fid_program")}</h2>
-          <p className="text-muted">{t("fidelity.fid_program_discription")}</p>
-        </div>
-
-        {/* POINTS */}
-        <Card className="p-3 mb-4">
-          <div className="d-flex justify-content-between flex-wrap">
-            <div>
-              <h6>{t("fidelity.total_Earned")}</h6>
-              <h4>{points.totalEarned}</h4>
+      <div className="fidelity-page">
+        <section className="fidelity-page-header">
+          <div className="fidelity-page-header-content">
+            <div className="fidelity-page-header-icon">
+              <Gift size={24} />
             </div>
 
             <div>
-              <h6>{t("fidelity.redeemed")}</h6>
-              <h4>{points.totalRedeemed}</h4>
-            </div>
-
-            <div>
-              <h6>{t("fidelity.available")}</h6>
-              <h4 className="text-success">{points.availablePoints}</h4>
-            </div>
-          </div>
-        </Card>
-
-        {/* NEXT REWARD */}
-        <Card
-          className="p-4 mb-4 border-0 shadow-sm"
-          style={{
-            borderRadius: 20,
-            background:
-              "linear-gradient(135deg, rgba(25,135,84,0.08), rgba(13,110,253,0.05))",
-          }}
-        >
-          <div className="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-            <div>
-              <h4 className="mb-1 fw-bold">{t("fidelity.next_reward")}</h4>
-
-              <p className="text-muted mb-0" style={{ fontSize: 14 }}>
-                {t("fidelity.next_reward_discription")}
+              <h1 className="fidelity-page-title">
+                {t("fidelity.fid_program")}
+              </h1>
+              <p className="fidelity-page-subtitle">
+                {t("fidelity.fid_program_discription")}
               </p>
             </div>
+          </div>
+        </section>
 
-            <div
-              style={{
-                background: "#198754",
-                color: "white",
-                padding: "8px 16px",
-                borderRadius: 999,
-                fontWeight: 700,
-                fontSize: 14,
-              }}
-            >
-              {points.totalEarned} {t("fidelity.points")}
+        {/* Points */}
+        <section className="fidelity-points-grid">
+          {[
+            ["fidelity.total_Earned", points.totalEarned, Star, "earned"],
+            [
+              "fidelity.redeemed",
+              points.totalRedeemed,
+              ArrowDownLeft,
+              "redeemed",
+            ],
+            ["fidelity.available", points.availablePoints, Wallet, "available"],
+          ].map(
+            ([label, value, Icon, type]: [
+              label: string,
+              value: number,
+              Icon: LucideIcon,
+              type: "earned" | "redeemed" | "available",
+            ]) => (
+              <Card
+                key={label as string}
+                className={`fidelity-points-card ${
+                  type === "available" ? "fidelity-points-card-available" : ""
+                }`}
+              >
+                <div
+                  className={`fidelity-points-card-icon fidelity-points-${type}-icon`}
+                >
+                  <Icon size={20} />
+                </div>
+
+                <div className="fidelity-points-card-content">
+                  <span className="fidelity-points-label">
+                    {t(label as string)}
+                  </span>
+                  <strong className="fidelity-points-value">
+                    {(value as number).toLocaleString()}
+                  </strong>
+                </div>
+              </Card>
+            ),
+          )}
+        </section>
+
+        {/* Next reward */}
+        <section className="fidelity-next-reward-card">
+          <div className="fidelity-next-reward-top">
+            <div className="fidelity-section-heading">
+              <div className="fidelity-section-icon fidelity-section-icon-green">
+                <Target size={20} />
+              </div>
+
+              <div>
+                <h2 className="fidelity-section-title">
+                  {t("fidelity.next_reward")}
+                </h2>
+                <p className="fidelity-section-description">
+                  {t("fidelity.next_reward_discription")}
+                </p>
+              </div>
             </div>
+
+            <PointsPill points={points.totalEarned} t={t} />
           </div>
 
           {nextReward ? (
             <>
-              <div className="mb-2 d-flex justify-content-between">
-                <span className="fw-semibold">{nextReward.name}</span>
+              <div className="fidelity-next-reward-details">
+                <div>
+                  <span className="fidelity-next-reward-label">
+                    {t("fidelity.upcoming_reward")}
+                  </span>
+                  <h3>{nextReward.name}</h3>
+                </div>
 
-                <span className="text-muted">
-                  {points.totalEarned} / {nextReward.required_points}
+                <span className="fidelity-next-reward-count">
+                  {points.totalEarned.toLocaleString()} /{" "}
+                  {nextReward.required_points.toLocaleString()}
                 </span>
               </div>
 
-              <ProgressBar
-                now={progress}
-                style={{
-                  height: 14,
-                  borderRadius: 20,
-                  overflow: "hidden",
-                }}
-                className="mb-3"
-              />
+              <ProgressBar now={progress} className="fidelity-progress-bar" />
 
-              <div className="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                <small className="text-muted">
-                  {nextReward.required_points - points.totalEarned}{" "}
+              <div className="fidelity-progress-footer">
+                <span>
+                  {pointsNeeded.toLocaleString()}{" "}
                   {t("fidelity.more_points_needed")}
-                </small>
-
-                <div
-                  style={{
-                    background: "rgba(13,110,253,0.1)",
-                    color: "#0d6efd",
-                    padding: "6px 14px",
-                    borderRadius: 999,
-                    fontWeight: 600,
-                    fontSize: 13,
-                  }}
-                >
-                  {t("fidelity.upcoming_reward")}
-                </div>
+                </span>
+                <span className="fidelity-progress-percentage">
+                  {Math.round(progress)}%
+                </span>
               </div>
             </>
           ) : (
-            <div
-              className="text-center py-3"
-              style={{
-                background: "rgba(25,135,84,0.08)",
-                borderRadius: 16,
-              }}
-            >
-              <div style={{ fontSize: 42 }}>🎉</div>
-
-              <h5 className="fw-bold text-success">
-                {t("fidelity.all_rewards_unlocked")}
-              </h5>
-
-              <p className="text-muted mb-0">
-                {t("fidelity.all_rewards_unlocked_description")}
-              </p>
+            <div className="fidelity-all-unlocked">
+              <div className="fidelity-all-unlocked-icon">
+                <Trophy size={24} />
+              </div>
+              <div>
+                <h3>{t("fidelity.all_rewards_unlocked")}</h3>
+                <p>{t("fidelity.all_rewards_unlocked_description")}</p>
+              </div>
             </div>
           )}
-        </Card>
+        </section>
 
-        {/* ROADMAP */}
-        <Card
-          className="p-4 mb-4 border-0 shadow-sm"
-          style={{
-            borderRadius: 20,
-          }}
-        >
-          <div className="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
-            <div>
-              <h4 className="fw-bold mb-1">{t("fidelity.reward_roadmap")}</h4>
-
-              <p className="text-muted mb-0" style={{ fontSize: 14 }}>
-                {t("fidelity.reward_roadmap_discription")}
-              </p>
-            </div>
-
-            <div
-              style={{
-                background: "#f8f9fa",
-                padding: "8px 14px",
-                borderRadius: 999,
-                fontWeight: 600,
-                fontSize: 14,
-              }}
-            >
-              {rewardRoadmap.filter((r) => r.unlocked).length}/
-              {rewardRoadmap.length} {t("fidelity.unlocked")}
-            </div>
-          </div>
+        {/* Roadmap */}
+        <section className="fidelity-section-card">
+          <SectionHeader
+            icon={<Trophy size={20} />}
+            iconType="blue"
+            title={t("fidelity.reward_roadmap")}
+            description={t("fidelity.reward_roadmap_discription")}
+            right={
+              <span className="fidelity-count-pill">
+                {unlockedMilestones}/{rewardRoadmap.length}{" "}
+                {t("fidelity.unlocked")}
+              </span>
+            }
+          />
 
           {rewardRoadmap.length === 0 ? (
-            <div
-              className="text-center py-5"
-              style={{
-                background: "#f8f9fa",
-                borderRadius: 16,
-              }}
-            >
-              <h6 className="text-muted mb-0">{t("fidelity.no_milestones")}</h6>
-            </div>
+            <EmptyState
+              icon={<Trophy size={25} />}
+              text={t("fidelity.no_milestones")}
+            />
           ) : (
-            <div className="position-relative">
-              <div
-                style={{
-                  position: "absolute",
-                  left: 16,
-                  top: 0,
-                  bottom: 0,
-                  width: 3,
-                  background: "#e9ecef",
-                  borderRadius: 10,
-                }}
-              />
-
-              <div className="d-flex flex-column gap-3">
-                {rewardRoadmap.map((r, index) => {
-                  const isCurrent =
-                    nextReward &&
-                    nextReward.fidelity_reward_rule_id ===
-                      r.fidelity_reward_rule_id;
-
-                  return (
-                    <div
-                      key={r.fidelity_reward_rule_id}
-                      className="position-relative d-flex gap-3"
-                    >
-                      <div
-                        style={{
-                          width: 34,
-                          height: 34,
-                          minWidth: 34,
-                          borderRadius: "50%",
-                          background: r.unlocked ? "#198754" : "#dee2e6",
-                          border: "4px solid white",
-                          boxShadow: "0 0 0 2px #e9ecef",
-                          zIndex: 2,
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          color: "white",
-                          fontSize: 14,
-                          fontWeight: 700,
-                        }}
-                      >
-                        {r.unlocked ? "✓" : index + 1}
-                      </div>
-
-                      <div
-                        className="flex-grow-1"
-                        style={{
-                          borderRadius: 18,
-                          padding: 18,
-                          background: r.unlocked
-                            ? "rgba(25,135,84,0.08)"
-                            : "#f8f9fa",
-                          border: isCurrent
-                            ? "2px solid #0d6efd"
-                            : "1px solid #ececec",
-                          transition: "0.2s",
-                        }}
-                      >
-                        <div className="d-flex justify-content-between align-items-start flex-wrap gap-2">
-                          <div>
-                            <h5 className="fw-bold mb-1">{r.name}</h5>
-
-                            <div
-                              className="text-muted"
-                              style={{ fontSize: 14 }}
-                            >
-                              {t("fidelity.unlocks_at")} {r.required_points}{" "}
-                              {t("fidelity.points")}
-                            </div>
-                          </div>
-
-                          <div className="d-flex gap-2 flex-wrap">
-                            {r.unlocked && (
-                              <div
-                                style={{
-                                  background: "#198754",
-                                  color: "white",
-                                  padding: "6px 12px",
-                                  borderRadius: 999,
-                                  fontSize: 12,
-                                  fontWeight: 700,
-                                }}
-                              >
-                                {t("fidelity.unlocked").toUpperCase()}
-                              </div>
-                            )}
-
-                            {isCurrent && (
-                              <div
-                                style={{
-                                  background: "#0d6efd",
-                                  color: "white",
-                                  padding: "6px 12px",
-                                  borderRadius: 999,
-                                  fontSize: 12,
-                                  fontWeight: 700,
-                                }}
-                              >
-                                {t("fidelity.next_target").toUpperCase()}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-
-                        <div className="mt-3">
-                          {r.reward_type === "percentage_discount" && (
-                            <small className="text-muted">
-                              {t("fidelity.percentage_discount_reward")}
-                            </small>
-                          )}
-
-                          {r.reward_type === "fixed_discount" && (
-                            <small className="text-muted">
-                              {t("fidelity.fixed_discount_reward")}
-                            </small>
-                          )}
-
-                          {!r.reward_type && (
-                            <small className="text-muted">
-                              {t("fidelity.loyalty_milestone_reward")}
-                            </small>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-        </Card>
-
-        {/* GIFTS */}
-        <Card className="p-3 mb-4">
-          <h5>{t("fidelity.redeem_gifts")}</h5>
-
-          <div className="row">
-            {gifts.map((g) => (
-              <div key={g.fidelity_gift_id} className="col-6 col-md-4 mb-3">
-                <Card className="p-2 h-100">
-                  <img
-                    src={g.image || companyPlaceholder}
-                    className="img-fluid mb-2"
-                    onError={(e) => {
-                      e.currentTarget.src = companyPlaceholder;
-                    }}
-                  />
-
-                  <h6>{g.name}</h6>
-
-                  <small>
-                    {g.required_points} {t("fidelity.points")}
-                  </small>
-
-                  <Button
-                    size="sm"
-                    className="mt-2"
-                    disabled={
-                      redeeming === g.fidelity_gift_id ||
-                      points.availablePoints < g.required_points
-                    }
-                    onClick={() => handleRedeem(g.fidelity_gift_id)}
-                  >
-                    {redeeming === g.fidelity_gift_id
-                      ? "..."
-                      : t("fidelity.redeem")}
-                  </Button>
-                </Card>
-              </div>
-            ))}
-          </div>
-
-          {hasMoreGifts && (
-            <div className="text-center mt-2">
-              <Button onClick={() => loadGifts(false)}>
-                {t("fidelity.load_more")}
-              </Button>
-            </div>
-          )}
-        </Card>
-
-        {/* HISTORY */}
-        <Card className="p-3 border-0 shadow-sm" style={{ borderRadius: 20 }}>
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <div>
-              <h4 className="fw-bold mb-1">{t("fidelity.points_history")}</h4>
-
-              <p className="text-muted mb-0" style={{ fontSize: 14 }}>
-                {t("fidelity.points_history_discription")}
-              </p>
-            </div>
-
-            <div
-              style={{
-                background: "#f8f9fa",
-                padding: "8px 14px",
-                borderRadius: 999,
-                fontWeight: 600,
-                fontSize: 14,
-              }}
-            >
-              {ledger.length} {t("fidelity.records")}
-            </div>
-          </div>
-
-          {ledger.length === 0 ? (
-            <div
-              className="text-center py-5"
-              style={{
-                background: "#f8f9fa",
-                borderRadius: 16,
-              }}
-            >
-              <h6 className="text-muted mb-1">
-                {t("fidelity.no_points_history")}
-              </h6>
-
-              <small className="text-muted">
-                {t("fidelity.points_history_empty_description")}
-              </small>
-            </div>
-          ) : (
-            <div
-              style={{
-                maxHeight: ledger.length > 6 ? 520 : "unset",
-                overflowY: ledger.length > 6 ? "auto" : "visible",
-                paddingRight: 4,
-              }}
-            >
-              {ledger.map((l) => {
-                const earned = l.points_earned > 0;
+            <div className="fidelity-roadmap">
+              {rewardRoadmap.map((reward, index) => {
+                const isCurrent =
+                  reward.fidelity_reward_rule_id ===
+                  nextReward?.fidelity_reward_rule_id;
 
                 return (
                   <div
-                    key={l.fidelity_points_ledger_id}
-                    className="d-flex justify-content-between align-items-center border-bottom py-3"
+                    key={reward.fidelity_reward_rule_id}
+                    className={`fidelity-roadmap-item ${
+                      reward.unlocked ? "fidelity-roadmap-item-unlocked" : ""
+                    } ${isCurrent ? "fidelity-roadmap-item-current" : ""}`}
                   >
-                    <div className="d-flex gap-3 align-items-start">
-                      <div
-                        style={{
-                          width: 42,
-                          height: 42,
-                          minWidth: 42,
-                          borderRadius: "50%",
-                          background: earned
-                            ? "rgba(25,135,84,0.12)"
-                            : "rgba(220,53,69,0.12)",
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          fontSize: 18,
-                        }}
-                      >
-                        {earned ? "⬆️" : "🎁"}
-                      </div>
-
-                      <div>
-                        <div className="fw-semibold">{l.description}</div>
-
-                        <small className="text-muted">
-                          {new Date(l.created_at).toLocaleString()}
-                        </small>
-                      </div>
+                    <div className="fidelity-roadmap-marker">
+                      {reward.unlocked ? <Check size={16} /> : index + 1}
                     </div>
 
-                    <div className="text-end">
-                      {l.points_earned > 0 && (
-                        <div
-                          className="fw-bold"
-                          style={{
-                            color: "#198754",
-                            fontSize: 17,
-                          }}
-                        >
-                          +{l.points_earned}
+                    <div className="fidelity-roadmap-content">
+                      <div className="fidelity-roadmap-main">
+                        <div className="fidelity-roadmap-reward-icon">
+                          {reward.unlocked ? (
+                            <Gift size={18} />
+                          ) : (
+                            <LockKeyhole size={17} />
+                          )}
                         </div>
-                      )}
 
-                      {l.points_redeemed > 0 && (
-                        <div
-                          className="fw-bold"
-                          style={{
-                            color: "#dc3545",
-                            fontSize: 17,
-                          }}
-                        >
-                          -{l.points_redeemed}
+                        <div className="fidelity-roadmap-info">
+                          <h3>{reward.name}</h3>
+                          <span>
+                            {t("fidelity.unlocks_at")}{" "}
+                            {reward.required_points.toLocaleString()}{" "}
+                            {t("fidelity.points")}
+                          </span>
+                          <p>{rewardDescription(reward.reward_type)}</p>
                         </div>
-                      )}
+                      </div>
+
+                      <div className="fidelity-roadmap-status">
+                        {reward.unlocked ? (
+                          <StatusBadge
+                            type="unlocked"
+                            icon={<Check size={13} />}
+                          >
+                            {t("fidelity.unlocked")}
+                          </StatusBadge>
+                        ) : isCurrent ? (
+                          <StatusBadge
+                            type="current"
+                            icon={<Target size={13} />}
+                          >
+                            {t("fidelity.next_target")}
+                          </StatusBadge>
+                        ) : (
+                          <StatusBadge
+                            type="locked"
+                            icon={<LockKeyhole size={12} />}
+                          />
+                        )}
+                      </div>
                     </div>
                   </div>
                 );
               })}
             </div>
           )}
-        </Card>
+        </section>
+
+        {/* Gifts */}
+        <section className="fidelity-section-card">
+          <SectionHeader
+            icon={<Gift size={20} />}
+            iconType="green"
+            title={t("fidelity.redeem_gifts")}
+            description={t("fidelity.use_points_to_redeem")}
+            right={<PointsPill points={points.availablePoints} t={t} light />}
+          />
+
+          {gifts.length === 0 ? (
+            <EmptyState
+              icon={<Gift size={25} />}
+              text={t("fidelity.redeem_gifts")}
+            />
+          ) : (
+            <div className="fidelity-gifts-grid">
+              {gifts.map((gift) => {
+                const isRedeeming = redeeming === gift.fidelity_gift_id;
+                const outOfStock = gift.stock_quantity <= 0;
+                const enoughPoints =
+                  points.availablePoints >= gift.required_points;
+
+                return (
+                  <Card
+                    key={gift.fidelity_gift_id}
+                    className="fidelity-gift-card"
+                  >
+                    <div className="fidelity-gift-image-wrapper">
+                      <img
+                        src={gift.image || companyPlaceholder}
+                        alt={gift.name}
+                        className="fidelity-gift-image"
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = companyPlaceholder;
+                        }}
+                      />
+
+                      {outOfStock && (
+                        <span className="fidelity-gift-stock-badge">
+                          {t("fidelity.out_of_stock")}
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="fidelity-gift-info">
+                      <h3>{gift.name}</h3>
+
+                      <div className="fidelity-gift-cost">
+                        <Star size={15} />
+                        <strong>{gift.required_points.toLocaleString()}</strong>
+                        <span>{t("fidelity.points")}</span>
+                      </div>
+
+                      <div className="fidelity-gift-stock">
+                        {outOfStock
+                          ? t("fidelity.currently_unavailable")
+                          : t("fidelity.available_count", {
+                              count: gift.stock_quantity,
+                            })}
+                      </div>
+
+                      <Button
+                        className={`fidelity-redeem-button ${
+                          !enoughPoints || outOfStock
+                            ? "fidelity-redeem-button-disabled"
+                            : ""
+                        }`}
+                        disabled={isRedeeming || !enoughPoints || outOfStock}
+                        onClick={() => handleRedeem(gift.fidelity_gift_id)}
+                      >
+                        {isRedeeming ? (
+                          <>
+                            <Spinner animation="border" size="sm" />
+                            {t("fidelity.redeeming")}
+                          </>
+                        ) : outOfStock ? (
+                          t("fidelity.out_of_stock")
+                        ) : !enoughPoints ? (
+                          <>
+                            <LockKeyhole size={15} />
+                            {t("fidelity.redeem")}
+                          </>
+                        ) : (
+                          <>
+                            <Gift size={15} />
+                            {t("fidelity.redeem")}
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
+          )}
+
+          {hasMoreGifts && (
+            <div className="fidelity-load-more">
+              <Button
+                className="fidelity-load-more-button"
+                onClick={() => loadGifts()}
+                disabled={loadingMoreGifts}
+              >
+                {loadingMoreGifts ? (
+                  <>
+                    <Spinner animation="border" size="sm" />
+                    {t("fidelity.loading")}
+                  </>
+                ) : (
+                  <>
+                    <RefreshCw size={15} />
+                    {t("fidelity.load_more")}
+                  </>
+                )}
+              </Button>
+            </div>
+          )}
+        </section>
+
+        {/* History */}
+        <section className="fidelity-section-card fidelity-history-card">
+          <SectionHeader
+            icon={<History size={20} />}
+            iconType="blue"
+            title={t("fidelity.points_history")}
+            description={t("fidelity.points_history_discription")}
+            right={
+              <span className="fidelity-count-pill">
+                {ledger.length} {t("fidelity.records")}
+              </span>
+            }
+          />
+
+          {ledger.length === 0 ? (
+            <EmptyState
+              icon={<History size={25} />}
+              text={t("fidelity.no_points_history")}
+              description={t("fidelity.points_history_empty_description")}
+            />
+          ) : (
+            <>
+              <div className="fidelity-history-table-wrapper">
+                <table className="fidelity-history-table">
+                  <thead>
+                    <tr>
+                      <th>{t("fidelity.date")}</th>
+                      <th>{t("fidelity.description")}</th>
+                      <th>{t("fidelity.type")}</th>
+                      <th className="fidelity-history-points-heading">
+                        {t("fidelity.points")}
+                      </th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {ledger.map((entry) => (
+                      <HistoryRow
+                        key={entry.fidelity_points_ledger_id}
+                        entry={entry}
+                        formatDate={formatDate}
+                        t={t}
+                      />
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="fidelity-history-mobile">
+                {ledger.map((entry) => (
+                  <HistoryMobileItem
+                    key={entry.fidelity_points_ledger_id}
+                    entry={entry}
+                    formatDate={formatDate}
+                    t={t}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+        </section>
       </div>
     </Layout>
+  );
+};
+
+/* Small reusable pieces */
+
+const PointsPill = ({
+  points,
+  t,
+  light = false,
+}: {
+  points: number;
+  t: any;
+  light?: boolean;
+}) => (
+  <div
+    className={`fidelity-points-pill ${
+      light ? "fidelity-points-pill-light" : ""
+    }`}
+  >
+    <Star size={14} />
+    {points.toLocaleString()} {t("fidelity.points")}
+  </div>
+);
+
+const SectionHeader = ({
+  icon,
+  iconType,
+  title,
+  description,
+  right,
+}: {
+  icon: React.ReactNode;
+  iconType: "green" | "blue";
+  title: string;
+  description: string;
+  right?: React.ReactNode;
+}) => (
+  <div className="fidelity-section-card-header">
+    <div className="fidelity-section-heading">
+      <div
+        className={`fidelity-section-icon fidelity-section-icon-${iconType}`}
+      >
+        {icon}
+      </div>
+      <div>
+        <h2 className="fidelity-section-title">{title}</h2>
+        <p className="fidelity-section-description">{description}</p>
+      </div>
+    </div>
+    {right}
+  </div>
+);
+
+const EmptyState = ({
+  icon,
+  text,
+  description,
+}: {
+  icon: React.ReactNode;
+  text: string;
+  description?: string;
+}) => (
+  <div className="fidelity-empty-state">
+    {icon}
+    <p>{text}</p>
+    {description && <span>{description}</span>}
+  </div>
+);
+
+const StatusBadge = ({
+  type,
+  icon,
+  children,
+}: {
+  type: "unlocked" | "current" | "locked";
+  icon: React.ReactNode;
+  children?: React.ReactNode;
+}) => (
+  <span className={`fidelity-status-badge fidelity-status-${type}`}>
+    {icon}
+    {children}
+  </span>
+);
+
+const HistoryRow = ({
+  entry,
+  formatDate,
+  t,
+}: {
+  entry: Ledger;
+  formatDate: (date: string) => string;
+  t: any;
+}) => {
+  const earned = entry.points_earned > 0;
+
+  return (
+    <tr>
+      <td className="fidelity-history-date">{formatDate(entry.created_at)}</td>
+      <td className="fidelity-history-description">{entry.description}</td>
+      <td>
+        <span
+          className={`fidelity-history-type ${
+            earned
+              ? "fidelity-history-type-earned"
+              : "fidelity-history-type-redeemed"
+          }`}
+        >
+          {earned ? <ArrowUpRight size={13} /> : <Gift size={13} />}
+          {earned ? t("fidelity.earned") : t("fidelity.redeemed_type")}
+        </span>
+      </td>
+      <td className="fidelity-history-points">
+        {entry.points_earned > 0 && (
+          <strong className="fidelity-history-earned">
+            +{entry.points_earned.toLocaleString()}
+          </strong>
+        )}
+        {entry.points_redeemed > 0 && (
+          <strong className="fidelity-history-redeemed">
+            -{entry.points_redeemed.toLocaleString()}
+          </strong>
+        )}
+      </td>
+    </tr>
+  );
+};
+
+const HistoryMobileItem = ({
+  entry,
+  formatDate,
+  t,
+}: {
+  entry: Ledger;
+  formatDate: (date: string) => string;
+  t: any;
+}) => {
+  const earned = entry.points_earned > 0;
+
+  return (
+    <div className="fidelity-history-mobile-item">
+      <div
+        className={`fidelity-history-mobile-icon ${
+          earned
+            ? "fidelity-history-mobile-icon-earned"
+            : "fidelity-history-mobile-icon-redeemed"
+        }`}
+      >
+        {earned ? <ArrowUpRight size={18} /> : <Gift size={17} />}
+      </div>
+
+      <div className="fidelity-history-mobile-content">
+        <div className="fidelity-history-mobile-top">
+          <strong>{entry.description}</strong>
+
+          {entry.points_earned > 0 && (
+            <span className="fidelity-history-earned">
+              +{entry.points_earned.toLocaleString()}
+            </span>
+          )}
+
+          {entry.points_redeemed > 0 && (
+            <span className="fidelity-history-redeemed">
+              -{entry.points_redeemed.toLocaleString()}
+            </span>
+          )}
+        </div>
+
+        <div className="fidelity-history-mobile-bottom">
+          <span>{formatDate(entry.created_at)}</span>
+
+          <span
+            className={`fidelity-history-type ${
+              earned
+                ? "fidelity-history-type-earned"
+                : "fidelity-history-type-redeemed"
+            }`}
+          >
+            {earned ? t("fidelity.earned") : t("fidelity.redeemed_type")}
+          </span>
+        </div>
+      </div>
+    </div>
   );
 };
 

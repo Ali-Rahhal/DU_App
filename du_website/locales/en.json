@@ -579,7 +579,22 @@
     "records": "Records",
 
     "no_points_history": "No points history yet",
-    "points_history_empty_description": "Your loyalty activity will appear here"
+    "points_history_empty_description": "Your loyalty activity will appear here",
+
+    "failed_to_load_data": "Failed to load data",
+    "gift_redeemed_successfully": "Gift redeemed successfully",
+    "redeem_failed": "Redeem failed",
+    "use_points_to_redeem": "Use your points to redeem gifts.",
+    "out_of_stock": "Out of stock",
+    "currently_unavailable": "Currently unavailable",
+    "available_count": "{count} available",
+    "redeeming": "Redeeming...",
+    "loading": "Loading...",
+    "date": "Date",
+    "description": "Description",
+    "type": "Type",
+    "earned": "Earned",
+    "redeemed_type": "Redeemed"
   },
   "ai_proposal": {
     "title": "AI Automatic Order Proposal",
@@ -605,7 +620,9 @@
     "step_detecting": "Detecting frequently purchased products",
     "step_estimating": "Estimating recommended quantities",
     "step_calculating": "Calculating next cash van visit",
-    "locale": "en-US"
+    "locale": "en-US",
+    "records": "Records",
+    "subtotal": "Subtotal"
   },
   "returns": {
     "title": "Returns",

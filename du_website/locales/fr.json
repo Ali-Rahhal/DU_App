@@ -579,7 +579,22 @@
     "records": "Enregistrements",
 
     "no_points_history": "Aucun historique de points pour le moment",
-    "points_history_empty_description": "Votre activité de fidélité apparaîtra ici"
+    "points_history_empty_description": "Votre activité de fidélité apparaîtra ici",
+
+    "failed_to_load_data": "Échec du chargement des données",
+    "gift_redeemed_successfully": "Cadeau échangé avec succès",
+    "redeem_failed": "Échec de l'échange",
+    "use_points_to_redeem": "Utilisez vos points pour échanger des cadeaux.",
+    "out_of_stock": "Rupture de stock",
+    "currently_unavailable": "Actuellement indisponible",
+    "available_count": "{count} disponible(s)",
+    "redeeming": "Échange en cours...",
+    "loading": "Chargement...",
+    "date": "Date",
+    "description": "Description",
+    "type": "Type",
+    "earned": "Gagné",
+    "redeemed_type": "Échangé"
   },
   "ai_proposal": {
     "title": "Proposition de commande IA automatique",
@@ -605,7 +620,9 @@
     "step_detecting": "Détection des produits fréquemment achetés",
     "step_estimating": "Estimation des quantités recommandées",
     "step_calculating": "Calcul de la prochaine visite Cash Van",
-    "locale": "fr-FR"
+    "locale": "fr-FR",
+    "records": "Enregistrements",
+    "subtotal": "Sous-total"
   },
   "returns": {
     "title": "Retours",

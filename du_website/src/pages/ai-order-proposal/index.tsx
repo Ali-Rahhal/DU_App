@@ -1,17 +1,27 @@
+import { useEffect, useState } from "react";
 import Layout from "@/components/Layout/Layout";
 import { getAISuggestedProducts, addToCart } from "@/utils/apiCalls";
 import { currenncyCodeToSymbol } from "@/utils";
 import { useTranslations } from "next-intl";
-
-import { useEffect, useState } from "react";
-
-import { Row, Col, Card, Button, Spinner, Placeholder } from "react-bootstrap";
-
+import { Button, Spinner } from "react-bootstrap";
 import Image from "next/image";
-
 import { toast } from "react-toastify";
 import { useAccountStore } from "@/store/zustand";
 import { useCompanyAssets } from "@/hooks/useCompanyAssets";
+import {
+  Bot,
+  Sparkles,
+  RefreshCw,
+  Truck,
+  CalendarDays,
+  Clock,
+  UserRound,
+  Package,
+  ShoppingCart,
+  Plus,
+  Minus,
+  Trash2,
+} from "lucide-react";
 
 interface SuggestedProduct {
   item_code: string;
@@ -29,21 +39,24 @@ export default function AIOrderProposalPage() {
   const [products, setProducts] = useState<SuggestedProduct[]>([]);
   const [cashVan, setCashVan] = useState<any>(null);
   const [adding, setAdding] = useState(false);
+
   const { refreshCart } = useAccountStore();
-  const t = useTranslations();
   const { companyPlaceholder } = useCompanyAssets();
+  const t = useTranslations();
 
   const loadProposal = async () => {
     try {
       setLoading(true);
-      const startTime = Date.now();
+
+      const start = Date.now();
       const res = await getAISuggestedProducts();
-      const elapsed = Date.now() - startTime;
-      const remaining = Math.max(0, 3000 - elapsed);
-      await new Promise((resolve) => setTimeout(resolve, remaining));
+      await new Promise((resolve) =>
+        setTimeout(resolve, Math.max(0, 3000 - (Date.now() - start))),
+      );
+
       setProducts(res.data.result.products || []);
       setCashVan(res.data.result.cashVan || null);
-    } catch (e) {
+    } catch {
       toast.error(t("ai_proposal.load_error"));
     } finally {
       setLoading(false);
@@ -54,26 +67,29 @@ export default function AIOrderProposalPage() {
     loadProposal();
   }, []);
 
-  const updateQty = (itemCode: string, delta: number) => {
+  const updateQty = (code: string, delta: number) => {
     setProducts((prev) =>
-      prev.map((p) =>
-        p.item_code === itemCode
+      prev.map((item) =>
+        item.item_code === code
           ? {
-              ...p,
-              quantity: Math.max(1, Math.min(p.stock, p.quantity + delta)),
+              ...item,
+              quantity: Math.max(
+                1,
+                Math.min(item.stock, item.quantity + delta),
+              ),
             }
-          : p,
+          : item,
       ),
     );
   };
 
-  const removeItem = (itemCode: string) => {
-    setProducts((prev) => prev.filter((p) => p.item_code !== itemCode));
-  };
+  const removeItem = (code: string) =>
+    setProducts((prev) => prev.filter((item) => item.item_code !== code));
 
   const addProposalToCart = async () => {
     try {
       setAdding(true);
+
       for (const item of products) {
         await addToCart(
           item.item_code,
@@ -81,6 +97,7 @@ export default function AIOrderProposalPage() {
           item.quantity,
         );
       }
+
       await refreshCart();
       toast.success(t("ai_proposal.add_success"));
     } catch {
@@ -95,257 +112,238 @@ export default function AIOrderProposalPage() {
     0,
   );
 
-  const currency =
-    products.length > 0
-      ? currenncyCodeToSymbol(products[0].currency_code || "USD")
-      : "$";
+  const currency = currenncyCodeToSymbol(products[0]?.currency_code || "USD");
 
-  if (loading)
+  if (loading) {
     return (
       <Layout>
-        <section
-          className="d-flex align-items-center justify-content-center mx-3"
-          style={{
-            minHeight: "80vh",
-          }}
-        >
-          <div
-            className="text-center"
-            style={{
-              maxWidth: 600,
-              width: "100%",
-            }}
-          >
-            <div
-              style={{
-                fontSize: "5rem",
-                animation: "pulse 1.5s infinite",
-              }}
-            >
-              🤖
+        <section className="ai-proposal-page">
+          <div className="ai-loading">
+            <div className="ai-icon">
+              <Bot size={32} />
+            </div>
+            <span className="ai-badge">
+              <Sparkles size={14} /> AI
+            </span>
+            <h2>{t("ai_proposal.loading_title")}</h2>
+            <p>{t("ai_proposal.loading_description")}</p>
+            <div className="ai-loader">
+              <span />
             </div>
 
-            <h2 className="fw-bold mt-4">{t("ai_proposal.loading_title")}</h2>
-
-            <p className="text-muted mb-5">
-              {t("ai_proposal.loading_description")}
-            </p>
-
-            <div className="mb-4">
-              <div className="progress" style={{ height: 14 }}>
-                <div
-                  className="progress-bar progress-bar-striped progress-bar-animated"
-                  style={{
-                    width: "100%",
-                  }}
-                />
-              </div>
+            <div className="ai-loading-steps">
+              <p>✓ {t("ai_proposal.step_analyzing")}</p>
+              <p>✓ {t("ai_proposal.step_detecting")}</p>
+              <p>◌ {t("ai_proposal.step_estimating")}</p>
+              <p>◌ {t("ai_proposal.step_calculating")}</p>
             </div>
-
-            <Card className="shadow-sm border-0">
-              <Card.Body className="text-start">
-                <div className="mb-3">✅ {t("ai_proposal.step_analyzing")}</div>
-                <div className="mb-3">✅ {t("ai_proposal.step_detecting")}</div>
-                <div className="mb-3">
-                  ⏳ {t("ai_proposal.step_estimating")}
-                </div>
-                <div>⏳ {t("ai_proposal.step_calculating")}</div>
-              </Card.Body>
-            </Card>
           </div>
         </section>
-
-        <style jsx global>{`
-          @keyframes pulse {
-            0% {
-              transform: scale(1);
-            }
-            50% {
-              transform: scale(1.15);
-            }
-            100% {
-              transform: scale(1);
-            }
-          }
-        `}</style>
       </Layout>
     );
+  }
 
   return (
     <Layout>
-      <section className="py-5">
+      <section className="ai-proposal-page">
         <div className="container">
-          {/* HEADER */}
-          <div className="ai-header mb-4">
-            <div>
-              <h2 className="mb-1">🤖 {t("ai_proposal.title")}</h2>
-              <div
-                style={{
-                  display: "inline-block",
-                  background: "#e7f1ff",
-                  color: "#0d6efd",
-                  padding: "4px 12px",
-                  borderRadius: 20,
-                  fontSize: 12,
-                  fontWeight: 600,
-                }}
-              >
-                {t("ai_proposal.ai_generated_badge")}
+          <header className="ai-header">
+            <div className="ai-heading">
+              <div className="ai-icon">
+                <Bot size={27} />
               </div>
-              <p className="text-muted mb-0">{t("ai_proposal.subtitle")}</p>
+              <div>
+                <div className="ai-title-row">
+                  <h1>{t("ai_proposal.title")}</h1>
+                  <span className="ai-badge">
+                    <Sparkles size={13} />
+                    {t("ai_proposal.ai_generated_badge")}
+                  </span>
+                </div>
+                <p>{t("ai_proposal.subtitle")}</p>
+              </div>
             </div>
 
-            <Button variant="outline-primary" size="lg" onClick={loadProposal}>
-              🔄 {t("ai_proposal.regenerate_btn")}
+            <Button
+              variant="outline-primary"
+              className="ai-regenerate"
+              onClick={loadProposal}
+              disabled={adding}
+            >
+              <RefreshCw size={16} />
+              {t("ai_proposal.regenerate_btn")}
             </Button>
+          </header>
+
+          <section className="ai-cashvan">
+            <div className="ai-cashvan-heading">
+              <div className="ai-cashvan-icon">
+                <Truck size={22} />
+              </div>
+              <div>
+                <h2>{t("ai_proposal.upcoming_visit")}</h2>
+                <p>
+                  {cashVan
+                    ? t("ai_proposal.expected_visit")
+                    : t("ai_proposal.no_cashvan_title")}
+                </p>
+              </div>
+            </div>
+
+            {cashVan ? (
+              <div className="ai-cashvan-details">
+                <div>
+                  <UserRound size={17} />
+                  <span>{t("ai_proposal.driver")}</span>
+                  <strong>
+                    {cashVan.driverName} [{cashVan.driverCode}]
+                  </strong>
+                </div>
+                <div>
+                  <CalendarDays size={17} />
+                  <span>{t("ai_proposal.expected_visit")}</span>
+                  <strong>
+                    {new Date(cashVan.plannedDate).toLocaleDateString(
+                      t("ai_proposal.locale"),
+                    )}
+                  </strong>
+                </div>
+                <div>
+                  <Clock size={17} />
+                  <span>{t("ai_proposal.estimated_arrival")}</span>
+                  <strong>{cashVan.estimatedArrival}</strong>
+                </div>
+              </div>
+            ) : (
+              <p className="ai-cashvan-message">
+                {t("ai_proposal.no_cashvan_description")}
+              </p>
+            )}
+          </section>
+
+          <div className="ai-section-heading">
+            <div>
+              <h2>{t("ai_proposal.suggested_products")}</h2>
+              <p>
+                {products.length} {t("ai_proposal.records")}
+              </p>
+            </div>
+            <span className="ai-count">{products.length}</span>
           </div>
 
-          {/* CASH VAN */}
-          <Card
-            className="border-0 mb-4"
-            style={{
-              borderRadius: 20,
-              background: "linear-gradient(135deg,#0d6efd 0%, #4f8cff 100%)",
-              color: "white",
-            }}
-          >
-            <Card.Body>
-              {cashVan ? (
+          {products.length ? (
+            <div className="ai-products">
+              {products.map((item) => (
+                <article className="ai-product-card" key={item.item_code}>
+                  <div className="ai-product-top">
+                    <span className="ai-product-code">{item.item_code}</span>
+                    <button
+                      className="ai-remove"
+                      type="button"
+                      title={t("ai_proposal.remove_btn")}
+                      aria-label={t("ai_proposal.remove_btn")}
+                      onClick={() => removeItem(item.item_code)}
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+
+                  <div className="ai-product-image">
+                    <Image
+                      src={item.image || companyPlaceholder}
+                      alt={item.name}
+                      fill
+                      sizes="(max-width: 575px) 45vw, (max-width: 991px) 30vw, 22vw"
+                      style={{ objectFit: "contain", padding: 12 }}
+                    />
+                  </div>
+
+                  <div className="ai-product-body">
+                    <h3>{item.name}</h3>
+                    <strong className="ai-price">
+                      {currenncyCodeToSymbol(item.currency_code || "USD")}{" "}
+                      {item.price.toLocaleString()}
+                    </strong>
+
+                    <div className="ai-quantity-row">
+                      <div className="ai-quantity">
+                        <button
+                          type="button"
+                          aria-label="Decrease quantity"
+                          disabled={item.quantity <= 1}
+                          onClick={() => updateQty(item.item_code, -1)}
+                        >
+                          <Minus size={14} />
+                        </button>
+                        <strong>{item.quantity}</strong>
+                        <button
+                          type="button"
+                          aria-label="Increase quantity"
+                          disabled={item.quantity >= item.stock}
+                          onClick={() => updateQty(item.item_code, 1)}
+                        >
+                          <Plus size={14} />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="ai-subtotal">
+                      <span>{t("ai_proposal.subtotal")}</span>
+                      <strong>
+                        {currenncyCodeToSymbol(item.currency_code || "USD")}{" "}
+                        {(item.price * item.quantity).toLocaleString()}
+                      </strong>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <div className="ai-empty">
+              <Package size={30} />
+              <h3>{t("ai_proposal.suggested_products")}: 0</h3>
+              <p>{t("ai_proposal.subtitle")}</p>
+              <Button variant="outline-primary" onClick={loadProposal}>
+                <RefreshCw size={16} />
+                {t("ai_proposal.regenerate_btn")}
+              </Button>
+            </div>
+          )}
+
+          <footer className="ai-summary">
+            <div className="ai-summary-count">
+              <ShoppingCart size={21} />
+              <div>
+                <span>{t("ai_proposal.suggested_products")}</span>
+                <strong>{products.length}</strong>
+              </div>
+            </div>
+
+            <div className="ai-summary-total">
+              <span>{t("ai_proposal.subtotal")}</span>
+              <strong>
+                {currency} {total.toLocaleString()}
+              </strong>
+            </div>
+
+            <Button
+              className="ai-add-btn"
+              onClick={addProposalToCart}
+              disabled={adding || products.length === 0}
+            >
+              {adding ? (
                 <>
-                  <h5 className="mb-3">🚚 {t("ai_proposal.upcoming_visit")}</h5>
-                  <Row>
-                    <Col md={4}>
-                      <strong>{t("ai_proposal.driver")}</strong>
-                      <div>
-                        {cashVan.driverName} [{cashVan.driverCode}]
-                      </div>
-                    </Col>
-                    <Col md={4}>
-                      <strong>{t("ai_proposal.expected_visit")}</strong>
-                      <div>
-                        {new Date(cashVan.plannedDate).toLocaleDateString(
-                          t("ai_proposal.locale"),
-                        )}
-                      </div>
-                    </Col>
-                    <Col md={4}>
-                      <strong>{t("ai_proposal.estimated_arrival")}</strong>
-                      <div>{cashVan.estimatedArrival}</div>
-                    </Col>
-                  </Row>
+                  <Spinner animation="border" size="sm" />
+                  {t("ai_proposal.adding")}
                 </>
               ) : (
-                <div className="text-center py-3">
-                  <div style={{ fontSize: "3rem" }}>🚚</div>
-                  <h5 className="mt-3">{t("ai_proposal.no_cashvan_title")}</h5>
-                  <p
-                    className="mb-0"
-                    style={{ color: "rgba(255,255,255,0.8)" }}
-                  >
-                    {t("ai_proposal.no_cashvan_description")}
-                  </p>
-                </div>
+                <>
+                  <ShoppingCart size={17} />
+                  {t("ai_proposal.add_all_btn")}
+                </>
               )}
-            </Card.Body>
-          </Card>
-
-          {/* PRODUCTS */}
-          <Row>
-            {products.map((item) => {
-              const imgSrc = item.image || companyPlaceholder;
-
-              return (
-                <Col
-                  xl={3}
-                  lg={4}
-                  md={6}
-                  xs={6}
-                  key={item.item_code}
-                  className="mb-3"
-                >
-                  <Card className="h-100 shadow-sm border-0 ai-product-card">
-                    <div className="ai-product-image">
-                      <Image
-                        src={imgSrc}
-                        alt={item.name}
-                        fill
-                        style={{
-                          objectFit: "contain",
-                          padding: "15px",
-                        }}
-                      />
-                    </div>
-                    <Card.Body className="d-flex flex-column">
-                      <h6 className="ai-product-title">{item.name}</h6>
-                      <div
-                        className="fw-bold text-primary mb-3"
-                        style={{ fontSize: "1.1rem" }}
-                      >
-                        {currenncyCodeToSymbol(item.currency_code || "USD")}{" "}
-                        {item.price.toLocaleString()}
-                      </div>
-                      <div className="mt-auto">
-                        <div className="qty-selector">
-                          <Button
-                            variant="light"
-                            className="qty-btn"
-                            onClick={() => updateQty(item.item_code, -1)}
-                          >
-                            −
-                          </Button>
-                          <span className="qty-value">{item.quantity}</span>
-                          <Button
-                            variant="primary"
-                            className="qty-btn"
-                            onClick={() => updateQty(item.item_code, 1)}
-                          >
-                            +
-                          </Button>
-                        </div>
-                        <Button
-                          variant="outline-danger"
-                          className="w-100"
-                          onClick={() => removeItem(item.item_code)}
-                        >
-                          {t("ai_proposal.remove_btn")}
-                        </Button>
-                      </div>
-                    </Card.Body>
-                  </Card>
-                </Col>
-              );
-            })}
-          </Row>
-
-          {/* SUMMARY */}
-          <Card className="shadow-sm border-0 mt-4">
-            <Card.Body>
-              <div className="proposal-summary">
-                <div>
-                  <h5 className="mb-1">
-                    {t("ai_proposal.suggested_products")}: {products.length}
-                  </h5>
-                  <h3 className="text-primary mb-0">
-                    {currency} {total.toLocaleString()}
-                  </h3>
-                </div>
-                <Button
-                  size="lg"
-                  onClick={addProposalToCart}
-                  disabled={adding || products.length === 0}
-                >
-                  {adding ? (
-                    <>
-                      <Spinner animation="border" size="sm" className="me-2" />
-                      {t("ai_proposal.adding")}
-                    </>
-                  ) : (
-                    `🛒 ${t("ai_proposal.add_all_btn")}`
-                  )}
-                </Button>
-              </div>
-            </Card.Body>
-          </Card>
+            </Button>
+          </footer>
         </div>
       </section>
     </Layout>

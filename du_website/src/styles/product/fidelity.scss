@@ -1,0 +1,1323 @@
+.fidelity-page {
+  width: 100%;
+  padding: 25px 0 45px;
+  color: #1f2937;
+}
+
+.fidelity-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 45vh;
+  color: $primary;
+}
+
+/* Shared cards */
+.fidelity-section-card,
+.fidelity-next-reward-card {
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 24px;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.03);
+}
+
+.fidelity-section-card-header,
+.fidelity-section-heading,
+.fidelity-points-card-icon,
+.fidelity-section-icon,
+.fidelity-all-unlocked-icon,
+.fidelity-roadmap-marker,
+.fidelity-roadmap-reward-icon,
+.fidelity-history-mobile-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fidelity-section-card-header {
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.fidelity-section-heading {
+  gap: 12px;
+  min-width: 0;
+}
+
+/* Header */
+.fidelity-page-header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 25px 28px;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: linear-gradient(
+    110deg,
+    #fff 0%,
+    #fff 60%,
+    rgba($primary, 0.045) 100%
+  );
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.035);
+}
+
+.fidelity-page-header-content {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  min-width: 0;
+}
+
+.fidelity-page-header-icon {
+  @extend .fidelity-section-icon;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: 11px;
+  background: rgba($primary, 0.09);
+  color: $primary;
+}
+
+.fidelity-page-title {
+  margin: 0;
+  color: #1f2937;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.fidelity-page-subtitle {
+  margin: 5px 0 0;
+  color: #6b7280;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* Points */
+.fidelity-points-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.fidelity-points-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.025);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.055);
+  }
+}
+
+.fidelity-points-card-icon {
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  border-radius: 12px;
+}
+
+.fidelity-points-earned-icon {
+  background: rgba(25, 135, 84, 0.1);
+  color: #198754;
+}
+
+.fidelity-points-redeemed-icon {
+  background: rgba(111, 66, 193, 0.1);
+  color: #6f42c1;
+}
+
+.fidelity-points-available-icon {
+  background: rgba(13, 110, 253, 0.1);
+  color: #0d6efd;
+}
+
+.fidelity-points-card-content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.fidelity-points-label {
+  margin-bottom: 4px;
+  color: #6b7280;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.fidelity-points-value {
+  color: #1f2937;
+  font-size: 25px;
+  font-weight: 750;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.fidelity-points-card-available {
+  border-color: rgba(25, 135, 84, 0.2);
+  background: linear-gradient(135deg, #fff 0%, rgba(25, 135, 84, 0.045) 100%);
+
+  .fidelity-points-value {
+    color: #198754;
+  }
+}
+
+/* Shared section elements */
+.fidelity-section-icon {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: 11px;
+
+  &.fidelity-section-icon-green {
+    background: rgba(25, 135, 84, 0.1);
+    color: #198754;
+  }
+
+  &.fidelity-section-icon-blue {
+    background: rgba(13, 110, 253, 0.09);
+    color: #0d6efd;
+  }
+}
+
+.fidelity-section-title {
+  margin: 0;
+  color: #1f2937;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.fidelity-section-description {
+  margin: 4px 0 0;
+  color: #6b7280;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.fidelity-count-pill,
+.fidelity-points-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.fidelity-count-pill {
+  padding: 7px 12px;
+  border: 1px solid #e5e7eb;
+  background: #f8fafc;
+  color: #4b5563;
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.fidelity-points-pill {
+  gap: 7px;
+  padding: 9px 15px;
+  background: #198754;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.fidelity-points-pill-light {
+  border: 1px solid rgba(25, 135, 84, 0.15);
+  background: rgba(25, 135, 84, 0.07);
+  color: #198754;
+}
+
+/* Next reward */
+.fidelity-next-reward-card {
+  padding: 25px 28px;
+  border-color: rgba(25, 135, 84, 0.15);
+  background: linear-gradient(
+    120deg,
+    rgba(25, 135, 84, 0.055),
+    rgba(13, 110, 253, 0.035)
+  );
+}
+
+.fidelity-next-reward-top,
+.fidelity-next-reward-details,
+.fidelity-progress-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.fidelity-next-reward-top {
+  margin-bottom: 25px;
+}
+
+.fidelity-next-reward-details {
+  align-items: flex-end;
+  margin-bottom: 12px;
+
+  h3 {
+    margin: 0;
+    color: #1f2937;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+}
+
+.fidelity-next-reward-label {
+  display: block;
+  margin-bottom: 5px;
+  color: #198754;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+}
+
+.fidelity-next-reward-count {
+  flex-shrink: 0;
+  color: #4b5563;
+  font-size: 13px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.fidelity-progress-bar {
+  height: 12px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e5e7eb;
+
+  .progress-bar {
+    border-radius: inherit;
+    background: linear-gradient(90deg, #198754, #20a56b);
+    transition: width 0.4s ease;
+  }
+}
+
+.fidelity-progress-footer {
+  margin-top: 11px;
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.fidelity-progress-percentage {
+  color: #198754;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+}
+
+.fidelity-all-unlocked {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid rgba(25, 135, 84, 0.13);
+  border-radius: 11px;
+  background: rgba(25, 135, 84, 0.06);
+
+  h3 {
+    margin: 0;
+    color: #198754;
+    font-size: 15px;
+    font-weight: 750;
+  }
+
+  p {
+    margin: 4px 0 0;
+    color: #6b7280;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+}
+
+.fidelity-all-unlocked-icon {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: rgba(25, 135, 84, 0.12);
+  color: #198754;
+}
+
+/* Roadmap */
+.fidelity-roadmap {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fidelity-roadmap-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 12px;
+
+  &:not(:last-child)::before {
+    position: absolute;
+    top: 34px;
+    bottom: -13px;
+    left: 16px;
+    width: 2px;
+    background: #e5e7eb;
+    content: "";
+  }
+
+  &.fidelity-roadmap-item-unlocked:not(:last-child)::before {
+    background: rgba(25, 135, 84, 0.35);
+  }
+}
+
+.fidelity-roadmap-marker {
+  position: relative;
+  z-index: 1;
+  width: 34px;
+  height: 34px;
+  border: 4px solid #fff;
+  border-radius: 50%;
+  background: #e5e7eb;
+  box-shadow: 0 0 0 1px #dce1e8;
+  color: #6b7280;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.fidelity-roadmap-item-unlocked .fidelity-roadmap-marker {
+  background: #198754;
+  box-shadow: 0 0 0 1px rgba(25, 135, 84, 0.2);
+  color: #fff;
+}
+
+.fidelity-roadmap-item-current .fidelity-roadmap-marker {
+  background: #0d6efd;
+  box-shadow: 0 0 0 1px rgba(13, 110, 253, 0.2);
+  color: #fff;
+}
+
+.fidelity-roadmap-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  min-width: 0;
+  padding: 15px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 11px;
+  background: #fafbfc;
+}
+
+.fidelity-roadmap-item-unlocked .fidelity-roadmap-content {
+  border-color: rgba(25, 135, 84, 0.15);
+  background: rgba(25, 135, 84, 0.035);
+}
+
+.fidelity-roadmap-item-current .fidelity-roadmap-content {
+  border-color: rgba(13, 110, 253, 0.45);
+  background: rgba(13, 110, 253, 0.035);
+}
+
+.fidelity-roadmap-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.fidelity-roadmap-reward-icon {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: #eef1f5;
+  color: #6b7280;
+}
+
+.fidelity-roadmap-item-unlocked .fidelity-roadmap-reward-icon {
+  background: rgba(25, 135, 84, 0.1);
+  color: #198754;
+}
+
+.fidelity-roadmap-item-current .fidelity-roadmap-reward-icon {
+  background: rgba(13, 110, 253, 0.1);
+  color: #0d6efd;
+}
+
+.fidelity-roadmap-info {
+  min-width: 0;
+
+  h3 {
+    margin: 0;
+    color: #1f2937;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+  }
+
+  > span {
+    display: block;
+    margin-top: 3px;
+    color: #6b7280;
+    font-size: 11px;
+  }
+
+  p {
+    margin: 6px 0 0;
+    color: #6b7280;
+    font-size: 11px;
+    line-height: 1.45;
+  }
+}
+
+.fidelity-roadmap-status {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+.fidelity-status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 6px 9px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 750;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.fidelity-status-unlocked {
+  background: rgba(25, 135, 84, 0.1);
+  color: #198754;
+}
+
+.fidelity-status-current {
+  background: rgba(13, 110, 253, 0.1);
+  color: #0d6efd;
+}
+
+.fidelity-status-locked {
+  padding: 7px;
+  background: #eef1f5;
+  color: #8490a0;
+}
+
+/* Gifts */
+.fidelity-gifts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.fidelity-gift-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  border-radius: 11px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.025);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    border-color: rgba(25, 135, 84, 0.25);
+    box-shadow: 0 7px 18px rgba(0, 0, 0, 0.07);
+  }
+}
+
+.fidelity-gift-image-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 180px;
+  padding: 14px;
+  overflow: hidden;
+  border-bottom: 1px solid #edf0f3;
+  background: #f8fafc;
+}
+
+.fidelity-gift-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.fidelity-gift-stock-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: rgba(31, 41, 55, 0.82);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.fidelity-gift-info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 15px;
+
+  h3 {
+    width: 100%;
+    margin: 0 0 10px;
+    color: #1f2937;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+  }
+}
+
+.fidelity-gift-cost {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #198754;
+
+  strong {
+    font-size: 14px;
+    font-weight: 750;
+    font-variant-numeric: tabular-nums;
+  }
+
+  span {
+    color: #6b7280;
+    font-size: 11px;
+  }
+}
+
+.fidelity-gift-stock {
+  margin-top: 6px;
+  color: #9ca3af;
+  font-size: 10px;
+}
+
+.fidelity-redeem-button,
+.fidelity-load-more-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+
+.fidelity-redeem-button {
+  width: 100%;
+  min-height: 39px;
+  margin-top: 15px;
+  padding: 8px 12px;
+  border: 1px solid #198754;
+  border-radius: 8px;
+  background: #198754;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 650;
+
+  &:hover:not(:disabled) {
+    border-color: #146c43;
+    background: #146c43;
+    color: #fff;
+  }
+
+  &:disabled,
+  &.fidelity-redeem-button-disabled {
+    border-color: #e2e7ed;
+    background: #f1f4f7;
+    color: #9ca3af;
+    opacity: 1;
+  }
+
+  .spinner-border {
+    width: 14px;
+    height: 14px;
+    border-width: 2px;
+  }
+}
+
+.fidelity-load-more {
+  display: flex;
+  justify-content: center;
+  margin-top: 22px;
+}
+
+.fidelity-load-more-button {
+  min-height: 40px;
+  padding: 9px 20px;
+  border: 1px solid #dce3eb;
+  border-radius: 8px;
+  background: #fff;
+  color: #374151;
+  font-size: 12px;
+  font-weight: 650;
+
+  &:hover:not(:disabled) {
+    border-color: $primary;
+    background: rgba($primary, 0.04);
+    color: $primary;
+  }
+
+  &:disabled {
+    opacity: 0.7;
+  }
+}
+
+/* Empty state */
+.fidelity-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 170px;
+  padding: 25px;
+  border: 1px dashed #dce2e9;
+  border-radius: 11px;
+  background: #fafbfc;
+  color: #9ca3af;
+  text-align: center;
+
+  > svg {
+    margin-bottom: 10px;
+    color: #a3adba;
+  }
+
+  p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  span {
+    margin-top: 5px;
+    color: #9ca3af;
+    font-size: 11px;
+  }
+}
+
+/* History */
+.fidelity-history-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.fidelity-history-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+
+  th {
+    padding: 12px 14px;
+    border-bottom: 1px solid #e5e7eb;
+    color: #6b7280;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 15px 14px;
+    border-bottom: 1px solid #edf0f3;
+    color: #374151;
+    font-size: 12px;
+    vertical-align: middle;
+  }
+
+  tbody tr {
+    transition: background-color 0.15s ease;
+
+    &:last-child td {
+      border-bottom: 0;
+    }
+
+    &:hover {
+      background: #fafbfc;
+    }
+  }
+}
+
+.fidelity-history-date {
+  min-width: 170px;
+  color: #6b7280 !important;
+  font-size: 11px !important;
+  white-space: nowrap;
+}
+
+.fidelity-history-description {
+  min-width: 180px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.fidelity-history-type {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.fidelity-history-type-earned {
+  background: rgba(25, 135, 84, 0.09);
+  color: #198754;
+}
+
+.fidelity-history-type-redeemed {
+  background: rgba(220, 53, 69, 0.09);
+  color: #dc3545;
+}
+
+.fidelity-history-points-heading,
+.fidelity-history-points {
+  text-align: right !important;
+}
+
+.fidelity-history-points {
+  min-width: 90px;
+  white-space: nowrap;
+
+  strong {
+    font-size: 13px;
+    font-weight: 750;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.fidelity-history-earned {
+  color: #198754 !important;
+}
+
+.fidelity-history-redeemed {
+  color: #dc3545 !important;
+}
+
+.fidelity-history-mobile {
+  display: none;
+}
+
+/* Tablet */
+@media (max-width: 991px) {
+  .fidelity-points-grid {
+    gap: 12px;
+  }
+
+  .fidelity-points-card {
+    gap: 11px;
+    padding: 16px;
+  }
+
+  .fidelity-points-card-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .fidelity-points-value {
+    font-size: 22px;
+  }
+
+  .fidelity-gifts-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .fidelity-gift-image-wrapper {
+    height: 170px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+  .fidelity-page {
+    padding: 18px 0 30px;
+  }
+
+  .fidelity-page-header {
+    margin-bottom: 14px;
+    padding: 20px;
+    border-radius: 12px;
+  }
+
+  .fidelity-page-header-content {
+    gap: 12px;
+  }
+
+  .fidelity-page-header-icon {
+    width: 42px;
+    height: 42px;
+  }
+
+  .fidelity-page-title {
+    font-size: 21px;
+  }
+
+  .fidelity-page-subtitle {
+    margin-top: 4px;
+    font-size: 13px;
+  }
+
+  .fidelity-points-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .fidelity-points-card {
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 10px;
+  }
+
+  .fidelity-points-card-icon {
+    width: 42px;
+    height: 42px;
+  }
+
+  .fidelity-points-label {
+    font-size: 11px;
+  }
+
+  .fidelity-points-value {
+    font-size: 21px;
+  }
+
+  .fidelity-section-card,
+  .fidelity-next-reward-card {
+    margin-bottom: 14px;
+    padding: 18px;
+    border-radius: 12px;
+  }
+
+  .fidelity-section-card-header {
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+
+  .fidelity-section-heading {
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .fidelity-section-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  .fidelity-section-title {
+    font-size: 16px;
+  }
+
+  .fidelity-section-description {
+    font-size: 11px;
+  }
+
+  .fidelity-count-pill {
+    padding: 6px 9px;
+    font-size: 10px;
+  }
+
+  .fidelity-points-pill {
+    padding: 7px 10px;
+    font-size: 10px;
+  }
+
+  /* Next reward */
+  .fidelity-next-reward-top {
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .fidelity-next-reward-details {
+    align-items: flex-start;
+    gap: 8px;
+
+    h3 {
+      font-size: 15px;
+    }
+  }
+
+  .fidelity-next-reward-count {
+    padding-top: 16px;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  .fidelity-progress-bar {
+    height: 10px;
+  }
+
+  .fidelity-progress-footer {
+    font-size: 11px;
+  }
+
+  .fidelity-all-unlocked {
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px;
+  }
+
+  .fidelity-all-unlocked-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .fidelity-all-unlocked h3 {
+    font-size: 14px;
+  }
+
+  .fidelity-all-unlocked p {
+    font-size: 11px;
+  }
+
+  /* Roadmap */
+  .fidelity-roadmap {
+    gap: 10px;
+  }
+
+  .fidelity-roadmap-item {
+    grid-template-columns: 28px minmax(0, 1fr);
+    gap: 9px;
+
+    &:not(:last-child)::before {
+      top: 28px;
+      bottom: -11px;
+      left: 13px;
+    }
+  }
+
+  .fidelity-roadmap-marker {
+    width: 28px;
+    height: 28px;
+    border-width: 3px;
+    font-size: 11px;
+
+    svg {
+      width: 13px;
+      height: 13px;
+    }
+  }
+
+  .fidelity-roadmap-content {
+    align-items: flex-start;
+    gap: 8px;
+    padding: 12px;
+    border-radius: 9px;
+  }
+
+  .fidelity-roadmap-main {
+    align-items: flex-start;
+    gap: 9px;
+  }
+
+  .fidelity-roadmap-reward-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  .fidelity-roadmap-info {
+    h3 {
+      font-size: 12px;
+    }
+
+    > span {
+      font-size: 10px;
+    }
+
+    p {
+      margin-top: 5px;
+      font-size: 10px;
+    }
+  }
+
+  .fidelity-roadmap-status {
+    max-width: 90px;
+  }
+
+  .fidelity-status-badge {
+    gap: 4px;
+    padding: 5px 7px;
+    font-size: 9px;
+    white-space: normal;
+    text-align: center;
+
+    svg {
+      width: 11px;
+      height: 11px;
+      flex-shrink: 0;
+    }
+  }
+
+  /* Gifts */
+  .fidelity-gifts-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .fidelity-gift-image-wrapper {
+    height: 135px;
+    padding: 10px;
+  }
+
+  .fidelity-gift-info {
+    padding: 11px;
+
+    h3 {
+      margin-bottom: 8px;
+      font-size: 12px;
+    }
+  }
+
+  .fidelity-gift-cost {
+    flex-wrap: wrap;
+    gap: 4px;
+
+    strong {
+      font-size: 12px;
+    }
+
+    span {
+      font-size: 10px;
+    }
+  }
+
+  .fidelity-gift-stock {
+    font-size: 9px;
+  }
+
+  .fidelity-redeem-button {
+    gap: 5px;
+    min-height: 36px;
+    margin-top: 12px;
+    padding: 7px 8px;
+    font-size: 10px;
+
+    svg {
+      width: 13px;
+      height: 13px;
+    }
+  }
+
+  .fidelity-load-more {
+    margin-top: 16px;
+  }
+
+  .fidelity-load-more-button {
+    min-height: 38px;
+    padding: 8px 15px;
+    font-size: 11px;
+  }
+
+  /* History */
+  .fidelity-history-table-wrapper {
+    display: none;
+  }
+
+  .fidelity-history-mobile {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .fidelity-history-mobile-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 13px 0;
+    border-bottom: 1px solid #edf0f3;
+
+    &:first-child {
+      padding-top: 0;
+    }
+
+    &:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+  }
+
+  .fidelity-history-mobile-icon {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    border-radius: 9px;
+  }
+
+  .fidelity-history-mobile-icon-earned {
+    background: rgba(25, 135, 84, 0.1);
+    color: #198754;
+  }
+
+  .fidelity-history-mobile-icon-redeemed {
+    background: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+  }
+
+  .fidelity-history-mobile-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .fidelity-history-mobile-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+
+    > strong {
+      min-width: 0;
+      color: #374151;
+      font-size: 12px;
+      font-weight: 650;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
+
+    > span {
+      flex-shrink: 0;
+      font-size: 12px;
+      font-weight: 750;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+  }
+
+  .fidelity-history-mobile-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-top: 7px;
+
+    > span:first-child {
+      color: #9ca3af;
+      font-size: 10px;
+    }
+
+    .fidelity-history-type {
+      padding: 4px 7px;
+      font-size: 9px;
+    }
+  }
+
+  .fidelity-empty-state {
+    min-height: 145px;
+    padding: 20px;
+  }
+}
+
+/* Small phones */
+@media (max-width: 380px) {
+  .fidelity-page-header {
+    padding: 16px;
+  }
+
+  .fidelity-page-header-content {
+    gap: 9px;
+  }
+
+  .fidelity-page-header-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .fidelity-page-title {
+    font-size: 18px;
+  }
+
+  .fidelity-page-subtitle {
+    font-size: 11px;
+  }
+
+  .fidelity-section-card,
+  .fidelity-next-reward-card {
+    padding: 14px;
+  }
+
+  .fidelity-section-card-header {
+    flex-wrap: wrap;
+  }
+
+  .fidelity-next-reward-top {
+    flex-direction: column;
+  }
+
+  .fidelity-next-reward-count {
+    padding-top: 0;
+  }
+
+  .fidelity-roadmap-content {
+    flex-direction: column;
+  }
+
+  .fidelity-roadmap-status {
+    justify-content: flex-start;
+    max-width: none;
+    padding-left: 41px;
+  }
+
+  .fidelity-gifts-grid {
+    gap: 8px;
+  }
+
+  .fidelity-gift-image-wrapper {
+    height: 115px;
+  }
+
+  .fidelity-gift-info {
+    padding: 9px;
+
+    h3 {
+      font-size: 11px;
+    }
+  }
+
+  .fidelity-redeem-button {
+    font-size: 9px;
+  }
+}

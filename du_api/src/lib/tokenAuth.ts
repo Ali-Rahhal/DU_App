@@ -12,8 +12,11 @@ const tokenAuth = async (Bearertoken: string, companyId: string) => {
       where: {
         id: payload.userId,
       },
+      select: { id: true, token_version: true },
     });
-    if (!user) throw new Error("User not found");
+    if (!user || user.token_version !== payload.tokenVersion) {
+      return null; // token has been invalidated
+    }
     return user.id;
   } catch (e) {
     return null;

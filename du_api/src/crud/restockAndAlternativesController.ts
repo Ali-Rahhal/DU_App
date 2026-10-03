@@ -1,4 +1,5 @@
 import { getPrisma } from "../lib/prisma";
+import { getItemStock } from "../lib/utils";
 
 const getItemAlternatives = async (itemCode: string, companyId: string) => {
   const prisma = getPrisma(companyId);
@@ -103,6 +104,12 @@ const restockItem = async (
     if (min_stock < current_stock)
       throw new Error(
         "Current stock is greater than min stock. Restock is not required",
+      );
+
+    const itemStock = await getItemStock(itemCode, companyId);
+    if (itemStock < min_stock)
+      throw new Error(
+        "Item stock is less than min stock. Restock is not possible right now",
       );
 
     const found = await tx.shopping_cart.findFirst({

@@ -676,6 +676,7 @@ const login = async (
       description: user.description,
       type: user.type,
       role: user.role,
+      tokenVersion: user.token_version,
     },
     process.env.JWT_SECRET as string,
     {

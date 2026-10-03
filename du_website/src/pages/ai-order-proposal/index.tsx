@@ -107,12 +107,17 @@ export default function AIOrderProposalPage() {
     }
   };
 
-  const total = products.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0,
-  );
+  const totalsByCurrency = products.reduce<Record<string, number>>(
+    (totals, item) => {
+      const currencyCode = item.currency_code || "USD";
 
-  const currency = currenncyCodeToSymbol(products[0]?.currency_code || "USD");
+      totals[currencyCode] =
+        (totals[currencyCode] || 0) + item.price * item.quantity;
+
+      return totals;
+    },
+    {},
+  );
 
   if (loading) {
     return (
@@ -321,9 +326,16 @@ export default function AIOrderProposalPage() {
 
             <div className="ai-summary-total">
               <span>{t("ai_proposal.subtotal")}</span>
-              <strong>
-                {currency} {total.toLocaleString()}
-              </strong>
+              <div className="ai-summary-totals">
+                {Object.entries(totalsByCurrency).map(
+                  ([currencyCode, total]) => (
+                    <strong key={currencyCode}>
+                      {currenncyCodeToSymbol(currencyCode)}{" "}
+                      {total.toLocaleString()}
+                    </strong>
+                  ),
+                )}
+              </div>
             </div>
 
             <Button

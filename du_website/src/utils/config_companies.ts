@@ -118,8 +118,8 @@ export const Companies = {
     name: "Sami Dandan & Co.",
     abreviation: "SADCO",
     logo: "/assets/img/SADCO/logo.png",
-    placeholder: process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE_DU,
-    favicon: "/assets/img/DU/favicon.ico",
+    placeholder: "/assets/img/SADCO/product/PlaceholderImage.jpeg",
+    favicon: "/assets/img/SADCO/favicon.ico",
     about: "/assets/img/DU/extra/page-about.jpg",
 
     transalations: {

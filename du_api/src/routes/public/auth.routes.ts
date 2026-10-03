@@ -7,6 +7,7 @@ import {
 } from "../../crud/AuthController";
 import { getUserId } from "../../lib/utils";
 import { serialize } from "hono/utils/cookie";
+import { getPrisma } from "../../lib/prisma";
 const router = new Hono();
 
 router.post(`/login`, async (c) => {
@@ -40,11 +41,18 @@ router.post(`/login`, async (c) => {
 router.post(`/logout`, async (c) => {
   try {
     const userId = await getUserId(c);
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
+    const prisma = getPrisma(companyId);
+    if (userId) {
+      await prisma.web_accounts.update({
+        where: { id: userId },
+        data: { token_version: { increment: 1 } },
+      });
+    }
     const serialized = serialize("authCustomerPortalApp", "", {
-      httpOnly: true,
-      sameSite: process.env.NODE_ENV === "production" ? "Strict" : "Lax",
-      secure: process.env.NODE_ENV === "production" ? true : false,
-      maxAge: 60 * 60 * 24,
+      maxAge: 0,
       path: "/",
     });
     return c.json({ message: "Logout success", result: [] }, 200, {

@@ -301,7 +301,7 @@ const Cart = () => {
                       </div>
                       <div className="col-12 col-sm-4 text-center">
                         <Link
-                          href="/"
+                          href="/category"
                           className="btn btn-primary btn-rounded w-100 w-sm-auto"
                         >
                           {t("cart.continue_shopping")} &nbsp;{" "}
@@ -493,7 +493,7 @@ const Cart = () => {
             <div className="py-5">
               <div className="cart_item py-5 border text-center rounded">
                 <h4 className="text-muted mb-4">{t("cart.cart_empty_msg")}</h4>
-                <Link href="/" className="btn btn-primary btn-rounded">
+                <Link href="/category" className="btn btn-primary btn-rounded">
                   {t("cart.continue_shopping")} &nbsp;{" "}
                   <i className="ti-arrow-right"></i>
                 </Link>

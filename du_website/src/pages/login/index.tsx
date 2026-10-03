@@ -47,12 +47,25 @@ export default function LoginPage() {
         const response = await getLicensedCompanies();
         const data: { companies: CompanyId[] } = response.data;
 
-        setLicensedCompanies(data.companies ?? []);
+        const companies = data.companies ?? [];
+
+        setLicensedCompanies(companies);
+
+        const enabledCompanies = companies.filter(
+          (company) => Companies[company]?.enabled,
+        );
+
+        if (enabledCompanies.length === 1) {
+          const selectedCompany = enabledCompanies[0];
+
+          setCompany(selectedCompany);
+
+          document.cookie = `companyIdCustomerPortalApp=${selectedCompany}; path=/; max-age=31536000; SameSite=Lax`;
+
+          setStep("login");
+        }
       } catch (error) {
         console.error("Failed to load licensed companies:", error);
-
-        // Optional: show no companies rather than exposing
-        // companies when the license server can't be reached.
         setLicensedCompanies([]);
       } finally {
         setLoadingCompanies(false);
@@ -73,7 +86,7 @@ export default function LoginPage() {
 
       document.cookie = `companyIdCustomerPortalApp=${firstAvailableCompany}; path=/; max-age=31536000; SameSite=Lax`;
 
-      setStep("company");
+      setStep(licensedCompanies.length === 1 ? "login" : "company");
     }
   }, [loadingCompanies, licensedCompanies, companyId, setCompany]);
 

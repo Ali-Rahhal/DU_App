@@ -473,6 +473,13 @@
   }
 }
 
+.ai-summary-totals {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
 .ai-add-btn {
   display: inline-flex;
   align-items: center;

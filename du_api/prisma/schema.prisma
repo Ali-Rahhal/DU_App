@@ -7152,6 +7152,7 @@ model web_accounts {
   sequence                   Int                          @default(1, map: "DF__web_accou__seque__62E4EC58")
   parent_id                  Int?
   role                       String?                      @default("USER", map: "DF_web_accounts_role") @db.NVarChar(50)
+  token_version              Int                          @default(1, map: "DF__web_accou__token__1B0CF7B9")
   favorite_items             favorite_items[]
   item_restock_config        item_restock_config[]
   reset_codes                reset_codes?

@@ -57,7 +57,7 @@ const Dashboard = () => {
 
   if (!dashboardData) {
     return (
-      <Layout>
+      <Layout showMobileNavbar={true}>
         <div className="dashboard-loading">
           <Spinner animation="border" variant="primary" role="status" />
         </div>
@@ -66,7 +66,7 @@ const Dashboard = () => {
   }
 
   return (
-    <Layout>
+    <Layout showMobileNavbar={true}>
       {/* =========================================================
           DASHBOARD HEADER
           ========================================================= */}
@@ -198,6 +198,39 @@ const Dashboard = () => {
             </div>
           </div>
         </section>
+
+        {/* =======================================================
+            NEXT VISIT
+            ======================================================= */}
+        {dashboardData?.nextVisit && (
+          <section className="dashboard-next-visit">
+            <div className="dashboard-next-visit-icon">
+              <i className="ti-calendar"></i>
+            </div>
+
+            <div className="dashboard-next-visit-info">
+              <p className="dashboard-next-visit-title">
+                {t("dashboard.next_visit")}
+              </p>
+
+              <h5>{dashboardData.nextVisit.next_planned_visit || "N/A"}</h5>
+
+              <div className="dashboard-next-visit-sub">
+                <span>{dashboardData.nextVisit.sales_rep}</span>
+
+                {dashboardData.nextVisit.days_remaining != null && (
+                  <span className="dashboard-next-visit-days">
+                    {dashboardData.nextVisit.days_remaining === 0
+                      ? t("dashboard.today")
+                      : dashboardData.nextVisit.days_remaining +
+                        " " +
+                        t("dashboard.days_left")}
+                  </span>
+                )}
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* =======================================================
             STATISTICS

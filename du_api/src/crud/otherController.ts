@@ -102,135 +102,110 @@ const getDashboardData = async (user_id: number, companyId: string) => {
   if (!user) throw new Error("User not found");
 
   // ============================================
-  // ORIGINAL STATS QUERY (commented out - complex financial calculations)
-  // Calculates: past due amount, YTD sales, last year YTD sales with currency conversions
-  // ============================================
-  //   const stats: any = await prisma.$queryRaw`
-  //   DECLARE @past_due DECIMAL(18, 2);
-  // DECLARE @ytd_sales DECIMAL(18, 2);
-  // DECLARE @last_ytd_sales DECIMAL(18, 2);
-  // DECLARE @currency NVARCHAR(50);
-
-  // SELECT @past_due = SUM(oi.remaining_amount),
-  // @currency=   CASE
-  //                  WHEN oi.currency_code = '1' THEN
-  //                      'L.L.'
-  //                  WHEN oi.currency_code = '2' THEN
-  //                      'USD'
-  //                  ELSE
-  //                  oi.currency_code
-  //              END
-
-  // FROM dbo.open_invoice as oi
-  // JOIN web_accounts AS wa on wa.code = client_code
-  // WHERE oi.is_active = 1
-  // AND  oi.currency_code = 'MOH_USD'
-  // AND wa.id = ${user_id}
-  // AND ABS(oi.remaining_amount) > 1
-  // AND oi.due_date < GETDATE()
-  // GROUP BY oi.currency_code;
-
-  // DECLARE @eur_rate FLOAT =
-  //         (
-  //             SELECT c.ratio FROM dbo.currency AS c WHERE c.currency_code = 'EUR'
-  //         );
-  // DECLARE @usd_rate FLOAT =
-  //         (
-  //             SELECT c.ratio FROM dbo.currency AS c WHERE c.currency_code = 'EUR'
-  //         );
-  // DECLARE @L.L._rate FLOAT =
-  //         (
-  //             SELECT c.ratio FROM dbo.currency AS c WHERE c.currency_code = 'L.L.'
-  //         );
-
-  // SELECT @ytd_sales= SUM(   CASE
-  //                   WHEN th.currency_code = 'USD' THEN
-  //                       th.total_amount
-  //                   WHEN th.currency_code = 'L.L.' THEN
-  //                       CONVERT(DECIMAL(18, 2), (th.total_amount / @L.L._rate) * @usd_rate)
-  //                   WHEN th.currency_code = 'EUR' THEN
-  //                       CONVERT(DECIMAL(18, 2), th.total_amount * @usd_rate)
-  //               END
-  //           )
-  // FROM dbo.transaction_header AS th
-  // JOIN web_accounts AS wa on wa.code =  th.destination_code
-  // WHERE th.transaction_type = 4
-  //       AND th.is_active = 1
-  //     AND wa.id = ${user_id}
-  //       AND CONVERT(DATE, th.date_added)
-  //       BETWEEN CONVERT(DATE, DATEFROMPARTS(YEAR(GETDATE()), 1, 1)) AND CONVERT(DATE, GETDATE());
-
-  // SELECT @last_ytd_sales = SUM(   CASE
-  //                   WHEN th.currency_code = 'USD' THEN
-  //                       th.total_amount
-  //                   WHEN th.currency_code = 'L.L.' THEN
-  //                       CONVERT(DECIMAL(18, 2), (th.total_amount / @L.L._rate) * @usd_rate)
-  //                   WHEN th.currency_code = 'EUR' THEN
-  //                       CONVERT(DECIMAL(18, 2), th.total_amount * @usd_rate)
-  //               END
-  //           )
-  // FROM dbo.transaction_header AS th
-  // JOIN web_accounts AS wa on wa.code =  th.destination_code
-  // WHERE th.transaction_type = 4
-  //       AND th.is_active = 1
-  //          AND wa.id = ${user_id}
-  //       AND CONVERT(DATE, th.date_added)
-  //       BETWEEN DATEADD(YEAR, -1, CONVERT(DATE, DATEFROMPARTS(YEAR(GETDATE()), 1, 1))) AND DATEADD(
-  //                                                                                                     YEAR,
-  //                                                                                                     -1,
-  //                                                                                                     CONVERT(
-  //                                                                                                                DATE,
-  //                                                                                                                GETDATE()
-  //                                                                                                            )
-  //                                                                                                 );
-
-  //  CREATE TABLE #temptable1 (
-  //     [total_outstanding] NVARCHAR(4000),
-  //     [past_due] NVARCHAR(4000),
-  //     [ytd_sales] NVARCHAR(4000),
-  //     [last_ytd_sales] NVARCHAR(4000)
-  //   );
-  //    INSERT INTO #temptable1
-  //    VALUES (
-  //    ISNULL('USD' + ' ' + FORMAT(@past_due, 'N2'), 'N/A'),
-  //     ISNULL('USD' + ' ' + FORMAT(@past_due, 'N2'), 'N/A'),
-  //     ISNULL('USD' + ' ' + FORMAT(@ytd_sales, 'N2'), 'N/A'),
-  //     ISNULL('USD' + ' ' + FORMAT(@last_ytd_sales, 'N2'), 'N/A')
-
-  //    )
-
-  //      SELECT * FROM #temptable1 AS t;
-
-  //   DROP TABLE #temptable1;
-  // `;
-
-  // ============================================
-  // STEP 2: Get dashboard statistics (simplified version with sample data)
+  // STEP 2: Get dashboard statistics
   // Returns: total_outstanding, past_due, ytd_sales, last_ytd_sales
   // ============================================
   const stats: any = await prisma.$queryRaw`
-    -- Create temporary table to hold dashboard statistics
+    DECLARE @main_currency_code NVARCHAR(50);
+    DECLARE @main_rate FLOAT;
+    DECLARE @main_symbol NVARCHAR(50);
+
+    SELECT TOP 1
+        @main_currency_code = currency_code,
+        @main_rate = ratio,
+        @main_symbol = symbol
+    FROM dbo.currency
+    WHERE is_main = 1 AND is_active = 1;
+
+    DECLARE @total_outstanding DECIMAL(18, 2);
+    DECLARE @past_due DECIMAL(18, 2);
+    DECLARE @ytd_sales DECIMAL(18, 2);
+    DECLARE @last_ytd_sales DECIMAL(18, 2);
+
+    -- Total outstanding: ALL open invoices for this client, converted to main currency
+    SELECT @total_outstanding = SUM(oi.remaining_amount * (@main_rate / c.ratio))
+    FROM dbo.open_invoice AS oi
+    JOIN dbo.web_accounts AS wa ON wa.code = oi.client_code
+    JOIN dbo.currency AS c ON c.currency_code = oi.currency_code
+    WHERE oi.is_active = 1
+        AND wa.id = ${user_id}
+        AND ABS(oi.remaining_amount) > 0;
+
+    -- Past due: same, but only overdue invoices
+    SELECT @past_due = SUM(oi.remaining_amount * (@main_rate / c.ratio))
+    FROM dbo.open_invoice AS oi
+    JOIN dbo.web_accounts AS wa ON wa.code = oi.client_code
+    JOIN dbo.currency AS c ON c.currency_code = oi.currency_code
+    WHERE oi.is_active = 1
+        AND wa.id = ${user_id}
+        AND ABS(oi.remaining_amount) > 0
+        AND oi.due_date < GETDATE();
+
+    -- YTD sales
+    SELECT @ytd_sales = SUM(th.total_amount * (@main_rate / c.ratio))
+    FROM dbo.transaction_header AS th
+    JOIN dbo.web_accounts AS wa ON wa.code = th.destination_code
+    JOIN dbo.currency AS c ON c.currency_code = th.currency_code
+    WHERE th.transaction_type = 4
+        AND th.is_active = 1
+        AND wa.id = ${user_id}
+        AND CONVERT(DATE, th.date_added)
+            BETWEEN CONVERT(DATE, DATEFROMPARTS(YEAR(GETDATE()), 1, 1)) AND CONVERT(DATE, GETDATE());
+
+    -- Last year's YTD sales (same window, shifted back one year)
+    SELECT @last_ytd_sales = SUM(th.total_amount * (@main_rate / c.ratio))
+    FROM dbo.transaction_header AS th
+    JOIN dbo.web_accounts AS wa ON wa.code = th.destination_code
+    JOIN dbo.currency AS c ON c.currency_code = th.currency_code
+    WHERE th.transaction_type = 4
+        AND th.is_active = 1
+        AND wa.id = ${user_id}
+        AND CONVERT(DATE, th.date_added)
+            BETWEEN DATEADD(YEAR, -1, CONVERT(DATE, DATEFROMPARTS(YEAR(GETDATE()), 1, 1)))
+                AND DATEADD(YEAR, -1, CONVERT(DATE, GETDATE()));
+
     CREATE TABLE #temptable1 (
-        [total_outstanding] NVARCHAR(4000),  -- Total amount customer owes
-        [past_due] NVARCHAR(4000),           -- Overdue payments
-        [ytd_sales] NVARCHAR(4000),          -- Year-to-date sales
-        [last_ytd_sales] NVARCHAR(4000)      -- Previous year's YTD sales
+        [total_outstanding] NVARCHAR(4000),
+        [past_due] NVARCHAR(4000),
+        [ytd_sales] NVARCHAR(4000),
+        [last_ytd_sales] NVARCHAR(4000)
     );
-    
-    -- Insert sample/demo data (replace with actual calculations in production)
+
     INSERT INTO #temptable1
     VALUES (
-        ISNULL('$' + ' ' + FORMAT(3064.45, 'N2'), 'N/A'),
-        ISNULL('$' + ' ' + FORMAT(693.57, 'N2'), 'N/A'),
-        ISNULL('$' + ' ' + FORMAT(6984.77, 'N2'), 'N/A'),
-        ISNULL('$' + ' ' + FORMAT(5455.44, 'N2'), 'N/A')
-    )
-    
-    -- Return the statistics
+        ISNULL(@main_symbol + ' ' + FORMAT(@total_outstanding, 'N2'), 'N/A'),
+        ISNULL(@main_symbol + ' ' + FORMAT(@past_due, 'N2'), 'N/A'),
+        ISNULL(@main_symbol + ' ' + FORMAT(@ytd_sales, 'N2'), 'N/A'),
+        ISNULL(@main_symbol + ' ' + FORMAT(@last_ytd_sales, 'N2'), 'N/A')
+    );
+
     SELECT * FROM #temptable1 AS t;
-    
-    -- Clean up temporary table
+
     DROP TABLE #temptable1;
+`;
+
+  // ============================================
+  // STEP 2.5: Get next visit details
+  // ============================================
+  const nextVisit = await prisma.$queryRaw`
+    SELECT TOP 1
+        next_planned_visit = FORMAT(v.visit_date, 'dd MMM yyyy'),
+        sales_rep = u.description,
+        days_remaining = DATEDIFF(DAY, CAST(GETDATE() AS DATE), CAST(v.visit_date AS DATE)),
+        visit_date = v.visit_date
+    FROM dbo.visit AS v
+    JOIN dbo.[user] AS u
+        ON u.user_code = v.user_code
+    WHERE v.visit_id IN (
+        SELECT DISTINCT th.visit_id
+        FROM dbo.transaction_header AS th
+        WHERE th.destination_code = ${user.code}
+        AND th.transaction_type = 4
+        AND th.is_active = 1
+        AND th.visit_id IS NOT NULL
+    )
+        AND v.visit_date >= CAST(GETDATE() AS DATE)
+    ORDER BY v.visit_date ASC               -- Most recent first
   `;
 
   // ============================================
@@ -288,32 +263,17 @@ const getDashboardData = async (user_id: number, companyId: string) => {
   // STEP 5: Get collection/payment history
   // Fetches top 5 recent payments made by the customer
   // ============================================
-  // PREVIOUS VERSION:
-  // const collectionHeaders = await prisma.$queryRaw`
-  //   SELECT TOP 5
-  //       invoice_number = choi.transaction_header_code,  -- Invoice being paid
-  //       due_date = FORMAT(ch.date_added, 'dd/MM/yy'),   -- Payment date
-  //       amount = CASE                                     -- Format amount with currency
-  //                   WHEN ch.currency_code = '1' THEN 'L.L. '
-  //                   WHEN ch.currency_code = '2' THEN '$ '
-  //                   ELSE ch.currency_code + ' '
-  //               END + FORMAT(ch.total_amount, 'N2')
-  //   FROM dbo.collection_header AS ch                    -- Collection/Payment header
-  //   JOIN dbo.collection_header_open_invoice AS choi     -- Links payment to invoices
-  //       ON choi.collection_header_id = ch.collection_header_id
-  //   WHERE ch.is_active = 1
-  //       AND ch.[client_code] = ${user.code}             -- Payments made by this customer
-  //   ORDER BY ch.date_added DESC;                        -- Most recent first
-  // `;
   const collectionHeaders = await prisma.$queryRaw`
     SELECT TOP 5
         invoice_number = choi.transaction_header_code,  -- Invoice being paid
         due_date = FORMAT(ch.date_added, 'dd/MM/yy'),   -- Payment date
-        amount = '$ ' + FORMAT(1443.74, 'N2')        -- Placeholder
+        amount = ISNULL(c.symbol, ch.currency_code) + ' ' + FORMAT(ch.total_amount, 'N2')
     FROM dbo.collection_header AS ch                    -- Collection/Payment header
     JOIN dbo.collection_header_open_invoice AS choi     -- Links payment to invoices
         ON choi.collection_header_id = ch.collection_header_id
-    WHERE ch.is_active = 1 
+    LEFT JOIN dbo.currency AS c                          -- Currency symbol lookup
+        ON c.currency_code = ch.currency_code
+    WHERE ch.is_active = 1
         AND ch.[client_code] = ${user.code}             -- Payments made by this customer
     ORDER BY ch.date_added DESC;                        -- Most recent first
   `;
@@ -322,51 +282,29 @@ const getDashboardData = async (user_id: number, companyId: string) => {
   // STEP 6: Get most recent open invoice/payment details
   // Returns the latest payment with check/bank details if applicable
   // ============================================
-  // PREVIOUS VERSION:
-  // const openInvoice = await prisma.$queryRaw`
-  //   SELECT TOP 1
-  //       payment_amount = CASE                              -- Formatted payment amount
-  //                           WHEN ch.currency_code = '1' THEN 'L.L. '
-  //                           WHEN ch.currency_code = '2' THEN '$ '
-  //                           ELSE ch.currency_code + ' '
-  //                       END + FORMAT(ch.total_amount, 'N2'),
-  //       paid_for = choi.transaction_header_code,          -- Which invoice was paid
-  //       payment_on = FORMAT(ch.date_added, 'dd MMM yyyy'), -- Payment date
-  //       payment_type = CASE                                -- Payment method details
-  //                         WHEN cb.Payment_type = 2 THEN 'CASH'
-  //                         ELSE 'CHEQUE- ' + cb.check_serial_number + ' [bank: ' + b.description + ']'
-  //                     END
-  //   FROM dbo.collection_header AS ch
-  //   JOIN dbo.collection_header_open_invoice AS choi
-  //       ON choi.collection_header_id = ch.collection_header_id
-  //   JOIN dbo.collection_body AS cb                        -- Payment body with check details
-  //       ON cb.collection_header_id = ch.collection_header_id
-  //   LEFT JOIN dbo.bank AS b                               -- Bank info for cheques
-  //       ON b.bank_code = cb.bank_code
-  //   WHERE ch.is_active = 1
-  //       AND ch.[client_code] = ${user.code}
-  //   ORDER BY ch.date_added DESC;                          -- Most recent payment first
-  // `;
   const openInvoice = await prisma.$queryRaw`
-    SELECT TOP 1
-        payment_amount = '$ ' + FORMAT(1443.74, 'N2')  ,   -- Placeholder
-        paid_for = choi.transaction_header_code,          -- Which invoice was paid
-        payment_on = FORMAT(ch.date_added, 'dd MMM yyyy'), -- Payment date
-        payment_type = CASE                                -- Payment method details
-                          WHEN cb.Payment_type = 2 THEN 'CASH'
-                          ELSE 'CHEQUE- ' + cb.check_serial_number + ' [bank: ' + b.description + ']'
-                      END
-    FROM dbo.collection_header AS ch
-    JOIN dbo.collection_header_open_invoice AS choi
-        ON choi.collection_header_id = ch.collection_header_id
-    JOIN dbo.collection_body AS cb                        -- Payment body with check details
-        ON cb.collection_header_id = ch.collection_header_id
-    LEFT JOIN dbo.bank AS b                               -- Bank info for cheques
-        ON b.bank_code = cb.bank_code
-    WHERE ch.is_active = 1 
-        AND ch.[client_code] = ${user.code}
-    ORDER BY ch.date_added DESC;                          -- Most recent payment first
-  `;
+        SELECT TOP 1
+            payment_amount = ISNULL(c.symbol, ch.currency_code) + ' ' + FORMAT(ch.total_amount, 'N2'),
+            paid_for = choi.transaction_header_code,          -- Which invoice was paid
+            payment_on = FORMAT(ch.date_added, 'dd MMM yyyy'), -- Payment date
+            payment_type = CASE                                -- Payment method details
+                            WHEN cb.Payment_type = 2 THEN 'CASH'
+                            ELSE 'CHEQUE- ' + ISNULL(cb.check_serial_number, 'N/A')
+                                + ' [bank: ' + ISNULL(b.description, 'N/A') + ']'
+                        END
+        FROM dbo.collection_header AS ch
+        JOIN dbo.collection_header_open_invoice AS choi
+            ON choi.collection_header_id = ch.collection_header_id
+        JOIN dbo.collection_body AS cb                        -- Payment body with check details
+            ON cb.collection_header_id = ch.collection_header_id
+        LEFT JOIN dbo.bank AS b                               -- Bank info for cheques
+            ON b.bank_code = cb.bank_code
+        LEFT JOIN dbo.currency AS c                            -- Currency symbol lookup
+            ON c.currency_code = ch.currency_code
+        WHERE ch.is_active = 1
+            AND ch.[client_code] = ${user.code}
+        ORDER BY ch.date_added DESC;                          -- Most recent payment first
+    `;
 
   // ============================================
   // STEP 7: Get latest transaction/order summary
@@ -773,6 +711,7 @@ const getDashboardData = async (user_id: number, companyId: string) => {
   // ============================================
   const combinedResults = {
     stats: stats[0], // Dashboard statistics (first row)
+    nextVisit: nextVisit[0], // Next visit details
     recentOrders: recentOrders, // Recent order history
     nextDeliveryDues: nextDeliveryDues, // Upcoming deliveries
     collectionHeaders: collectionHeaders, // Payment history

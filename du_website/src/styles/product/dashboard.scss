@@ -309,6 +309,84 @@
 }
 
 /* =========================================================
+   NEXT VISIT
+   ========================================================= */
+
+.dashboard-next-visit {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: 1rem;
+
+  padding: 1rem;
+
+  border-radius: 8px;
+  background-color: $white;
+
+  box-shadow: 0 1px 3px rgba(3, 0, 71, 0.1);
+}
+
+.dashboard-next-visit-icon {
+  flex-shrink: 0;
+
+  width: 50px;
+  height: 50px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 8px;
+
+  background-color: rgba(#0b7285, 0.1);
+  color: #0b7285;
+
+  font-size: 1.3rem;
+}
+
+.dashboard-next-visit-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.dashboard-next-visit-title {
+  margin: 0 0 2px;
+
+  color: #888;
+
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.dashboard-next-visit-info h5 {
+  margin: 0 0 4px;
+
+  color: $dark;
+
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.dashboard-next-visit-sub {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #666;
+}
+
+.dashboard-next-visit-days {
+  color: #0b7285;
+}
+
+/* =========================================================
    STATISTICS
    ========================================================= */
 

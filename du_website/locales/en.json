@@ -249,7 +249,10 @@
     "total_sales": "Total Sales",
     "total_returns": "Total Returns",
     "sold": "Sold",
-    "no_recent_deliveries": "No Recent Deliveries"
+    "no_recent_deliveries": "No Recent Deliveries",
+    "next_visit": "Next Visit",
+    "today": "Today",
+    "days_left": "Days Left"
   },
   "products": {
     "category": "Category",

@@ -34,7 +34,7 @@ export const Companies = {
     name: "Droguerie de L'Union Pharmaceutical Company",
     abreviation: "DU",
     logo: "/assets/img/DU/logo.png",
-    placeholder: process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE_DU,
+    placeholder: "/assets/img/DU/product/PlaceholderImage.jpg",
     favicon: "/assets/img/DU/favicon.ico",
     about: "/assets/img/DU/extra/page-about.jpg",
 
@@ -62,7 +62,7 @@ export const Companies = {
     name: "Union Pharmaceutique d'Orient",
     abreviation: "UPO",
     logo: "/assets/img/UPO/logo.png",
-    placeholder: process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE_DU,
+    placeholder: "/assets/img/DU/product/PlaceholderImage.jpg",
     favicon: "/assets/img/DU/favicon.ico",
     about: "/assets/img/DU/extra/page-about.jpg",
 
@@ -90,7 +90,7 @@ export const Companies = {
     name: "Food & Drug Corporation",
     abreviation: "FDC",
     logo: "/assets/img/FDC/logo.png",
-    placeholder: process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE_DU,
+    placeholder: "/assets/img/DU/product/PlaceholderImage.jpg",
     favicon: "/assets/img/DU/favicon.ico",
     about: "/assets/img/DU/extra/page-about.jpg",
 
@@ -146,7 +146,7 @@ export const Companies = {
     name: "Vitalait",
     abreviation: "Vitalait",
     logo: "/assets/img/VITALAIT/logo.png",
-    placeholder: process.env.NEXT_PUBLIC_PRODUCT_PLACEHOLDER_IMAGE_VI,
+    placeholder: "/assets/img/VITALAIT/product/PlaceholderImage.jpg",
     favicon: "/assets/img/VITALAIT/favicon.ico",
     about: "/assets/img/VITALAIT/extra/page-about.jpg",
 

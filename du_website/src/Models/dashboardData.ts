@@ -236,6 +236,12 @@ type dashboardData = {
     ytd_sales: string;
     last_ytd_sales: string;
   };
+  nextVisit: {
+    next_planned_visit: string;
+    sales_rep: string;
+    days_remaining: number;
+    visit_date: string;
+  };
   recentOrders: {
     sales_number: string;
     order_date: string;

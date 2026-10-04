@@ -249,7 +249,10 @@
     "total_sales": "Ventes totales",
     "total_returns": "Retours totaux",
     "sold": "Vendu",
-    "no_recent_deliveries": "Aucune livraison récente"
+    "no_recent_deliveries": "Aucune livraison récente",
+    "next_visit": "Visite suivante",
+    "today": "Aujourd'hui",
+    "days_left": "Jours restants"
   },
   "products": {
     "category": "Catégorie",

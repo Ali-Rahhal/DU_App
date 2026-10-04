@@ -1,28 +1,7 @@
-import HomePageBannerSlider from "@/components/HomePageBannerSlider";
-import HomePageCategorySlider from "@/components/HomePageCategorySlider";
-import HomePageBrandSlider from "@/components/HomePageBrandSlider";
-import HomePageDealsOfTheDay from "@/components/HomePageDealsOfTheDay";
-import HomePageDealsSlider from "@/components/HomePageDealsSlider";
-import HomePageOffers from "@/components/HomePageOffers";
-import HomePagePopularCategorySlider from "@/components/HomePagePopularCategorySlider";
-import {
-  brandSlider,
-  popularCategorySlider,
-  categorySlider,
-  homeOffer,
-  homeSlider,
-  homeSlider2,
-  getDefaultHomeOffer,
-  getDefaultHomeSlider,
-  getDefaultHomeSlider2,
-  getDefaultPopularCategorySlider,
-  getDefaultCategorySlider,
-} from "@/utils/data";
 import React from "react";
-import Layout from "@/components/Layout/Layout";
 import { getProducts } from "@/utils/apiCalls";
-import HomePageSlider from "@/components/HomePageSlider";
 import { useCompanyAssets } from "@/hooks/useCompanyAssets";
+import Dashboard from "./dashboard";
 
 const getAllProducts = async (onSale, cookie) => {
   return await getProducts(
@@ -53,38 +32,9 @@ export async function getServerSideProps(context: any) {
 const HomePage = ({ products }) => {
   const { companyHydrated, companyId } = useCompanyAssets();
   return (
-    <Layout showMobileNavbar={true}>
-      <HomePageBannerSlider
-        banners={
-          companyHydrated ? homeSlider[companyId] : getDefaultHomeSlider()
-        }
-      />
-      <HomePageCategorySlider
-        categorys={
-          companyHydrated
-            ? categorySlider[companyId]
-            : getDefaultCategorySlider()
-        }
-      />{" "}
-      <HomePageDealsSlider deals={products} />
-      <HomePageOffers
-        offers={companyHydrated ? homeOffer[companyId] : getDefaultHomeOffer()}
-      />
-      {/* <HomePageDealsOfTheDay deals={products} /> */}
-      <HomePagePopularCategorySlider
-        categorys={
-          companyHydrated
-            ? popularCategorySlider[companyId]
-            : getDefaultPopularCategorySlider()
-        }
-      />
-      <HomePageSlider
-        banners={
-          companyHydrated ? homeSlider2[companyId] : getDefaultHomeSlider2()
-        }
-      />
-      {/* <HomePageDealsSlider deals={products} /> */}
-    </Layout>
+    <>
+      <Dashboard />
+    </>
   );
 };
 

@@ -14,7 +14,6 @@ import {
   User,
   Languages,
   Download,
-  LayoutDashboard,
   UserCircle,
   Megaphone,
   ClipboardList,
@@ -422,13 +421,6 @@ function Navbar({
         <nav className="sidebar-navigation">
           {isAuth && (
             <>
-              <SidebarLink
-                href="/dashboard"
-                icon={<LayoutDashboard size={19} />}
-                label={t("navbar.dashboard")}
-                onClick={closeSidebar}
-              />
-
               <SidebarLink
                 href="/account"
                 icon={<UserCircle size={19} />}

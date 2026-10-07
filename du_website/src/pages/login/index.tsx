@@ -15,7 +15,7 @@ import {
 import { Companies, CompanyId } from "@/utils/config_companies";
 import ChangeLangDropdown from "@/components/common/ChangeLangDropdown";
 import InstallPWAButton from "@/components/common/InstalPWAButton";
-import { getLicensedCompanies } from "@/utils/apiCalls";
+import { getCompanyStatus, getLicensedCompanies } from "@/utils/apiCalls";
 
 export default function LoginPage() {
   const [licensedCompanies, setLicensedCompanies] = useState<CompanyId[]>([]);
@@ -38,8 +38,16 @@ export default function LoginPage() {
   const { refreshCart } = useAccountStore();
   const { companyId, setCompany } = useCompanyStore();
 
+  const [companyStatus, setCompanyStatus] = useState<Record<string, boolean>>(
+    {},
+  );
+
   const router = useRouter();
   const t = useTranslations("login_register");
+
+  useEffect(() => {
+    getCompanyStatus().then((res) => setCompanyStatus(res.data.result));
+  }, []);
 
   useEffect(() => {
     async function loadLicensedCompanies() {
@@ -52,7 +60,7 @@ export default function LoginPage() {
         setLicensedCompanies(companies);
 
         const enabledCompanies = companies.filter(
-          (company) => Companies[company]?.enabled,
+          (company) => companyStatus[company],
         );
 
         if (enabledCompanies.length === 1) {
@@ -212,7 +220,7 @@ export default function LoginPage() {
                 Object.values(Companies)
                   .filter(
                     (c) =>
-                      c.enabled &&
+                      companyStatus[c.id] &&
                       licensedCompanies.includes(c.id as CompanyId),
                   )
                   .map((c) => (

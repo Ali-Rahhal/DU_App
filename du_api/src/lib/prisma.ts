@@ -24,6 +24,9 @@ export function getPrisma(companyId: string) {
 
 function getDatabaseUrl(companyId: string) {
   switch (companyId) {
+    case "Global":
+      return process.env.GLOBAL_DATABASE_URL!;
+
     case "DU":
       return process.env.DU_DATABASE_URL!;
 

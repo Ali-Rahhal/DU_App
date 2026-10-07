@@ -1,5 +1,4 @@
 export interface CompanyConfig {
-  enabled: boolean;
   id: string;
   name: string;
   abreviation: string;
@@ -29,7 +28,6 @@ export interface CompanyConfig {
 
 export const Companies = {
   DU: {
-    enabled: true,
     id: "DU",
     name: "Droguerie de L'Union Pharmaceutical Company",
     abreviation: "DU",
@@ -57,7 +55,6 @@ export const Companies = {
     },
   },
   UPO: {
-    enabled: true,
     id: "UPO",
     name: "Union Pharmaceutique d'Orient",
     abreviation: "UPO",
@@ -85,7 +82,6 @@ export const Companies = {
     },
   },
   FDC: {
-    enabled: true,
     id: "FDC",
     name: "Food & Drug Corporation",
     abreviation: "FDC",
@@ -113,7 +109,6 @@ export const Companies = {
     },
   },
   SADCO: {
-    enabled: true,
     id: "SADCO",
     name: "Sami Dandan & Co.",
     abreviation: "SADCO",
@@ -123,8 +118,8 @@ export const Companies = {
     about: "/assets/img/DU/extra/page-about.jpg",
 
     transalations: {
-      description: "company.description_du",
-      copyright: "company.copyright_du",
+      description: "company.description_sadco",
+      copyright: "company.copyright_sadco",
     },
 
     social: {
@@ -141,7 +136,6 @@ export const Companies = {
     },
   },
   VI: {
-    enabled: false,
     id: "VI",
     name: "Vitalait",
     abreviation: "Vitalait",

@@ -1,6 +1,7 @@
 import { CartItem } from "@/types/productTypes";
 import {
   getCartItems,
+  getCompanyStatus,
   getUserDetails,
   login,
   logout,
@@ -264,14 +265,14 @@ export const useAuthStore = create<AuthStore>()(
 type CompanyStore = {
   hydrated: boolean;
   companyDisabled: boolean;
+  companyStatusLoaded: boolean;
 
   companyId: CompanyId;
 
   setCompany: (companyId: CompanyId) => void;
-
   setHydrated: (v: boolean) => void;
-
   getCompanyConfig: () => CompanyConfig;
+  checkCompanyEnabled: () => Promise<void>;
 };
 
 export const useCompanyStore = create<CompanyStore>()(
@@ -279,6 +280,7 @@ export const useCompanyStore = create<CompanyStore>()(
     (set, get) => ({
       hydrated: false,
       companyDisabled: false,
+      companyStatusLoaded: false,
 
       companyId: process.env.NEXT_PUBLIC_DEFAULT_COMPANY as CompanyId,
 
@@ -290,21 +292,25 @@ export const useCompanyStore = create<CompanyStore>()(
 
       getCompanyConfig: () => {
         const state = get();
-
         return Companies[state.companyId];
+      },
+
+      checkCompanyEnabled: async () => {
+        const { companyId } = get();
+        try {
+          const res = await getCompanyStatus();
+          const isEnabled = res.data.result[companyId] ?? false;
+          set({ companyDisabled: !isEnabled, companyStatusLoaded: true });
+        } catch {
+          // fail closed: if we can't confirm the company is enabled, treat it as disabled
+          set({ companyDisabled: true, companyStatusLoaded: true });
+        }
       },
     }),
     {
       name: "companyCustomerPortalApp",
       onRehydrateStorage: () => (state) => {
         if (!state) return;
-
-        const company = Companies[state.companyId];
-
-        if (!company || !company.enabled) {
-          state.companyDisabled = true;
-        }
-
         state?.setHydrated(true);
       },
     },

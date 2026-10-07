@@ -36,17 +36,28 @@ function App({ Component, pageProps }) {
   const { refreshUserInfo, refreshCart } = useAccountStore();
   const { isAuth, logout } = useAuthStore();
   const { locale } = router;
-  const { companyHydrated, companyDisabled, companyName, companyFavicon } =
-    useCompanyAssets();
+  const {
+    companyHydrated,
+    companyDisabled,
+    companyStatusLoaded,
+    checkCompanyEnabled,
+    companyName,
+    companyFavicon,
+  } = useCompanyAssets();
 
   useEffect(() => {
     if (!companyHydrated) return;
+    checkCompanyEnabled();
+  }, [companyHydrated]);
+
+  useEffect(() => {
+    if (!companyStatusLoaded) return;
 
     if (companyDisabled) {
       logout();
       router.push("/login");
     }
-  }, [companyHydrated, companyDisabled]);
+  }, [companyStatusLoaded, companyDisabled]);
 
   useEffect(() => {
     if (!isAuth) return;

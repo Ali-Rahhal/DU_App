@@ -151,19 +151,22 @@ router.post("/create-password", async (c) => {
   }
 });
 
-// router.post(`/send_verify_email`, async (c) => {
-//   try {
-//     const body = await c.req.json();
+router.get("/companies/status", async (c) => {
+  const prisma = getPrisma("Global");
+  const rows = await prisma.$queryRaw<
+    Array<{ company_id: string; is_enabled: boolean }>
+  >`
+    SELECT company_id, is_enabled
+    FROM company_config
+  `;
 
-//     const email = body["email"];
+  const statusMap = Object.fromEntries(
+    rows.map((r) => [String(r.company_id), r.is_enabled]),
+  );
 
-//     if (!email) throw new Error("email or code not provided");
-//     const result = await sendVerify(email, c);
-//     return result;
-//   } catch (e) {
-//     return c.json({ message: e.message, result: null }, 402);
-//   }
-// });
+  return c.json({ result: statusMap }, 200);
+});
+
 // router.post(`/send_reset_email`, async (c) => {
 //   try {
 //     const body = await c.req.json();
@@ -207,20 +210,6 @@ router.post("/create-password", async (c) => {
 //       key,
 //       c
 //     );
-//     return result;
-//   } catch (e) {
-//     return c.json({ message: e.message, result: null }, 401);
-//   }
-// });
-// router.post(`/verify_email`, async (c) => {
-//   try {
-//     const body = await c.req.json();
-
-//     const email = body["email"];
-//     const key = body["key"];
-
-//     if (!email || !key) throw new Error("email or code not provided");
-//     const result = await verifyEmail(email, key, c);
 //     return result;
 //   } catch (e) {
 //     return c.json({ message: e.message, result: null }, 401);

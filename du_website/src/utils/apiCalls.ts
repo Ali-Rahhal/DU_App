@@ -234,6 +234,12 @@ const changePassword = async (
   );
 };
 
+const getCompanyStatus = async (): Promise<AxiosResponse> => {
+  return await axios.get(publicApi + "/companies/status", {
+    withCredentials: true,
+  });
+};
+
 //////
 ////////Products ApiCalls
 //////
@@ -1089,6 +1095,7 @@ export {
   changePassword,
   getUserDetails,
   updateUserDetails,
+  getCompanyStatus,
   //Products
   getProducts,
   getProduct,

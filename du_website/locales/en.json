@@ -798,8 +798,10 @@
   },
   "company": {
     "description_du": "Droguerie de L'Union Pharmaceutical Company is a leading pharmaceutical company in Lebanon. We are committed to providing high-quality, affordable, and innovative solutions to our customers.",
+    "description_sadco": "Sadco is a leading pharmaceutical company committed to delivering high-quality, affordable, and innovative solutions to our customers.",
     "description_vitalait": "Vitalait is a leading dairy and food company committed to delivering fresh, nutritious, and high-quality products to families. Since 1998, we have focused on innovation, trust, and excellence to provide healthy and affordable choices that meet the everyday needs of our customers.",
     "copyright_du": "Copyright © 2026 DU | All rights reserved.",
+    "copyright_sadco": "Copyright © 2026 Sadco | All rights reserved.",
     "copyright_vitalait": "Copyright © 2026 Vitalait | All rights reserved.",
     "place_holder": "Place Holder"
   },

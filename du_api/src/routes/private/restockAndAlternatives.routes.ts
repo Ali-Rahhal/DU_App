@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import {
+  getItemAlternatives,
   getRestockConfig,
   replaceItemAlternatives,
   restockItem,
@@ -103,6 +104,23 @@ router.post(`/:code/restock`, async (c) => {
       { message: "Item added to cart successfully for restocking", result },
       200,
     );
+  } catch (e) {
+    return c.json({ message: e.message, result: null }, 400);
+  }
+});
+
+router.get(`/:code/alternatives`, async (c) => {
+  try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
+    const itemCode = c.req.param("code");
+
+    if (!itemCode) throw new Error("Item code is required");
+
+    const result = await getItemAlternatives(itemCode, companyId);
+
+    return c.json({ message: "Fetched alternatives", result }, 200);
   } catch (e) {
     return c.json({ message: e.message, result: null }, 400);
   }

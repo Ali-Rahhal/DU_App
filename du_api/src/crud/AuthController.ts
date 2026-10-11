@@ -7,6 +7,8 @@ import * as crypto from "crypto";
 import { serialize } from "hono/utils/cookie";
 import { ROLES } from "../lib/constants";
 import { sendRegistrationVerificationEmail } from "../lib/sendRegistrationVerificationEmail";
+import { checkLicense, CompanyId } from "../lib/licenseService";
+import { setCookie } from "hono/cookie";
 
 const sendRegistrationCode = async (
   companyId: string,
@@ -550,7 +552,7 @@ const login = async (
   const userInfo = {
     first_name: user.first_name,
     last_name: user.last_name,
-    email: user.code,
+    code: user.code,
     phone: user.phone,
     is_verified: user.is_verified,
     type: user.type,
@@ -569,14 +571,59 @@ const login = async (
       401,
     );
   }
+
+  const prismaGlobal = getPrisma("Global");
+  // 1. Get or create portal user
+  const [portalUser] = await prismaGlobal.$queryRaw<{ id: bigint }[]>`
+    DECLARE @id BIGINT;
+
+    SELECT @id = id
+    FROM dbo.portal_users
+    WHERE moh_number = ${moh_number};
+
+    IF @id IS NULL
+    BEGIN
+        INSERT INTO dbo.portal_users (moh_number)
+        VALUES (${moh_number});
+
+        SET @id = SCOPE_IDENTITY();
+    END
+
+    SELECT id FROM dbo.portal_users WHERE id = @id;
+  `;
+
+  if (!portalUser) {
+    throw new Error("Failed to get or create portal user");
+  }
+
+  // 2. Check if company link exists
+  const [existing] = await prismaGlobal.$queryRaw<{ id: bigint }[]>`
+    SELECT id
+    FROM dbo.portal_user_companies
+    WHERE portal_user_id = ${portalUser.id}
+      AND company_id = ${companyId};
+  `;
+
+  // 3. Create link if missing
+  if (!existing) {
+    await prismaGlobal.$queryRaw`
+      INSERT INTO dbo.portal_user_companies
+        (portal_user_id, company_id, client_code, web_account_id)
+      VALUES
+        (${portalUser.id}, ${companyId}, ${user.code}, ${user.id});
+    `;
+  }
+
   const token = jwt.sign(
     {
       // email: user.email,
       userId: user.id,
+      portalUserId: portalUser.id,
       description: user.description,
       type: user.type,
       role: user.role,
       tokenVersion: user.token_version,
+      companyId: companyId,
     },
     process.env.JWT_SECRET as string,
     {
@@ -1004,6 +1051,200 @@ const changePassword = async (
 
   return result;
 };
+
+const getCompanies = async (portalUserId: number, c: Context) => {
+  try {
+    const prismaGlobal = getPrisma("Global");
+
+    // Only return companies linked to this portal user and enabled globally.
+    const rows = await prismaGlobal.$queryRaw<
+      { company_id: string; is_enabled: boolean }[]
+    >`
+      SELECT puc.company_id, cc.is_enabled
+      FROM dbo.portal_user_companies AS puc
+      INNER JOIN dbo.company_config AS cc
+        ON cc.company_id = puc.company_id
+      WHERE puc.portal_user_id = ${portalUserId}
+        AND puc.is_active = 1
+        AND cc.is_enabled = 1
+      ORDER BY puc.company_id;
+    `;
+
+    // Check the license for each enabled, linked company.
+    const licenseResults = await Promise.all(
+      rows.map(async ({ company_id }) => {
+        const license = await checkLicense(company_id as CompanyId);
+
+        return {
+          companyId: company_id,
+          valid: license.valid,
+        };
+      }),
+    );
+
+    const companies = licenseResults
+      .filter((company) => company.valid)
+      .map(({ companyId }) => ({ companyId }));
+
+    return c.json({
+      message: "Companies retrieved successfully",
+      result: companies,
+    });
+  } catch (error) {
+    console.error("Get companies failed:", error);
+
+    return c.json(
+      { message: "Failed to retrieve companies", result: null },
+      500,
+    );
+  }
+};
+
+const switchCompany = async (
+  portalUserId: number,
+  companyIdToSwitchTo: string,
+  c: Context,
+) => {
+  try {
+    const prismaGlobal = getPrisma("Global");
+
+    const configRows = await prismaGlobal.$queryRaw<{ is_enabled: boolean }[]>`
+      SELECT is_enabled
+      FROM dbo.company_config
+      WHERE company_id = ${companyIdToSwitchTo};
+    `;
+
+    if (!configRows.length || !configRows[0].is_enabled) {
+      return c.json({ message: "This company is disabled", result: null }, 403);
+    }
+
+    const license = await checkLicense(companyIdToSwitchTo as CompanyId);
+
+    if (!license.valid) {
+      return c.json(
+        {
+          message:
+            license.message ?? "This company's license is invalid or expired",
+          result: null,
+        },
+        403,
+      );
+    }
+
+    // 1. Verify this portal user is linked to the requested company.
+    const [link] = await prismaGlobal.$queryRaw<
+      {
+        company_id: string;
+        client_code: string;
+        web_account_id: number;
+      }[]
+    >`
+      SELECT company_id, client_code, web_account_id
+      FROM dbo.portal_user_companies
+      WHERE portal_user_id = ${portalUserId}
+        AND company_id = ${companyIdToSwitchTo}
+        AND is_active = 1;
+    `;
+
+    if (!link) {
+      return c.json(
+        {
+          message: "You are not authorized to access this company",
+          result: null,
+        },
+        403,
+      );
+    }
+
+    // 2. Verify the linked account is still valid in the target company's DB.
+    const prisma = getPrisma(companyIdToSwitchTo);
+
+    const user = await prisma.web_accounts.findFirst({
+      where: {
+        id: link.web_account_id,
+        code: link.client_code,
+      },
+      select: {
+        id: true,
+        code: true,
+        description: true,
+        type: true,
+        role: true,
+        token_version: true,
+        is_blocked: true,
+        is_verified: true,
+      },
+    });
+
+    if (!user || user.is_blocked || !user.is_verified) {
+      return c.json(
+        { message: "The linked company account is unavailable", result: null },
+        403,
+      );
+    }
+
+    const client = await prisma.client.findFirst({
+      where: { client_code: link.client_code },
+      select: { status_id: true },
+    });
+
+    if (!client || client.status_id !== 1) {
+      return c.json(
+        { message: "The company client is not active", result: null },
+        403,
+      );
+    }
+
+    // 3. Issue a token for the target company's account.
+    const token = jwt.sign(
+      {
+        userId: user.id,
+        portalUserId: Number(portalUserId),
+        description: user.description,
+        type: user.type,
+        role: user.role,
+        tokenVersion: user.token_version,
+        companyId: companyIdToSwitchTo,
+      },
+      process.env.JWT_SECRET as string,
+      { expiresIn: "1d" },
+    );
+
+    const isProduction = process.env.NODE_ENV === "production";
+
+    setCookie(c, "authCustomerPortalApp", token, {
+      httpOnly: true,
+      sameSite: isProduction ? "Strict" : "Lax",
+      secure: isProduction,
+      maxAge: 60 * 60 * 24,
+      path: "/",
+    });
+
+    setCookie(c, "companyIdCustomerPortalApp", companyIdToSwitchTo, {
+      httpOnly: true,
+      sameSite: isProduction ? "Strict" : "Lax",
+      secure: isProduction,
+      maxAge: 60 * 60 * 24 * 365,
+      path: "/",
+    });
+
+    return c.json(
+      {
+        message: "Company switched successfully",
+        result: {
+          token,
+          companyId: companyIdToSwitchTo,
+          userId: user.id,
+        },
+      },
+      200,
+    );
+  } catch (error) {
+    console.error("Switch company failed:", error);
+    return c.json({ message: "Failed to switch company", result: null }, 500);
+  }
+};
+
 export {
   sendRegistrationCode,
   verifyRegistrationCode,
@@ -1017,4 +1258,6 @@ export {
   getUserDetails,
   updateUserDetails,
   changePassword,
+  getCompanies,
+  switchCompany,
 };

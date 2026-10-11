@@ -9,18 +9,15 @@ import authPrivateRoutes from "./routes/private/auth.routes";
 import authPublicRoutes from "./routes/public/auth.routes";
 import childAccountRoutes from "./routes/private/childAccount.routes";
 import usersRoutes from "./routes/private/users.routes";
-import surveyPrivateRoutes from "./routes/private/survey.routes";
-import surveyPublicRoutes from "./routes/public/survey.routes";
+import surveyRoutes from "./routes/private/survey.routes";
 import complaintRoutes from "./routes/private/complaint.routes";
-import promotionPrivateRoutes from "./routes/private/promotion.routes";
-import promotionPublicRoutes from "./routes/public/promotion.routes";
+import promotionRoutes from "./routes/private/promotion.routes";
 import orderRoutes from "./routes/private/orders.routes";
-import productRoutes from "./routes/public/products.routes";
+import productRoutes from "./routes/private/products.routes";
 import otherPrivateRoutes from "./routes/private/other.routes";
 import otherPublicRoutes from "./routes/public/other.routes";
 import cartAndFavRoutes from "./routes/private/cartAndFav.routes";
-import restockAndAlternativesPrivateRoutes from "./routes/private/restockAndAlternatives.routes";
-import restockAndAlternativesPublicRoutes from "./routes/public/restockAndAlternatives.routes";
+import restockAndAlternativesRoutes from "./routes/private/restockAndAlternatives.routes";
 import expiryDealRoutes from "./routes/private/expiryDeal.routes";
 import fidelityRoutes from "./routes/private/fidelity.routes";
 import aiRoutes from "./routes/private/ai.routes";
@@ -95,9 +92,10 @@ async function authMiddleware(c, next) {
   const token = getCookie(c, "authCustomerPortalApp");
 
   if (!token) return c.json({ message: "Not Authorized", result: null }, 401);
-  const userId = await tokenAuth(token, companyId);
+  const { userId, portalUserId } = await tokenAuth(token, companyId);
   if (!userId) return c.json({ message: "Invalid token", result: null }, 401);
   c.req.user_id = userId;
+  c.req.portal_user_id = portalUserId;
   await next();
 }
 
@@ -107,22 +105,19 @@ app.use(`${PRIVATE_API}/*`, authMiddleware);
 app.use("*", licenseMiddleware);
 
 app.route(`${PUBLIC_API}`, authPublicRoutes);
-app.route(`${PUBLIC_API}`, productRoutes);
 app.route(`${PUBLIC_API}`, otherPublicRoutes);
-app.route(`${PUBLIC_API}`, promotionPublicRoutes);
-app.route(`${PUBLIC_API}/survey`, surveyPublicRoutes);
-app.route(`${PUBLIC_API}/restockAndAlt`, restockAndAlternativesPublicRoutes);
 
 app.route(`${PRIVATE_API}`, authPrivateRoutes);
+app.route(`${PRIVATE_API}`, productRoutes);
 app.route(`${PRIVATE_API}`, cartAndFavRoutes);
 app.route(`${PRIVATE_API}`, otherPrivateRoutes);
-app.route(`${PRIVATE_API}`, promotionPrivateRoutes);
+app.route(`${PRIVATE_API}`, promotionRoutes);
 app.route(`${PRIVATE_API}`, orderRoutes);
 app.route(`${PRIVATE_API}/users`, usersRoutes);
 //app.route(`${PRIVATE_API}/child`, childAccountRoutes);
-app.route(`${PRIVATE_API}/survey`, surveyPrivateRoutes);
+app.route(`${PRIVATE_API}/survey`, surveyRoutes);
 app.route(`${PRIVATE_API}/complaint`, complaintRoutes);
-app.route(`${PRIVATE_API}/restockAndAlt`, restockAndAlternativesPrivateRoutes);
+app.route(`${PRIVATE_API}/restockAndAlt`, restockAndAlternativesRoutes);
 app.route(`${PRIVATE_API}/expiryDeal`, expiryDealRoutes);
 app.route(`${PRIVATE_API}/fidelity`, fidelityRoutes);
 app.route(`${PRIVATE_API}/ai`, aiRoutes);

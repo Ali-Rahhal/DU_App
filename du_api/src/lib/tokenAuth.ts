@@ -17,7 +17,7 @@ const tokenAuth = async (Bearertoken: string, companyId: string) => {
     if (!user || user.token_version !== payload.tokenVersion) {
       return null; // token has been invalidated
     }
-    return user.id;
+    return { userId: user.id, portalUserId: payload.portalUserId };
   } catch (e) {
     return null;
   }

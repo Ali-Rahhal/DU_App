@@ -1,6 +1,15 @@
 import { Hono } from "hono";
-import { getUserDetails, changePassword } from "../../crud/AuthController";
-import { ensureAccountPermission, getUserId } from "../../lib/utils";
+import {
+  getUserDetails,
+  changePassword,
+  switchCompany,
+  getCompanies,
+} from "../../crud/AuthController";
+import {
+  ensureAccountPermission,
+  getPortalUserId,
+  getUserId,
+} from "../../lib/utils";
 import { ALL_PERMISSIONS } from "../../lib/constants";
 const router = new Hono();
 
@@ -111,5 +120,42 @@ router.post(`/change_password`, async (c) => {
 //     return c.json({ message: e.message, result: null }, 401);
 //   }
 // });
+
+router.get(`/companies/get_companies`, async (c) => {
+  try {
+    const portalUserId = await getPortalUserId(c);
+
+    if (!portalUserId) {
+      return c.json({ message: "Not Authorized", result: null }, 401);
+    }
+
+    return await getCompanies(portalUserId, c);
+  } catch (e) {
+    return c.json({ message: e.message, result: null }, 401);
+  }
+});
+
+router.post("/companies/switch_company", async (c) => {
+  try {
+    const portalUserId = await getPortalUserId(c);
+
+    if (!portalUserId) {
+      return c.json({ message: "Not Authorized", result: null }, 401);
+    }
+
+    const body = await c.req.json();
+    const companyIdToSwitchTo = body.company_id_to_switch_to;
+
+    if (typeof companyIdToSwitchTo !== "string") {
+      return c.json({ message: "Invalid company id", result: null }, 400);
+    }
+
+    return await switchCompany(portalUserId, companyIdToSwitchTo, c);
+  } catch (e) {
+    const message = e instanceof Error ? e.message : "Unexpected error";
+
+    return c.json({ message, result: null }, 500);
+  }
+});
 
 export default router;

@@ -3,6 +3,7 @@ import {
   getSurveys,
   getSurveyElements,
   saveSurveyAnswer,
+  getProductsSurvey,
 } from "../../crud/surveyController";
 import { getUserId } from "../../lib/utils";
 const router = new Hono();
@@ -71,6 +72,30 @@ router.post(`/save_survey_answer`, async (c) => {
 
     return c.json({
       message: "Survey Answer saved",
+      result: result,
+    });
+  } catch (e) {
+    return c.json({ message: e.message, result: null }, 400);
+  }
+});
+
+router.get(`/get-products`, async (c) => {
+  try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
+    const userId = await getUserId(c);
+    const { skip, take, search } = c.req.query();
+    const result = await getProductsSurvey(
+      {
+        skip: parseInt(skip as string) || 0,
+        take: parseInt(take as string) || 25,
+        search: search,
+      },
+      companyId,
+    );
+    return c.json({
+      message: "Fetched Products",
       result: result,
     });
   } catch (e) {

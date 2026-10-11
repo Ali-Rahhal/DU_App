@@ -367,11 +367,17 @@ export async function getUserId(c) {
   const userId = c.req.user_id;
   return userId;
 }
+
+export async function getPortalUserId(c) {
+  const portalUserId = c.req.portal_user_id;
+  return portalUserId;
+}
+
 export async function getUserIdFromToken(c: Context, companyId: string) {
   // const token = c.req.header("Authorization");
   const token = getCookie(c, "authCustomerPortalApp");
   if (!token) throw new Error("No token provided");
-  const userId = await tokenAuth(token, companyId);
+  const { userId } = await tokenAuth(token, companyId);
   return userId;
 }
 

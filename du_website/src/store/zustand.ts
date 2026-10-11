@@ -7,6 +7,7 @@ import {
   logout,
   removeFromCart,
   updateCartItem,
+  switchCompany as switchCompanyApi,
 } from "@/utils/apiCalls";
 import { ROLES } from "@/utils/data";
 import { create } from "zustand";
@@ -52,6 +53,8 @@ type AccountStore = {
 
   checkPermission: (permission: string) => boolean;
   checkRole: (role: string) => boolean;
+
+  resetAccount: () => void;
 };
 
 export const useAccountStore = create<AccountStore>()(
@@ -86,6 +89,24 @@ export const useAccountStore = create<AccountStore>()(
         const state = get();
         return state.role === role;
       },
+
+      resetAccount: () =>
+        set({
+          cart: 0,
+          cartItems: [],
+          name: "",
+          firstName: "",
+          lastName: "",
+          pharmacy_name: "",
+          moh_number: "",
+          code: "",
+          phone: "",
+          email: "",
+          address: "",
+          type: null,
+          role: null,
+          permissions: [],
+        }),
 
       refreshUserInfo: async () => {
         if (!useAuthStore.getState().isAuth) return;
@@ -203,6 +224,7 @@ type AuthStore = {
   token: string | null;
   isAuth: boolean;
 
+  setToken: (token: string | null) => void;
   login: ({
     moh_number,
     password,
@@ -218,6 +240,8 @@ export const useAuthStore = create<AuthStore>()(
     (set) => ({
       token: null,
       isAuth: false,
+
+      setToken: (token) => set({ token, isAuth: !!token }),
       login: async ({ moh_number, password }) => {
         const result = await login({ moh_number, password }).then((res) => {
           set({
@@ -273,6 +297,7 @@ type CompanyStore = {
   setHydrated: (v: boolean) => void;
   getCompanyConfig: () => CompanyConfig;
   checkCompanyEnabled: () => Promise<void>;
+  switchCompany: (companyId: CompanyId) => Promise<void>;
 };
 
 export const useCompanyStore = create<CompanyStore>()(
@@ -305,6 +330,21 @@ export const useCompanyStore = create<CompanyStore>()(
           // fail closed: if we can't confirm the company is enabled, treat it as disabled
           set({ companyDisabled: true, companyStatusLoaded: true });
         }
+      },
+
+      switchCompany: async (companyId) => {
+        // Server verifies access and sets the new auth + company cookies
+        const res = await switchCompanyApi(companyId);
+
+        // Replace the old company's token
+        useAuthStore.getState().setToken(res.data.result.token);
+
+        set({ companyId, companyDisabled: false });
+
+        // Clear the old company's account data, then load the new one
+        useAccountStore.getState().resetAccount();
+        await useAccountStore.getState().refreshUserInfo();
+        await useAccountStore.getState().refreshCart();
       },
     }),
     {

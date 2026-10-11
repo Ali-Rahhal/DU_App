@@ -40,6 +40,7 @@ import { useAccountStore, useAuthStore } from "@/store/zustand";
 import { useCompanyAssets } from "@/hooks/useCompanyAssets";
 
 import { ROLES } from "@/utils/data";
+import SwitchCompanyDropdown from "@/components/common/SwitchCompanyDropdown";
 
 interface NavbarProps {
   showMobileNavbar?: boolean;
@@ -510,6 +511,8 @@ function Navbar({
             <Languages size={18} />
             <ChangeLangDropdown />
           </div>
+
+          {isAuth && <SwitchCompanyDropdown onSwitched={closeSidebar} />}
 
           <div className="sidebar-settings-row">
             <Download size={18} />

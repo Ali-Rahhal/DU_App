@@ -240,6 +240,24 @@ const getCompanyStatus = async (): Promise<AxiosResponse> => {
   });
 };
 
+const getCompanies = async (): Promise<AxiosResponse> => {
+  return await axios.get(privateApi + "/companies/get_companies", {
+    withCredentials: true,
+  });
+};
+
+const switchCompany = async (
+  company_id_to_switch_to: string,
+): Promise<AxiosResponse> => {
+  return await axios.post(
+    privateApi + "/companies/switch_company",
+    { company_id_to_switch_to: company_id_to_switch_to },
+    {
+      withCredentials: true,
+    },
+  );
+};
+
 //////
 ////////Products ApiCalls
 //////
@@ -268,7 +286,7 @@ const getProducts = async (
   const url = `/get_products?${params.toString()}`;
 
   return await axios.post(
-    publicApi + url,
+    privateApi + url,
     {
       category_code: filters.category_code,
       sub_category_code: filters.sub_category_code,
@@ -296,7 +314,7 @@ const getProduct = async (
   isExpiryDealProduct?: boolean,
 ): Promise<AxiosResponse> => {
   return await axios.post(
-    publicApi + `/get_product/${item_code}`,
+    privateApi + `/get_product/${item_code}`,
     {
       isExpiryDealProduct: isExpiryDealProduct || false,
     },
@@ -438,7 +456,7 @@ const getExpiryItemStock = async (
 ////////Promotions ApiCalls
 //////
 const getPromotions = async (cookie?: string): Promise<AxiosResponse> => {
-  return await axios.get(publicApi + `/promotions`, {
+  return await axios.get(privateApi + `/promotions`, {
     withCredentials: true,
     headers: {
       Cookie: cookie || "",
@@ -450,7 +468,7 @@ const getProductPromotion = async (
   item_code: string,
 ): Promise<AxiosResponse> => {
   return await axios.get(
-    publicApi + `/get_product_promotions?item_code=${item_code}`,
+    privateApi + `/get_product_promotions?item_code=${item_code}`,
     {
       withCredentials: true,
     },
@@ -806,7 +824,7 @@ const getItemAlternatives = async (
   item_code: string,
 ): Promise<AxiosResponse> => {
   return await axios.get(
-    publicApi + `/restockAndAlt/${item_code}/alternatives`,
+    privateApi + `/restockAndAlt/${item_code}/alternatives`,
     {
       withCredentials: true,
     },
@@ -1096,6 +1114,8 @@ export {
   getUserDetails,
   updateUserDetails,
   getCompanyStatus,
+  getCompanies,
+  switchCompany,
   //Products
   getProducts,
   getProduct,

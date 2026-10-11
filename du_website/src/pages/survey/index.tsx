@@ -30,7 +30,7 @@ const SurveyPage = dynamic(() => import("@/components/survey/SurveyPage"), {
   ),
 });
 import "react-toastify/dist/ReactToastify.css";
-import { publicApi } from "@/utils/apiCalls";
+import { privateApi } from "@/utils/apiCalls";
 import Layout from "@/components/Layout/Layout";
 import { Spinner } from "react-bootstrap";
 import { ALL_PERMISSIONS } from "@/utils/data";
@@ -66,7 +66,7 @@ function App() {
         choicesLazyLoadEnabled: true,
         choicesLazyLoadPageSize: 25,
         choicesByUrl: {
-          url: publicApi + `/survey/get-products?skip=0&take=25`,
+          url: privateApi + `/survey/get-products?skip=0&take=25`,
         },
       },
     });
@@ -85,7 +85,7 @@ function App() {
         choicesLazyLoadEnabled: true,
         choicesLazyLoadPageSize: 25,
         choicesByUrl: {
-          url: publicApi + `/survey/get-products?skip=0&take=25`,
+          url: privateApi + `/survey/get-products?skip=0&take=25`,
         },
       },
     });

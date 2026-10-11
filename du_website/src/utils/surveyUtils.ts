@@ -1,6 +1,6 @@
 import { toast } from "react-toastify";
 import imageCompression from "browser-image-compression";
-import { publicApi } from "./apiCalls";
+import { privateApi } from "./apiCalls";
 import { Model } from "survey-core";
 
 export const removeBase64Prefix = (base64) => {
@@ -150,7 +150,7 @@ export const configureQuayoSurvey = (survey: Model) => {
     ) {
       //const url = `https://surveyjs.io/api/CountriesExamplePagination?skip=${options.skip}&take=${options.take}&filter=${options.filter}`;
       const url =
-        publicApi +
+        privateApi +
         `/survey/get-products?skip=${options.skip}&take=${options.take}&search=${options.filter}`;
       sendRequest(url, (data) => {
         options.setItems(data.result.products, data.result.items_count);
@@ -161,7 +161,7 @@ export const configureQuayoSurvey = (survey: Model) => {
       options.question.name === "ItemTagx"
     ) {
       const url =
-        publicApi +
+        privateApi +
         `/survey/get-products?skip=${options.skip}&take=${options.take}&search=${options.filter}`;
       sendRequest(url, (data) => {
         options.setItems(data.result.products, data.result.items_count);

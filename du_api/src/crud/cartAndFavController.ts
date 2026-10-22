@@ -287,9 +287,13 @@ const getCartItems = async (
     JOIN dbo.item AS i
       ON i.item_code = iu.item_code
 
-    JOIN dbo.item_price_list AS ipl
-      ON ipl.item_code = iu.item_code
-      AND ipl.is_active = 1
+    CROSS APPLY (
+      SELECT TOP 1 *
+      FROM item_price_list
+      WHERE item_code = iu.item_code
+        AND is_active = 1
+      ORDER BY price_list_code ASC
+    ) ipl
 
     LEFT JOIN dbo.v_items AS vi
       ON vi.Code = iu.item_code
@@ -479,9 +483,15 @@ const getFavoriteItems = async (
       (SELECT DISTINCT it.*, ipl.price, ipl.default_discount, cat = vi.[Category],  cat_code = vi.[CategoryCode]
         FROM item as it
         LEFT JOIN v_items as vi ON vi.Code = it.item_code
-        LEFT JOIN item_price_list as ipl ON ipl.item_code = it.item_code
+        CROSS APPLY (
+          SELECT TOP 1 *
+          FROM item_price_list
+          WHERE item_code = it.item_code
+            AND is_active = 1
+          ORDER BY price_list_code ASC
+        ) ipl
         RIGHT JOIN favorite_items as fi ON fi.item_code = it.item_code
-        WHERE ipl.is_active=1 AND it.is_active = 1 AND  it.status = 1 AND  ipl.is_active = 1
+        WHERE it.is_active = 1 AND  it.status = 1 AND  ipl.is_active = 1
         AND fi.account_id = ${userId}
         ORDER BY date_added DESC
         OFFSET ${skip} ROWS FETCH NEXT ${take} ROWS ONLY

@@ -3,7 +3,7 @@ import Layout from "@/components/Layout/Layout";
 import SearchBar from "@/components/Layout/Navbar/SearchBar";
 import { Product } from "@/types/productTypes";
 import { categorySlider, getDefaultCategorySlider } from "@/utils/data";
-import { getProducts } from "@/utils/apiCalls";
+import { getBrands, getProducts } from "@/utils/apiCalls";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -50,6 +50,15 @@ const Filters = ({
   const router = useRouter();
   const t = useTranslations();
   const { companyHydrated, companyId } = useCompanyAssets();
+  const [brands, setBrands] = useState<
+    { item_brand_code: string; description: string }[]
+  >([]);
+
+  useEffect(() => {
+    getBrands()
+      .then((res) => setBrands(res.data.result))
+      .catch((e) => console.error(e));
+  }, []);
 
   const clearSearch = () => {
     router.push({
@@ -108,22 +117,19 @@ const Filters = ({
         >
           All
         </Link>
-        {(companyHydrated
-          ? categorySlider[companyId]
-          : getDefaultCategorySlider()
-        ).map((cat) => (
+        {(brands ? brands : []).map((cat) => (
           <Link
             href={{
               pathname: "/category",
               query: {
-                cat: cat.cat_code,
+                cat: cat.item_brand_code,
                 promo: onPromotionOnly ? "true" : undefined,
               },
             }}
-            className={`btn btn-sm ${activeCat === cat.cat_code ? "btn-primary" : "btn-outline-primary"}`}
-            key={cat.cat_code}
+            className={`btn btn-sm ${activeCat === cat.item_brand_code ? "btn-primary" : "btn-outline-primary"}`}
+            key={cat.item_brand_code}
           >
-            {cat.name}
+            {cat.description}
           </Link>
         ))}
       </div>

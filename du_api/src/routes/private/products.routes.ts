@@ -1,6 +1,10 @@
 import { Hono } from "hono";
 import { getUserIdFromToken } from "../../lib/utils";
-import { getProductInfo, getProducts } from "../../crud/productsController";
+import {
+  getBrands,
+  getProductInfo,
+  getProducts,
+} from "../../crud/productsController";
 const router = new Hono();
 
 router.post(`/get_products`, async (c) => {
@@ -128,6 +132,32 @@ router.post(`/get_product/:item_code`, async (c) => {
     console.error(e);
     console.log(e.message);
     return c.json({ message: e.message, result: null }, 400);
+  }
+});
+
+router.get("/get_brands", async (c) => {
+  try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
+
+    const result = await getBrands(companyId);
+
+    return c.json(
+      {
+        message: "Brands fetched successfully",
+        result,
+      },
+      200,
+    );
+  } catch (e: any) {
+    return c.json(
+      {
+        message: e.message,
+        result: null,
+      },
+      400,
+    );
   }
 });
 

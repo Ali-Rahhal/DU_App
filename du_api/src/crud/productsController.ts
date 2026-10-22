@@ -211,8 +211,13 @@ const getProducts = async (
       LEFT JOIN v_items vi
         ON vi.Code = it.item_code
 
-      LEFT JOIN item_price_list ipl
-        ON ipl.item_code = it.item_code
+      CROSS APPLY (
+        SELECT TOP 1 *
+        FROM item_price_list
+        WHERE item_code = it.item_code
+          AND is_active = 1
+        ORDER BY price_list_code ASC
+      ) ipl
 
       CROSS APPLY (
         SELECT TOP 1 *
@@ -227,8 +232,7 @@ const getProducts = async (
         ON ap.condition_type_code = it.item_code
 
       WHERE
-        ipl.is_active = 1
-        AND it.is_active = 1
+        it.is_active = 1
         AND it.status = 1
 
         ${categoryFilter}
@@ -314,9 +318,13 @@ const getProducts = async (
             INNER JOIN warehouse_current_stock_distribution_code wcsdc
               ON wcsdc.item_code = it.item_code
 
-            INNER JOIN item_price_list ipl
-              ON ipl.item_code = it.item_code
-              AND ipl.is_active = 1
+            CROSS APPLY (
+              SELECT TOP 1 *
+              FROM item_price_list
+              WHERE item_code = it.item_code
+                AND is_active = 1
+              ORDER BY price_list_code ASC
+            ) ipl
 
             LEFT JOIN v_items vi
               ON vi.Code = it.item_code
@@ -563,12 +571,16 @@ const getProductInfo = async (
         LEFT JOIN v_items as vi
           ON vi.Code = it.item_code
 
-        LEFT JOIN item_price_list as ipl
-          ON ipl.item_code = it.item_code
+        CROSS APPLY (
+          SELECT TOP 1 *
+          FROM item_price_list
+          WHERE item_code = it.item_code
+            AND is_active = 1
+          ORDER BY price_list_code ASC
+        ) ipl
 
         WHERE
-          ipl.is_active = 1
-          AND it.is_active = 1
+          it.is_active = 1
           AND it.status = 1
           AND it.item_code = ${item_code}
 
@@ -678,9 +690,13 @@ const getProductInfo = async (
     INNER JOIN warehouse_current_stock_distribution_code wcsdc
       ON wcsdc.item_code = it.item_code
 
-    INNER JOIN item_price_list ipl
-      ON ipl.item_code = it.item_code
-      AND ipl.is_active = 1
+    CROSS APPLY (
+      SELECT TOP 1 *
+      FROM item_price_list
+      WHERE item_code = it.item_code
+        AND is_active = 1
+      ORDER BY price_list_code ASC
+    ) ipl
 
     LEFT JOIN v_items vi
       ON vi.Code = it.item_code
@@ -786,4 +802,22 @@ const getProductInfo = async (
   };
 };
 
-export { getProducts, getProductInfo };
+const getBrands = async (companyId: string) => {
+  const prisma = getPrisma(companyId);
+
+  const brands = await prisma.$queryRaw`
+    SELECT DISTINCT
+      ib.item_brand_code,
+      ib.description
+    FROM dbo.item_brand AS ib
+    INNER JOIN dbo.v_items AS vi
+      ON vi.Category = ib.item_brand_code
+    WHERE ib.is_active = 1
+  `;
+
+  if (!brands) throw new Error("Brands not found");
+
+  return brands;
+};
+
+export { getProducts, getProductInfo, getBrands };

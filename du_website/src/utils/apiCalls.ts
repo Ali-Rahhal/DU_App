@@ -327,6 +327,12 @@ const getProduct = async (
   );
 };
 
+const getBrands = async (): Promise<AxiosResponse> => {
+  return await axios.get(privateApi + `/get_brands`, {
+    withCredentials: true,
+  });
+};
+
 //////
 ////////CartAndFav ApiCalls
 //////
@@ -1119,6 +1125,7 @@ export {
   //Products
   getProducts,
   getProduct,
+  getBrands,
   //CartAndFav
   getCartItems,
   addToCart,

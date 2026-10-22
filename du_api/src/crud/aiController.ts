@@ -74,9 +74,13 @@ const getAISuggestedProducts = async (
 
     FROM item it
 
-    INNER JOIN item_price_list ipl
-      ON ipl.item_code = it.item_code
-      AND ipl.is_active = 1
+    CROSS APPLY (
+      SELECT TOP 1 *
+      FROM item_price_list
+      WHERE item_code = it.item_code
+        AND is_active = 1
+      ORDER BY price_list_code ASC
+    ) ipl
 
     CROSS APPLY (
         SELECT TOP 1 *

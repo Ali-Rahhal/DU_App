@@ -355,10 +355,15 @@ FROM (
     WHERE is_active = 1
 ) iu
 JOIN dbo.item i ON i.item_code = iu.item_code
-JOIN dbo.item_price_list ipl ON ipl.item_code = iu.item_code
+CROSS APPLY (
+  SELECT TOP 1 *
+  FROM item_price_list
+  WHERE item_code = iu.item_code
+    AND is_active = 1
+  ORDER BY price_list_code ASC
+) ipl
 WHERE i.item_code IN (${Prisma.join(item_codes)})
   AND iu.rn = 1
-  AND ipl.is_active = 1
     `;
 
   const finalResult = res.map((item) => {

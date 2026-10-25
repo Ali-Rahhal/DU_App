@@ -15,7 +15,6 @@ type Product = {
   images: string;
   image?: string;
   category: string;
-  subCategory: string;
   cat_code: string;
   sub_cat_code?: string;
   barcode: string;
@@ -84,7 +83,7 @@ const getProducts = async (
   const categoryFilter =
     category_code?.length > 0
       ? Prisma.sql`
-          AND vi.[CategoryCode] IN (${Prisma.join(category_code)})
+          AND it.brand_code IN (${Prisma.join(category_code)})
         `
       : Prisma.empty;
 
@@ -190,11 +189,9 @@ const getProducts = async (
           N''
         ) as images,
 
-        vi.[Category] as category,
+        it.brand_code as category,
 
-        vi.[SubCategory] as subCategory,
-
-        vi.[CategoryCode] as cat_code,
+        it.brand_code as cat_code,
 
         ipl.currency_code,
 
@@ -207,9 +204,6 @@ const getProducts = async (
         NULL as nearest_expiry_date
 
       FROM item it
-
-      LEFT JOIN v_items vi
-        ON vi.Code = it.item_code
 
       CROSS APPLY (
         SELECT TOP 1 *
@@ -293,11 +287,9 @@ const getProducts = async (
                 N''
               ) as images,
 
-              vi.[Category] as category,
+              it.brand_code as category,
 
-              vi.[SubCategory] as subCategory,
-
-              vi.[CategoryCode] as cat_code,
+              it.brand_code as cat_code,
 
               ipl.currency_code,
 
@@ -325,9 +317,6 @@ const getProducts = async (
                 AND is_active = 1
               ORDER BY price_list_code ASC
             ) ipl
-
-            LEFT JOIN v_items vi
-              ON vi.Code = it.item_code
             
             CROSS APPLY (
               SELECT TOP 1 *
@@ -360,9 +349,7 @@ const getProducts = async (
               ipl.price,
               ied.discount_percentage,
               ipl.currency_code,
-              vi.[Category],
-              vi.[SubCategory],
-              vi.[CategoryCode],
+              it.brand_code,
               iu.barcode,
               iu.item_code
           )
@@ -413,7 +400,7 @@ const getProducts = async (
 
         image: images[0],
 
-        tags: [item.category, item.subCategory],
+        tags: [item.category],
 
         expiryMonthsLeft:
           item.isExpiryDeal && item.nearest_expiry_date
@@ -541,8 +528,6 @@ const getProductInfo = async (
 
         i.cat as category,
 
-        i.sub_cat as subCategory,
-
         i.cat_code,
 
         i.currency_code,
@@ -558,18 +543,13 @@ const getProductInfo = async (
 
           ipl.default_discount,
 
-          cat = vi.[Category],
+          cat = it.brand_code,
 
-          sub_cat = vi.[SubCategory],
-
-          cat_code = vi.[CategoryCode],
+          cat_code = it.brand_code,
 
           currency_code = ipl.currency_code
 
         FROM item as it
-
-        LEFT JOIN v_items as vi
-          ON vi.Code = it.item_code
 
         CROSS APPLY (
           SELECT TOP 1 *
@@ -618,7 +598,7 @@ const getProductInfo = async (
 
       image: images[0],
 
-      tags: [item.category, item.subCategory],
+      tags: [item.category],
     };
   }
 
@@ -649,11 +629,9 @@ const getProductInfo = async (
 
       ipl.currency_code,
 
-      vi.[Category] as category,
+      it.brand_code as category,
 
-      vi.[SubCategory] as subCategory,
-
-      vi.[CategoryCode] as cat_code,
+      it.brand_code as cat_code,
 
       iu.barcode,
 
@@ -698,9 +676,6 @@ const getProductInfo = async (
       ORDER BY price_list_code ASC
     ) ipl
 
-    LEFT JOIN v_items vi
-      ON vi.Code = it.item_code
-
     CROSS APPLY (
       SELECT TOP 1 *
       FROM item_uom iu
@@ -733,9 +708,7 @@ const getProductInfo = async (
       ied.discount_percentage,
       ied.expiry_threshold_months,
       ipl.currency_code,
-      vi.[Category],
-      vi.[SubCategory],
-      vi.[CategoryCode],
+      it.brand_code,
       iu.barcode,
       iu.item_code
   `;
@@ -774,8 +747,6 @@ const getProductInfo = async (
 
     category: item.category,
 
-    subCategory: item.subCategory,
-
     cat_code: item.cat_code,
 
     barcode: item.barcode,
@@ -786,7 +757,7 @@ const getProductInfo = async (
 
     hasPromotion: false,
 
-    tags: [item.category, item.subCategory],
+    tags: [item.category],
 
     isExpiryDeal: true,
 
@@ -807,12 +778,19 @@ const getBrands = async (companyId: string) => {
 
   const brands = await prisma.$queryRaw`
     SELECT DISTINCT
-      ib.item_brand_code,
-      ib.description
+    ib.item_brand_code,
+    ib.description
     FROM dbo.item_brand AS ib
-    INNER JOIN dbo.v_items AS vi
-      ON vi.Category = ib.item_brand_code
+    INNER JOIN dbo.item AS it
+        ON it.brand_code = ib.item_brand_code
     WHERE ib.is_active = 1
+      AND it.is_active = 1
+      AND EXISTS (
+          SELECT 1
+          FROM dbo.item_price_list AS ipl
+          WHERE ipl.item_code = it.item_code
+            AND ipl.is_active = 1
+      )
   `;
 
   if (!brands) throw new Error("Brands not found");

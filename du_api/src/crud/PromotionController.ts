@@ -372,7 +372,7 @@ WHERE i.item_code IN (${Prisma.join(item_codes)})
       ...item,
       images: images,
       image: images[0],
-      tags: [item.category, item.subCategory],
+      tags: [item.category],
     };
   });
 

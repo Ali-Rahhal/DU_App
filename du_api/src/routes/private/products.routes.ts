@@ -42,7 +42,7 @@ router.post(`/get_products`, async (c) => {
 
             sort_by: sort_by || "date",
             sort_direction: sort_direction || "DESC",
-            show_only_best_deals,
+            show_only_best_deals: show_only_best_deals || false,
             min_price: min_price || null,
             max_price: max_price || null,
             user_id: res,

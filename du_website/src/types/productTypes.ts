@@ -11,7 +11,6 @@ export interface Product {
   images: string;
   image?: string;
   category: string;
-  subCategory: string;
   cat_code: string;
   sub_cat_code?: string;
   barcode: string;
@@ -37,7 +36,6 @@ export interface CartItem {
   images: string;
   image?: string;
   category: string;
-  subCategory: string;
   cat_code: string;
   barcode: string;
   quantity: number;

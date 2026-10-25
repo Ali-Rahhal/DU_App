@@ -12,7 +12,6 @@ type CartItem = {
   images: string;
   image?: string;
   category: string;
-  subCategory: string;
   cat_code: string;
   barcode: string;
   quantity: number;
@@ -265,11 +264,9 @@ const getCartItems = async (
 
       quantity = SUM(sc.quantity),
 
-      category = vi.[Category],
+      category = i.brand_code,
 
-      subCategory = vi.[SubCategory],
-
-      cat_code = vi.[CategoryCode],
+      cat_code = i.brand_code,
 
       expiryDiscountPercentage = ied.discount_percentage
 
@@ -295,9 +292,6 @@ const getCartItems = async (
       ORDER BY price_list_code ASC
     ) ipl
 
-    LEFT JOIN dbo.v_items AS vi
-      ON vi.Code = iu.item_code
-
     LEFT JOIN dbo.item_expiry_deal AS ied
       ON ied.item_code = iu.item_code
       AND ied.is_active = 1
@@ -316,9 +310,7 @@ const getCartItems = async (
       ipl.price,
       ipl.default_discount,
       ipl.currency_code,
-      vi.[Category],
-      vi.[SubCategory],
-      vi.[CategoryCode],
+      i.brand_code,
       ied.discount_percentage
 
     ORDER BY iu.item_code
@@ -370,11 +362,9 @@ const getCartItems = async (
 
         category: item.category,
 
-        subCategory: item.subCategory,
-
         cat_code: item.cat_code,
 
-        tags: [item.category, item.subCategory],
+        tags: [item.category],
 
         isExpiryDeal: Boolean(item.is_expiry_deal_item),
 
@@ -480,9 +470,8 @@ const getFavoriteItems = async (
       i.cat_code,
       iu.barcode
     FROM
-      (SELECT DISTINCT it.*, ipl.price, ipl.default_discount, cat = vi.[Category],  cat_code = vi.[CategoryCode]
+      (SELECT DISTINCT it.*, ipl.price, ipl.default_discount, cat = it.brand_code,  cat_code = it.brand_code
         FROM item as it
-        LEFT JOIN v_items as vi ON vi.Code = it.item_code
         CROSS APPLY (
           SELECT TOP 1 *
           FROM item_price_list
@@ -518,7 +507,7 @@ const getFavoriteItems = async (
       ...item,
       images: images,
       image: images[0],
-      tags: [item.category, item.subCategory],
+      tags: [item.category],
     };
   });
 

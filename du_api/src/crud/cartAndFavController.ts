@@ -289,7 +289,7 @@ const getCartItems = async (
       FROM item_price_list
       WHERE item_code = iu.item_code
         AND is_active = 1
-      ORDER BY price_list_code ASC
+      ORDER BY currency_code ASC
     ) ipl
 
     LEFT JOIN dbo.item_expiry_deal AS ied
@@ -477,7 +477,7 @@ const getFavoriteItems = async (
           FROM item_price_list
           WHERE item_code = it.item_code
             AND is_active = 1
-          ORDER BY price_list_code ASC
+          ORDER BY currency_code ASC
         ) ipl
         RIGHT JOIN favorite_items as fi ON fi.item_code = it.item_code
         WHERE it.is_active = 1 AND  it.status = 1 AND  ipl.is_active = 1

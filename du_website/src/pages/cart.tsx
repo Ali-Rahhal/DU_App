@@ -423,9 +423,11 @@ const Cart = () => {
                       <div className="cart_total_amount">
                         {subtotal
                           ?.sort((a, b) =>
-                            a.currency_code === "USD"
+                            a.currency_code.includes("USD") ||
+                            a.currency_code.includes("2")
                               ? -1
-                              : b.currency_code === "USD"
+                              : b.currency_code === "USD" ||
+                                  b.currency_code.includes("2")
                                 ? 1
                                 : 0,
                           )

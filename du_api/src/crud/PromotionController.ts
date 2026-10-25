@@ -360,7 +360,7 @@ CROSS APPLY (
   FROM item_price_list
   WHERE item_code = iu.item_code
     AND is_active = 1
-  ORDER BY price_list_code ASC
+  ORDER BY currency_code ASC
 ) ipl
 WHERE i.item_code IN (${Prisma.join(item_codes)})
   AND iu.rn = 1

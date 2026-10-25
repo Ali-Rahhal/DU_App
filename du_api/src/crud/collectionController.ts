@@ -287,7 +287,9 @@ const fifoPreviewController = async (
     const ratio = Number(currency.ratio);
 
     if (!ratio || ratio <= 0) {
-      throw new Error(`Invalid currency ratio ${currency.currency_code}`);
+      throw new Error(
+        `Invalid currency ratio ${currencySymbolMap[currency.currency_code]}`,
+      );
     }
 
     currencyRatioMap[currency.currency_code] = ratio;
@@ -419,7 +421,9 @@ const fifoPreviewController = async (
     const ratio = currencyRatioMap[credit.currency_code];
 
     if (!ratio) {
-      throw new Error(`Missing ratio ${credit.currency_code}`);
+      throw new Error(
+        `Missing ratio ${currencySymbolMap[credit.currency_code]}`,
+      );
     }
 
     const requested = creditNotes.find(
@@ -847,7 +851,7 @@ const manualPreviewController = async (
 
     if (ratio <= 0) {
       throw new Error(
-        `Currency ${currency.currency_code} has an invalid ratio.`,
+        `Currency ${currencySymbolMap[currency.currency_code]} has an invalid ratio.`,
       );
     }
 
@@ -970,7 +974,9 @@ const manualPreviewController = async (
     const ratio = currencyRatioMap[credit.currency_code];
 
     if (!ratio) {
-      throw new Error(`Missing ratio for ${credit.currency_code}`);
+      throw new Error(
+        `Missing ratio for ${currencySymbolMap[credit.currency_code]}`,
+      );
     }
 
     const requested = creditNotes.find(
@@ -1047,7 +1053,9 @@ const manualPreviewController = async (
     const invoiceRatio = currencyRatioMap[invoice.currency_code];
 
     if (!invoiceRatio) {
-      throw new Error(`Missing currency ratio for ${invoice.currency_code}`);
+      throw new Error(
+        `Missing currency ratio for ${currencySymbolMap[invoice.currency_code]}`,
+      );
     }
 
     /*

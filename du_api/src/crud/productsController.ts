@@ -210,7 +210,7 @@ const getProducts = async (
         FROM item_price_list
         WHERE item_code = it.item_code
           AND is_active = 1
-        ORDER BY price_list_code ASC
+        ORDER BY currency_code ASC
       ) ipl
 
       CROSS APPLY (
@@ -315,7 +315,7 @@ const getProducts = async (
               FROM item_price_list
               WHERE item_code = it.item_code
                 AND is_active = 1
-              ORDER BY price_list_code ASC
+              ORDER BY currency_code ASC
             ) ipl
             
             CROSS APPLY (
@@ -556,7 +556,7 @@ const getProductInfo = async (
           FROM item_price_list
           WHERE item_code = it.item_code
             AND is_active = 1
-          ORDER BY price_list_code ASC
+          ORDER BY currency_code ASC
         ) ipl
 
         WHERE
@@ -673,7 +673,7 @@ const getProductInfo = async (
       FROM item_price_list
       WHERE item_code = it.item_code
         AND is_active = 1
-      ORDER BY price_list_code ASC
+      ORDER BY currency_code ASC
     ) ipl
 
     CROSS APPLY (

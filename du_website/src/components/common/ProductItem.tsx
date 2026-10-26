@@ -40,6 +40,8 @@ const ProductItem = ({
   const [fav, setFav] = useState(item.isFavorite ?? false);
   const [openPromotionPopup, setOpenPromotionPopup] = useState(false);
 
+  const [imgError, setImgError] = useState(false);
+
   const itemCode = item.isExpiryDeal ? item.parent_item_code : item.item_code;
 
   const price = parseFloat(item.price);
@@ -210,11 +212,12 @@ const ProductItem = ({
 
   const image = (w = 400, h = 400) => (
     <Image
-      src={item.image || companyPlaceholder}
+      src={imgError || !item.image ? companyPlaceholder : item.image}
       alt={item.name}
       width={w}
       height={h}
       className="product-item-image"
+      onError={() => setImgError(true)}
     />
   );
 

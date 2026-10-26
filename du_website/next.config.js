@@ -29,6 +29,12 @@ const nextConfig = {
       //   port: "15711",
       //   pathname: "/**",
       // },
+      {
+        protocol: "http",
+        hostname: "10.100.0.2",
+        port: "4198",
+        pathname: "/**",
+      },
     ],
   },
   i18n: {

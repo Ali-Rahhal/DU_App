@@ -3,10 +3,11 @@ import { Promotion } from "@/Models/Promotion";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "react-bootstrap";
 
 const PromotionContainer = ({ promotion }: { promotion: Promotion }) => {
+  const [imgError, setImgError] = useState(false);
   const t = useTranslations();
   const { companyPlaceholder } = useCompanyAssets();
   return (
@@ -65,7 +66,11 @@ const PromotionContainer = ({ promotion }: { promotion: Promotion }) => {
                   }}
                 >
                   <Image
-                    src={condition.images[0] || companyPlaceholder}
+                    src={
+                      imgError || !condition.images[0]
+                        ? companyPlaceholder
+                        : condition.images[0]
+                    }
                     width={70}
                     height={70}
                     alt={condition.item_description}
@@ -74,6 +79,7 @@ const PromotionContainer = ({ promotion }: { promotion: Promotion }) => {
                       objectFit: "contain",
                       flexShrink: 0,
                     }}
+                    onError={() => setImgError(true)}
                   />
 
                   <div

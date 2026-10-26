@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useCompanyAssets } from "@/hooks/useCompanyAssets";
 
 interface ThumbSliderProps {
   images: string[];
@@ -8,6 +9,9 @@ interface ThumbSliderProps {
 
 const ThumbSlider = ({ images }: ThumbSliderProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
+
+  const [imgError, setImgError] = useState(false);
+  const { companyPlaceholder } = useCompanyAssets();
 
   useEffect(() => {
     setActiveIndex(0);
@@ -20,15 +24,11 @@ const ThumbSlider = ({ images }: ThumbSliderProps) => {
   const hasMultipleImages = images.length > 1;
 
   const goToPrevious = () => {
-    setActiveIndex((prev) =>
-      prev === 0 ? images.length - 1 : prev - 1,
-    );
+    setActiveIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
   };
 
   const goToNext = () => {
-    setActiveIndex((prev) =>
-      prev === images.length - 1 ? 0 : prev + 1,
-    );
+    setActiveIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
   return (
@@ -36,14 +36,18 @@ const ThumbSlider = ({ images }: ThumbSliderProps) => {
       {/* Main image */}
       <div className="thumb-slider-main">
         <Image
-          src={images[activeIndex]}
+          src={
+            imgError || !images[activeIndex]
+              ? companyPlaceholder
+              : images[activeIndex]
+          }
           alt="Product image"
           fill
           priority
           sizes="(max-width: 767px) 100vw, 40vw"
           className="thumb-slider-main-image"
+          onError={() => setImgError(true)}
         />
-
         {hasMultipleImages && (
           <>
             <button
@@ -82,9 +86,7 @@ const ThumbSlider = ({ images }: ThumbSliderProps) => {
                 type="button"
                 key={`${image}-${index}`}
                 className={`thumb-slider-thumb ${
-                  index === activeIndex
-                    ? "thumb-slider-thumb-active"
-                    : ""
+                  index === activeIndex ? "thumb-slider-thumb-active" : ""
                 }`}
                 onClick={() => setActiveIndex(index)}
                 aria-label={`View product image ${index + 1}`}

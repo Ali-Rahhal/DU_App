@@ -8,7 +8,7 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 
-import React from "react";
+import React, { useState } from "react";
 
 const ProductItemList = ({
   item,
@@ -21,6 +21,8 @@ const ProductItemList = ({
   removeItemHandler?: (item: string) => void;
   size?: "small" | "large";
 }) => {
+  const [imgError, setImgError] = useState(false);
+
   const t = useTranslations();
   const { companyPlaceholder } = useCompanyAssets();
 
@@ -35,11 +37,12 @@ const ProductItemList = ({
         <Link href={"/products/" + item.item_code}>
           <Image
             fill
-            src={item?.image ? item.image : companyPlaceholder}
+            src={imgError || !item.image ? companyPlaceholder : item.image}
             alt={item.name}
             style={{
               objectFit: "contain",
             }}
+            onError={() => setImgError(true)}
           />
         </Link>
       </div>

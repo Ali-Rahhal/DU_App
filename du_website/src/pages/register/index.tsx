@@ -248,7 +248,7 @@ export default function RegisterPage() {
 
     if (!trimmedMohNumber) {
       newErrors.mohNumber = t("errors.moh_number_required");
-    } else if (!/^MOH-\d{4}-\d{6}$/.test(trimmedMohNumber)) {
+    } else if (!/^(?:\d{3}|\d{6})$/.test(trimmedMohNumber)) {
       newErrors.mohNumber = t("errors.moh_number_invalid");
     }
 
@@ -707,7 +707,7 @@ export default function RegisterPage() {
 
                 <input
                   type="text"
-                  maxLength={15}
+                  maxLength={6}
                   className={`form-control ${
                     errors.mohNumber ? "is-invalid-register" : ""
                   }`}
@@ -715,7 +715,7 @@ export default function RegisterPage() {
                   value={mohNumber}
                   disabled={loading}
                   onChange={(e) => {
-                    setMohNumber(e.target.value.toUpperCase());
+                    setMohNumber(e.target.value);
 
                     if (errors.mohNumber) {
                       setErrors((prev) => ({

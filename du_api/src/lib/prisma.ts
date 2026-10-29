@@ -30,6 +30,9 @@ function getDatabaseUrl(companyId: string) {
     case "DU":
       return process.env.DU_DATABASE_URL!;
 
+    case "SADCO":
+      return process.env.SADCO_DATABASE_URL!;
+
     case "VI":
       return process.env.VI_DATABASE_URL!;
 

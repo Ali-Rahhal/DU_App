@@ -73,7 +73,7 @@
     "continue": "Continuer",
     "pharmacy_name": "Nom de la pharmacie",
     "pharmacy_name_placeholder": "Pharmacie Dupont",
-    "license_number_placeholder": "MOH-2026-XXXXXX",
+    "license_number_placeholder": "XXXXXX ou XXX",
     "region": "Région",
     "optional": "Optionnel",
     "select_region": "Sélectionnez votre région",
@@ -92,7 +92,7 @@
     "submit_request": "Envoyer la demande",
     "errors": {
       "moh_number_required": "Veuillez saisir votre numéro MOH",
-      "moh_number_invalid": "Le numéro de licence de pharmacie doit avoir le format MOH-AAAA-XXXXXX",
+      "moh_number_invalid": "Le numéro de licence de pharmacie doit avoir le format XXXXXX ou XXX",
       "password_required": "Veuillez saisir votre mot de passe",
       "phone_required": "Veuillez saisir votre numéro de téléphone",
       "phone_invalid": "Veuillez saisir un numéro de téléphone valide",

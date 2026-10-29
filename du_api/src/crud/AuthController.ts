@@ -36,10 +36,8 @@ const sendRegistrationCode = async (
     throw new Error("Pharmacy license number is required");
   }
 
-  if (!/^MOH-\d{4}-\d{6}$/.test(moh_number.trim())) {
-    throw new Error(
-      "Pharmacy license number must have the format MOH-YYYY-XXXXXX",
-    );
+  if (!/^(?:\d{3}|\d{6})$/.test(moh_number.trim())) {
+    throw new Error("Pharmacy license number must be 3 or 6 digits");
   }
 
   if (!phone_number) {
@@ -79,12 +77,16 @@ const sendRegistrationCode = async (
     WHERE MOH = ${moh_number}
   `;
 
+  if (!client.length) {
+    throw new Error("Client of moh: " + moh_number + " not found");
+  }
+
   if (client.length) {
     const clientData = client[0];
 
     // Only rejected / N/A / unknown clients can register.
     if (clientData.status_id !== 6 && clientData.Status !== "N/A") {
-      if (clientData.status_id === 7 || clientData.status_id === 99) {
+      if (clientData.status_id === 7) {
         throw new Error("Can't send more than 1 registry requests at a time");
       }
 
@@ -213,28 +215,9 @@ const verifyRegistrationCode = async (
   `;
 
   let clientCode: string;
-  let isNewClient = false;
 
   if (!client.length) {
-    // Client does not exist -> create it with status 99
-    const createdClient = await prisma.$queryRaw<
-      {
-        client_code: string;
-        erp_client_code: string;
-        unique_identifier: number;
-        moh_number: string;
-      }[]
-    >`
-      EXEC dbo.CREATE_PENDING_CLIENT
-        @MohNumber = ${moh_number}
-    `;
-
-    if (!createdClient.length) {
-      throw new Error("Failed to create client");
-    }
-
-    clientCode = createdClient[0].client_code;
-    isNewClient = true;
+    throw new Error("Client of moh: " + moh_number + " not found");
   } else {
     // ---------------------------------------------------------
     // Existing client
@@ -301,18 +284,15 @@ const verifyRegistrationCode = async (
       });
     }
 
-    // Only existing/rejected clients move to Waiting Approval.
-    // Newly created clients stay at status 99.
-    if (!isNewClient) {
-      await tx.client.update({
-        where: {
-          client_code: clientCode,
-        },
-        data: {
-          status_id: 7,
-        },
-      });
-    }
+    // existing/rejected clients move to Waiting Approval.
+    await tx.client.update({
+      where: {
+        client_code: clientCode,
+      },
+      data: {
+        status_id: 7,
+      },
+    });
 
     // Mark verification code as used
     await tx.emailVerificationCode.update({
@@ -1221,7 +1201,7 @@ const switchCompany = async (
     });
 
     setCookie(c, "companyIdCustomerPortalApp", companyIdToSwitchTo, {
-      httpOnly: true,
+      httpOnly: false,
       sameSite: isProduction ? "Strict" : "Lax",
       secure: isProduction,
       maxAge: 60 * 60 * 24 * 365,

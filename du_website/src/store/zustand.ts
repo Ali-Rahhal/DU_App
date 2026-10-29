@@ -263,6 +263,7 @@ export const useAuthStore = create<AuthStore>()(
       logout: async () => {
         // Logout user code
         set({ isAuth: false, token: null });
+        useAccountStore.getState().resetAccount();
 
         // reset company
         if (useCompanyStore.getState().companyDisabled) {

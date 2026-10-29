@@ -73,7 +73,7 @@
     "continue": "Continue",
     "pharmacy_name": "Pharmacy Name",
     "pharmacy_name_placeholder": "Doe Pharmacy",
-    "license_number_placeholder": "MOH-2026-XXXXXX",
+    "license_number_placeholder": "XXXXXX or XXX",
     "region": "Region",
     "optional": "Optional",
     "select_region": "Select your region",
@@ -92,7 +92,7 @@
     "submit_request": "Submit Request",
     "errors": {
       "moh_number_required": "Please enter your MOH number",
-      "moh_number_invalid": "Pharmacy license number must have the format MOH-YYYY-XXXXXX",
+      "moh_number_invalid": "Pharmacy license number must have the format XXXXXX or XXX",
       "password_required": "Please enter your password",
       "phone_required": "Please enter your phone number",
       "phone_invalid": "Please enter a valid phone number",

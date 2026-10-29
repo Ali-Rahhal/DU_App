@@ -46,26 +46,30 @@ export default function LoginPage() {
   const t = useTranslations("login_register");
 
   useEffect(() => {
-    getCompanyStatus().then((res) => setCompanyStatus(res.data.result));
-  }, []);
-
-  useEffect(() => {
-    async function loadLicensedCompanies() {
+    async function loadCompanies() {
       try {
-        const response = await getLicensedCompanies();
-        const data: { companies: CompanyId[] } = response.data;
+        const [statusResponse, licensesResponse] = await Promise.all([
+          getCompanyStatus(),
+          getLicensedCompanies(),
+        ]);
 
-        const companies = data.companies ?? [];
+        const status: Record<string, boolean> =
+          statusResponse.data.result ?? {};
 
+        const companies: CompanyId[] = licensesResponse.data.companies ?? [];
+
+        setCompanyStatus(status);
         setLicensedCompanies(companies);
 
         const enabledCompanies = companies.filter(
-          (company) => companyStatus[company],
+          (company) => status[company] === true,
         );
+
+        console.log("status", status);
+        console.log("enabledCompanies", enabledCompanies);
 
         if (enabledCompanies.length === 1) {
           const selectedCompany = enabledCompanies[0];
-
           setCompany(selectedCompany);
 
           document.cookie = `companyIdCustomerPortalApp=${selectedCompany}; path=/; max-age=31536000; SameSite=Lax`;
@@ -73,30 +77,38 @@ export default function LoginPage() {
           setStep("login");
         }
       } catch (error) {
-        console.error("Failed to load licensed companies:", error);
+        console.error("Failed to load companies:", error);
         setLicensedCompanies([]);
       } finally {
         setLoadingCompanies(false);
       }
     }
 
-    loadLicensedCompanies();
-  }, []);
+    loadCompanies();
+  }, [setCompany]);
+
   useEffect(() => {
-    if (loadingCompanies || licensedCompanies.length === 0) {
-      return;
-    }
+    if (loadingCompanies) return;
 
-    if (!licensedCompanies.includes(companyId)) {
+    const enabledCompanies = licensedCompanies.filter(
+      (company) => companyStatus[company] === true,
+    );
+
+    if (enabledCompanies.length === 0) return;
+
+    if (!enabledCompanies.includes(companyId)) {
       const firstAvailableCompany = licensedCompanies[0];
-
       setCompany(firstAvailableCompany);
-
       document.cookie = `companyIdCustomerPortalApp=${firstAvailableCompany}; path=/; max-age=31536000; SameSite=Lax`;
-
-      setStep(licensedCompanies.length === 1 ? "login" : "company");
+      setStep(enabledCompanies.length === 1 ? "login" : "company");
     }
-  }, [loadingCompanies, licensedCompanies, companyId, setCompany]);
+  }, [
+    loadingCompanies,
+    licensedCompanies,
+    companyStatus,
+    companyId,
+    setCompany,
+  ]);
 
   useEffect(() => {
     const cookie = document.cookie
@@ -122,7 +134,7 @@ export default function LoginPage() {
 
     if (!trimmedMohNumber) {
       newErrors.mohNumber = t("errors.moh_number_required");
-    } else if (!/^MOH-\d{4}-\d{6}$/.test(trimmedMohNumber)) {
+    } else if (!/^(?:\d{3}|\d{6})$/.test(trimmedMohNumber)) {
       newErrors.mohNumber = t("errors.moh_number_invalid");
     }
 
@@ -288,7 +300,7 @@ export default function LoginPage() {
 
                 <input
                   type="text"
-                  maxLength={15}
+                  maxLength={6}
                   disabled={loading || redirecting}
                   className={`form-control ${
                     errors.mohNumber ? "is-invalid-login" : ""
@@ -296,7 +308,7 @@ export default function LoginPage() {
                   placeholder={t("license_number_placeholder")}
                   value={mohNumber}
                   onChange={(e) => {
-                    setMohNumber(e.target.value.toUpperCase());
+                    setMohNumber(e.target.value);
 
                     if (errors.mohNumber) {
                       setErrors((prev) => ({

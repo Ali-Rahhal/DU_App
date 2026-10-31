@@ -9,6 +9,7 @@ import {
   Package,
   ShoppingCart,
   ShoppingBasket,
+  Mail,
   Menu,
   X,
   User,
@@ -341,24 +342,13 @@ function Navbar({
             <span>{t("navbar.back")}</span>
           </button>
 
-          <Link href="/" className="mobile-back-logo-container">
-            {companyHydrated ? (
-              <Image
-                src={companyLogo}
-                alt={companyName}
-                width={170}
-                height={36}
-                className="mobile-back-logo"
-              />
-            ) : (
-              <Spinner
-                animation="border"
-                style={{
-                  width: "26px",
-                  height: "26px",
-                }}
-              />
-            )}
+          <Link
+            href={isAuth ? "/cart" : "/login"}
+            className="mobile-action-button"
+          >
+            <ShoppingCart size={20} />
+
+            {isAuth && <span className="mobile-cart-badge">{cart}</span>}
           </Link>
         </header>
       )}
@@ -433,6 +423,13 @@ function Navbar({
                 href="/cart"
                 icon={<ShoppingCart size={19} />}
                 label={t("navbar.cart")}
+                onClick={closeSidebar}
+              />
+
+              <SidebarLink
+                href="/contact"
+                icon={<Mail size={19} />}
+                label={t("navbar.contact")}
                 onClick={closeSidebar}
               />
 

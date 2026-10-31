@@ -6,6 +6,7 @@ export interface CompanyConfig {
   placeholder: string;
   favicon: string;
   about: string;
+  location: string;
 
   transalations: {
     description: string;
@@ -13,6 +14,8 @@ export interface CompanyConfig {
   };
 
   social: {
+    email: string;
+    phone: string;
     facebook: string;
     instagram: string;
     linkedin: string;
@@ -35,6 +38,7 @@ export const Companies = {
     placeholder: "/assets/img/DU/product/PlaceholderImage.jpg",
     favicon: "/assets/img/DU/favicon.ico",
     about: "/assets/img/DU/extra/page-about.jpg",
+    location: "",
 
     transalations: {
       description: "company.description_du",
@@ -42,6 +46,8 @@ export const Companies = {
     },
 
     social: {
+      email: "",
+      phone: "",
       facebook: "/",
       instagram: "/",
       linkedin: "/",
@@ -62,6 +68,7 @@ export const Companies = {
     placeholder: "/assets/img/DU/product/PlaceholderImage.jpg",
     favicon: "/assets/img/DU/favicon.ico",
     about: "/assets/img/DU/extra/page-about.jpg",
+    location: "",
 
     transalations: {
       description: "company.description_du",
@@ -69,6 +76,8 @@ export const Companies = {
     },
 
     social: {
+      email: "",
+      phone: "",
       facebook: "/",
       instagram: "/",
       linkedin: "/",
@@ -89,6 +98,7 @@ export const Companies = {
     placeholder: "/assets/img/DU/product/PlaceholderImage.jpg",
     favicon: "/assets/img/DU/favicon.ico",
     about: "/assets/img/DU/extra/page-about.jpg",
+    location: "",
 
     transalations: {
       description: "company.description_du",
@@ -96,6 +106,8 @@ export const Companies = {
     },
 
     social: {
+      email: "",
+      phone: "",
       facebook: "/",
       instagram: "/",
       linkedin: "/",
@@ -116,6 +128,8 @@ export const Companies = {
     placeholder: "/assets/img/SADCO/product/PlaceholderImage.jpeg",
     favicon: "/assets/img/SADCO/favicon.ico",
     about: "/assets/img/DU/extra/page-about.jpg",
+    location:
+      "https://www.google.com/maps/dir/Current+Location/33.872428407228696,35.49355722927045",
 
     transalations: {
       description: "company.description_sadco",
@@ -123,9 +137,12 @@ export const Companies = {
     },
 
     social: {
-      facebook: "/",
-      instagram: "/",
-      linkedin: "/",
+      email: "info@sadco.com.lb",
+      phone: "+961 1 855 560",
+      facebook:
+        "https://www.facebook.com/people/SADCO-Sami-Dandan-Co/100057607323297/",
+      instagram: "https://www.instagram.com/sadco.lb?xtok=N3RyOGl5aHZkdzl6",
+      linkedin: "https://www.linkedin.com/company/sadco-sal/",
     },
 
     features: {
@@ -143,6 +160,7 @@ export const Companies = {
     placeholder: "/assets/img/VITALAIT/product/PlaceholderImage.jpg",
     favicon: "/assets/img/VITALAIT/favicon.ico",
     about: "/assets/img/VITALAIT/extra/page-about.jpg",
+    location: "",
 
     transalations: {
       description: "company.description_vitalait",
@@ -150,6 +168,8 @@ export const Companies = {
     },
 
     social: {
+      email: "",
+      phone: "",
       facebook: "/",
       instagram: "/",
       linkedin: "/",

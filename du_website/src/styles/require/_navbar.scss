@@ -1293,42 +1293,6 @@ $navbar-primary-light: #edf3ff;
   }
 }
 
-/* ---------------------------------------------------------
-   Back header logo
-   --------------------------------------------------------- */
-
-.mobile-back-logo-container {
-  height: 46px;
-
-  min-width: 170px;
-
-  padding: 5px 12px;
-
-  border-radius: 9px;
-
-  background: #ffffff;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  text-decoration: none;
-
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-
-.mobile-back-logo {
-  display: block;
-
-  width: auto;
-
-  max-width: 145px;
-
-  height: 34px;
-
-  object-fit: contain;
-}
-
 /* =========================================================
    SEARCH BAR
    ========================================================= */

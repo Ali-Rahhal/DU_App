@@ -147,6 +147,7 @@
     "hi": "Hi,",
     "account": "Account",
     "cart": "Cart",
+    "contact": "Contact Us",
     "back": "Back",
     "login": "Login",
     "logout": "Logout",
@@ -205,6 +206,46 @@
     "minicart": {
       "proceed_to_cart": "Proceed to Cart",
       "you_have_no_items_in_your_shopping_cart": "You have no items in your shopping cart."
+    }
+  },
+  "contact_page": {
+    "heading": {
+      "title": "Contact Us",
+      "subtitle": "Have a question or need assistance? We'd love to hear from you. Get in touch with our team and we'll be happy to help."
+    },
+    "connect": {
+      "title": "Connect With Us",
+      "subtitle": "Find us through any of the following channels."
+    },
+    "links": {
+      "facebook": "Facebook",
+      "facebook_action": "Visit our page",
+      "instagram": "Instagram",
+      "instagram_action": "Follow us",
+      "linkedin": "LinkedIn",
+      "linkedin_action": "Connect with us",
+      "phone": "Phone",
+      "email": "Email",
+      "location": "Location",
+      "location_action": "Visit our office"
+    },
+    "form": {
+      "eyebrow": "WE'RE HERE TO HELP",
+      "title": "Get In Touch",
+      "subtitle": "Send us a message and our team will get back to you as soon as possible.",
+      "full_name": "Full Name",
+      "full_name_placeholder": "Enter your full name",
+      "phone": "Phone",
+      "phone_placeholder": "Enter your phone number",
+      "email": "Email Address",
+      "email_placeholder": "Enter your email address",
+      "message": "Message",
+      "message_placeholder": "How can we help you?",
+      "required": "*",
+      "send": "SEND MESSAGE",
+      "sending": "Sending...",
+      "success": "Your message has been sent successfully!",
+      "error_default": "Something went wrong. Please try again."
     }
   },
   "dashboard": {

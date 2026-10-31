@@ -89,28 +89,6 @@ function Footer() {
 
           {/* Links */}
           <div className="footer-links-section">
-            <div className="footer-widget">
-              <h3 className="footer-widget-title">{t("footer.policy")}</h3>
-
-              <ul className="footer-links">
-                <li>
-                  <Link href="/policy">{t("footer.privacy_policy")}</Link>
-                </li>
-
-                <li>
-                  <Link href="/policy">{t("footer.terms_and_conditions")}</Link>
-                </li>
-
-                <li>
-                  <Link href="/policy">{t("footer.refund_policy")}</Link>
-                </li>
-
-                <li>
-                  <Link href="/policy">{t("footer.ip_policy")}</Link>
-                </li>
-              </ul>
-            </div>
-
             <div className="footer-widget footer-contact-widget">
               <h3 className="footer-widget-title">{t("footer.social")}</h3>
 

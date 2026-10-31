@@ -147,6 +147,7 @@
     "hi": "Bonjour,",
     "account": "Compte",
     "cart": "Panier",
+    "contact": "Contactez-nous",
     "back": "Retour",
     "login": "Connexion",
     "logout": "Déconnexion",
@@ -205,6 +206,46 @@
     "minicart": {
       "proceed_to_cart": "Passer au panier",
       "you_have_no_items_in_your_shopping_cart": "Vous n'avez aucun article dans votre panier"
+    }
+  },
+  "contact_page": {
+    "heading": {
+      "title": "Contactez-nous",
+      "subtitle": "Vous avez une question ou besoin d'aide ? Nous serions ravis de vous entendre. Contactez notre équipe et nous serons heureux de vous aider."
+    },
+    "connect": {
+      "title": "Connectez-vous avec nous",
+      "subtitle": "Retrouvez-nous via l'un des canaux suivants."
+    },
+    "links": {
+      "facebook": "Facebook",
+      "facebook_action": "Visitez notre page",
+      "instagram": "Instagram",
+      "instagram_action": "Suivez-nous",
+      "linkedin": "LinkedIn",
+      "linkedin_action": "Connectez-vous avec nous",
+      "phone": "Téléphone",
+      "email": "E-mail",
+      "location": "Localisation",
+      "location_action": "Visitez notre bureau"
+    },
+    "form": {
+      "eyebrow": "NOUS SOMMES LÀ POUR VOUS AIDER",
+      "title": "Entrer en contact",
+      "subtitle": "Envoyez-nous un message et notre équipe vous répondra dans les plus brefs délais.",
+      "full_name": "Nom complet",
+      "full_name_placeholder": "Entrez votre nom complet",
+      "phone": "Téléphone",
+      "phone_placeholder": "Entrez votre numéro de téléphone",
+      "email": "Adresse e-mail",
+      "email_placeholder": "Entrez votre adresse e-mail",
+      "message": "Message",
+      "message_placeholder": "Comment pouvons-nous vous aider ?",
+      "required": "*",
+      "send": "ENVOYER LE MESSAGE",
+      "sending": "Envoi en cours...",
+      "success": "Votre message a été envoyé avec succès !",
+      "error_default": "Une erreur s'est produite. Veuillez réessayer."
     }
   },
   "dashboard": {

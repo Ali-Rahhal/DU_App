@@ -17,13 +17,16 @@ export const useCompanyAssets = () => {
         ? company.placeholder
         : "/assets/img/global/placeholder.png",
       companyFavicon: state.hydrated ? company.favicon : "",
-      companyAbout: state.hydrated ? company.about : "",
+      companyAboutImage: state.hydrated ? company.about : "",
+      companyLocation: state.hydrated ? company.location : "",
       companyDescription: state.hydrated
         ? company.transalations.description
         : "company.place_holder",
       companyCopyright: state.hydrated
         ? company.transalations.copyright
         : "company.place_holder",
+      companyEmail: state.hydrated ? company.social.email : "",
+      companyPhone: state.hydrated ? company.social.phone : "",
       companyFacebook: state.hydrated ? company.social.facebook : "#",
       companyLinkedin: state.hydrated ? company.social.linkedin : "#",
       companyInstagram: state.hydrated ? company.social.instagram : "#",

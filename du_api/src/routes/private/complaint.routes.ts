@@ -6,6 +6,7 @@ import {
   saveComplaintAnswer,
 } from "../../crud/complaintController";
 import { getUserId } from "../../lib/utils";
+import { sendContactEmail } from "../../lib/sendContactEmail";
 const router = new Hono();
 
 // getUserComplaints
@@ -86,6 +87,39 @@ router.post(`/save_complaint_answer`, async (c) => {
     });
   } catch (e) {
     return c.json({ message: e.message, result: null }, 400);
+  }
+});
+
+router.post("/send_contact_email", async (c) => {
+  try {
+    const body = await c.req.json();
+
+    const { companyEmail, fullName, phone, clientEmail, message } = body;
+
+    const result = await sendContactEmail({
+      companyEmail,
+      fullName,
+      phone,
+      clientEmail,
+      message,
+    });
+
+    return c.json({
+      message: "Contact email sent successfully.",
+      result: {
+        messageId: result.messageId,
+      },
+    });
+  } catch (e: any) {
+    console.error("Send contact email route error:", e);
+
+    return c.json(
+      {
+        message: e?.message ?? "Failed to send contact email.",
+        result: null,
+      },
+      400,
+    );
   }
 });
 

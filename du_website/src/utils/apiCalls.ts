@@ -605,6 +605,18 @@ const saveComplaint = async (complaint: any) => {
   );
 };
 
+const sendContactEmail = async (data: {
+  fullName: string;
+  phone: string;
+  clientEmail: string;
+  message: string;
+  companyEmail: string;
+}): Promise<AxiosResponse> => {
+  return await axios.post(`${privateApi}/complaint/send_contact_email`, data, {
+    withCredentials: true,
+  });
+};
+
 //////
 ////////Children ApiCalls
 //////
@@ -1159,6 +1171,7 @@ export {
   getComplaints,
   getComplaintElements,
   saveComplaint,
+  sendContactEmail,
   //Children
   // createChild,
   // editChild,

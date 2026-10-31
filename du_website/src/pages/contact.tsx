@@ -1,143 +1,378 @@
+import React, { FormEvent, useState } from "react";
+import Image from "next/image";
+import { Spinner } from "react-bootstrap";
+import { toast } from "react-toastify";
+import {
+  FaFacebook,
+  FaInstagram,
+  FaLinkedin,
+  FaPhone,
+  FaEnvelope,
+  FaLocationDot,
+} from "react-icons/fa6";
+
 import Layout from "@/components/Layout/Layout";
 import PageHeading from "@/components/common/PageHeading";
 import { useCompanyAssets } from "@/hooks/useCompanyAssets";
-import { useCompanyStore } from "@/store/zustand";
-import React from "react";
+import { useTranslations } from "next-intl";
+import { sendContactEmail } from "@/utils/apiCalls";
 
-const contact = () => {
-  const { companyHydrated, companyAbout } = useCompanyAssets();
+interface ContactForm {
+  fullName: string;
+  phone: string;
+  email: string;
+  message: string;
+}
+
+const Contact = () => {
+  const t = useTranslations();
+
+  const {
+    companyHydrated,
+    companyAboutImage,
+    companyLogo,
+    companyName,
+    companyDescription,
+    companyCopyright,
+    companyLocation,
+    companyEmail,
+    companyPhone,
+    companyFacebook,
+    companyLinkedin,
+    companyInstagram,
+  } = useCompanyAssets();
+
+  const [form, setForm] = useState<ContactForm>({
+    fullName: "",
+    phone: "",
+    email: "",
+    message: "",
+  });
+
+  const [sending, setSending] = useState(false);
+
+  const updateField = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    setForm((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (sending) return;
+
+    try {
+      setSending(true);
+
+      await sendContactEmail({
+        companyEmail,
+        fullName: form.fullName,
+        phone: form.phone,
+        clientEmail: form.email,
+        message: form.message,
+      });
+
+      toast.success(t("contact_page.form.success"));
+
+      setForm({
+        fullName: "",
+        phone: "",
+        email: "",
+        message: "",
+      });
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.message ?? t("contact_page.form.error_default"),
+      );
+    } finally {
+      setSending(false);
+    }
+  };
 
   return (
-    <>
-      <Layout>
-        <PageHeading
-          title="Contact Us"
-          subtitle="Lorem ipsum dolor sit amet, adipisicing elit."
-          image={companyHydrated ? companyAbout : ""}
-        />
-        <section className="pt-5 pt-md-7">
-          <div className="container">
-            <div className="row justify-content-between">
-              <div className="col-lg-5">
-                <h3 className="m-b10 text-uppercase">Get In Touch</h3>
-                <p className="text2">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut
-                  hic voluptatibus unde quam veritatis quae velit aperiam.
-                  Voluptatem laboriosam odio nulla, hic eius porro recusandae,
-                  nisi non quae nihil unde!
-                </p>
-                <hr />
-                <p className="m-b40 text">
-                  25, Lomonosova
-                  <br /> St. Moscow,
-                  <br />
-                  665087
-                </p>
-                <p className="text p-sm-b60">
-                  <strong>E:</strong> info@email.com
-                  <br />
-                  <strong>P:</strong> +01 12345 67890
-                  <br />
-                </p>
-              </div>
-              <div className="col-lg-6">
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d114041.02049143793!2d88.3612319145676!3d26.71941404416647!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39e44114f5441dcd%3A0xdeb5c4702063edff!2sSiliguri%2C%20West%20Bengal!5e0!3m2!1sen!2sin!4v1631501341871!5m2!1sen!2sin"
-                  width="100%"
-                  height="400"
-                  style={{ border: 0 }}
-                  loading="lazy"
-                ></iframe>
-              </div>
+    <Layout>
+      <PageHeading
+        title={t("contact_page.heading.title")}
+        subtitle={t("contact_page.heading.subtitle")}
+        image={companyHydrated ? companyAboutImage : ""}
+      />
+
+      <section className="contact-page py-5 py-md-7">
+        <div className="container">
+          {!companyHydrated ? (
+            <div className="contact-loading">
+              <Spinner animation="border" />
             </div>
-            <div className="row pt-5 pt-md-7">
-              <div className="col-lg-8 mx-auto">
-                <div className="contact-form">
-                  <form
-                    id="ajax-form"
-                    action="php/mail.php"
-                    method="POST"
-                    className="form"
-                  >
-                    <div className="row">
-                      <div className="col-sm-12">
-                        <div className="text-left m-b20">
-                          <div className="form-message"></div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-sm-6">
-                        <div className="form-group">
-                          <input
-                            className="form-control"
-                            placeholder="Name *"
-                            name="name"
-                            type="text"
-                          />
-                        </div>
-                        <div className="form-group">
-                          <input
-                            className="form-control"
-                            placeholder="Email *"
-                            name="email"
-                            type="text"
-                          />
-                        </div>
-                      </div>
+          ) : (
+            <>
+              {/* Contact links */}
+              <div className="contact-information">
+                <h3>{t("contact_page.connect.title")}</h3>
+                <p className="contact-section-subtitle">
+                  {t("contact_page.connect.subtitle")}
+                </p>
 
-                      <div className="col-sm-6">
-                        <div className="form-group">
-                          <input
-                            className="form-control"
-                            placeholder="Subject"
-                            name="subject"
-                            type="text"
-                          />
-                        </div>
-                        <div className="form-group">
-                          <input
-                            className="form-control"
-                            placeholder="Phone"
-                            name="phone"
-                            type="text"
-                          />
-                        </div>
-                      </div>
+                <div className="contact-links">
+                  {companyFacebook && (
+                    <a
+                      href={companyFacebook}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="contact-link"
+                    >
+                      <span className="contact-link-icon">
+                        <FaFacebook />
+                      </span>
+                      <span>
+                        <small>{t("contact_page.links.facebook")}</small>
+                        <strong>
+                          {t("contact_page.links.facebook_action")}
+                        </strong>
+                      </span>
+                    </a>
+                  )}
 
-                      <div className="col-sm-12">
-                        <div className="form-group">
-                          <textarea
-                            className="form-control "
-                            name="message"
-                            placeholder="Text Here"
-                          ></textarea>
-                        </div>
-                      </div>
+                  {companyInstagram && (
+                    <a
+                      href={companyInstagram}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="contact-link"
+                    >
+                      <span className="contact-link-icon">
+                        <FaInstagram />
+                      </span>
+                      <span>
+                        <small>{t("contact_page.links.instagram")}</small>
+                        <strong>
+                          {t("contact_page.links.instagram_action")}
+                        </strong>
+                      </span>
+                    </a>
+                  )}
 
-                      <div className="col-sm-12">
-                        <div className="form-group">
-                          <div className="text-center">
-                            <button
-                              className="btn btn-primary"
-                              type="submit"
-                              name="submit"
-                            >
-                              SEND MESSAGE
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </form>
+                  {companyLinkedin && (
+                    <a
+                      href={companyLinkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="contact-link"
+                    >
+                      <span className="contact-link-icon">
+                        <FaLinkedin />
+                      </span>
+                      <span>
+                        <small>{t("contact_page.links.linkedin")}</small>
+                        <strong>
+                          {t("contact_page.links.linkedin_action")}
+                        </strong>
+                      </span>
+                    </a>
+                  )}
+
+                  {companyPhone && (
+                    <a href={`tel:${companyPhone}`} className="contact-link">
+                      <span className="contact-link-icon">
+                        <FaPhone />
+                      </span>
+                      <span>
+                        <small>{t("contact_page.links.phone")}</small>
+                        <strong>{companyPhone}</strong>
+                      </span>
+                    </a>
+                  )}
+
+                  {companyEmail && (
+                    <a href={`mailto:${companyEmail}`} className="contact-link">
+                      <span className="contact-link-icon">
+                        <FaEnvelope />
+                      </span>
+                      <span>
+                        <small>{t("contact_page.links.email")}</small>
+                        <strong>{companyEmail}</strong>
+                      </span>
+                    </a>
+                  )}
+
+                  {companyLocation && (
+                    <a
+                      href={companyLocation}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="contact-link"
+                    >
+                      <span className="contact-link-icon">
+                        <FaLocationDot />
+                      </span>
+                      <span>
+                        <small>{t("contact_page.links.location")}</small>
+                        <strong>
+                          {t("contact_page.links.location_action")}
+                        </strong>
+                      </span>
+                    </a>
+                  )}
                 </div>
               </div>
-            </div>
-          </div>
-        </section>
-      </Layout>
-    </>
+
+              {/* Contact form */}
+              <div className="contact-form-section">
+                <div className="contact-form-heading">
+                  <span>{t("contact_page.form.eyebrow")}</span>
+                  <h3>{t("contact_page.form.title")}</h3>
+                  <p>{t("contact_page.form.subtitle")}</p>
+                </div>
+
+                <form onSubmit={handleSubmit} className="contact-form">
+                  <div className="row">
+                    <div className="col-md-6">
+                      <div className="form-group">
+                        <label htmlFor="fullName">
+                          {t("contact_page.form.full_name")}{" "}
+                          {t("contact_page.form.required")}
+                        </label>
+                        <input
+                          id="fullName"
+                          className="form-control"
+                          type="text"
+                          name="fullName"
+                          placeholder={t(
+                            "contact_page.form.full_name_placeholder",
+                          )}
+                          value={form.fullName}
+                          onChange={updateField}
+                          required
+                          maxLength={120}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="col-md-6">
+                      <div className="form-group">
+                        <label htmlFor="phone">
+                          {t("contact_page.form.phone")}
+                        </label>
+                        <input
+                          id="phone"
+                          className="form-control"
+                          type="tel"
+                          name="phone"
+                          placeholder={t("contact_page.form.phone_placeholder")}
+                          value={form.phone}
+                          onChange={updateField}
+                          maxLength={30}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="col-12">
+                      <div className="form-group">
+                        <label htmlFor="email">
+                          {t("contact_page.form.email")}{" "}
+                          {t("contact_page.form.required")}
+                        </label>
+                        <input
+                          id="email"
+                          className="form-control"
+                          type="email"
+                          name="email"
+                          placeholder={t("contact_page.form.email_placeholder")}
+                          value={form.email}
+                          onChange={updateField}
+                          required
+                          maxLength={254}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="col-12">
+                      <div className="form-group">
+                        <label htmlFor="message">
+                          {t("contact_page.form.message")}{" "}
+                          {t("contact_page.form.required")}
+                        </label>
+                        <textarea
+                          id="message"
+                          className="form-control"
+                          name="message"
+                          placeholder={t(
+                            "contact_page.form.message_placeholder",
+                          )}
+                          rows={6}
+                          value={form.message}
+                          onChange={updateField}
+                          required
+                          maxLength={5000}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="col-12">
+                      <div className="contact-submit">
+                        <button
+                          type="submit"
+                          className="btn btn-primary"
+                          disabled={sending}
+                        >
+                          {sending ? (
+                            <>
+                              <Spinner
+                                animation="border"
+                                size="sm"
+                                className="me-2"
+                              />
+                              {t("contact_page.form.sending")}
+                            </>
+                          ) : (
+                            t("contact_page.form.send")
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+
+              {/* Company information */}
+              <div className="contact-company">
+                <div className="contact-company-logo">
+                  {companyLogo && (
+                    <Image
+                      src={companyLogo}
+                      alt={companyName}
+                      width={220}
+                      height={90}
+                      style={{
+                        width: "auto",
+                        height: "auto",
+                        maxWidth: "220px",
+                        maxHeight: "90px",
+                        objectFit: "contain",
+                      }}
+                    />
+                  )}
+                </div>
+
+                <h2>{companyName}</h2>
+
+                <p className="contact-company-description">
+                  {t(companyDescription)}
+                </p>
+
+                <div className="contact-company-copyright">
+                  {t(companyCopyright)}
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </section>
+    </Layout>
   );
 };
 
-export default contact;
+export default Contact;

@@ -496,6 +496,7 @@ model client {
   unique_identifier            Int                            @default(autoincrement())
   moh_number                   String?                        @db.NVarChar(50)
   email                        String?                        @db.NVarChar(100)
+  web_status_id                Int                            @default(0, map: "DF_client_web_status_id")
   client_location_availability client_location_availability[]
   client_price_list            client_price_list[]
 

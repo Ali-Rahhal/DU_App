@@ -63,15 +63,15 @@ const sendRegistrationCode = async (
   const client = await prisma.$queryRaw<
     {
       Code: string;
-      status_id: number | null;
-      Status: string;
+      web_status_id: number | null;
+      WebStatus: string;
       MOH: string;
     }[]
   >`
     SELECT
       Code,
-      status_id,
-      Status,
+      web_status_id,
+      WebStatus,
       MOH
     FROM dbo.v_clients
     WHERE MOH = ${moh_number}
@@ -85,8 +85,8 @@ const sendRegistrationCode = async (
     const clientData = client[0];
 
     // Only rejected / N/A / unknown clients can register.
-    if (clientData.status_id !== 6 && clientData.Status !== "N/A") {
-      if (clientData.status_id === 7) {
+    if (clientData.web_status_id !== 6 && clientData.WebStatus !== "N/A") {
+      if (clientData.web_status_id === 7) {
         throw new Error("Can't send more than 1 registry requests at a time");
       }
 
@@ -200,15 +200,15 @@ const verifyRegistrationCode = async (
   const client = await prisma.$queryRaw<
     {
       Code: string;
-      status_id: number | null;
-      Status: string;
+      web_status_id: number | null;
+      WebStatus: string;
       MOH: string;
     }[]
   >`
     SELECT
       Code,
-      status_id,
-      Status,
+      web_status_id,
+      WebStatus,
       MOH
     FROM dbo.v_clients
     WHERE MOH = ${moh_number}
@@ -225,7 +225,7 @@ const verifyRegistrationCode = async (
 
     const clientData = client[0];
 
-    if (clientData.status_id !== 6 && clientData.Status !== "N/A") {
+    if (clientData.web_status_id !== 6 && clientData.WebStatus !== "N/A") {
       throw new Error("This account is no longer eligible for registration");
     }
 
@@ -285,14 +285,11 @@ const verifyRegistrationCode = async (
     }
 
     // existing/rejected clients move to Waiting Approval.
-    await tx.client.update({
-      where: {
-        client_code: clientCode,
-      },
-      data: {
-        status_id: 7,
-      },
-    });
+    await tx.$executeRaw`
+      UPDATE dbo.client
+      SET web_status_id = ${7}
+      WHERE client_code = ${clientCode};
+    `;
 
     // Mark verification code as used
     await tx.emailVerificationCode.update({
@@ -363,7 +360,7 @@ const createPassword = async (
       },
       select: {
         client_code: true,
-        status_id: true,
+        web_status_id: true,
       },
     });
 
@@ -371,7 +368,7 @@ const createPassword = async (
       throw new Error("Client not found");
     }
 
-    if (client.status_id !== 5) {
+    if (client.web_status_id !== 5) {
       throw new Error(
         "Password cannot be created because the client is not accepted",
       );
@@ -428,14 +425,11 @@ const createPassword = async (
     });
 
     // Activate client
-    await tx.client.update({
-      where: {
-        client_code: clientCode,
-      },
-      data: {
-        status_id: 1,
-      },
-    });
+    await tx.$executeRaw`
+      UPDATE dbo.client
+      SET web_status_id = ${1}
+      WHERE client_code = ${clientCode};
+    `;
 
     // Mark password as created
     await tx.client_pending.updateMany({
@@ -476,21 +470,35 @@ const login = async (
   companyId: string,
 ) => {
   const prisma = getPrisma(companyId);
-  const client = await prisma.client.findFirst({
-    where: {
-      moh_number: moh_number,
-    },
-    select: {
-      client_code: true,
-      status_id: true,
-    },
-  });
+
+  let client = null;
+  if (companyId === "SADCO") {
+    client = await prisma.client.findFirst({
+      where: {
+        nfc_code: moh_number,
+      },
+      select: {
+        client_code: true,
+        web_status_id: true,
+      },
+    });
+  } else {
+    client = await prisma.client.findFirst({
+      where: {
+        moh_number: moh_number,
+      },
+      select: {
+        client_code: true,
+        web_status_id: true,
+      },
+    });
+  }
 
   if (!client) {
     return c.json({ message: "Client not found", result: null }, 401);
   }
 
-  if (client.status_id !== 1) {
+  if (client.web_status_id !== 1) {
     return c.json({ message: "Client is not active", result: null }, 401);
   }
 
@@ -1165,10 +1173,10 @@ const switchCompany = async (
 
     const client = await prisma.client.findFirst({
       where: { client_code: link.client_code },
-      select: { status_id: true },
+      select: { web_status_id: true },
     });
 
-    if (!client || client.status_id !== 1) {
+    if (!client || client.web_status_id !== 1) {
       return c.json(
         { message: "The company client is not active", result: null },
         403,

@@ -22,7 +22,7 @@ export async function getServerSideProps(context: any) {
 
   try {
     // 2. Check if product has alternatives
-    const alternatives = await getItemAlternatives(itemCode).then(
+    const alternatives = await getItemAlternatives(itemCode, cookie).then(
       (res) => res.data.result,
     );
 

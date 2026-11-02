@@ -382,7 +382,14 @@ const getDashboardData = async (user_id: number, companyId: string) => {
     DECLARE @today DATE = GETDATE();
 
     SELECT 
-        category = ib.description,                        -- Category name
+        category = CASE
+            WHEN ${companyId} = 'SADCO' THEN
+                CASE
+                    WHEN i.brand_code = '010105' THEN 'Non Pharma'
+                    ELSE 'Pharma'
+                END
+            ELSE ib.description
+        END,                      -- Category name
         val = CONVERT(DECIMAL(18, 2), SUM(tb.approved_quantity))  -- Total sales value
     FROM dbo.transaction_header AS th_a  -- Transaction A: Type 4 delivery/invoice
     -- Join to find Transaction B which has th_a's ID as its parent
@@ -406,7 +413,9 @@ const getDashboardData = async (user_id: number, companyId: string) => {
         AND tb.is_active = 1
         AND tb.approved_quantity > 0                    -- Only positive quantities
         AND i.is_active = 1
-    GROUP BY ib.description;
+    GROUP BY
+        ib.description,
+        i.brand_code;
   `;
 
   // ============================================

@@ -141,7 +141,7 @@ export const Companies = {
       phone: "+961 1 855 560",
       facebook:
         "https://www.facebook.com/people/SADCO-Sami-Dandan-Co/100057607323297/",
-      instagram: "https://www.instagram.com/sadco.lb?xtok=N3RyOGl5aHZkdzl6",
+      instagram: "https://www.instagram.com/sadco.lb",
       linkedin: "https://www.linkedin.com/company/sadco-sal/",
     },
 

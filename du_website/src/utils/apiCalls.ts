@@ -840,10 +840,14 @@ const updateUserPermissions = async (
 //////
 const getItemAlternatives = async (
   item_code: string,
+  cookie?: string,
 ): Promise<AxiosResponse> => {
   return await axios.get(
     privateApi + `/restockAndAlt/${item_code}/alternatives`,
     {
+      headers: {
+        Cookie: cookie || "",
+      },
       withCredentials: true,
     },
   );

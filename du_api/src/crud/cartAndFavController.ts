@@ -289,6 +289,13 @@ const getCartItems = async (
       FROM item_price_list
       WHERE item_code = iu.item_code
         AND is_active = 1
+        AND (
+          ${companyId} <> 'SADCO'
+          OR currency_code = CASE
+              WHEN i.brand_code = '010105' THEN 2
+              ELSE 1
+            END
+        )
       ORDER BY currency_code ASC
     ) ipl
 
@@ -477,6 +484,13 @@ const getFavoriteItems = async (
           FROM item_price_list
           WHERE item_code = it.item_code
             AND is_active = 1
+            AND (
+              ${companyId} <> 'SADCO'
+              OR currency_code = CASE
+                  WHEN it.brand_code = '010105' THEN 2
+                  ELSE 1
+                END
+            )
           ORDER BY currency_code ASC
         ) ipl
         RIGHT JOIN favorite_items as fi ON fi.item_code = it.item_code

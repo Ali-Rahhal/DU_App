@@ -80,12 +80,53 @@ const getProducts = async (
   // FILTERS
   // =========================
 
-  const categoryFilter =
-    category_code?.length > 0
-      ? Prisma.sql`
+  let categoryFilter = Prisma.empty;
+  if (companyId === "SADCO") {
+    const USD_CATEGORY = "010105";
+
+    categoryFilter =
+      category_code?.length > 0
+        ? (() => {
+            const hasP = category_code.includes("P");
+            const hasNP = category_code.includes("NP");
+
+            // Real brand codes only (strip the pseudo-codes)
+            const brands = category_code.filter((c) => c !== "P" && c !== "NP");
+
+            const clauses: Prisma.Sql[] = [];
+
+            // Explicit brand list
+            if (brands.length > 0) {
+              clauses.push(
+                Prisma.sql`it.brand_code IN (${Prisma.join(brands)})`,
+              );
+            }
+
+            // "P"  -> everything except non-pharma(USD_CATEGORY)
+            // "NP" -> only non-pharma(USD_CATEGORY)
+            // Both -> (brands) OR non-pharma exclusion rules apply
+            if (hasP && !hasNP) {
+              clauses.push(Prisma.sql`it.brand_code <> ${USD_CATEGORY}`);
+            } else if (hasNP && !hasP) {
+              clauses.push(Prisma.sql`it.brand_code = ${USD_CATEGORY}`);
+            } else if (hasP && hasNP) {
+              // "P" + "NP" together = all brands
+              return Prisma.empty;
+            }
+
+            if (clauses.length === 0) return Prisma.empty;
+
+            return Prisma.sql`AND (${Prisma.join(clauses, " OR ")})`;
+          })()
+        : Prisma.empty;
+  } else {
+    categoryFilter =
+      category_code?.length > 0
+        ? Prisma.sql`
           AND it.brand_code IN (${Prisma.join(category_code)})
         `
-      : Prisma.empty;
+        : Prisma.empty;
+  }
 
   const iplFilter = show_only_best_deals
     ? Prisma.sql`AND ipl.default_discount > 0`
@@ -210,6 +251,13 @@ const getProducts = async (
         FROM item_price_list
         WHERE item_code = it.item_code
           AND is_active = 1
+          AND (
+            ${companyId} <> 'SADCO'
+            OR currency_code = CASE
+                WHEN it.brand_code = '010105' THEN 2
+                ELSE 1
+              END
+          )
         ORDER BY currency_code ASC
       ) ipl
 
@@ -315,6 +363,13 @@ const getProducts = async (
               FROM item_price_list
               WHERE item_code = it.item_code
                 AND is_active = 1
+                AND (
+                  ${companyId} <> 'SADCO'
+                  OR currency_code = CASE
+                      WHEN it.brand_code = '010105' THEN 2
+                      ELSE 1
+                    END
+                )
               ORDER BY currency_code ASC
             ) ipl
             
@@ -556,6 +611,13 @@ const getProductInfo = async (
           FROM item_price_list
           WHERE item_code = it.item_code
             AND is_active = 1
+            AND (
+              ${companyId} <> 'SADCO'
+              OR currency_code = CASE
+                  WHEN it.brand_code = '010105' THEN 2
+                  ELSE 1
+                END
+            )
           ORDER BY currency_code ASC
         ) ipl
 
@@ -673,6 +735,13 @@ const getProductInfo = async (
       FROM item_price_list
       WHERE item_code = it.item_code
         AND is_active = 1
+        AND (
+          ${companyId} <> 'SADCO'
+          OR currency_code = CASE
+              WHEN it.brand_code = '010105' THEN 2
+              ELSE 1
+            END
+        )
       ORDER BY currency_code ASC
     ) ipl
 
@@ -776,7 +845,15 @@ const getProductInfo = async (
 const getBrands = async (companyId: string) => {
   const prisma = getPrisma(companyId);
 
-  const brands = await prisma.$queryRaw`
+  let brands = null;
+  if (companyId === "SADCO") {
+    brands = [
+      { item_brand_code: "P", description: "Pharma" },
+      { item_brand_code: "NP", description: "Non Pharma" },
+    ];
+    return brands;
+  } else {
+    brands = await prisma.$queryRaw`
     SELECT DISTINCT
     ib.item_brand_code,
     ib.description
@@ -792,6 +869,7 @@ const getBrands = async (companyId: string) => {
             AND ipl.is_active = 1
       )
   `;
+  }
 
   if (!brands) throw new Error("Brands not found");
 

@@ -75,7 +75,14 @@ const getUserOrders = async (
                     END,
          phone = wa.phone,
          brand = th.item_brand_code,
-         brand_description= ib.description,
+         brand_description = CASE
+            WHEN ${companyId} = 'SADCO' THEN
+                CASE
+                    WHEN th.item_brand_code = '010105' THEN 'Non Pharma'
+                    ELSE 'Pharma'
+                END
+            ELSE ib.description
+         END,
          items = (SELECT COUNT(*) FROM transaction_body WHERE transaction_header_id = th.transaction_header_id),
          th.currency_code,
          th.total_amount,

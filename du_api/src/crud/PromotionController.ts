@@ -360,6 +360,13 @@ CROSS APPLY (
   FROM item_price_list
   WHERE item_code = iu.item_code
     AND is_active = 1
+    AND (
+      ${companyId} <> 'SADCO'
+      OR currency_code = CASE
+          WHEN i.brand_code = '010105' THEN 2
+          ELSE 1
+        END
+    )
   ORDER BY currency_code ASC
 ) ipl
 WHERE i.item_code IN (${Prisma.join(item_codes)})

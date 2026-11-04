@@ -8,8 +8,14 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Button, Spinner, Form, Row, Col, Collapse } from "react-bootstrap";
+import Image from "next/image";
+import { Button, Spinner, Form, Row, Col, Modal } from "react-bootstrap";
 import { useCompanyAssets } from "@/hooks/useCompanyAssets";
+
+const SADCO_CATEGORIES = [
+  { code: "P", label: "Pharma", image: "/assets/img/SADCO/Pharma.png" },
+  { code: "NP", label: "Non Pharma", image: "/assets/img/SADCO/NonPharma.png" },
+];
 
 /* ---------------- SERVER SIDE ---------------- */
 
@@ -46,10 +52,10 @@ const Filters = ({
   activeCat,
   onPromotionOnly,
   setOnPromotionOnly,
+  mobile = false,
 }: any) => {
   const router = useRouter();
   const t = useTranslations();
-  const { companyHydrated, companyId } = useCompanyAssets();
   const [brands, setBrands] = useState<
     { item_brand_code: string; description: string }[]
   >([]);
@@ -81,6 +87,71 @@ const Filters = ({
     });
   };
 
+  if (mobile) {
+    return (
+      <div className="mobile-filters">
+        <div className="mobile-filters-search">
+          <SearchBar showSearch={false} />
+
+          {s && (
+            <button
+              type="button"
+              className="mobile-filters-clear"
+              onClick={clearSearch}
+            >
+              Clear
+            </button>
+          )}
+        </div>
+
+        <div className="mobile-filters-chips">
+          <Link
+            href={{
+              pathname: "/category",
+              query: { promo: onPromotionOnly ? "true" : undefined },
+            }}
+            className={`mobile-filter-chip ${!activeCat ? "active" : ""}`}
+          >
+            All
+          </Link>
+
+          {brands.map((cat) => (
+            <Link
+              key={cat.item_brand_code}
+              href={{
+                pathname: "/category",
+                query: {
+                  cat: cat.item_brand_code,
+                  promo: onPromotionOnly ? "true" : undefined,
+                },
+              }}
+              className={`mobile-filter-chip ${
+                activeCat === cat.item_brand_code ? "active" : ""
+              }`}
+            >
+              {cat.description}
+            </Link>
+          ))}
+        </div>
+
+        <button
+          type="button"
+          role="switch"
+          aria-checked={onPromotionOnly}
+          className={`mobile-filters-promo ${onPromotionOnly ? "on" : ""}`}
+          onClick={() => handlePromoChange(!onPromotionOnly)}
+        >
+          <span className="mobile-filters-promo-label">
+            Show only promotions
+          </span>
+
+          <span className="mobile-switch" aria-hidden="true">
+            <span className="mobile-switch-knob" />
+          </span>
+        </button>
+      </div>
+    );
+  }
   return (
     <div className="p-2 border rounded bg-light mb-3">
       <div className="mb-3">
@@ -175,13 +246,40 @@ const CategoryPage = ({
   const [minPrice, setMinPrice] = useState(min);
   const [maxPrice, setMaxPrice] = useState(max);
 
-  const [showFilters, setShowFilters] = useState(false);
-
   const [onPromotionOnly, setOnPromotionOnly] = useState(
     router.query.promo ? true : false,
   );
 
   const activeCat = router.query.cat ?? null;
+
+  const { companyHydrated, companyId } = useCompanyAssets();
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+
+  // Ask SADCO clients to pick a category once per session
+  useEffect(() => {
+    if (!companyHydrated || companyId !== "SADCO") return;
+
+    // They already have a category (or were asked before): never show it again
+    if (cat || sessionStorage.getItem("sadcoCategoryChosen")) {
+      sessionStorage.setItem("sadcoCategoryChosen", "true");
+      return;
+    }
+
+    setShowCategoryModal(true);
+  }, [companyHydrated, companyId]);
+
+  const chooseCategory = (code: string) => {
+    sessionStorage.setItem("sadcoCategoryChosen", "true");
+    setShowCategoryModal(false);
+
+    router.push({
+      pathname: "/category",
+      query: {
+        cat: code,
+        promo: onPromotionOnly ? "true" : undefined,
+      },
+    });
+  };
 
   useEffect(() => {
     setProductsPag(products);
@@ -246,33 +344,45 @@ const CategoryPage = ({
 
   return (
     <Layout>
+      <Modal
+        show={showCategoryModal}
+        centered
+        backdrop="static"
+        keyboard={false}
+        className="category-choice-modal"
+      >
+        <Modal.Header>
+          <Modal.Title>Choose a category</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
+          <div className="category-choice-grid">
+            {SADCO_CATEGORIES.map((c) => (
+              <button
+                key={c.code}
+                type="button"
+                className="category-choice-button"
+                onClick={() => chooseCategory(c.code)}
+              >
+                <Image src={c.image} alt={c.label} width={120} height={120} />
+                <span>{c.label}</span>
+              </button>
+            ))}
+          </div>
+        </Modal.Body>
+      </Modal>
       <section className="pt-5 pb-5">
         <div className="container">
-          {/* MOBILE FILTER BUTTON */}
+          {/* MOBILE FILTERS (always visible) */}
 
           <div className="d-md-none mb-3">
-            <Button
-              className="w-25"
-              variant="outline-primary"
-              onClick={() => setShowFilters(!showFilters)}
-            >
-              Filters
-            </Button>
-
-            <Collapse in={showFilters}>
-              <div>
-                <Filters
-                  s={s}
-                  activeCat={activeCat}
-                  minPrice={minPrice}
-                  maxPrice={maxPrice}
-                  setMinPrice={setMinPrice}
-                  setMaxPrice={setMaxPrice}
-                  onPromotionOnly={onPromotionOnly}
-                  setOnPromotionOnly={setOnPromotionOnly}
-                />
-              </div>
-            </Collapse>
+            <Filters
+              mobile
+              s={s}
+              activeCat={activeCat}
+              onPromotionOnly={onPromotionOnly}
+              setOnPromotionOnly={setOnPromotionOnly}
+            />
           </div>
 
           <Row>

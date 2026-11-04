@@ -31,6 +31,7 @@ export async function getServerSideProps(context: any) {
 
 const HomePage = ({ products }) => {
   const { companyHydrated, companyId } = useCompanyAssets();
+  sessionStorage.removeItem("sadcoCategoryChosen");
   return (
     <>
       <Dashboard />

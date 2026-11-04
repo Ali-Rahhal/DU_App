@@ -18,9 +18,6 @@ import { useTranslations } from "next-intl";
 import { sendContactEmail } from "@/utils/apiCalls";
 
 interface ContactForm {
-  fullName: string;
-  phone: string;
-  email: string;
   message: string;
 }
 
@@ -43,9 +40,6 @@ const Contact = () => {
   } = useCompanyAssets();
 
   const [form, setForm] = useState<ContactForm>({
-    fullName: "",
-    phone: "",
-    email: "",
     message: "",
   });
 
@@ -70,18 +64,12 @@ const Contact = () => {
 
       await sendContactEmail({
         companyEmail,
-        fullName: form.fullName,
-        phone: form.phone,
-        clientEmail: form.email,
         message: form.message,
       });
 
       toast.success(t("contact_page.form.success"));
 
       setForm({
-        fullName: "",
-        phone: "",
-        email: "",
         message: "",
       });
     } catch (error: any) {
@@ -229,66 +217,6 @@ const Contact = () => {
 
                 <form onSubmit={handleSubmit} className="contact-form">
                   <div className="row">
-                    <div className="col-md-6">
-                      <div className="form-group">
-                        <label htmlFor="fullName">
-                          {t("contact_page.form.full_name")}{" "}
-                          {t("contact_page.form.required")}
-                        </label>
-                        <input
-                          id="fullName"
-                          className="form-control"
-                          type="text"
-                          name="fullName"
-                          placeholder={t(
-                            "contact_page.form.full_name_placeholder",
-                          )}
-                          value={form.fullName}
-                          onChange={updateField}
-                          required
-                          maxLength={120}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="col-md-6">
-                      <div className="form-group">
-                        <label htmlFor="phone">
-                          {t("contact_page.form.phone")}
-                        </label>
-                        <input
-                          id="phone"
-                          className="form-control"
-                          type="tel"
-                          name="phone"
-                          placeholder={t("contact_page.form.phone_placeholder")}
-                          value={form.phone}
-                          onChange={updateField}
-                          maxLength={30}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="col-12">
-                      <div className="form-group">
-                        <label htmlFor="email">
-                          {t("contact_page.form.email")}{" "}
-                          {t("contact_page.form.required")}
-                        </label>
-                        <input
-                          id="email"
-                          className="form-control"
-                          type="email"
-                          name="email"
-                          placeholder={t("contact_page.form.email_placeholder")}
-                          value={form.email}
-                          onChange={updateField}
-                          required
-                          maxLength={254}
-                        />
-                      </div>
-                    </div>
-
                     <div className="col-12">
                       <div className="form-group">
                         <label htmlFor="message">

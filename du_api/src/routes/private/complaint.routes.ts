@@ -7,6 +7,7 @@ import {
 } from "../../crud/complaintController";
 import { getUserId } from "../../lib/utils";
 import { sendContactEmail } from "../../lib/sendContactEmail";
+import { getUserDetails } from "../../crud/AuthController";
 const router = new Hono();
 
 // getUserComplaints
@@ -92,15 +93,28 @@ router.post(`/save_complaint_answer`, async (c) => {
 
 router.post("/send_contact_email", async (c) => {
   try {
+    const companyId = String(
+      c.get("companyId") ?? process.env.DEFAULT_COMPANY ?? "",
+    );
     const body = await c.req.json();
 
-    const { companyEmail, fullName, phone, clientEmail, message } = body;
+    const { companyEmail, message } = body;
+
+    const userId = await getUserId(c);
+    if (!userId) throw new Error("User id not found");
+
+    const { first_name, last_name, phone, email, moh_number } =
+      await getUserDetails(userId, companyId);
+
+    const fullName = `${first_name} ${last_name}`;
+    const clientEmail = email;
 
     const result = await sendContactEmail({
       companyEmail,
       fullName,
       phone,
       clientEmail,
+      moh_number,
       message,
     });
 

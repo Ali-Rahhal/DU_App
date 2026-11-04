@@ -28,12 +28,14 @@ export const sendContactEmail = async ({
   fullName,
   phone,
   clientEmail,
+  moh_number,
   message,
 }: {
   companyEmail: string;
   fullName: string;
   phone: string;
   clientEmail: string;
+  moh_number: string;
   message: string;
 }) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -50,7 +52,7 @@ export const sendContactEmail = async ({
     !clientEmail.trim() ||
     !message.trim()
   ) {
-    throw new Error("Please complete all required fields.");
+    throw new Error("Not all required fields are provided.");
   }
 
   if (
@@ -63,7 +65,7 @@ export const sendContactEmail = async ({
   }
 
   if (!emailRegex.test(clientEmail.trim())) {
-    throw new Error("Please enter a valid email address.");
+    throw new Error("ClientEmail is not a valid email.");
   }
 
   try {
@@ -74,6 +76,7 @@ export const sendContactEmail = async ({
       subject: `Website Contact - ${fullName.trim()}`,
       text: [
         `Name: ${fullName.trim()}`,
+        `MOH Number: ${moh_number.trim()}`,
         `Email: ${clientEmail.trim()}`,
         `Phone: ${typeof phone === "string" ? phone.trim() : "Not provided"}`,
         "",
@@ -83,6 +86,7 @@ export const sendContactEmail = async ({
       html: `
         <h2>New Contact Message</h2>
         <p><strong>Name:</strong> ${escapeHtml(fullName.trim())}</p>
+        <p><strong>MOH Number:</strong> ${escapeHtml(moh_number.trim())}</p>
         <p><strong>Email:</strong> ${escapeHtml(clientEmail.trim())}</p>
         <p><strong>Phone:</strong> ${escapeHtml(
           typeof phone === "string" ? phone.trim() : "Not provided",

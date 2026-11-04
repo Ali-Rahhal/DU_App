@@ -606,9 +606,6 @@ const saveComplaint = async (complaint: any) => {
 };
 
 const sendContactEmail = async (data: {
-  fullName: string;
-  phone: string;
-  clientEmail: string;
   message: string;
   companyEmail: string;
 }): Promise<AxiosResponse> => {

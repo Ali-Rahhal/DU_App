@@ -17,6 +17,9 @@ import ChangeLangDropdown from "@/components/common/ChangeLangDropdown";
 import InstallPWAButton from "@/components/common/InstalPWAButton";
 import { getCompanyStatus, getLicensedCompanies } from "@/utils/apiCalls";
 
+// Temporarily disabled: set to true to bring back the company selection step
+const SHOW_COMPANY_SELECTION = false;
+
 export default function LoginPage() {
   const [licensedCompanies, setLicensedCompanies] = useState<CompanyId[]>([]);
   const [loadingCompanies, setLoadingCompanies] = useState(true);
@@ -32,7 +35,9 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
 
-  const [step, setStep] = useState<"company" | "login">("company");
+  const [step, setStep] = useState<"company" | "login">(
+    SHOW_COMPANY_SELECTION ? "company" : "login",
+  );
 
   const { login } = useAuthStore();
   const { refreshCart } = useAccountStore();
@@ -48,6 +53,13 @@ export default function LoginPage() {
   useEffect(() => {
     async function loadCompanies() {
       try {
+        if (!SHOW_COMPANY_SELECTION) {
+          //!!!force everyone onto the default company!!!
+          const def = process.env.NEXT_PUBLIC_DEFAULT_COMPANY as CompanyId;
+          setCompany(def);
+          document.cookie = `companyIdCustomerPortalApp=${def}; path=/; max-age=31536000; SameSite=Lax`;
+        }
+
         const [statusResponse, licensesResponse] = await Promise.all([
           getCompanyStatus(),
           getLicensedCompanies(),
@@ -64,9 +76,6 @@ export default function LoginPage() {
         const enabledCompanies = companies.filter(
           (company) => status[company] === true,
         );
-
-        console.log("status", status);
-        console.log("enabledCompanies", enabledCompanies);
 
         if (enabledCompanies.length === 1) {
           const selectedCompany = enabledCompanies[0];
@@ -97,10 +106,14 @@ export default function LoginPage() {
     if (enabledCompanies.length === 0) return;
 
     if (!enabledCompanies.includes(companyId)) {
-      const firstAvailableCompany = licensedCompanies[0];
+      const firstAvailableCompany = enabledCompanies[0];
       setCompany(firstAvailableCompany);
       document.cookie = `companyIdCustomerPortalApp=${firstAvailableCompany}; path=/; max-age=31536000; SameSite=Lax`;
-      setStep(enabledCompanies.length === 1 ? "login" : "company");
+      setStep(
+        !SHOW_COMPANY_SELECTION || enabledCompanies.length === 1
+          ? "login"
+          : "company",
+      );
     }
   }, [
     loadingCompanies,
@@ -267,14 +280,16 @@ export default function LoginPage() {
                 LOGIN
             ================================================== */}
             <div className="login-header">
-              <button
-                type="button"
-                className="login-back-btn"
-                disabled={loading || redirecting}
-                onClick={() => setStep("company")}
-              >
-                <i className="ti ti-arrow-left" />
-              </button>
+              {SHOW_COMPANY_SELECTION && (
+                <button
+                  type="button"
+                  className="login-back-btn"
+                  disabled={loading || redirecting}
+                  onClick={() => setStep("company")}
+                >
+                  <i className="ti ti-arrow-left" />
+                </button>
+              )}
 
               <div className="login-header-content">
                 <img

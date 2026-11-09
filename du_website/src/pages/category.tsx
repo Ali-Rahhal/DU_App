@@ -91,7 +91,7 @@ const Filters = ({
     return (
       <div className="mobile-filters">
         <div className="mobile-filters-search">
-          <SearchBar showSearch={false} />
+          <SearchBar showSearch />
 
           {s && (
             <button

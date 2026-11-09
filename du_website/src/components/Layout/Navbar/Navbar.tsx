@@ -230,7 +230,7 @@ function Navbar({
               </>
             )}
 
-            {isAuth && <AIMagicButton />}
+            {/* {isAuth && <AIMagicButton />} */}
 
             {isAuth && (
               <Dropdown>
@@ -306,7 +306,7 @@ function Navbar({
               </Link>
 
               <div className="mobile-navbar-actions">
-                {isAuth && <AIMagicButton isMobile />}
+                {/* {isAuth && <AIMagicButton isMobile />} */}
 
                 <Link
                   href={isAuth ? "/cart" : "/login"}
@@ -321,7 +321,7 @@ function Navbar({
 
             {/* Row 3 - Search */}
             <div className="mobile-navbar-search">
-              <SearchBar showSearch={false} text="search_products" />
+              <SearchBar showSearch text="search_products" />
             </div>
           </header>
         </>
@@ -433,7 +433,7 @@ function Navbar({
                 onClick={closeSidebar}
               />
 
-              <SidebarLink
+              {/* <SidebarLink
                 href="/promotions"
                 icon={<Megaphone size={19} />}
                 label={t("navbar.promotion")}
@@ -498,7 +498,7 @@ function Navbar({
                 icon={<Receipt size={19} />}
                 label="Collection"
                 onClick={closeSidebar}
-              />
+              /> */}
             </>
           )}
         </nav>

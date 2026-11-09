@@ -169,44 +169,49 @@ const ProductItem = ({
   );
 
   const priceDisplay = () => {
-    return stock > 0 ? (
-      discountedPrice ? (
-        <>
-          <div className="product-item-price-original">
-            <del>
-              {currenncyCodeToSymbol(item.currency_code)}{" "}
-              {price.toLocaleString()}
-            </del>
-          </div>
-
-          <div className="product-item-price-current">
-            {currenncyCodeToSymbol(item.currency_code)}{" "}
-            {discountedPrice.toLocaleString()}
-          </div>
-
-          {!isOutOfStock && stock <= 10 && (
-            <small className="product-item-limited-stock">
-              {t("products.limited_stock")}
-            </small>
-          )}
-        </>
-      ) : (
-        <>
-          <div className="product-item-price-current">
+    return discountedPrice ? (
+      <>
+        <div className="product-item-price-original">
+          <del>
             {currenncyCodeToSymbol(item.currency_code)} {price.toLocaleString()}
-          </div>
+          </del>
+        </div>
 
-          {!isOutOfStock && stock <= 10 && (
-            <small className="product-item-limited-stock">
-              {t("products.limited_stock")}
-            </small>
-          )}
-        </>
-      )
+        <div className="product-item-price-current">
+          {currenncyCodeToSymbol(item.currency_code)}{" "}
+          {discountedPrice.toLocaleString()}
+        </div>
+
+        {!isOutOfStock && stock <= 10 && (
+          <small className="product-item-limited-stock">
+            {t("products.limited_stock")}
+          </small>
+        )}
+
+        {stock <= 0 && (
+          <span className="product-item-unavailable">
+            {t("products.item_unavailable")}
+          </span>
+        )}
+      </>
     ) : (
-      <span className="product-item-unavailable">
-        {t("products.item_unavailable")}
-      </span>
+      <>
+        <div className="product-item-price-current">
+          {currenncyCodeToSymbol(item.currency_code)} {price.toLocaleString()}
+        </div>
+
+        {!isOutOfStock && stock <= 10 && (
+          <small className="product-item-limited-stock">
+            {t("products.limited_stock")}
+          </small>
+        )}
+
+        {stock <= 0 && (
+          <span className="product-item-unavailable">
+            {t("products.item_unavailable")}
+          </span>
+        )}
+      </>
     );
   };
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { getProducts } from "@/utils/apiCalls";
 import { useCompanyAssets } from "@/hooks/useCompanyAssets";
 import Dashboard from "./dashboard";
@@ -30,8 +30,9 @@ export async function getServerSideProps(context: any) {
 }
 
 const HomePage = ({ products }) => {
-  const { companyHydrated, companyId } = useCompanyAssets();
-  sessionStorage.removeItem("sadcoCategoryChosen");
+  useEffect(() => {
+    sessionStorage.removeItem("sadcoCategoryChosen");
+  }, []);
   return (
     <>
       <Dashboard />

@@ -80,13 +80,13 @@ const AccountPage = () => {
       permission: ALL_PERMISSIONS.ChangePassword,
       onClick: () => setShowChangePassword(true),
     },
-    {
-      key: "return-admin",
-      href: "/return-admin",
-      label: t("return_admin.title"),
-      icon: RotateCcw,
-      role: ROLES.Admin,
-    },
+    // {
+    //   key: "return-admin",
+    //   href: "/return-admin",
+    //   label: t("return_admin.title"),
+    //   icon: RotateCcw,
+    //   role: ROLES.Admin,
+    // },
     {
       key: "wishlist",
       href: "/wishlist",
@@ -99,24 +99,24 @@ const AccountPage = () => {
       label: t("orders.title"),
       icon: ShoppingBag,
     },
-    {
-      key: "open-invoice",
-      href: "/open-invoice",
-      label: t("open_invoices.title"),
-      icon: FileText,
-    },
-    {
-      key: "sales-invoice",
-      href: "/sales-invoice",
-      label: t("sales_invoice.title"),
-      icon: Receipt,
-    },
-    {
-      key: "returns",
-      href: "/returns",
-      label: t("returns.title"),
-      icon: Undo2,
-    },
+    // {
+    //   key: "open-invoice",
+    //   href: "/open-invoice",
+    //   label: t("open_invoices.title"),
+    //   icon: FileText,
+    // },
+    // {
+    //   key: "sales-invoice",
+    //   href: "/sales-invoice",
+    //   label: t("sales_invoice.title"),
+    //   icon: Receipt,
+    // },
+    // {
+    //   key: "returns",
+    //   href: "/returns",
+    //   label: t("returns.title"),
+    //   icon: Undo2,
+    // },
   ];
 
   const visibleItems = navItems.filter((item) => {

@@ -13,6 +13,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { useCompanyAssets } from "@/hooks/useCompanyAssets";
 import PWAProvider from "@/components/common/PWAProvider";
 import NextNProgress from "nextjs-progressbar";
+import { Slide } from "react-toastify";
 const ToastContainer = dynamic(
   () => import("react-toastify").then((mod) => mod.ToastContainer),
   { ssr: false },
@@ -86,7 +87,15 @@ function App({ Component, pageProps }) {
           <PWAProvider />
           <NextNProgress color="#5B8DEF" height={4} showOnShallow={true} />
           <Component {...pageProps} />
-          <ToastContainer />
+          <ToastContainer
+            position="top-center"
+            autoClose={1500}
+            hideProgressBar={true}
+            draggable
+            pauseOnHover
+            newestOnTop
+            transition={Slide}
+          />
         </NextIntlClientProvider>
       </div>
     </>

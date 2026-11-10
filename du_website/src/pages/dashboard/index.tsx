@@ -23,6 +23,49 @@ const ApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
 
+type TabOption = { key: string; label: string };
+
+const MobileTabs = ({
+  tabs,
+  active,
+  onChange,
+}: {
+  tabs: TabOption[];
+  active: string;
+  onChange: (key: string) => void;
+}) => (
+  <div className="dashboard-mobile-tabs" role="tablist">
+    {tabs.map((tab) => (
+      <button
+        key={tab.key}
+        type="button"
+        role="tab"
+        aria-selected={active === tab.key}
+        className={active === tab.key ? "active" : ""}
+        onClick={() => onChange(tab.key)}
+      >
+        {tab.label}
+      </button>
+    ))}
+  </div>
+);
+
+const useIsMobile = (breakpoint = 768) => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia(`(max-width: ${breakpoint}px)`);
+    const update = () => setIsMobile(mq.matches);
+
+    update();
+    mq.addEventListener("change", update);
+
+    return () => mq.removeEventListener("change", update);
+  }, [breakpoint]);
+
+  return isMobile;
+};
+
 const Dashboard = () => {
   const { firstName, lastName, name, code } = useAccountStore();
 
@@ -36,6 +79,11 @@ const Dashboard = () => {
   const t = useTranslations();
 
   const { companyPlaceholder } = useCompanyAssets();
+
+  const isMobile = useIsMobile();
+  const [detailsTab, setDetailsTab] = useState("collection");
+  const [tablesTab, setTablesTab] = useState("orders");
+  const [chartsTab, setChartsTab] = useState("category");
 
   useEffect(() => {
     getDashboardData().then((res) => {
@@ -87,6 +135,29 @@ const Dashboard = () => {
               <small>{code}</small>
             </div>
           </div>
+          {dashboardData?.nextVisit && (
+            <div className="dashboard-visit-pill">
+              <i className="ti-calendar"></i>
+              <span>{t("dashboard.next_visit")}</span>
+              <strong>
+                {dashboardData.nextVisit.next_planned_visit || "N/A"}
+              </strong>
+
+              {dashboardData.nextVisit.sales_rep && (
+                <span>{dashboardData.nextVisit.sales_rep}</span>
+              )}
+
+              {dashboardData.nextVisit.days_remaining != null && (
+                <span className="dashboard-visit-pill-days">
+                  {dashboardData.nextVisit.days_remaining === 0
+                    ? t("dashboard.today")
+                    : dashboardData.nextVisit.days_remaining +
+                      " " +
+                      t("dashboard.days_left")}
+                </span>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
@@ -200,39 +271,6 @@ const Dashboard = () => {
         </section>
 
         {/* =======================================================
-            NEXT VISIT
-            ======================================================= */}
-        {dashboardData?.nextVisit && (
-          <section className="dashboard-next-visit">
-            <div className="dashboard-next-visit-icon">
-              <i className="ti-calendar"></i>
-            </div>
-
-            <div className="dashboard-next-visit-info">
-              <p className="dashboard-next-visit-title">
-                {t("dashboard.next_visit")}
-              </p>
-
-              <h5>{dashboardData.nextVisit.next_planned_visit || "N/A"}</h5>
-
-              <div className="dashboard-next-visit-sub">
-                <span>{dashboardData.nextVisit.sales_rep}</span>
-
-                {dashboardData.nextVisit.days_remaining != null && (
-                  <span className="dashboard-next-visit-days">
-                    {dashboardData.nextVisit.days_remaining === 0
-                      ? t("dashboard.today")
-                      : dashboardData.nextVisit.days_remaining +
-                        " " +
-                        t("dashboard.days_left")}
-                  </span>
-                )}
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* =======================================================
             STATISTICS
             ======================================================= */}
         <section className="dashboard-stats-grid">
@@ -304,574 +342,655 @@ const Dashboard = () => {
         {/* =======================================================
             DETAILS
             ======================================================= */}
-        <section className="dashboard-details-grid">
-          {/* Last Collection */}
-          <article className="dashboard-detail-card">
-            <h3 className="dashboard-detail-title">
-              {t("dashboard.last_collection_details")}
-            </h3>
+        <div className="dashboard-tab-group">
+          <MobileTabs
+            active={detailsTab}
+            onChange={setDetailsTab}
+            tabs={[
+              {
+                key: "collection",
+                label: t("dashboard.last_collection_details"),
+              },
+              { key: "order", label: t("dashboard.last_order_details") },
+            ]}
+          />
+          <section className="dashboard-details-grid">
+            {/* Last Collection */}
+            <article
+              className={`dashboard-detail-card dashboard-tab-panel ${
+                detailsTab === "collection" ? "is-active" : ""
+              }`}
+            >
+              <h3 className="dashboard-detail-title">
+                {t("dashboard.last_collection_details")}
+              </h3>
 
-            <div className="dashboard-detail-box">
-              <div className="dashboard-detail-main">
-                <h5>{dashboardData?.openInvoice?.payment_amount || "N/A"}</h5>
+              <div className="dashboard-detail-box">
+                <div className="dashboard-detail-main">
+                  <h5>{dashboardData?.openInvoice?.payment_amount || "N/A"}</h5>
 
-                <p>
-                  {t("dashboard.paid_for")}{" "}
-                  {dashboardData?.openInvoice?.paid_for || "N/A"}
-                </p>
+                  <p>
+                    {t("dashboard.paid_for")}{" "}
+                    {dashboardData?.openInvoice?.paid_for || "N/A"}
+                  </p>
 
-                <div className="dashboard-detail-type">
-                  <i className="ti-receipt"></i>
+                  <div className="dashboard-detail-type">
+                    <i className="ti-receipt"></i>
 
-                  <span>{t("dashboard.payment_method")}</span>
+                    <span>{t("dashboard.payment_method")}</span>
 
-                  <strong>
-                    {dashboardData?.openInvoice?.payment_type || "N/A"}
-                  </strong>
+                    <strong>
+                      {dashboardData?.openInvoice?.payment_type || "N/A"}
+                    </strong>
+                  </div>
+                </div>
+
+                <div className="dashboard-detail-date">
+                  <h6>{t("dashboard.payment_on")}</h6>
+
+                  <p>{dashboardData?.openInvoice?.payment_on || "N/A"}</p>
                 </div>
               </div>
+            </article>
 
-              <div className="dashboard-detail-date">
-                <h6>{t("dashboard.payment_on")}</h6>
+            {/* Last Order */}
+            <article
+              className={`dashboard-detail-card dashboard-tab-panel ${
+                detailsTab === "order" ? "is-active" : ""
+              }`}
+            >
+              <h3 className="dashboard-detail-title">
+                {t("dashboard.last_order_details")}
+              </h3>
 
-                <p>{dashboardData?.openInvoice?.payment_on || "N/A"}</p>
-              </div>
-            </div>
-          </article>
+              <div className="dashboard-detail-box">
+                <div className="dashboard-detail-main">
+                  <h5>
+                    {dashboardData?.transaction_header?.order_amount || "N/A"}
+                  </h5>
 
-          {/* Last Order */}
-          <article className="dashboard-detail-card">
-            <h3 className="dashboard-detail-title">
-              {t("dashboard.last_order_details")}
-            </h3>
+                  <p>
+                    {t("dashboard.last_order")}{" "}
+                    {dashboardData?.transaction_header?.order_code || "N/A"}
+                  </p>
 
-            <div className="dashboard-detail-box">
-              <div className="dashboard-detail-main">
-                <h5>
-                  {dashboardData?.transaction_header?.order_amount || "N/A"}
-                </h5>
+                  <div className="dashboard-detail-type">
+                    <i className="ti-receipt"></i>
 
-                <p>
-                  {t("dashboard.last_order")}{" "}
-                  {dashboardData?.transaction_header?.order_code || "N/A"}
-                </p>
+                    <span>{t("dashboard.placed_on")}</span>
 
-                <div className="dashboard-detail-type">
-                  <i className="ti-receipt"></i>
+                    <strong>
+                      {dashboardData?.transaction_header?.placed_on || "N/A"}
+                    </strong>
+                  </div>
+                </div>
 
-                  <span>{t("dashboard.placed_on")}</span>
+                <div className="dashboard-detail-date">
+                  <h6>{t("dashboard.next_planned_visit")}</h6>
 
-                  <strong>
-                    {dashboardData?.transaction_header?.placed_on || "N/A"}
-                  </strong>
+                  <p>
+                    {dashboardData?.transaction_header?.next_planned_visit ||
+                      "N/A"}
+                  </p>
+
+                  <h6>{t("dashboard.sales_rep")}</h6>
+
+                  <p>{dashboardData?.transaction_header?.sales_rep || "N/A"}</p>
                 </div>
               </div>
-
-              <div className="dashboard-detail-date">
-                <h6>{t("dashboard.next_planned_visit")}</h6>
-
-                <p>
-                  {dashboardData?.transaction_header?.next_planned_visit ||
-                    "N/A"}
-                </p>
-
-                <h6>{t("dashboard.sales_rep")}</h6>
-
-                <p>{dashboardData?.transaction_header?.sales_rep || "N/A"}</p>
-              </div>
-            </div>
-          </article>
-        </section>
+            </article>
+          </section>
+        </div>
 
         {/* =======================================================
             TABLES
             ======================================================= */}
-        <section className="dashboard-tables-grid">
-          {/* =====================================================
+        <div className="dashboard-tab-group">
+          <MobileTabs
+            active={tablesTab}
+            onChange={setTablesTab}
+            tabs={[
+              { key: "orders", label: t("dashboard.recent_orders") },
+              { key: "deliveries", label: "Next Deliveries Due" },
+              { key: "payments", label: t("dashboard.outstanding_payment") },
+            ]}
+          />
+          <section className="dashboard-tables-grid">
+            {/* =====================================================
               RECENT ORDERS
               ===================================================== */}
-          <article className="dashboard-table-card">
-            <div className="dashboard-table-header">
-              <p className="dashboard-table-title">
-                {t("dashboard.recent_orders")}
-              </p>
+            <article
+              className={`dashboard-table-card dashboard-tab-panel ${tablesTab === "orders" ? "is-active" : ""}`}
+            >
+              <div className="dashboard-table-header">
+                <p className="dashboard-table-title">
+                  {t("dashboard.recent_orders")}
+                </p>
 
-              <div className="dashboard-table-icon">
-                <i className="ti-stats-up"></i>
+                <div className="dashboard-table-icon">
+                  <i className="ti-stats-up"></i>
+                </div>
               </div>
-            </div>
 
-            {/* Desktop */}
-            <div className="dashboard-table-desktop">
-              <Table size="sm">
-                <thead>
-                  <tr>
-                    <th>{t("dashboard.sales_number")}</th>
-
-                    <th>{t("dashboard.order_date")}</th>
-
-                    <th>{t("dashboard.status")}</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {dashboardData.recentOrders.length === 0 ? (
+              {/* Desktop */}
+              <div className="dashboard-table-desktop">
+                <Table size="sm">
+                  <thead>
                     <tr>
-                      <td colSpan={3} className="dashboard-table-empty">
-                        No Recent Orders
-                      </td>
+                      <th>{t("dashboard.sales_number")}</th>
+
+                      <th>{t("dashboard.order_date")}</th>
+
+                      <th>{t("dashboard.status")}</th>
                     </tr>
-                  ) : (
-                    dashboardData.recentOrders.map((order, index) => {
-                      const status = statusIdToText(order.transaction_status);
+                  </thead>
 
-                      return (
-                        <tr key={index}>
-                          <td>
-                            <button
-                              type="button"
-                              className="dashboard-order-link"
-                              onClick={() =>
-                                handleOrderClick(order.transaction_header_id)
-                              }
-                            >
-                              {order.sales_number}
-                            </button>
-                          </td>
+                  <tbody>
+                    {dashboardData.recentOrders.length === 0 ? (
+                      <tr>
+                        <td colSpan={3} className="dashboard-table-empty">
+                          No Recent Orders
+                        </td>
+                      </tr>
+                    ) : (
+                      dashboardData.recentOrders.map((order, index) => {
+                        const status = statusIdToText(order.transaction_status);
 
-                          <td>{order.order_date}</td>
+                        return (
+                          <tr key={index}>
+                            <td>
+                              <button
+                                type="button"
+                                className="dashboard-order-link"
+                                onClick={() =>
+                                  handleOrderClick(order.transaction_header_id)
+                                }
+                              >
+                                {order.sales_number}
+                              </button>
+                            </td>
 
-                          <td>
-                            <div
-                              className="dashboard-status"
-                              style={{
-                                color: status.color,
-                              }}
-                            >
-                              <i
-                                className={status.icon}
+                            <td>{order.order_date}</td>
+
+                            <td>
+                              <div
+                                className="dashboard-status"
                                 style={{
                                   color: status.color,
                                 }}
-                              ></i>
+                              >
+                                <i
+                                  className={status.icon}
+                                  style={{
+                                    color: status.color,
+                                  }}
+                                ></i>
 
-                              <span>
-                                {t(
-                                  "statuses." +
-                                    status.text
-                                      ?.toLowerCase()
-                                      .replace(" ", "_"),
-                                ) || status.text}
-                              </span>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })
-                  )}
-                </tbody>
-              </Table>
-            </div>
+                                <span>
+                                  {t(
+                                    "statuses." +
+                                      status.text
+                                        ?.toLowerCase()
+                                        .replace(" ", "_"),
+                                  ) || status.text}
+                                </span>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </Table>
+              </div>
 
-            {/* Mobile */}
-            <div className="dashboard-table-mobile">
-              {dashboardData.recentOrders.length === 0 ? (
-                <div className="dashboard-mobile-empty">No Recent Orders</div>
-              ) : (
-                dashboardData.recentOrders.map((order, index) => {
-                  const status = statusIdToText(order.transaction_status);
+              {/* Mobile */}
+              <div className="dashboard-table-mobile">
+                {dashboardData.recentOrders.length === 0 ? (
+                  <div className="dashboard-mobile-empty">No Recent Orders</div>
+                ) : (
+                  dashboardData.recentOrders.slice(0, 3).map((order, index) => {
+                    const status = statusIdToText(order.transaction_status);
 
-                  return (
-                    <button
-                      type="button"
-                      className="dashboard-mobile-order"
-                      key={index}
-                      onClick={() =>
-                        handleOrderClick(order.transaction_header_id)
-                      }
-                    >
-                      <div className="dashboard-mobile-order-header">
-                        <span className="dashboard-mobile-number">
-                          #{order.sales_number}
-                        </span>
+                    return (
+                      <button
+                        type="button"
+                        className="dashboard-mobile-order"
+                        key={index}
+                        onClick={() =>
+                          handleOrderClick(order.transaction_header_id)
+                        }
+                      >
+                        <div className="dashboard-mobile-order-header">
+                          <span className="dashboard-mobile-number">
+                            #{order.sales_number}
+                          </span>
 
-                        <span
-                          className="dashboard-mobile-status"
-                          style={{
-                            color: status.color,
-                            backgroundColor: `${status.color}15`,
-                          }}
-                        >
-                          <i className={status.icon}></i>
+                          <span
+                            className="dashboard-mobile-status"
+                            style={{
+                              color: status.color,
+                              backgroundColor: `${status.color}15`,
+                            }}
+                          >
+                            <i className={status.icon}></i>
 
-                          {t(
-                            "statuses." +
-                              status.text?.toLowerCase().replace(" ", "_"),
-                          ) || status.text}
-                        </span>
-                      </div>
+                            {t(
+                              "statuses." +
+                                status.text?.toLowerCase().replace(" ", "_"),
+                            ) || status.text}
+                          </span>
+                        </div>
 
-                      <div className="dashboard-mobile-info">
-                        <span>{t("dashboard.order_date")}</span>
+                        <div className="dashboard-mobile-info">
+                          <span>{t("dashboard.order_date")}</span>
 
-                        <strong>{order.order_date}</strong>
-                      </div>
-                    </button>
-                  );
-                })
-              )}
-            </div>
-          </article>
+                          <strong>{order.order_date}</strong>
+                        </div>
+                      </button>
+                    );
+                  })
+                )}
+                {dashboardData.recentOrders.length > 3 && (
+                  <button
+                    type="button"
+                    className="dashboard-view-all"
+                    onClick={() => rt.push("/orders")}
+                  >
+                    View all orders
+                  </button>
+                )}
+              </div>
+            </article>
 
-          {/* =====================================================
+            {/* =====================================================
               NEXT DELIVERIES
               ===================================================== */}
-          <article className="dashboard-table-card">
-            <div className="dashboard-table-header">
-              <p className="dashboard-table-title">Next Deliveries Due</p>
+            <article
+              className={`dashboard-table-card dashboard-tab-panel ${tablesTab === "deliveries" ? "is-active" : ""}`}
+            >
+              <div className="dashboard-table-header">
+                <p className="dashboard-table-title">Next Deliveries Due</p>
 
-              <div className="dashboard-table-icon">
-                <i className="ti-truck"></i>
+                <div className="dashboard-table-icon">
+                  <i className="ti-truck"></i>
+                </div>
               </div>
-            </div>
 
-            {/* Desktop */}
-            <div className="dashboard-table-desktop">
-              <Table size="sm">
-                <thead>
-                  <tr>
-                    <th>{t("dashboard.delivery_number")}</th>
-
-                    <th>{t("dashboard.due_date")}</th>
-
-                    <th>{t("dashboard.status")}</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {dashboardData.nextDeliveryDues.length === 0 ? (
+              {/* Desktop */}
+              <div className="dashboard-table-desktop">
+                <Table size="sm">
+                  <thead>
                     <tr>
-                      <td colSpan={3} className="dashboard-table-empty">
-                        {t("dashboard.no_recent_deliveries")}
-                      </td>
+                      <th>{t("dashboard.delivery_number")}</th>
+
+                      <th>{t("dashboard.due_date")}</th>
+
+                      <th>{t("dashboard.status")}</th>
                     </tr>
-                  ) : (
-                    dashboardData.nextDeliveryDues.map((delivery, index) => {
+                  </thead>
+
+                  <tbody>
+                    {dashboardData.nextDeliveryDues.length === 0 ? (
+                      <tr>
+                        <td colSpan={3} className="dashboard-table-empty">
+                          {t("dashboard.no_recent_deliveries")}
+                        </td>
+                      </tr>
+                    ) : (
+                      dashboardData.nextDeliveryDues.map((delivery, index) => {
+                        const status = statusIdToText(
+                          delivery.transaction_status,
+                        );
+
+                        return (
+                          <tr key={index}>
+                            <td>{delivery.delivery_number}</td>
+
+                            <td>{delivery.due_date}</td>
+
+                            <td>
+                              <div
+                                className="dashboard-status"
+                                style={{
+                                  color: status.color,
+                                }}
+                              >
+                                <i
+                                  className={status.icon}
+                                  style={{
+                                    color: status.color,
+                                  }}
+                                ></i>
+
+                                <span>
+                                  {t(
+                                    "statuses." +
+                                      status.text
+                                        ?.toLowerCase()
+                                        .replace(" ", "_"),
+                                  ) || status.text}
+                                </span>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </Table>
+              </div>
+
+              {/* Mobile */}
+              <div className="dashboard-table-mobile">
+                {dashboardData.nextDeliveryDues.length === 0 ? (
+                  <div className="dashboard-mobile-empty">
+                    {t("dashboard.no_recent_deliveries")}
+                  </div>
+                ) : (
+                  dashboardData.nextDeliveryDues
+                    .slice(0, 3)
+                    .map((delivery, index) => {
                       const status = statusIdToText(
                         delivery.transaction_status,
                       );
 
                       return (
-                        <tr key={index}>
-                          <td>{delivery.delivery_number}</td>
+                        <div className="dashboard-mobile-delivery" key={index}>
+                          <div className="dashboard-mobile-delivery-header">
+                            <span className="dashboard-mobile-number">
+                              #{delivery.delivery_number}
+                            </span>
 
-                          <td>{delivery.due_date}</td>
-
-                          <td>
-                            <div
-                              className="dashboard-status"
+                            <span
+                              className="dashboard-mobile-status"
                               style={{
                                 color: status.color,
+                                backgroundColor: `${status.color}15`,
                               }}
                             >
-                              <i
-                                className={status.icon}
-                                style={{
-                                  color: status.color,
-                                }}
-                              ></i>
+                              <i className={status.icon}></i>
 
-                              <span>
-                                {t(
-                                  "statuses." +
-                                    status.text
-                                      ?.toLowerCase()
-                                      .replace(" ", "_"),
-                                ) || status.text}
-                              </span>
-                            </div>
-                          </td>
-                        </tr>
+                              {t(
+                                "statuses." +
+                                  status.text?.toLowerCase().replace(" ", "_"),
+                              ) || status.text}
+                            </span>
+                          </div>
+
+                          <div className="dashboard-mobile-info">
+                            <span>{t("dashboard.due_date")}</span>
+
+                            <strong>{delivery.due_date}</strong>
+                          </div>
+                        </div>
                       );
                     })
-                  )}
-                </tbody>
-              </Table>
-            </div>
+                )}
+              </div>
+            </article>
 
-            {/* Mobile */}
-            <div className="dashboard-table-mobile">
-              {dashboardData.nextDeliveryDues.length === 0 ? (
-                <div className="dashboard-mobile-empty">
-                  {t("dashboard.no_recent_deliveries")}
-                </div>
-              ) : (
-                dashboardData.nextDeliveryDues.map((delivery, index) => {
-                  const status = statusIdToText(delivery.transaction_status);
-
-                  return (
-                    <div className="dashboard-mobile-delivery" key={index}>
-                      <div className="dashboard-mobile-delivery-header">
-                        <span className="dashboard-mobile-number">
-                          #{delivery.delivery_number}
-                        </span>
-
-                        <span
-                          className="dashboard-mobile-status"
-                          style={{
-                            color: status.color,
-                            backgroundColor: `${status.color}15`,
-                          }}
-                        >
-                          <i className={status.icon}></i>
-
-                          {t(
-                            "statuses." +
-                              status.text?.toLowerCase().replace(" ", "_"),
-                          ) || status.text}
-                        </span>
-                      </div>
-
-                      <div className="dashboard-mobile-info">
-                        <span>{t("dashboard.due_date")}</span>
-
-                        <strong>{delivery.due_date}</strong>
-                      </div>
-                    </div>
-                  );
-                })
-              )}
-            </div>
-          </article>
-
-          {/* =====================================================
+            {/* =====================================================
               OUTSTANDING PAYMENTS
               ===================================================== */}
-          <article className="dashboard-table-card">
-            <div className="dashboard-table-header">
-              <p className="dashboard-table-title">
-                {t("dashboard.outstanding_payment")}
-              </p>
+            <article
+              className={`dashboard-table-card dashboard-tab-panel ${tablesTab === "payments" ? "is-active" : ""}`}
+            >
+              <div className="dashboard-table-header">
+                <p className="dashboard-table-title">
+                  {t("dashboard.outstanding_payment")}
+                </p>
 
-              <div className="dashboard-table-icon">
-                <i className="ti-receipt"></i>
+                <div className="dashboard-table-icon">
+                  <i className="ti-receipt"></i>
+                </div>
               </div>
-            </div>
 
-            {/* Desktop */}
-            <div className="dashboard-table-desktop">
-              <Table size="sm">
-                <thead>
-                  <tr>
-                    <th>{t("dashboard.invoice_number")}</th>
-
-                    <th>{t("dashboard.due_date")}</th>
-
-                    <th>{t("dashboard.amount")}</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {dashboardData.collectionHeaders.length === 0 ? (
+              {/* Desktop */}
+              <div className="dashboard-table-desktop">
+                <Table size="sm">
+                  <thead>
                     <tr>
-                      <td colSpan={3} className="dashboard-table-empty">
-                        No Outstanding Payments
-                      </td>
+                      <th>{t("dashboard.invoice_number")}</th>
+
+                      <th>{t("dashboard.due_date")}</th>
+
+                      <th>{t("dashboard.amount")}</th>
                     </tr>
-                  ) : (
-                    dashboardData.collectionHeaders.map((collection, index) => (
-                      <tr key={index}>
-                        <td>{collection.invoice_number}</td>
+                  </thead>
 
-                        <td>{collection.due_date}</td>
-
-                        <td className="dashboard-payment-amount">
-                          {collection.amount}
+                  <tbody>
+                    {dashboardData.collectionHeaders.length === 0 ? (
+                      <tr>
+                        <td colSpan={3} className="dashboard-table-empty">
+                          No Outstanding Payments
                         </td>
                       </tr>
-                    ))
-                  )}
-                </tbody>
-              </Table>
-            </div>
+                    ) : (
+                      dashboardData.collectionHeaders.map(
+                        (collection, index) => (
+                          <tr key={index}>
+                            <td>{collection.invoice_number}</td>
 
-            {/* Mobile */}
-            <div className="dashboard-table-mobile">
-              {dashboardData.collectionHeaders.length === 0 ? (
-                <div className="dashboard-mobile-empty">
-                  No Outstanding Payments
-                </div>
-              ) : (
-                dashboardData.collectionHeaders.map((collection, index) => (
-                  <div className="dashboard-mobile-payment" key={index}>
-                    <div className="dashboard-mobile-payment-header">
-                      <span className="dashboard-mobile-number">
-                        #{collection.invoice_number}
-                      </span>
+                            <td>{collection.due_date}</td>
 
-                      <strong>{collection.amount}</strong>
-                    </div>
+                            <td className="dashboard-payment-amount">
+                              {collection.amount}
+                            </td>
+                          </tr>
+                        ),
+                      )
+                    )}
+                  </tbody>
+                </Table>
+              </div>
 
-                    <div className="dashboard-mobile-info">
-                      <span>{t("dashboard.due_date")}</span>
-
-                      <strong>{collection.due_date}</strong>
-                    </div>
+              {/* Mobile */}
+              <div className="dashboard-table-mobile">
+                {dashboardData.collectionHeaders.length === 0 ? (
+                  <div className="dashboard-mobile-empty">
+                    No Outstanding Payments
                   </div>
-                ))
-              )}
-            </div>
-          </article>
-        </section>
+                ) : (
+                  dashboardData.collectionHeaders
+                    .slice(0, 3)
+                    .map((collection, index) => (
+                      <div className="dashboard-mobile-payment" key={index}>
+                        <div className="dashboard-mobile-payment-header">
+                          <span className="dashboard-mobile-number">
+                            #{collection.invoice_number}
+                          </span>
 
+                          <strong>{collection.amount}</strong>
+                        </div>
+
+                        <div className="dashboard-mobile-info">
+                          <span>{t("dashboard.due_date")}</span>
+
+                          <strong>{collection.due_date}</strong>
+                        </div>
+                      </div>
+                    ))
+                )}
+              </div>
+            </article>
+          </section>
+        </div>
         {/* =======================================================
             CHARTS
             ======================================================= */}
-        <section className="dashboard-charts-grid">
-          {/* =====================================================
+        <div className="dashboard-tab-group">
+          <MobileTabs
+            active={chartsTab}
+            onChange={setChartsTab}
+            tabs={[
+              {
+                key: "category",
+                label: t("dashboard.products_sold_by_category"),
+              },
+              { key: "top", label: t("dashboard.top_products_bought") },
+              {
+                key: "seasonal",
+                label: t("dashboard.seasonal_sales_variation"),
+              },
+            ]}
+          />
+          <section className="dashboard-charts-grid">
+            {/* =====================================================
               PRODUCTS SOLD BY CATEGORY
               ===================================================== */}
-          <article className="dashboard-chart-card">
-            <div className="dashboard-chart-header">
-              <div className="dashboard-chart-icon">
-                <i className="ti-flag-alt"></i>
+            <article
+              className={`dashboard-chart-card dashboard-tab-panel ${chartsTab === "category" ? "is-active" : ""}`}
+            >
+              <div className="dashboard-chart-header">
+                <div className="dashboard-chart-icon">
+                  <i className="ti-flag-alt"></i>
+                </div>
+
+                <p className="dashboard-chart-title">
+                  {t("dashboard.products_sold_by_category")}
+                </p>
               </div>
 
-              <p className="dashboard-chart-title">
-                {t("dashboard.products_sold_by_category")}
-              </p>
-            </div>
-
-            {dashboardData.productsByCategory.length === 0 ? (
-              <div className="dashboard-chart-empty">
-                <p>{t("dashboard.no_products_sold")}</p>
-              </div>
-            ) : (
-              <div className="dashboard-chart-container">
-                <ApexChart
-                  options={{
-                    chart: {
-                      id: "products-sold-by-category",
-                    },
-                    labels: dashboardData.productsByCategory.map(
-                      (item) => item.category,
-                    ),
-                    legend: {
-                      show: true,
-                      position: "bottom",
-                    },
-                  }}
-                  series={dashboardData.productsByCategory.map((item) =>
-                    parseFloat(item.val),
+              {dashboardData.productsByCategory.length === 0 ? (
+                <div className="dashboard-chart-empty">
+                  <p>{t("dashboard.no_products_sold")}</p>
+                </div>
+              ) : (
+                <div className="dashboard-chart-container">
+                  {(!isMobile || chartsTab === "category") && (
+                    <ApexChart
+                      options={{
+                        chart: {
+                          id: "products-sold-by-category",
+                        },
+                        labels: dashboardData.productsByCategory.map(
+                          (item) => item.category,
+                        ),
+                        legend: {
+                          show: true,
+                          position: "bottom",
+                        },
+                      }}
+                      series={dashboardData.productsByCategory.map((item) =>
+                        parseFloat(item.val),
+                      )}
+                      type="donut"
+                      height={isMobile ? 240 : 350}
+                    />
                   )}
-                  type="donut"
-                  height={350}
-                />
-              </div>
-            )}
-          </article>
+                </div>
+              )}
+            </article>
 
-          {/* =====================================================
+            {/* =====================================================
               TOP PRODUCTS BOUGHT
               ===================================================== */}
-          <article className="dashboard-chart-card">
-            <div className="dashboard-chart-header">
-              <div className="dashboard-chart-icon">
-                <i className="ti-package"></i>
+            <article
+              className={`dashboard-chart-card dashboard-tab-panel ${chartsTab === "top" ? "is-active" : ""}`}
+            >
+              <div className="dashboard-chart-header">
+                <div className="dashboard-chart-icon">
+                  <i className="ti-package"></i>
+                </div>
+
+                <p className="dashboard-chart-title">
+                  {t("dashboard.top_products_bought")}
+                </p>
               </div>
 
-              <p className="dashboard-chart-title">
-                {t("dashboard.top_products_bought")}
-              </p>
-            </div>
+              {dashboardData.productSales.length === 0 ? (
+                <div className="dashboard-chart-empty">
+                  <p>{t("dashboard.no_products_bought")}</p>
+                </div>
+              ) : (
+                <div className="dashboard-product-list">
+                  {dashboardData.productSales.map((item, index) => (
+                    <div className="dashboard-product-item" key={index}>
+                      <div className="dashboard-product-info">
+                        <Image
+                          src={item.image_url || companyPlaceholder}
+                          alt=""
+                          width={50}
+                          height={50}
+                        />
 
-            {dashboardData.productSales.length === 0 ? (
-              <div className="dashboard-chart-empty">
-                <p>{t("dashboard.no_products_bought")}</p>
-              </div>
-            ) : (
-              <div className="dashboard-product-list">
-                {dashboardData.productSales.map((item, index) => (
-                  <div className="dashboard-product-item" key={index}>
-                    <div className="dashboard-product-info">
-                      <Image
-                        src={item.image_url || companyPlaceholder}
-                        alt=""
-                        width={50}
-                        height={50}
-                      />
+                        <p>{item.item}</p>
+                      </div>
 
-                      <p>{item.item}</p>
+                      <p
+                        className={`dashboard-product-variation ${
+                          item.variation >= 0
+                            ? "dashboard-product-variation--positive"
+                            : "dashboard-product-variation--negative"
+                        }`}
+                      >
+                        {item.sold_quantity} {t("dashboard.sold")} (
+                        {item.variation}%)
+                      </p>
                     </div>
+                  ))}
+                </div>
+              )}
+            </article>
 
-                    <p
-                      className={`dashboard-product-variation ${
-                        item.variation >= 0
-                          ? "dashboard-product-variation--positive"
-                          : "dashboard-product-variation--negative"
-                      }`}
-                    >
-                      {item.sold_quantity} {t("dashboard.sold")} (
-                      {item.variation}%)
-                    </p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </article>
-
-          {/* =====================================================
+            {/* =====================================================
               SEASONAL SALES VARIATION
               ===================================================== */}
-          <article className="dashboard-chart-card">
-            <div className="dashboard-chart-header">
-              <div className="dashboard-chart-icon">
-                <i className="ti-calendar"></i>
+            <article
+              className={`dashboard-chart-card dashboard-tab-panel ${chartsTab === "seasonal" ? "is-active" : ""}`}
+            >
+              <div className="dashboard-chart-header">
+                <div className="dashboard-chart-icon">
+                  <i className="ti-calendar"></i>
+                </div>
+
+                <p className="dashboard-chart-title">
+                  {t("dashboard.seasonal_sales_variation")}
+                </p>
               </div>
 
-              <p className="dashboard-chart-title">
-                {t("dashboard.seasonal_sales_variation")}
-              </p>
-            </div>
-
-            {dashboardData.seasonalVariation.length === 0 ? (
-              <div className="dashboard-chart-empty">
-                <p>{t("dashboard.no_products_sold")}</p>
-              </div>
-            ) : (
-              <div className="dashboard-chart-container">
-                <ApexChart
-                  options={{
-                    chart: {
-                      id: "sales-variation",
-                    },
-                    xaxis: {
-                      categories: dashboardData.seasonalVariation.map(
-                        (item) => item.month,
-                      ),
-                    },
-                  }}
-                  series={[
-                    {
-                      name: t("dashboard.total_sales"),
-                      data: dashboardData.seasonalVariation.map(
-                        (item) => item.TotalSales,
-                      ),
-                    },
-                    {
-                      name: t("dashboard.total_returns"),
-                      data: dashboardData.seasonalVariation.map(
-                        (item) => item.TotalReturns,
-                      ),
-                    },
-                  ]}
-                  type="bar"
-                  height={350}
-                />
-              </div>
-            )}
-          </article>
-        </section>
+              {dashboardData.seasonalVariation.length === 0 ? (
+                <div className="dashboard-chart-empty">
+                  <p>{t("dashboard.no_products_sold")}</p>
+                </div>
+              ) : (
+                <div className="dashboard-chart-container">
+                  {(!isMobile || chartsTab === "seasonal") && (
+                    <ApexChart
+                      options={{
+                        chart: {
+                          id: "sales-variation",
+                        },
+                        xaxis: {
+                          categories: dashboardData.seasonalVariation.map(
+                            (item) => item.month,
+                          ),
+                        },
+                      }}
+                      series={[
+                        {
+                          name: t("dashboard.total_sales"),
+                          data: dashboardData.seasonalVariation.map(
+                            (item) => item.TotalSales,
+                          ),
+                        },
+                        {
+                          name: t("dashboard.total_returns"),
+                          data: dashboardData.seasonalVariation.map(
+                            (item) => item.TotalReturns,
+                          ),
+                        },
+                      ]}
+                      type="bar"
+                      height={isMobile ? 240 : 350}
+                    />
+                  )}
+                </div>
+              )}
+            </article>
+          </section>
+        </div>
       </div>
       <OrderDetailsModal
         orderId={selectedOrderId}

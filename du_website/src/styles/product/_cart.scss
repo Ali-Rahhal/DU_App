@@ -676,6 +676,50 @@
   }
 }
 
+/* Mobile Cart Scroll Button */
+.cart-scroll-down {
+  display: none;
+  position: fixed;
+  right: 20px;
+  bottom: calc(80px + env(safe-area-inset-bottom));
+  z-index: 999;
+
+  width: 52px;
+  height: 52px;
+
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+  border-radius: 50%;
+
+  background: $primary;
+  color: #fff;
+
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+
+  &:hover {
+    background: darken($primary, 8%);
+    transform: translateY(3px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  }
+
+  &:active {
+    transform: scale(0.92);
+  }
+
+  &:focus-visible {
+    outline: 3px solid rgba($primary, 0.35);
+    outline-offset: 3px;
+  }
+}
+
 /* =========================================================
    MOBILE
    ========================================================= */
@@ -726,6 +770,10 @@
 
   .cart_total_box {
     margin-top: 20px;
+  }
+
+  .cart-scroll-down {
+    display: flex;
   }
 }
 
@@ -836,7 +884,6 @@
   }
 
   .cart-remove-button {
-    width: 30%;
     min-height: 30px;
     margin-top: 10px;
     padding: 7px 12px;

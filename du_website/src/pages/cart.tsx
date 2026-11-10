@@ -19,6 +19,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap";
 import { toast } from "react-toastify";
+import { ArrowDown } from "lucide-react";
 
 const CartItem = ({ item, removeItemHandler, updateCartHandler }) => {
   const t = useTranslations();
@@ -185,6 +186,7 @@ const Cart = () => {
   >();
   const { cart, cartItems, refreshCart, checkPermission } = useAccountStore();
   const [loading, setLoading] = useState(true);
+  const [placingOrder, setPlacingOrder] = useState(false);
   const rt = useRouter();
   const removeItemHandler = (item_code, isExpiryDeal) => {
     removeFromCart(item_code, isExpiryDeal).then((res) => {
@@ -256,6 +258,14 @@ const Cart = () => {
       });
     });
   }, [cartItems]);
+
+  const scrollToCheckout = () => {
+    document.getElementById("cart-checkout")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
   const t = useTranslations();
   const { companyPlaceholder } = useCompanyAssets();
 
@@ -384,7 +394,7 @@ const Cart = () => {
                       {t("cart.cart_totals")}
                     </h5>
                   </div>
-                  <div className="cart_total_box">
+                  <div className="cart_total_box" id="cart-checkout">
                     <div
                       style={{
                         display: "flex",
@@ -459,33 +469,57 @@ const Cart = () => {
                       </div>
                     </div>
                     <button
+                      type="button"
                       className="btn btn-primary btn-rounded btn-full btn-large"
-                      onClick={() => {
+                      disabled={placingOrder}
+                      onClick={async () => {
+                        if (placingOrder) return;
+
                         if (!isAuth) {
                           toast.info("Please login to continue");
                           return;
                         }
+
                         if (!checkPermission(ALL_PERMISSIONS.ORDER)) {
                           toast.error(
                             "You don't have permission to place order",
                           );
                           return;
                         }
-                        placeOrder()
-                          .then((res) => {
-                            toast.success("Order Placed !");
-                            rt.push("/orders");
-                            refreshCart();
-                          })
-                          .catch((error: any) => {
-                            toast.error(
-                              error.response?.data?.message ||
-                                `Failed to place order`,
-                            );
-                          });
+
+                        try {
+                          setPlacingOrder(true);
+
+                          await placeOrder();
+
+                          toast.success("Order Placed !");
+                          await refreshCart();
+                          rt.push("/orders");
+                        } catch (error: any) {
+                          toast.error(
+                            error.response?.data?.message ||
+                              "Failed to place order",
+                          );
+                        } finally {
+                          setPlacingOrder(false);
+                        }
                       }}
                     >
-                      {t("cart.checkout")} <i className="ti-arrow-right"></i>
+                      {placingOrder ? (
+                        <>
+                          <Spinner
+                            animation="border"
+                            size="sm"
+                            className="me-2"
+                          />
+                          {t("cart.checkout")}...
+                        </>
+                      ) : (
+                        <>
+                          {t("cart.checkout")}{" "}
+                          <i className="ti-arrow-right"></i>
+                        </>
+                      )}
                     </button>
                   </div>
                 </>
@@ -524,6 +558,16 @@ const Cart = () => {
           )}
         </div>
       </section>
+      {cartItems.length > 0 && (
+        <button
+          type="button"
+          className="cart-scroll-down"
+          onClick={scrollToCheckout}
+          aria-label="Scroll to checkout"
+        >
+          <ArrowDown size={24} strokeWidth={2.5} />
+        </button>
+      )}
     </Layout>
   );
 };

@@ -70,6 +70,8 @@ const getUserOrders = async (
                             'Awaiting Delivery'
                         WHEN th.transaction_status = 8 THEN
                             'Delivered'
+                        WHEN th.transaction_status = 38 THEN
+                            'Dispatched'
                         ELSE
                             'Rejected'
                     END,
@@ -126,6 +128,8 @@ const getUserOrder = async (
                                   'Awaiting Delivery'
                               WHEN th.transaction_status = 8 THEN
                                   'Delivered'
+                              WHEN th.transaction_status = 38 THEN
+                                  'Dispatched'    
                               ELSE
                                   'Rejected'
                           END,

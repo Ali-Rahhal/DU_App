@@ -251,16 +251,16 @@ const getInvoices = async (userId: number, companyId: string) => {
   const res: any = await prisma.$queryRaw`
   SELECT invoice_no = th.transaction_header_code,
        oracle_number = th.erp_transaction_header_code,
-       cat = th.item_brand_code,
+       cat = th_b.item_brand_code,
        date_added = CONVERT(DATE, th.date_added),
-       total_amount = th.total_amount,
+       total_amount = th_b.total_amount,
         currency = CASE
-                       WHEN th.currency_code = '1' THEN
+                       WHEN th_b.currency_code = '1' THEN
                            'L.L.'
-                       WHEN th.currency_code = '2' THEN
+                       WHEN th_b.currency_code = '2' THEN
                            'USD'
                        ELSE
-                       th.currency_code
+                       th_b.currency_code
                    END,
         is_paid = CASE
                    WHEN ISNULL(oi.remaining_amount, 0) = 0 THEN
@@ -274,9 +274,12 @@ const getInvoices = async (userId: number, companyId: string) => {
 FROM dbo.transaction_header AS th
     LEFT JOIN dbo.open_invoice AS oi
         ON oi.transaction_header_code = th.transaction_header_code
-        JOIN web_accounts AS wa on wa.code = th.destination_code
+    JOIN web_accounts AS wa on wa.code = th.destination_code
+    JOIN dbo.transaction_header th_b
+        ON th_b.transaction_header_id = th.parent_transaction_header_id
 WHERE th.transaction_type = 4
       AND th.is_active = 1
+      AND th_b.is_active = 1
       AND wa.id = ${userId}
       AND th.transaction_status = 12;
       `;
@@ -292,9 +295,9 @@ const getInvoiceDetails = async (
   const res: any = await prisma.$queryRaw`
     SELECT invoice_no = th.transaction_header_code,
       oracle_number = th.erp_transaction_header_code,
-      cat = th.item_brand_code,
+      cat = th_b.item_brand_code,
       date_added = CONVERT(DATE, th.date_added),
-      total_amount = th.total_amount,
+      total_amount = th_b.total_amount,
       sales_person = sp.description,
       customer_name= vc.Description,
       customer_no = vc.Code,
@@ -313,12 +316,12 @@ const getInvoiceDetails = async (
                       ELSE 'N/A'
                   END,
       currency =  CASE
-                    WHEN th.currency_code = '1' THEN
+                    WHEN th_b.currency_code = '1' THEN
                         'L.L.'
-                    WHEN th.currency_code = '2' THEN
+                    WHEN th_b.currency_code = '2' THEN
                         'USD'
                     ELSE
-                    th.currency_code
+                    th_b.currency_code
                   END,
 	   delivery_date = th.expected_payment_date,
        remaining_amount = ISNULL(oi.remaining_amount, 0)
@@ -328,8 +331,11 @@ FROM dbo.transaction_header AS th
 	LEFT JOIN dbo.[user] sp on th.user_code = sp.user_code
 	LEFT JOIN dbo.v_clients vc on vc.Code = th.destination_code
       JOIN web_accounts AS wa on wa.code = th.destination_code
+  JOIN dbo.transaction_header th_b
+        ON th_b.transaction_header_id = th.parent_transaction_header_id
 WHERE th.transaction_type = 4
       AND th.is_active = 1
+      AND th_b.is_active = 1
 	  AND th.transaction_header_code = ${invoice_no}
        AND wa.id = ${userId}
       AND th.transaction_status = 12;
@@ -345,10 +351,12 @@ select
 	  unit_price=tb.item_default_price,
 	  amount = tb.total_final_price,
 	  discount= tb.total_final_discount
-	  from transaction_body  tb
-	  JOIN transaction_header th on th.transaction_header_id = tb.transaction_header_id
+	  from transaction_header th
+    JOIN dbo.transaction_header th_b
+      ON th_b.transaction_header_id = th.parent_transaction_header_id
+	  JOIN transaction_body tb on th_b.transaction_header_id = tb.transaction_header_id
 	  JOIN item i on i.item_code=tb.item_code
-	  where transaction_header_code=${invoice_no}
+	  where th.transaction_header_code=${invoice_no}
     `;
   return { ...res[0], lines: lines };
 };

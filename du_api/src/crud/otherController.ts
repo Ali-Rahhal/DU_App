@@ -142,23 +142,27 @@ const getDashboardData = async (user_id: number, companyId: string) => {
         AND oi.due_date < GETDATE();
 
     -- YTD sales
-    SELECT @ytd_sales = SUM(th.total_amount * (@main_rate / c.ratio))
+    SELECT @ytd_sales = SUM(th_b.total_amount * (@main_rate / c.ratio))
     FROM dbo.transaction_header AS th
     JOIN dbo.web_accounts AS wa ON wa.code = th.destination_code
-    JOIN dbo.currency AS c ON c.currency_code = th.currency_code
+    JOIN dbo.transaction_header AS th_b ON th.parent_transaction_header_id = th_b.transaction_header_id
+    JOIN dbo.currency AS c ON c.currency_code = th_b.currency_code
     WHERE th.transaction_type = 4
         AND th.is_active = 1
+        AND th_b.is_active = 1
         AND wa.id = ${user_id}
         AND CONVERT(DATE, th.date_added)
             BETWEEN CONVERT(DATE, DATEFROMPARTS(YEAR(GETDATE()), 1, 1)) AND CONVERT(DATE, GETDATE());
 
     -- Last year's YTD sales (same window, shifted back one year)
-    SELECT @last_ytd_sales = SUM(th.total_amount * (@main_rate / c.ratio))
+    SELECT @last_ytd_sales = SUM(th_b.total_amount * (@main_rate / c.ratio))
     FROM dbo.transaction_header AS th
     JOIN dbo.web_accounts AS wa ON wa.code = th.destination_code
-    JOIN dbo.currency AS c ON c.currency_code = th.currency_code
+    JOIN dbo.transaction_header AS th_b ON th.parent_transaction_header_id = th_b.transaction_header_id
+    JOIN dbo.currency AS c ON c.currency_code = th_b.currency_code
     WHERE th.transaction_type = 4
         AND th.is_active = 1
+        AND th_b.is_active = 1
         AND wa.id = ${user_id}
         AND CONVERT(DATE, th.date_added)
             BETWEEN DATEADD(YEAR, -1, CONVERT(DATE, DATEFROMPARTS(YEAR(GETDATE()), 1, 1)))
@@ -224,7 +228,7 @@ const getDashboardData = async (user_id: number, companyId: string) => {
     WHERE th.is_active = 1                           -- Only active transactions
         AND th.source_code = ${user.code}            -- Orders placed by this customer
         AND th.transaction_type = 3                  -- Type 3 = Sales order
-        AND th.transaction_status NOT IN (9, 10)     -- Exclude cancelled/completed
+        AND th.transaction_status NOT IN (9, 10)     -- Exclude cancelled/deleted
     ORDER BY th.date_added DESC;                     -- Most recent first
   `;
 
@@ -244,7 +248,7 @@ const getDashboardData = async (user_id: number, companyId: string) => {
     WHERE th.is_active = 1
         AND th.[destination_code] = ${user.code}       -- Deliveries to this customer
         AND th.transaction_type = 4                    -- Type 4 = Delivery/Invoice
-        AND th.transaction_status NOT IN (8, 9, 10)    -- Exclude delivered/cancelled/completed
+        AND th.transaction_status NOT IN (8, 9, 10, 12)    -- Exclude delivered/cancelled/deleted/processed
     ORDER BY th.expected_delivery_date DESC;           -- Latest expected dates first
     
     -- Then format and return the results in ascending order (soonest first)
@@ -314,13 +318,13 @@ const getDashboardData = async (user_id: number, companyId: string) => {
     SELECT TOP 1
         order_amount = ISNULL(                              -- Total order amount
                             CASE
-                                WHEN th.currency_code = '1' THEN 'L.L. '
-                                WHEN th.currency_code = '2' THEN '$ '
-                                ELSE th.currency_code + ' '
-                            END + FORMAT(th.total_amount, 'N2'),
+                                WHEN th_b.currency_code = '1' THEN 'L.L. '
+                                WHEN th_b.currency_code = '2' THEN '$ '
+                                ELSE th_b.currency_code + ' '
+                            END + FORMAT(th_b.total_amount, 'N2'),
                             '0'
                         ),
-        order_code = ISNULL(th.transaction_header_code, '[N/A]'),  -- Order number
+        order_code = ISNULL(th_b.transaction_header_code, '[N/A]'),  -- Order number
         placed_on = FORMAT(v.visit_date, 'dd MMM yyyy'),          -- Order date
         sales_rep = u.description,                                 -- Sales representative name
         next_planned_visit = ISNULL(FORMAT(DATEADD(MONTH, 1, GETDATE()), 'dd MMM yyyy'), '[N/A]')  -- Placeholder for next visit
@@ -331,6 +335,8 @@ const getDashboardData = async (user_id: number, companyId: string) => {
         ON th.visit_id = v.visit_id
         AND th.transaction_type = 4     -- Delivery/Invoice type
         AND th.is_active = 1
+    LEFT JOIN dbo.transaction_header th_b
+        ON th_b.transaction_header_id = th.parent_transaction_header_id
     WHERE th.destination_code = ${user.code}   -- Deliveries to this customer
     ORDER BY v.visit_date DESC                  -- Most recent visit first
   `;
@@ -380,10 +386,11 @@ const getDashboardData = async (user_id: number, companyId: string) => {
   // `;
   const productsByCategory = await prisma.$queryRaw`
     DECLARE @today DATE = GETDATE();
+    DECLARE @com NVARCHAR(20) = ${companyId};
 
     SELECT 
         category = CASE
-            WHEN ${companyId} = 'SADCO' THEN
+            WHEN @com = 'SADCO' THEN
                 CASE
                     WHEN i.brand_code = '010105' THEN 'Non Pharma'
                     ELSE 'Pharma'
@@ -392,9 +399,9 @@ const getDashboardData = async (user_id: number, companyId: string) => {
         END,                      -- Category name
         val = CONVERT(DECIMAL(18, 2), SUM(tb.approved_quantity))  -- Total sales value
     FROM dbo.transaction_header AS th_a  -- Transaction A: Type 4 delivery/invoice
-    -- Join to find Transaction B which has th_a's ID as its parent
+    -- Join to find Transaction B which has ID of th_a's parent
     JOIN dbo.transaction_header AS th_b  -- Transaction B: The parent transaction
-        ON th_b.parent_transaction_header_id = th_a.transaction_header_id
+        ON th_a.parent_transaction_header_id = th_b.transaction_header_id
         AND th_b.is_active = 1
         AND th_b.transaction_status NOT IN (9, 10)
     -- Join to transaction body from Transaction B (the parent)
@@ -405,7 +412,7 @@ const getDashboardData = async (user_id: number, companyId: string) => {
     JOIN dbo.item_brand AS ib
         ON ib.item_brand_code = i.brand_code
     WHERE th_a.is_active = 1
-        AND th_a.transaction_status NOT IN (9, 10)      -- Exclude cancelled/completed
+        AND th_a.transaction_status NOT IN (9, 10)      -- Exclude cancelled/deleted
         AND th_a.transaction_type = 4                   -- Delivery/Invoice transactions
         AND th_a.destination_code = ${user.code}        -- To this customer
         AND CONVERT(DATE, th_a.date_added)
@@ -414,8 +421,14 @@ const getDashboardData = async (user_id: number, companyId: string) => {
         AND tb.approved_quantity > 0                    -- Only positive quantities
         AND i.is_active = 1
     GROUP BY
-        ib.description,
-        i.brand_code;
+        CASE
+            WHEN @com = 'SADCO' THEN
+                CASE
+                    WHEN i.brand_code = '010105' THEN 'Non Pharma'
+                    ELSE 'Pharma'
+                END
+            ELSE ib.description
+        END;
   `;
 
   // ============================================
@@ -510,9 +523,8 @@ const getDashboardData = async (user_id: number, companyId: string) => {
         current_qty = SUM(tb.approved_quantity)
     INTO #top5Products
     FROM dbo.transaction_header AS th_a  -- Transaction A: Type 4 delivery/invoice
-    -- Join to find Transaction B which has th_a's ID as its parent
     JOIN dbo.transaction_header AS th_b  -- Transaction B: The parent transaction
-        ON th_b.parent_transaction_header_id = th_a.transaction_header_id
+        ON th_a.parent_transaction_header_id = th_b.transaction_header_id
         AND th_b.is_active = 1
         AND th_b.transaction_status NOT IN (9, 10)
     -- Join to transaction body from Transaction B (the parent)
@@ -644,7 +656,7 @@ const getDashboardData = async (user_id: number, companyId: string) => {
   const seasonalVariation = await prisma.$queryRaw`
     -- STEP 10a: Calculate monthly sales quantities from parent transactions
     -- Transaction A: Type 4 delivery/invoice to customer
-    -- Transaction B: Parent transaction that has A's ID in its parent_transaction_header_id
+    -- Transaction B: Parent transaction that has ID in A's parent_transaction_header_id
     -- We take transaction body from Transaction B for sales
     SELECT 
         month_number = MONTH(th_a.date_added),
@@ -652,9 +664,8 @@ const getDashboardData = async (user_id: number, companyId: string) => {
         TotalSales = SUM(tb.approved_quantity)
     INTO #sales
     FROM dbo.transaction_header AS th_a  -- Transaction A: Type 4 delivery/invoice
-    -- Join to find Transaction B which has th_a's ID as its parent
     JOIN dbo.transaction_header AS th_b  -- Transaction B: The parent transaction
-        ON th_b.parent_transaction_header_id = th_a.transaction_header_id
+        ON th_a.parent_transaction_header_id = th_b.transaction_header_id
         AND th_b.is_active = 1
         AND th_b.transaction_status NOT IN (9, 10)
     -- Join to transaction body from Transaction B (the parent)
@@ -671,16 +682,15 @@ const getDashboardData = async (user_id: number, companyId: string) => {
 
     -- STEP 10b: Calculate monthly return quantities from parent transactions
     -- For returns: Transaction A is the return transaction (Type 58 or 40)
-    -- Transaction B is the parent (original sale) that has A's ID in its parent_transaction_header_id
+    -- Transaction B is the parent (original sale) that has ID in A's parent_transaction_header_id
     SELECT 
         month_number = MONTH(th_a.date_added),
         [month] = FORMAT(th_a.date_added, 'MMM'),
         TotalReturns = SUM(tb.approved_quantity)
     INTO #returns
     FROM dbo.transaction_header AS th_a  -- Transaction A: Return transaction
-    -- Join to find Transaction B which has th_a's ID as its parent
     JOIN dbo.transaction_header AS th_b  -- Transaction B: The parent (original sale)
-        ON th_b.parent_transaction_header_id = th_a.transaction_header_id
+        ON th_a.parent_transaction_header_id = th_b.transaction_header_id
         AND th_b.is_active = 1
         AND th_b.transaction_status NOT IN (9, 10)
     -- Join to transaction body from Transaction B (the parent/original sale)

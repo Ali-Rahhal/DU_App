@@ -61,6 +61,9 @@ const Orders = () => {
       case 4:
         return "orders-status-info";
 
+      case 38:
+        return "orders-status-info";
+
       case 8:
         return "orders-status-success";
 
@@ -88,7 +91,10 @@ const Orders = () => {
       return t("orders.awaiting_approval");
     }
 
-    if (order.status_text.includes("Awaiting Delivery")) {
+    if (
+      order.status_text.includes("Awaiting Delivery") ||
+      order.status_text.includes("Dispatched")
+    ) {
       return t("orders.awaiting_delivery");
     }
 

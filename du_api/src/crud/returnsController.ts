@@ -7,8 +7,8 @@ const getReturnableInvoices = async (userId: number, companyId: string) => {
       th.transaction_header_id,
       th.transaction_header_code AS invoice_code,
       th.date_added AS invoice_date,
-      th.total_amount,
-      th.currency_code,
+      th_b.total_amount,
+      th_b.currency_code,
 
       DATEDIFF(
         DAY,
@@ -61,12 +61,13 @@ const getReturnableInvoices = async (userId: number, companyId: string) => {
 
     INNER JOIN web_accounts wa
       ON wa.code = th.destination_code
-
+    JOIN transaction_header th_b ON th_b.transaction_header_id = th.parent_transaction_header_id
     WHERE
       wa.id = ${userId}
       AND th.transaction_type = 4
-      AND th.transaction_status = 8
+      AND th.transaction_status = 12
       AND th.is_active = 1
+      AND th_b.is_active = 1
 
     ORDER BY th.date_added DESC
   `;
@@ -119,8 +120,8 @@ const getPurchasedItems = async (
       ON wa.code = invoice_th.destination_code
 
     INNER JOIN transaction_header order_th
-      ON order_th.parent_transaction_header_id =
-         invoice_th.transaction_header_id
+      ON invoice_th.parent_transaction_header_id =
+         order_th.transaction_header_id
 
       AND order_th.transaction_type = 3
 
@@ -139,7 +140,7 @@ const getPurchasedItems = async (
 
       AND invoice_th.transaction_type = 4
 
-      AND invoice_th.transaction_status = 8
+      AND invoice_th.transaction_status = 12
 
       AND invoice_th.is_active = 1
 
@@ -183,19 +184,21 @@ const createReturnRequest = async (
       SELECT
         th.transaction_header_id,
         th.transaction_header_code,
-        th.currency_code,
-        th.currency_rate,
+        th_b.currency_code,
+        th_b.currency_rate,
         th.date_added
       FROM transaction_header th
       INNER JOIN web_accounts wa
         ON wa.code = th.destination_code
+      JOIN transaction_header th_b ON th.parent_transaction_header_id = th_b.transaction_header_id
       WHERE
         wa.id = ${userId}
         AND th.transaction_header_id =
             ${invoiceTransactionHeaderId}
         AND th.transaction_type = 4
-        AND th.transaction_status = 8
+        AND th.transaction_status = 12
         AND th.is_active = 1
+        AND th_b.is_active = 1
     `;
 
     if (!invoices.length) {

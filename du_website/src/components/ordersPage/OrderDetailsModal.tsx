@@ -304,7 +304,12 @@ const OrderDetailsModal = ({
 
                   <li
                     className={`order-details-modal-timeline-item ${
-                      order.status >= 3 ? "active" : ""
+                      order.status === 3 ||
+                      order.status === 4 ||
+                      order.status === 38 ||
+                      order.status === 8
+                        ? "active"
+                        : ""
                     }`}
                   >
                     <div className="order-details-modal-timeline-icon">
@@ -322,7 +327,11 @@ const OrderDetailsModal = ({
 
                   <li
                     className={`order-details-modal-timeline-item ${
-                      order.status >= 4 ? "active" : ""
+                      order.status === 4 ||
+                      order.status === 38 ||
+                      order.status === 8
+                        ? "active"
+                        : ""
                     }`}
                   >
                     <div className="order-details-modal-timeline-icon">
@@ -338,7 +347,11 @@ const OrderDetailsModal = ({
 
                   <li
                     className={`order-details-modal-timeline-item ${
-                      order.status >= 4 ? "active" : ""
+                      order.status === 4 ||
+                      order.status === 38 ||
+                      order.status === 8
+                        ? "active"
+                        : ""
                     }`}
                   >
                     <div className="order-details-modal-timeline-icon">
@@ -358,7 +371,7 @@ const OrderDetailsModal = ({
 
                   <li
                     className={`order-details-modal-timeline-item ${
-                      order.status >= 8 ? "active" : ""
+                      order.status === 8 ? "active" : ""
                     } last`}
                   >
                     <div className="order-details-modal-timeline-icon">

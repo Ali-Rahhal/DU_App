@@ -116,7 +116,7 @@ router.get(`/get_order`, async (c) => {
     );
     const userId = await getUserId(c);
     const orderId = c.req.query("order_id");
-    const result = await getUserOrder(parseInt(orderId), userId, companyId);
+    const result = await getUserOrder(BigInt(orderId), userId, companyId);
 
     return c.json({
       message: "Fetched order",
@@ -135,7 +135,7 @@ router.get(`/get_order_details`, async (c) => {
     const orderId = c.req.query("order_id");
     if (!orderId) throw new Error("Order id not provided");
     if (!userId) throw new Error("User id not provided");
-    const result = await getOrderDetails(parseInt(orderId), userId, companyId);
+    const result = await getOrderDetails(BigInt(orderId), userId, companyId);
     return c.json({
       message: "Fetched orders",
       result: result,

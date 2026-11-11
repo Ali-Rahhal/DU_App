@@ -108,7 +108,7 @@ const getUserOrders = async (
   return res;
 };
 const getUserOrder = async (
-  order_id: number,
+  order_id: bigint,
   userId: number,
   companyId: string,
 ) => {
@@ -171,7 +171,7 @@ const getUserOrder = async (
 };
 
 const getOrderDetails = async (
-  orderId: number,
+  orderId: bigint,
   userId: number,
   companyId: string,
 ) => {

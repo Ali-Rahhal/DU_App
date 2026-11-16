@@ -950,9 +950,16 @@ $navbar-primary-light: #edf3ff;
 
   padding: 8px 14px 12px;
 
-  position: relative;
+  position: sticky;
+  top: 0;
 
   z-index: 1000;
+}
+
+.mobile-navbar--compact {
+  .mobile-navbar-logo-row {
+    display: none;
+  }
 }
 
 /* =========================================================
@@ -1244,7 +1251,8 @@ $navbar-primary-light: #edf3ff;
 
   background: #184ec3;
 
-  position: relative;
+  position: sticky;
+  top: 0;
 
   z-index: 1000;
 

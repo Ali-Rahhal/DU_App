@@ -274,6 +274,8 @@ export const useAuthStore = create<AuthStore>()(
           document.cookie = `companyIdCustomerPortalApp=${process.env.NEXT_PUBLIC_DEFAULT_COMPANY}; path=/; max-age=31536000; SameSite=Lax`;
         }
 
+        sessionStorage.removeItem("sadcoCategoryChosen");
+
         try {
           await logout();
         } catch (err) {

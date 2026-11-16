@@ -30,9 +30,6 @@ export async function getServerSideProps(context: any) {
 }
 
 const HomePage = ({ products }) => {
-  useEffect(() => {
-    sessionStorage.removeItem("sadcoCategoryChosen");
-  }, []);
   return (
     <>
       <Dashboard />

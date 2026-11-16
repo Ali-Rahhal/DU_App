@@ -80,6 +80,8 @@ function Navbar({
     }[]
   >([]);
 
+  const [scrolled, setScrolled] = useState(false);
+
   /*
    * Calculate cart subtotal by currency.
    */
@@ -132,6 +134,17 @@ function Navbar({
       document.body.style.overflow = "";
     };
   }, [showSidebar]);
+
+  useEffect(() => {
+    const onScroll = () =>
+      // different thresholds in each direction so it doesn't flicker
+      setScrolled((prev) => (prev ? window.scrollY > 20 : window.scrollY > 80));
+
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const initials = useMemo(() => {
     return ((firstName?.[0] || "") + (lastName?.[0] || "")).toUpperCase();
@@ -258,7 +271,9 @@ function Navbar({
           {/* MOBILE NAVBAR                                             */}
           {/* ========================================================= */}
 
-          <header className="mobile-navbar">
+          <header
+            className={`mobile-navbar ${scrolled ? "mobile-navbar--compact" : ""}`}
+          >
             {/* Row 1 - Logo */}
             <div className="mobile-navbar-logo-row">
               <Link href="/" className="mobile-navbar-logo-container">

@@ -392,7 +392,8 @@ const getDashboardData = async (user_id: number, companyId: string) => {
         category = CASE
             WHEN @com = 'SADCO' THEN
                 CASE
-                    WHEN i.brand_code = '010105' THEN 'Non Pharma'
+                    --WHEN i.brand_code = '010105' OR i.brand_code = '010104' THEN 'Non Pharma'
+                    WHEN i.is_consignment = 1 THEN 'Non Pharma'
                     ELSE 'Pharma'
                 END
             ELSE ib.description
@@ -424,7 +425,8 @@ const getDashboardData = async (user_id: number, companyId: string) => {
         CASE
             WHEN @com = 'SADCO' THEN
                 CASE
-                    WHEN i.brand_code = '010105' THEN 'Non Pharma'
+                    --WHEN i.brand_code = '010105' OR i.brand_code = '010104' THEN 'Non Pharma'
+                    WHEN i.is_consignment = 1 THEN 'Non Pharma'
                     ELSE 'Pharma'
                 END
             ELSE ib.description

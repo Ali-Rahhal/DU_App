@@ -80,7 +80,7 @@ const getUserOrders = async (
          brand_description = CASE
             WHEN ${companyId} = 'SADCO' THEN
                 CASE
-                    WHEN th.item_brand_code = '010105' THEN 'Non Pharma'
+                    WHEN th.item_brand_code = '010105' OR th.item_brand_code = '010104' THEN 'Non Pharma'
                     ELSE 'Pharma'
                 END
             ELSE ib.description

@@ -255,13 +255,32 @@ const CategoryPage = ({
   const { companyHydrated, companyId } = useCompanyAssets();
   const [showCategoryModal, setShowCategoryModal] = useState(false);
 
-  // Ask SADCO clients to pick a category once per session
+  const CATEGORY_KEY = "sadcoCategoryChosen";
+  const CATEGORY_TTL_MS = 60 * 60 * 1000; // 60 minutes
+
+  const isCategoryChoiceValid = () => {
+    const stored = sessionStorage.getItem(CATEGORY_KEY);
+    if (!stored) return false;
+
+    const chosenAt = Number(stored);
+
+    // Old "true" values from before this change count as expired
+    return Number.isFinite(chosenAt) && Date.now() - chosenAt < CATEGORY_TTL_MS;
+  };
+
+  const markCategoryChosen = () => {
+    sessionStorage.setItem(CATEGORY_KEY, String(Date.now()));
+  };
+
+  // Ask SADCO clients to pick a category once per hour
   useEffect(() => {
     if (!companyHydrated || companyId !== "SADCO") return;
 
-    // They already have a category (or were asked before): never show it again
-    if (cat || sessionStorage.getItem("sadcoCategoryChosen")) {
-      sessionStorage.setItem("sadcoCategoryChosen", "true");
+    if (isCategoryChoiceValid()) return;
+
+    // They arrived with a category already: start the hour, don't ask
+    if (cat) {
+      markCategoryChosen();
       return;
     }
 
@@ -269,7 +288,7 @@ const CategoryPage = ({
   }, [companyHydrated, companyId]);
 
   const chooseCategory = (code: string) => {
-    sessionStorage.setItem("sadcoCategoryChosen", "true");
+    markCategoryChosen();
     setShowCategoryModal(false);
 
     router.push({

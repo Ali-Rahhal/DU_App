@@ -83,6 +83,7 @@ const getProducts = async (
   let categoryFilter = Prisma.empty;
   if (companyId === "SADCO") {
     const USD_CATEGORY = "010105";
+    const OTHERS_CATEGORY = "010104";
 
     categoryFilter =
       category_code?.length > 0
@@ -102,13 +103,17 @@ const getProducts = async (
               );
             }
 
-            // "P"  -> everything except non-pharma(USD_CATEGORY)
-            // "NP" -> only non-pharma(USD_CATEGORY)
+            // "P"  -> everything except non-pharma(USD_CATEGORY and OTHERS_CATEGORY)
+            // "NP" -> only non-pharma(USD_CATEGORY and OTHERS_CATEGORY)
             // Both -> (brands) OR non-pharma exclusion rules apply
             if (hasP && !hasNP) {
-              clauses.push(Prisma.sql`it.brand_code <> ${USD_CATEGORY}`);
+              clauses.push(
+                Prisma.sql`it.brand_code <> ${USD_CATEGORY} AND it.brand_code <> ${OTHERS_CATEGORY}`,
+              );
             } else if (hasNP && !hasP) {
-              clauses.push(Prisma.sql`it.brand_code = ${USD_CATEGORY}`);
+              clauses.push(
+                Prisma.sql`it.brand_code = ${USD_CATEGORY} OR it.brand_code = ${OTHERS_CATEGORY}`,
+              );
             } else if (hasP && hasNP) {
               // "P" + "NP" together = all brands
               return Prisma.empty;

@@ -255,7 +255,7 @@ const CategoryPage = ({
   const { companyHydrated, companyId } = useCompanyAssets();
   const [showCategoryModal, setShowCategoryModal] = useState(false);
 
-  const CATEGORY_KEY = "sadcoCategoryChosen";
+  const CATEGORY_KEY = "sadcoCatChosen";
   const CATEGORY_TTL_MS = 60 * 60 * 1000; // 60 minutes
 
   const isCategoryChoiceValid = () => {

@@ -47,6 +47,56 @@ function App({ Component, pageProps }) {
   } = useCompanyAssets();
 
   useEffect(() => {
+    if (!("serviceWorker" in navigator)) return;
+
+    // Only reload when an existing service worker is replaced.
+    if (!navigator.serviceWorker.controller) return;
+
+    let refreshing = false;
+
+    const handleControllerChange = () => {
+      if (refreshing) return;
+
+      refreshing = true;
+      window.location.reload();
+    };
+
+    navigator.serviceWorker.addEventListener(
+      "controllerchange",
+      handleControllerChange,
+    );
+
+    return () => {
+      navigator.serviceWorker.removeEventListener(
+        "controllerchange",
+        handleControllerChange,
+      );
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!("serviceWorker" in navigator)) return;
+
+    const checkForUpdate = () => {
+      navigator.serviceWorker.getRegistration().then((reg) => reg?.update());
+    };
+
+    const onVisible = () => {
+      if (document.visibilityState === "visible") checkForUpdate();
+    };
+
+    document.addEventListener("visibilitychange", onVisible);
+    const interval = setInterval(checkForUpdate, 30 * 60 * 1000); // every 30 min
+
+    checkForUpdate();
+
+    return () => {
+      document.removeEventListener("visibilitychange", onVisible);
+      clearInterval(interval);
+    };
+  }, []);
+
+  useEffect(() => {
     if (!companyHydrated) return;
     checkCompanyEnabled();
   }, [companyHydrated]);

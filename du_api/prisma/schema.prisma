@@ -1137,3 +1137,13 @@ model EmailVerificationCode {
   used      Boolean  @default(false, map: "DF__EmailVerif__used__10216507")
   createdAt DateTime @default(now(), map: "DF__EmailVeri__creat__11158940")
 }
+
+model item_group {
+  item_code   String   @db.NVarChar(50)
+  group_id    Int
+  is_active   Boolean  @default(true, map: "DF_item_group_is_active")
+  date_added  DateTime @default(now(), map: "DF_item_group_date_added")
+  last_edited DateTime @default(now(), map: "DF_item_group_last_edited")
+
+  @@id([item_code, group_id], map: "PK_item_group")
+}

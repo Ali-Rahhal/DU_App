@@ -56,54 +56,78 @@ const getUserOrders = async (
     : Prisma.empty;
 
   let res: any = await prisma.$queryRaw`
-  DECLARE @TRX_TYPE INT = 3;
+  
+    DECLARE @TRX_TYPE INT = 3;
 
-  SELECT id = th.transaction_header_id,
-         orderNb = th.transaction_header_code,
-         creationDate = th.date_added,
-         account = ISNULL(wa.description, th.destination_code),
-         [status]= th.transaction_status,
-         [status_text] = CASE
-                        WHEN th.transaction_status = 3 THEN
-                            'Awaiting Approval'
-                        WHEN th.transaction_status = 4 THEN
-                            'Awaiting Delivery'
-                        WHEN th.transaction_status = 8 THEN
-                            'Delivered'
-                        WHEN th.transaction_status = 38 THEN
-                            'Dispatched'
-                        ELSE
-                            'Rejected'
-                    END,
-         phone = wa.phone,
-         brand = th.item_brand_code,
-         brand_description = CASE
+    SELECT
+        id = th.transaction_header_id,
+        orderNb = th.transaction_header_code,
+        creationDate = th.date_added,
+        account = ISNULL(wa.description, th.destination_code),
+        [status] = th.transaction_status,
+
+        [status_text] = CASE
+            WHEN th.transaction_status = 3 THEN 'Awaiting Approval'
+            WHEN th.transaction_status = 4 THEN 'Awaiting Delivery'
+            WHEN th.transaction_status = 8 THEN 'Delivered'
+            WHEN th.transaction_status = 38 THEN 'Dispatched'
+            ELSE 'Rejected'
+        END,
+
+        phone = wa.phone,
+        brand = th.item_brand_code,
+
+        brand_description = CASE
             WHEN ${companyId} = 'SADCO' THEN
-                CASE
-                    WHEN th.item_brand_code = '010105' OR th.item_brand_code = '010104' THEN 'Non Pharma'
-                    ELSE 'Pharma'
-                END
+                (
+                    SELECT STRING_AGG(categories.category, ', ')
+                    FROM (
+                        SELECT DISTINCT
+                            category = CASE
+                                WHEN ig.group_id = 10 THEN 'Pharma'
+                                WHEN ig.group_id = 11 THEN 'Non Pharma'
+                            END
+                        FROM dbo.transaction_body tb
+                        INNER JOIN dbo.item_group ig
+                            ON ig.item_code = tb.item_code
+                            AND ig.is_active = 1
+                        WHERE tb.transaction_header_id = th.transaction_header_id
+                          AND tb.is_active = 1
+                          AND ig.group_id IN (10, 11)
+                    ) categories
+                )
             ELSE ib.description
-         END,
-         items = (SELECT COUNT(*) FROM transaction_body WHERE transaction_header_id = th.transaction_header_id),
-         th.currency_code,
-         th.total_amount,
-         lastEdited = th.last_edited,
-         paymentType = th.expected_payment_type,
-         totalAmount = th.total_amount - ISNULL(th.added_price, 0),
-     status=th.transaction_status
-  FROM dbo.transaction_header AS th
-      INNER JOIN dbo.web_accounts AS wa
-          ON wa.code = th.source_code
-     LEFT Join item_brand as ib
-          on ib.item_brand_code=th.item_brand_code
-  WHERE th.transaction_type = @TRX_TYPE
-        AND th.is_active = 1
-        AND wa.id = ${userId}
-        ${searchFilter}
-        order by th.date_added desc
+        END,
 
-          `;
+        items = (
+            SELECT COUNT(*)
+            FROM dbo.transaction_body
+            WHERE transaction_header_id = th.transaction_header_id
+              AND is_active = 1
+        ),
+
+        th.currency_code,
+        th.total_amount,
+        lastEdited = th.last_edited,
+        paymentType = th.expected_payment_type,
+        totalAmount = th.total_amount - ISNULL(th.added_price, 0)
+
+    FROM dbo.transaction_header AS th
+
+    INNER JOIN dbo.web_accounts AS wa
+        ON wa.code = th.source_code
+
+    LEFT JOIN dbo.item_brand AS ib
+        ON ib.item_brand_code = th.item_brand_code
+
+    WHERE th.transaction_type = @TRX_TYPE
+      AND th.is_active = 1
+      AND wa.id = ${userId}
+      ${searchFilter}
+
+    ORDER BY th.date_added DESC;
+
+  `;
 
   return res;
 };

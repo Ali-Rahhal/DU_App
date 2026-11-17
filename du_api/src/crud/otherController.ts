@@ -393,7 +393,7 @@ const getDashboardData = async (user_id: number, companyId: string) => {
             WHEN @com = 'SADCO' THEN
                 CASE
                     --WHEN i.brand_code = '010105' OR i.brand_code = '010104' THEN 'Non Pharma'
-                    WHEN i.is_consignment = 1 THEN 'Non Pharma'
+                    WHEN ig.group_id = 11 THEN 'Non Pharma'
                     ELSE 'Pharma'
                 END
             ELSE ib.description
@@ -412,6 +412,8 @@ const getDashboardData = async (user_id: number, companyId: string) => {
         ON i.item_code = tb.item_code
     JOIN dbo.item_brand AS ib
         ON ib.item_brand_code = i.brand_code
+    JOIN dbo.item_group AS ig
+        ON ig.item_code = tb.item_code
     WHERE th_a.is_active = 1
         AND th_a.transaction_status NOT IN (9, 10)      -- Exclude cancelled/deleted
         AND th_a.transaction_type = 4                   -- Delivery/Invoice transactions
@@ -426,7 +428,7 @@ const getDashboardData = async (user_id: number, companyId: string) => {
             WHEN @com = 'SADCO' THEN
                 CASE
                     --WHEN i.brand_code = '010105' OR i.brand_code = '010104' THEN 'Non Pharma'
-                    WHEN i.is_consignment = 1 THEN 'Non Pharma'
+                    WHEN ig.group_id = 11 THEN 'Non Pharma'
                     ELSE 'Pharma'
                 END
             ELSE ib.description

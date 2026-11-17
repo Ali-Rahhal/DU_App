@@ -41,14 +41,35 @@ const nextConfig = {
     locales: ["fr", "en"], // Add your supported locales
     defaultLocale: "en", // Set the default locale
   },
+  async headers() {
+    return [
+      {
+        source: "/sw.js",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-cache, no-store, must-revalidate",
+          },
+        ],
+      },
+    ];
+  },
 };
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 // module.exports = nextConfig;
+const runtimeCaching = require("next-pwa/cache");
 const withPWA = require("next-pwa")({
   dest: "public",
   register: true,
   skipWaiting: true,
+  clientsClaim: true,
+  cleanupOutdatedCaches: true,
   disable: process.env.NODE_ENV === "development",
+  runtimeCaching: [
+    // first match wins, so this goes before the defaults
+    { urlPattern: /\/_next\/data\/.+\.json$/i, handler: "NetworkOnly" },
+    ...runtimeCaching,
+  ],
 });
 
 module.exports = withPWA({

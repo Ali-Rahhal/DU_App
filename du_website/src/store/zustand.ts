@@ -233,11 +233,12 @@ type AuthStore = {
     password: string;
   }) => Promise<any>;
   logout: () => Promise<void>;
+  syncSession: () => Promise<void>;
 };
 
 export const useAuthStore = create<AuthStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       token: null,
       isAuth: false,
 
@@ -261,6 +262,12 @@ export const useAuthStore = create<AuthStore>()(
         return result;
       },
       logout: async () => {
+        try {
+          await logout();
+        } catch (err) {
+          console.log(err);
+        }
+
         // Logout user code
         set({ isAuth: false, token: null });
         useAccountStore.getState().resetAccount();
@@ -275,11 +282,18 @@ export const useAuthStore = create<AuthStore>()(
         }
 
         sessionStorage.removeItem("sadcoCatChosen");
-
+      },
+      syncSession: async () => {
         try {
-          await logout();
-        } catch (err) {
-          console.log(err);
+          // succeeds only if the httpOnly cookie is valid
+          await getUserDetails();
+          if (!get().isAuth) set({ isAuth: true });
+        } catch (e: any) {
+          if (e?.response?.status === 401) {
+            set({ isAuth: false, token: null });
+            useAccountStore.getState().resetAccount();
+          }
+          // other errors (network, 500): leave the state as it is
         }
       },
     }),

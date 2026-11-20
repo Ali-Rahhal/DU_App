@@ -74,7 +74,7 @@ const ProductItemList = ({
                   : parseFloat(item.price).toLocaleString()}
               </strong>
 
-              {item?.price && (
+              {item?.discountedPrice && (
                 <del>
                   {currenncyCodeToSymbol(item.currency_code) + " "}
                   {parseFloat(item.price).toLocaleString()}

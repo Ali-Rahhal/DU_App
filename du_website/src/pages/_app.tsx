@@ -35,7 +35,7 @@ const bodyFont = Nunito({
 function App({ Component, pageProps }) {
   const router = useRouter();
   const { refreshUserInfo, refreshCart } = useAccountStore();
-  const { isAuth, logout } = useAuthStore();
+  const { isAuth, logout, syncSession } = useAuthStore();
   const { locale } = router;
   const {
     companyHydrated,
@@ -115,6 +115,17 @@ function App({ Component, pageProps }) {
     refreshUserInfo();
     refreshCart();
   }, [router.pathname, isAuth]);
+
+  useEffect(() => {
+    syncSession();
+
+    const onVisible = () => {
+      if (document.visibilityState === "visible") syncSession();
+    };
+
+    document.addEventListener("visibilitychange", onVisible);
+    return () => document.removeEventListener("visibilitychange", onVisible);
+  }, []);
 
   const messages = locale === "fr" ? fr : en;
 

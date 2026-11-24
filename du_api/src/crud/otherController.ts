@@ -264,21 +264,22 @@ const getDashboardData = async (user_id: number, companyId: string) => {
   `;
 
   // ============================================
-  // STEP 5: Get collection/payment history
-  // Fetches top 5 recent payments made by the customer
+  // STEP 5: Get outstanding payment history
+  // Fetches top 5 recent outstanding payments made by the customer
   // ============================================
   const collectionHeaders = await prisma.$queryRaw`
     SELECT TOP 5
         invoice_number = choi.transaction_header_code,  -- Invoice being paid
         due_date = FORMAT(ch.date_added, 'dd/MM/yy'),   -- Payment date
-        amount = ISNULL(c.symbol, ch.currency_code) + ' ' + FORMAT(ch.total_amount, 'N2')
+        amount = ISNULL(c.symbol, choi.currency_code) + ' ' + FORMAT(choi.remaining_amount, 'N2')
     FROM dbo.collection_header AS ch                    -- Collection/Payment header
     JOIN dbo.collection_header_open_invoice AS choi     -- Links payment to invoices
         ON choi.collection_header_id = ch.collection_header_id
     LEFT JOIN dbo.currency AS c                          -- Currency symbol lookup
-        ON c.currency_code = ch.currency_code
+        ON c.currency_code = choi.currency_code
     WHERE ch.is_active = 1
         AND ch.[client_code] = ${user.code}             -- Payments made by this customer
+        AND choi.remaining_amount > 0
     ORDER BY ch.date_added DESC;                        -- Most recent first
   `;
 

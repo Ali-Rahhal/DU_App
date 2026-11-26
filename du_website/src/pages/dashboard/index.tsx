@@ -19,6 +19,8 @@ import { useEffect, useState } from "react";
 import { Modal, Spinner, Table } from "react-bootstrap";
 import { toast } from "react-toastify";
 
+import { ChevronDown } from "lucide-react";
+
 const ApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
@@ -74,6 +76,10 @@ const Dashboard = () => {
 
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [showOrderDetails, setShowOrderDetails] = useState(false);
+
+  const [showAllInvoices, setShowAllInvoices] = useState(false);
+  const paidFor = dashboardData?.openInvoice?.paid_for || "N/A";
+  const invoiceCount = paidFor.split(",").length;
 
   const rt = useRouter();
   const t = useTranslations();
@@ -369,9 +375,35 @@ const Dashboard = () => {
                 <div className="dashboard-detail-main">
                   <h5>{dashboardData?.openInvoice?.payment_amount || "N/A"}</h5>
 
-                  <p>
-                    {t("dashboard.paid_for")}{" "}
-                    {dashboardData?.openInvoice?.paid_for || "N/A"}
+                  <p className="dashboard-detail-paid-for">
+                    <span className="dashboard-detail-label">
+                      {t("dashboard.paid_for")}
+                    </span>{" "}
+                    <span
+                      className={`dashboard-detail-invoices ${
+                        showAllInvoices ? "is-expanded" : ""
+                      }`}
+                    >
+                      {paidFor}
+                    </span>
+                    {invoiceCount > 2 && (
+                      <button
+                        type="button"
+                        className={`dashboard-detail-toggle ${showAllInvoices ? "is-open" : ""}`}
+                        onClick={() => setShowAllInvoices((v) => !v)}
+                        aria-expanded={showAllInvoices}
+                        aria-label={
+                          showAllInvoices
+                            ? "Show fewer invoices"
+                            : "Show all invoices"
+                        }
+                      >
+                        <span className="dashboard-detail-toggle-count">
+                          {invoiceCount}
+                        </span>
+                        <ChevronDown size={14} />
+                      </button>
+                    )}
                   </p>
 
                   <div className="dashboard-detail-type">

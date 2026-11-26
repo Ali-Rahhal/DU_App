@@ -123,23 +123,29 @@ const getDashboardData = async (user_id: number, companyId: string) => {
     DECLARE @last_ytd_sales DECIMAL(18, 2);
 
     -- Total outstanding: ALL open invoices for this client, converted to main currency
-    SELECT @total_outstanding = SUM(oi.remaining_amount * (@main_rate / c.ratio))
-    FROM dbo.open_invoice AS oi
-    JOIN dbo.web_accounts AS wa ON wa.code = oi.client_code
-    JOIN dbo.currency AS c ON c.currency_code = oi.currency_code
-    WHERE oi.is_active = 1
-        AND wa.id = ${user_id}
-        AND ABS(oi.remaining_amount) > 0;
+    SELECT @total_outstanding = SUM(choi.remaining_amount * (@main_rate / c.ratio))
+        FROM dbo.collection_header AS ch
+        JOIN dbo.collection_header_open_invoice AS choi
+            ON choi.collection_header_id = ch.collection_header_id
+        LEFT JOIN dbo.currency AS c
+            ON c.currency_code = choi.currency_code
+        WHERE ch.is_active = 1
+            AND ch.[client_code] = ${user.code}
+            AND ABS(choi.remaining_amount) > 0;
 
     -- Past due: same, but only overdue invoices
-    SELECT @past_due = SUM(oi.remaining_amount * (@main_rate / c.ratio))
-    FROM dbo.open_invoice AS oi
-    JOIN dbo.web_accounts AS wa ON wa.code = oi.client_code
-    JOIN dbo.currency AS c ON c.currency_code = oi.currency_code
-    WHERE oi.is_active = 1
-        AND wa.id = ${user_id}
-        AND ABS(oi.remaining_amount) > 0
-        AND oi.due_date < GETDATE();
+    SELECT @past_due = SUM(choi.remaining_amount * (@main_rate / c.ratio))
+        FROM dbo.collection_header AS ch
+        JOIN dbo.collection_header_open_invoice AS choi
+            ON choi.collection_header_id = ch.collection_header_id
+        JOIN dbo.open_invoice AS oi 
+            ON oi.transaction_header_code = choi.transaction_header_code
+        LEFT JOIN dbo.currency AS c
+            ON c.currency_code = choi.currency_code
+        WHERE ch.is_active = 1
+            AND ch.[client_code] = ${user.code}
+            AND ABS(choi.remaining_amount) > 0
+            AND oi.due_date < GETDATE();
 
     -- YTD sales
     SELECT @ytd_sales = SUM(th_b.total_amount * (@main_rate / c.ratio))
@@ -290,9 +296,14 @@ const getDashboardData = async (user_id: number, companyId: string) => {
   const openInvoice = await prisma.$queryRaw`
         SELECT TOP 1
             payment_amount = ISNULL(c.symbol, ch.currency_code) + ' ' + FORMAT(ch.total_amount, 'N2'),
-            paid_for = choi.transaction_header_code,          -- Which invoice was paid
-            payment_on = FORMAT(ch.date_added, 'dd MMM yyyy'), -- Payment date
-            payment_type = CASE                                -- Payment method details
+            paid_for = STUFF((
+                SELECT ', ' + choi2.transaction_header_code
+                FROM dbo.collection_header_open_invoice AS choi2
+                WHERE choi2.collection_header_id = ch.collection_header_id
+                ORDER BY choi2.transaction_header_code
+                FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'), 1, 2, ''),
+            payment_on = FORMAT(ch.date_added, 'dd MMM yyyy'),
+            payment_type = CASE
                             WHEN cb.Payment_type = 2 THEN 'CASH'
                             ELSE 'CHEQUE- ' + ISNULL(cb.check_serial_number, 'N/A')
                                 + ' [bank: ' + ISNULL(b.description, 'N/A') + ']'
@@ -300,15 +311,17 @@ const getDashboardData = async (user_id: number, companyId: string) => {
         FROM dbo.collection_header AS ch
         JOIN dbo.collection_header_open_invoice AS choi
             ON choi.collection_header_id = ch.collection_header_id
-        JOIN dbo.collection_body AS cb                        -- Payment body with check details
+        JOIN dbo.collection_body AS cb
             ON cb.collection_header_id = ch.collection_header_id
-        LEFT JOIN dbo.bank AS b                               -- Bank info for cheques
+        LEFT JOIN dbo.bank AS b
             ON b.bank_code = cb.bank_code
-        LEFT JOIN dbo.currency AS c                            -- Currency symbol lookup
+        LEFT JOIN dbo.currency AS c
             ON c.currency_code = ch.currency_code
         WHERE ch.is_active = 1
             AND ch.[client_code] = ${user.code}
-        ORDER BY ch.date_added DESC;                          -- Most recent payment first
+        GROUP BY ch.collection_header_id, ch.total_amount, ch.currency_code, ch.date_added,
+                c.symbol, cb.Payment_type, cb.check_serial_number, b.description
+        ORDER BY ch.date_added DESC;
     `;
 
   // ============================================

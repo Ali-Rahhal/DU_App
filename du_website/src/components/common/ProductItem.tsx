@@ -15,7 +15,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button, Modal } from "react-bootstrap";
 import { toast } from "react-toastify";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import ProductPromotionList from "./ProductPromotionList";
 import { ALL_PERMISSIONS } from "@/utils/data";
@@ -40,7 +40,30 @@ const ProductItem = ({
   const [fav, setFav] = useState(item.isFavorite ?? false);
   const [openPromotionPopup, setOpenPromotionPopup] = useState(false);
 
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [imgError, setImgError] = useState(false);
+  const touchStartX = useRef(0);
+
+  const productImages = (
+    item.images?.length ? item.images : item.image ? [item.image] : []
+  ).slice(0, 3);
+
+  useEffect(() => {
+    setActiveImageIndex(0);
+    setImgError(false);
+  }, [item.item_code]);
+
+  const changeImage = (direction: number) => {
+    setActiveImageIndex((prev) =>
+      Math.max(0, Math.min(prev + direction, productImages.length - 1)),
+    );
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const diff = touchStartX.current - e.changedTouches[0].clientX;
+
+    if (Math.abs(diff) > 40) changeImage(diff > 0 ? 1 : -1);
+  };
 
   const itemCode = item.isExpiryDeal ? item.parent_item_code : item.item_code;
 
@@ -215,16 +238,80 @@ const ProductItem = ({
     );
   };
 
-  const image = (w = 400, h = 400) => (
-    <Image
-      src={imgError || !item.image ? companyPlaceholder : item.image}
-      alt={item.name}
-      width={w}
-      height={h}
-      className="product-item-image"
-      onError={() => setImgError(true)}
-    />
-  );
+  const image = (w = 400, h = 400, carousel = false) => {
+    const src = carousel ? productImages[activeImageIndex] : item.image;
+
+    return (
+      <div
+        className="product-item-image-carousel"
+        onTouchStart={
+          carousel
+            ? (e) => (touchStartX.current = e.touches[0].clientX)
+            : undefined
+        }
+        onTouchEnd={carousel ? handleTouchEnd : undefined}
+      >
+        <Image
+          src={imgError || !src ? companyPlaceholder : src}
+          alt={item.name}
+          width={w}
+          height={h}
+          className="product-item-image"
+          onError={() => setImgError(true)}
+        />
+
+        {carousel && !imgError && productImages.length > 1 && (
+          <>
+            <button
+              type="button"
+              className="product-item-image-arrow prev"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                changeImage(-1);
+              }}
+              disabled={activeImageIndex === 0}
+              aria-label="Previous image"
+            >
+              ‹
+            </button>
+
+            <button
+              type="button"
+              className="product-item-image-arrow next"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                changeImage(1);
+              }}
+              disabled={activeImageIndex === productImages.length - 1}
+              aria-label="Next image"
+            >
+              ›
+            </button>
+
+            <div className="product-item-image-dots">
+              {productImages.map((_, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  className={`product-item-image-dot ${
+                    activeImageIndex === index ? "active" : ""
+                  }`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setActiveImageIndex(index);
+                  }}
+                  aria-label={`Show image ${index + 1}`}
+                />
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+    );
+  };
 
   const productBadges = () => (
     <div className="product-item-badges">
@@ -287,7 +374,7 @@ const ProductItem = ({
                   isOutOfStock ? "product-item-img-out-of-stock" : ""
                 }`}
               >
-                {image()}
+                {image(400, 400, true)}
                 {productBadges()}
               </div>
             </Link>

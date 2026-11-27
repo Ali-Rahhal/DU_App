@@ -404,6 +404,7 @@ const getProducts = async (
             WHERE
               wcsdc.expiry_date IS NOT NULL
               AND wcsdc.quantity > 0
+              AND it.status = 1
 
               AND DATEDIFF(
                 MONTH,
@@ -775,6 +776,7 @@ const getProductInfo = async (
 
     WHERE
       it.item_code = ${item_code}
+      AND it.status = 1
 
       AND wcsdc.expiry_date IS NOT NULL
 
@@ -881,6 +883,7 @@ const getBrands = async (companyId: string) => {
         ON it.brand_code = ib.item_brand_code
     WHERE ib.is_active = 1
       AND it.is_active = 1
+      AND it.status = 1
       AND EXISTS (
           SELECT 1
           FROM dbo.item_price_list AS ipl

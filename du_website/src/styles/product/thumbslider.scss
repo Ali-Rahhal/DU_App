@@ -4,69 +4,123 @@
 
 .thumb-slider {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  gap: 12px;
+
   width: 100%;
   height: 100%;
   min-height: 0;
 }
 
 /* =========================================================
-   Main Image
+   Main image
 ========================================================= */
 
 .thumb-slider-main {
   position: relative;
   flex: 1;
-  min-height: 0;
+  min-width: 0;
+  min-height: 340px;
+
   overflow: hidden;
-  border-radius: 10px;
+
+  border: 1px solid #eceff4;
+  border-radius: 14px;
   background: #fff;
+
+  touch-action: pan-y;
+  outline: none;
+
+  &:focus-visible {
+    box-shadow: 0 0 0 3px rgba($primary, 0.25);
+  }
+}
+
+.thumb-slider-slide {
+  position: absolute;
+  inset: 0;
+
+  opacity: 0;
+  visibility: hidden;
+
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
+
+  &.is-active {
+    opacity: 1;
+    visibility: visible;
+  }
 }
 
 .thumb-slider-main-image {
   object-fit: contain;
-  padding: 18px;
+  padding: 20px;
+
+  user-select: none;
+  transition: transform 0.25s ease;
+}
+
+/* Hover zoom, mouse devices only */
+@media (hover: hover) and (pointer: fine) {
+  .thumb-slider-main {
+    cursor: zoom-in;
+  }
+
+  .thumb-slider-main.is-zooming
+    .thumb-slider-slide.is-active
+    .thumb-slider-main-image {
+    transform: scale(1.9);
+    transform-origin: var(--zoom-x, 50%) var(--zoom-y, 50%);
+    transition: transform 0.12s ease-out;
+  }
 }
 
 /* =========================================================
-   Navigation Arrows
+   Arrows (appear on hover)
 ========================================================= */
 
 .thumb-slider-arrow {
   position: absolute;
   top: 50%;
-  z-index: 2;
+  z-index: 3;
+
+  width: 38px;
+  height: 38px;
+  padding: 0;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  width: 34px;
-  height: 34px;
-  padding: 0;
-
-  border: 1px solid #e5e7eb;
+  border: 0;
   border-radius: 50%;
 
-  background: rgba(255, 255, 255, 0.95);
-  color: #374151;
+  background: rgba(255, 255, 255, 0.96);
+  color: #27364a;
 
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.16);
 
+  opacity: 0;
+  transform: translateY(-50%) scale(0.92);
   cursor: pointer;
-  transform: translateY(-50%);
 
   transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
     background-color 0.2s ease,
-    color 0.2s ease,
-    border-color 0.2s ease,
-    transform 0.2s ease;
+    color 0.2s ease;
+
+  &:hover {
+    background: $primary;
+    color: #fff;
+  }
 }
 
-.thumb-slider-arrow:hover {
-  border-color: $primary;
-  background: $primary;
-  color: #fff;
+.thumb-slider-main:hover .thumb-slider-arrow,
+.thumb-slider-main:focus-within .thumb-slider-arrow {
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
 }
 
 .thumb-slider-arrow-prev {
@@ -77,83 +131,118 @@
   right: 12px;
 }
 
-.thumb-slider-arrow:hover {
-  transform: translateY(-50%) scale(1.04);
-}
-
 /* =========================================================
-   Image Counter
+   Counter and dots
 ========================================================= */
 
 .thumb-slider-counter {
   position: absolute;
   right: 12px;
   bottom: 12px;
-  z-index: 2;
+  z-index: 3;
 
-  padding: 4px 8px;
+  padding: 4px 10px;
 
-  border-radius: 6px;
-  background: rgba(31, 41, 55, 0.75);
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.7);
   color: #fff;
 
   font-size: 11px;
   font-weight: 600;
+  letter-spacing: 0.3px;
+
+  pointer-events: none;
+}
+
+.thumb-slider-dots {
+  display: none;
+}
+
+.thumb-slider-dot {
+  width: 7px;
+  height: 7px;
+  padding: 0;
+
+  border: 0;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.25);
+
+  transition:
+    width 0.2s ease,
+    background-color 0.2s ease;
+
+  &.is-active {
+    width: 18px;
+    background: $primary;
+  }
 }
 
 /* =========================================================
-   Thumbnails
+   Thumbnail rail (vertical on desktop)
 ========================================================= */
 
 .thumb-slider-thumbnails {
-  flex-shrink: 0;
-  width: 100%;
-  margin-top: 12px;
-  overflow-x: auto;
-  scrollbar-width: thin;
+  order: -1;
+  position: relative;
+
+  flex: 0 0 76px;
+  width: 76px;
 }
 
+/* Absolute, so the rail never grows taller than the main image */
 .thumb-slider-thumbnails-track {
-  display: flex;
-  gap: 8px;
-  width: max-content;
-  min-width: 100%;
-}
+  position: absolute;
+  inset: 0;
 
-/* Thumbnail */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  padding: 2px;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
 
 .thumb-slider-thumb {
   position: relative;
-  flex: 0 0 68px;
+  flex: 0 0 auto;
 
-  width: 68px;
-  height: 62px;
+  width: 100%;
+  aspect-ratio: 1;
   padding: 0;
 
   overflow: hidden;
 
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-
+  border: 2px solid #eef0f4;
+  border-radius: 10px;
   background: #fff;
 
+  opacity: 0.75;
   cursor: pointer;
 
   transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease,
     opacity 0.2s ease,
-    transform 0.2s ease;
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    opacity: 1;
+    border-color: #c5cfdd;
+  }
 }
 
-.thumb-slider-thumb:hover {
-  border-color: #b9c6dc;
-  transform: translateY(-1px);
-}
-
-.thumb-slider-thumb-active {
-  border: 2px solid $primary;
-  box-shadow: 0 0 0 2px rgba($primary, 0.1);
+.thumb-slider-thumb-active,
+.thumb-slider-thumb-active:hover {
+  opacity: 1;
+  border-color: $primary;
+  box-shadow: 0 4px 12px rgba($primary, 0.18);
 }
 
 .thumb-slider-thumb-image {
@@ -167,29 +256,30 @@
 
 @media (max-width: 767px) {
   .thumb-slider {
+    flex-direction: column;
+    gap: 0;
     height: auto;
   }
 
   .thumb-slider-main {
-    height: 220px;
     flex: none;
+    height: 300px;
+    min-height: 0;
+    border-radius: 12px;
   }
 
   .thumb-slider-main-image {
     padding: 12px;
   }
 
+  /* Swipe still works, so the arrows stay hidden */
   .thumb-slider-arrow {
-    width: 30px;
-    height: 30px;
+    display: none;
   }
 
-  .thumb-slider-arrow-prev {
-    left: 8px;
-  }
-
-  .thumb-slider-arrow-next {
-    right: 8px;
+  /* Thumbnails replace the dots, the counter stays */
+  .thumb-slider-dots {
+    display: none;
   }
 
   .thumb-slider-counter {
@@ -197,18 +287,53 @@
     bottom: 8px;
   }
 
+  /* Thumbnail strip under the image */
   .thumb-slider-thumbnails {
-    margin-top: 9px;
+    order: 0; /* desktop uses -1 to put the rail on the left */
+    display: block;
+
+    position: static;
+    flex: none;
+    width: 100%;
+    margin-top: 10px;
   }
 
   .thumb-slider-thumbnails-track {
-    gap: 6px;
+    position: relative;
+    inset: auto;
+
+    flex-direction: row;
+    gap: 8px;
+
+    /* room so the active border and glow are not clipped */
+    padding: 4px 2px;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
   }
 
   .thumb-slider-thumb {
-    flex-basis: 58px;
-    width: 58px;
-    height: 52px;
-    border-radius: 7px;
+    flex: 0 0 56px;
+    width: 56px;
+    border-radius: 8px;
+
+    scroll-snap-align: center;
+  }
+}
+
+/* =========================================================
+   Reduced motion
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .thumb-slider-slide,
+  .thumb-slider-main-image,
+  .thumb-slider-arrow,
+  .thumb-slider-dot,
+  .thumb-slider-thumb {
+    transition: none;
   }
 }

@@ -8,7 +8,7 @@ export interface Product {
   default_discount?: string;
   discountedPrice: string;
   isFavorite: boolean;
-  images: string;
+  images: string[];
   image?: string;
   category: string;
   cat_code: string;
